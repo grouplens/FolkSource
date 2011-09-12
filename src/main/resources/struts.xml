@@ -9,13 +9,13 @@
         
     <constant name="struts.convention.action.suffix" value="Controller"/>
     <constant name="struts.convention.action.mapAllMatches" value="true"/>
-    <constant name="struts.convention.default.parent.package" value="civic-sense"/>
+    <constant name="struts.convention.default.parent.package" value="citizen-sense"/>
     <constant name="struts.convention.package.locators" value="api,oauth,account"/>
     <constant name="struts.convention.package.locators.basePackage" value="org.grouplens.bl.controller"/>
     <constant name="struts.convention.result.path" value="/jsp/"/>
         
     
-    <package name="civic-s" extends="struts-default">
+    <package name="citizen-s" extends="struts-default">
         <!-- 
         <result-types>
             <result-type name="exceptionResult" class="org.grouplens.bl.struts.result.ExceptionResult" />
