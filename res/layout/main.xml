@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:orientation="vertical" >
+<RelativeLayout
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:background="@drawable/grey" >
+  <LinearLayout 
+  android:id="@+id/updates_menu"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:orientation="horizontal"
+  android:layout_gravity="center_vertical"
+  android:layout_alignParentLeft="true"
+  android:layout_weight="1" >
+  <ImageView 
+  android:src="@android:drawable/ic_menu_info_details"
+  android:id="@+id/updates_menu_image"
+  android:layout_width="wrap_content"
+  android:layout_height="24sp"
+  android:adjustViewBounds="true"
+  android:padding="3dp"
+  android:layout_gravity="center_vertical" />
+  <TextView
+    android:text="CitizenSense"
+  android:id="@+id/updates_menu_text"
+    android:textColor="#FFFFFF"
+    android:textSize="18sp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+  android:layout_gravity="center_vertical" />
+  <ImageView 
+  android:src="@android:drawable/arrow_down_float"
+  android:id="@+id/updates_menu_menu"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:adjustViewBounds="true"
+  android:padding="3dp"
+  android:layout_gravity="center_vertical" />
+  </LinearLayout>
+  <LinearLayout 
+  android:id="@+id/quick_profile"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:orientation="horizontal"
+  android:layout_gravity="center_vertical"
+  android:layout_alignParentRight="true"
+  android:layout_weight="1" >
+  <ImageView 
+  android:src="@android:drawable/arrow_down_float"
+  android:id="@+id/quick_profile_menu"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:adjustViewBounds="true"
+  android:padding="3dp"
+  android:layout_gravity="center_vertical" />
+  <TextView
+    android:text="Phil"
+  android:id="@+id/quick_profile_text"
+    android:textColor="#FFFFFF"
+    android:textSize="18sp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+  android:layout_gravity="center_vertical" />
+  <ImageView 
+  android:src="@android:drawable/star_on"
+  android:id="@+id/quick_profile_image"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content"
+  android:adjustViewBounds="true"
+  android:paddingLeft="3dp"
+  android:layout_gravity="center_vertical" />
+  <TextView
+    android:text="15"
+  android:id="@+id/quick_profile_pts"
+    android:textColor="#FFFFFF"
+    android:textSize="18sp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical" />
+  </LinearLayout>
+  
+  </RelativeLayout>
+<TabHost 
+    android:id="@android:id/tabhost"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="5dp">
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:padding="5dp" />
+    </LinearLayout>
+</TabHost>
+</LinearLayout>

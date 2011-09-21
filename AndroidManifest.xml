@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.citizensense.android"
+      android:versionCode="1"
+      android:versionName="0.1.0-beta">
+    <uses-sdk android:minSdkVersion="3"
+              android:targetSdkVersion="4" />
+    <application android:icon="@drawable/icon" 
+                 android:label="@string/app_name"
+                 android:debuggable="true"
+                 android:name="Init" >
+        <activity android:name=".CitizenSense"
+                  android:label="@string/app_name"
+                  android:theme="@android:style/Theme.NoTitleBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Home"
+                  android:label="Home" />
+        <activity android:name=".Map"
+                  android:label="Map" />
+        <activity android:name=".Profile"
+                  android:label="Profile" />
+        <uses-library android:name="com.google.android.maps"></uses-library>
+    </application>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+</manifest>
