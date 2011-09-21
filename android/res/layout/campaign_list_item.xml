@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="horizontal"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="#0FCBF5">
+  <LinearLayout 
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+    android:layout_weight="2">
+    <TextView android:id="@+id/campaign_title"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Campaign Title"
+      android:textColor="#000000"
+      android:textSize="18sp" />
+    <TextView android:id="@+id/campaign_stats"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Campaign Statistics"
+      android:textColor="#696969"
+      android:textSize="14sp" />
+  </LinearLayout>
+  <TextView android:id="@+id/campaign_points"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:paddingTop="9sp"
+    android:layout_weight="0.5"
+    android:text="Points"
+    android:textColor="#000000">
+  </TextView>
+  
+</LinearLayout>
