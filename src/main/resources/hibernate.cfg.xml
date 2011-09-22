@@ -31,6 +31,8 @@
 
         <!-- Echo all executed SQL to stdout -->
         <property name="show_sql">false</property>
+        <!--  let hibernate manage the DB schema -->
+        <property name="hibernate.hbm2ddl.auto">create</property>
 
         <!-- Mapping files -->
         <!-- Example: <mapping class="full.name" /> -->
