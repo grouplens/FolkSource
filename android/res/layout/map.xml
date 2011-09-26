@@ -6,10 +6,11 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
     <!-- Should be using 09CCDff67tEdHO0bFllB1TAEsEEzMrR8pzk6Eow -->
+    <!-- Renji's api key:0QQ47N8UWfQevufyLrTsOTPbBosJCNiqAzLnk-g -->
     <com.google.android.maps.MapView
        android:id="@+id/mapview"
        android:layout_width="fill_parent"
        android:layout_height="fill_parent"
        android:clickable="true"
-       android:apiKey="09CCDff67tEcOlN7UlGqy6KQm0actG9Wkn8UPuA" />
+       android:apiKey="0QQ47N8UWfQevufyLrTsOTPbBosJCNiqAzLnk-g" />
 </LinearLayout>
