@@ -1,18 +1,27 @@
+/* Copyright (c) 2006-2011 Regents of the University of Minnesota.
+   For licensing terms, see the file LICENSE.
+ */
+
 package com.citizensense.android.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * Provides an easy implementation for creating and upgrading the 
+ * database.
+ * @author Phil Brown
+ */
 public class CsDbHelper  extends SQLiteOpenHelper{
 	
-	static Context context;
-	
+	/** Constructor calls the super constructor, which determines whether a
+	 * new table needs to be created or an old table needs to be upgraded*/
 	public CsDbHelper(Context context){
 		super(context, DB.DATABASE_NAME, null, DB.DATABASE_VERSION);
-		CsDbHelper.context = context;
-	}
+	}//CsDbHelper
 
+	/** Create the Citizen Sense Database*/
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		//stores the campaigns
@@ -40,16 +49,15 @@ public class CsDbHelper  extends SQLiteOpenHelper{
 				   + DB.SINGLE_LINE + " INTEGER,"
 				   + DB.ANSWERS + " TEXT)");
 		
-	}
+	}//onCreate
 
+	/** Upgrade the Citizen Sense Database*/
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		db.execSQL("DROP TABLE IF EXISTS " + DB.CAMPAIGN_TABLE);
 		db.execSQL("DROP TABLE IF EXISTS " + DB.TASK_TABLE);
 		db.execSQL("DROP TABLE IF EXISTS " + DB.QUESTIONS_TABLE);
 		onCreate(db);
-	}
+	}//onUpgrade
 	
-	
-
-}
+}//CsDbHelper

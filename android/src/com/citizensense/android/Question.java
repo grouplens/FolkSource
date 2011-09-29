@@ -18,9 +18,7 @@ public class Question {
 	public static final int MULTIPLE_CHOICE = 0;
 	/** Question type telling the app to show the question and an EditText. */
 	public static final int WRITTEN_RESPONSE = 1;
-	
-	//TODO how to save responses?
-	
+		
 	/** Whether or not a multiple choice question can have multiple answers */
 	public boolean single_choice;
 	
@@ -43,8 +41,10 @@ public class Question {
 	 * @param option if type == Question.WRITTEN_RESPONSE, this refers to the
 	 * single_line attribute. Otherwise, it refers to the single_answer attribute.
 	 */
-	public Question(String question, int type, String[] answers, 
-			boolean option) {
+	public Question(String question, 
+			        int type, 
+			        String[] answers, 
+			        boolean option) {
 		this.question = question;
 		this.type = type;
 		this.answers = answers;

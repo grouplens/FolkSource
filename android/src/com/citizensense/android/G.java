@@ -16,12 +16,12 @@ import com.google.android.maps.MapView;
  */
 
 public class G {
+	/** The Citizen Sense map*/
 	protected static MapView map;
+	/** The currently logged-in user*/
 	protected static User user;
+	/** The DatabaseAdapter that handles most of the database transactions*/
 	public static CsDbAdapter db;//FIXME make protected
+	/** The application context*/
 	public static Context app_context;
-	
-	//*** Database Constants
-
-	
-}
+}//G

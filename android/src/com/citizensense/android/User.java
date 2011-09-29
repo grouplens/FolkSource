@@ -1,3 +1,7 @@
+/* Copyright (c) 2006-2011 Regents of the University of Minnesota.
+   For licensing terms, see the file LICENSE.
+ */
+
 package com.citizensense.android;
 
 import java.util.ArrayList;
@@ -9,35 +13,39 @@ import java.util.ArrayList;
  * @author Phil Brown
  */
 public class User {
+	/** The user's username*/
 	private String username;
+	/** The token retrieved from the server*/
 	private String token;
 	/** A list of the ids associated with campaigns in which this user is
 	 * participating. */
 	private ArrayList<String> campaign_ids;
 	
+	/** The empty constructor creates a new, empty user and initializes 
+	 * variables.*/
 	public User() {
 		username = "";
 		token = "";
 		campaign_ids = new ArrayList<String>();
-	}
+	}//User
 	
+	/** Login to the App. For now, this simply sets some static variables, but
+	 * should instead interact with the server*/
 	public void login(String username, String password) {
 		//TODO login with server, get info, etc.
 		this.username = "Phil";
-		campaign_ids.add("unique_server_id_01");
-	}
+		campaign_ids.add("1");
+		campaign_ids.add("2");
+	}//login
 	
-	public String getUsername(String token) {//Should this method exist? Do we need to get the token?
+	/** gets the username*/
+	public String getUsername() {
 		return username;
-	}
+	}//getUsername
 	
+	/** Get the campaign ids for the campaigns this user participates in.*/
 	public ArrayList<String> getCampaignIDs() {
 		return campaign_ids;
-	}
+	}//getCampaignIDs
 	
-	//public ArrayList<Campaign> getCampaigns() {
-		//TODO get campaignById - from the databse.
-	//}
-	
-	
-}
+}//User

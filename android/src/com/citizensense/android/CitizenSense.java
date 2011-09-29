@@ -21,25 +21,16 @@ import android.widget.Toast;
  */
 public class CitizenSense extends TabActivity implements OnClickListener {
     
-	View tabView;
+	/** Reference to the tab controller*/
 	TabHost tabHost;
+	/** Reference to the view inside the tabHost*/
+	View tabView;
 	
+	/** Inflate the view and set the tab functions.*/
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
-        /*
-         * case R.id.updates_menu_image:
-		case R.id.updates_menu_menu:
-		case R.id.updates_menu_text:
-			Toast.makeText(CitizenSense.this, "updates", Toast.LENGTH_SHORT).show();
-			break;
-		case R.id.quick_profile_image:
-		case R.id.quick_profile_menu:
-		case R.id.quick_profile_pts:
-		case R.id.quick_profile_text: 
-         */
         
         ((ImageView) findViewById(R.id.updates_menu_image)).setOnClickListener(this);
         ((ImageView) findViewById(R.id.updates_menu_menu)).setOnClickListener(this);
@@ -49,13 +40,9 @@ public class CitizenSense extends TabActivity implements OnClickListener {
         ((TextView) findViewById(R.id.quick_profile_text)).setOnClickListener(this);
         ((TextView) findViewById(R.id.quick_profile_pts)).setOnClickListener(this);
         
-        //Resources res = getResources(); // Resource object to get Drawables
-        tabHost = getTabHost();  // The activity TabHost
-        //TabHost.TabSpec spec;  // Resusable TabSpec for each tab
-        Intent intent;  // Reusable Intent for each tab
+        tabHost = getTabHost();
+        Intent intent;
 
-        
-        
         // Create an Intent to launch an Activity for the tab (to be reused)
         intent = new Intent().setClass(this, Home.class);//CampaignBrowser.class);
         includeTab(intent, "home", "Campaign Browser", 0);
@@ -68,9 +55,10 @@ public class CitizenSense extends TabActivity implements OnClickListener {
         includeTab(intent, "profile", "Me", 0);
 
         
-        //TODO onSavedInstanceState
+        //TODO Save the last tab they were on and store it in sharedPreferences
+        //or in the onSavedInstanceState bundle
         tabHost.setCurrentTab(0);
-    }
+    }//onCreate
     
     /**
      * Include tab in the layout
@@ -94,8 +82,9 @@ public class CitizenSense extends TabActivity implements OnClickListener {
     		((ImageView) tabView.findViewById(R.id.tab_image)).setVisibility(View.GONE);
     	}
    		tabHost.addTab(tabHost.newTabSpec(tag).setIndicator(tabView).setContent(intent));
-    }
+    }//includeTab
 
+    /** Handle clicks*/
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()) {
@@ -113,7 +102,6 @@ public class CitizenSense extends TabActivity implements OnClickListener {
 			
 		}
 		
-	}
-
+	}//onClick
 	
-}
+}//CitizenSense

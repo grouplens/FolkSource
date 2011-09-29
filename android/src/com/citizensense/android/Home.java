@@ -1,3 +1,7 @@
+/* Copyright (c) 2006-2011 Regents of the University of Minnesota.
+   For licensing terms, see the file LICENSE.
+ */
+
 package com.citizensense.android;
 
 import java.io.IOException;
@@ -18,12 +22,21 @@ import com.citizensense.android.net.CampaignParser;
 import com.citizensense.android.net.CampaignParserCallback;
 import com.citizensense.android.util.CampaignAdapter;
 
+/**
+ * This is the activity that is shown in the main tab, inside the campaign
+ * browser.
+ * @author Phil Brown
+ */
 public class Home extends Activity implements CampaignParserCallback {
-	CampaignParser parser;
-	TextView textview;
-	//Remove this object later:
-		//static Campaign c;
 	
+	/** The XML parser used when a campaign is downloaded from the server.*/
+	CampaignParser parser;
+	
+	/** The textview used in the view. This is a temporary view that is used
+	 * to help debug and show that the database is working.*/
+	TextView textview;
+	
+	/** Initiate the parser and populate the gallery. */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.campaign_browser);
@@ -43,16 +56,18 @@ public class Home extends Activity implements CampaignParserCallback {
 			e.printStackTrace();
 		}
         
-        Gallery cf = (Gallery) findViewById(R.id.gallery);
-        cf.setAdapter(new CampaignAdapter(this));
-    }
+        Gallery gallery = (Gallery) findViewById(R.id.gallery);
+        gallery.setAdapter(new CampaignAdapter(this));
+    }//onCreate
 
+    /** This is called after the parser finishes. It inserts the new campaign
+     * into the database (if it does not already exist there) and displays 
+     * its info in the textview. */
 	@Override
 	public void handleNewCampaign(Campaign c) {
 		//Add campaign to the database
 		if (G.db.getCampaignById(c.getId()) == null){
 			G.db.addCampaign(c);
-			//Toast.makeText(this, "Adding to db: " + c.getName(), Toast.LENGTH_SHORT).show();
 		}
 		//unpack campaign and display
 		String name = c.getName();
@@ -88,5 +103,5 @@ public class Home extends Activity implements CampaignParserCallback {
 						 + "form: " + "\n"
 						 + qs);
 		
-	}
-}
+	}//handleNewCampaign
+}//Home
