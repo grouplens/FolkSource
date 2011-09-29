@@ -4,43 +4,51 @@
   android:orientation="vertical"
   android:layout_width="fill_parent"
   android:layout_height="fill_parent" >
-  <View 
-    android:layout_width="fill_parent"
-    android:layout_height="30dp" />
   <LinearLayout 
     android:orientation="horizontal"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:layout_weight="1">
-    <LinearLayout 
-      android:orientation="vertical"
-      android:layout_width="wrap_content"
-      android:layout_height="fill_parent">
-      <ImageView android:id="@+id/profile_pic"
-        android:src="@drawable/profile_default"
-        android:layout_width="100dp"
-        android:layout_height="100dp"/>
-      <View 
-        android:layout_width="fill_parent"
-        android:layout_height="10dp" />
-      <TextView android:id="@+id/total_points"
+    android:layout_height="wrap_content">
+    <ImageView android:id="@+id/profile_pic"
+      android:src="@drawable/profile_default"
+      android:layout_width="130dp"
+      android:layout_height="130dp"
+      android:padding="15dp" />
+      <LinearLayout 
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:layout_gravity="center_horizontal"
-        android:text="1555" />
+        android:orientation="vertical" >
+        <TextView android:id="@+id/username"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="Phil Brown"
+          android:textSize="22sp"
+          android:paddingTop="20dp" />
+        <TextView android:id="@+id/username"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="New to the Neighborhood"
+          android:textSize="16sp" />
+      </LinearLayout>
     </LinearLayout>
-    <View 
-      android:layout_width="20dip"
-      android:layout_height="wrap_content" />
-    <TextView
+  <LinearLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <Button 
       android:layout_width="wrap_content"
-      android:layout_height="fill_parent"
-      android:text="This is where incentives go.">
-    </TextView>
+      android:layout_height="wrap_content"
+      android:text="Completed Tasks"
+      android:paddingLeft="15dp" />
+    <Button 
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Badges"
+      android:paddingLeft="15dp" />
   </LinearLayout>
   <ListView android:id="@android:id/list"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:paddingTop="30dp"
     android:layout_weight="1">
   </ListView>
     

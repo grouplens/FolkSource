@@ -2,9 +2,7 @@
 <!-- Copyright (c) 2006-2011 Regents of the University of Minnesota.
    For licensing terms, see the file LICENSE.-->
 <resources>
-    <string name="hello">Hello World, CitizenSense!</string>
     <string name="app_name">CitizenSense</string>
-    
     <string name="written_response">written_response</string>
     <string name="multiple_choice">multiple_choice</string>
 </resources>

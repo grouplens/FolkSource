@@ -4,6 +4,8 @@
 
 package com.citizensense.android;
 
+import android.content.Context;
+
 import com.citizensense.android.db.CsDbAdapter;
 import com.google.android.maps.MapView;
 
@@ -16,5 +18,10 @@ import com.google.android.maps.MapView;
 public class G {
 	protected static MapView map;
 	protected static User user;
-	protected static CsDbAdapter db;
+	public static CsDbAdapter db;//FIXME make protected
+	public static Context app_context;
+	
+	//*** Database Constants
+
+	
 }

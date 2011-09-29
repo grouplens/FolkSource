@@ -9,8 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * User's main profile page. Has a picture, user info, and statuses on incentives
@@ -25,6 +25,11 @@ public class Profile extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.profile);
+        
+        //Button tasks = (Button) findViewById(R.id.profile_btn1);
+        ///tasks.setBackgroundResource(R.drawable.button);
+        //Button badges = (Button) findViewById(R.id.profile_btn2);
+        //badges.setBackgroundResource(R.drawable.button);
         //TODO get user info to inflate
         
         //populate the user campaigns list by retrieving the user's campaign
@@ -62,6 +67,9 @@ public class Profile extends ListActivity {
 		    	  TextView stats = (TextView) v.findViewById(R.id.campaign_stats);
 		    	  TextView points = (TextView) v.findViewById(R.id.campaign_points);
 		    	  title.setText(campaign.getName());
+		    	  //FIXME
+		    	  stats.setText("46 participants   278 photos   high score: 465");
+		    	  points.setText("My Points: 120");
 		    	  if (G.user != null) {
 		    		  //TODO points.setText(G.user.getPoints());
 		    	  }

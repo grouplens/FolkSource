@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<campaign id="unique_server_id_01"
+<campaign id="1"
           name="Pothole Pics"
           description="Take photos of potholes so we can fill them!"
           start_date="10/01/2011"
