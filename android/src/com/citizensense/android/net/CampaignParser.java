@@ -37,6 +37,7 @@ public class CampaignParser implements ContentHandler {
 	/** Used for nicely formatting debug statements*/
 	public String tab = "";
 	
+	/** Context used for accessing resources.*/
 	private Context c;
 
 	/** Constructor */
@@ -109,6 +110,7 @@ public class CampaignParser implements ContentHandler {
 		}
 	}//skippedEntity
 
+	/** When the document starts, initialize the campaign*/
 	@Override
 	public void startDocument() throws SAXException {
 		if (Constants.DEBUG)  {
@@ -117,6 +119,8 @@ public class CampaignParser implements ContentHandler {
 		this.campaign = new Campaign();
 	}//startDocument
 
+	/** This is the driver for this event-driven XML parser. When expected
+	 * attributes are found, they are added to a campaign object.*/
 	@Override
 	public void startElement(String uri, String localName, String qName,
 			Attributes atts) throws SAXException {
@@ -169,7 +173,6 @@ public class CampaignParser implements ContentHandler {
 		}
 		if(localName.equalsIgnoreCase("FORM")) {
 			this.form = this.task.new Form();
-			//task.setForm(this.form);
 		}
 		if(localName.equalsIgnoreCase("QUESTION")) {
 			if (Constants.DEBUG) {
@@ -193,7 +196,6 @@ public class CampaignParser implements ContentHandler {
 			this.form.addQuestion(q);
 		}
 		
-		
 	}//startElement
 
 	@Override
@@ -213,6 +215,6 @@ public class CampaignParser implements ContentHandler {
 			String v = atts.getValue(i);
 			Log.i(TAG, tab + atts.getLocalName(i) + "=" + v);
 		}
-	}
+	}//logAttributes
 
 }//CampaignParser

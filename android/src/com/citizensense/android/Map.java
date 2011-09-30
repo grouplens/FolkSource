@@ -15,17 +15,18 @@ import com.google.android.maps.MapView;
  */
 public class Map extends MapActivity {
     	
+	/** Initialize the map*/
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map);
         G.map = (MapView) findViewById(R.id.mapview);
         G.map.setBuiltInZoomControls(true);
-    }
+    }//onCreate
 
+    /** Required by MapActivity. Currently unused.*/
 	@Override
 	protected boolean isRouteDisplayed() {
-		// TODO Auto-generated method stub
 		return false;
-	}
-}
+	}//isRouteDisplayed
+}//Map
