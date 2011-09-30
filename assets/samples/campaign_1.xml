@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<campaign id="1"
+          name="Pothole Pics"
+          description="Take photos of potholes so we can fill them!"
+          start_date="10/01/2011"
+          end_date="10/08/2011"
+          times="07:00-09:30|14:30-16:30"
+          location="Minneapolis, MN|Saint Paul, MN|-93, 45" 
+          owner="Phil">
+          <task name="Take photos of potholes!"
+                instructions="Take a photo of every pothole you see. Upload your location, and complete the form."
+                requirements="gps|location" >
+                <form>
+                  <question question="How many potholes are here?"
+                            type="written_response"
+                            single_line="true" />
+                  <question question="Where are you?"
+                            type="multiple_choice"
+                            single_answer="true"
+                            answers="Minneapolis|Saint Paul" />
+                </form>
+          </task>
+</campaign>
