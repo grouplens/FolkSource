@@ -3,5 +3,6 @@
     <string name="campaign_name">name</string>
     <string name="campaign_id">_id</string>
     <string name="campaign_table">campaign</string>
+    <string name="campaign_locations">locations</string>
     
 </resources>

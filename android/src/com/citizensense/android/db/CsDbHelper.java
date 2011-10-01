@@ -24,8 +24,8 @@ public class CsDbHelper  extends SQLiteOpenHelper{
 	      db.execSQL("CREATE TABLE " + getString(R.string.campaign_table)
 	                 + " (" + getString(R.string.campaign_id)
 	                 + " STRING PRIMARY KEY NOT NULL,"
-	                 + getString(R.string.campaign_name) + " TEXT NOT NULL)");
-		
+	                 + getString(R.string.campaign_name) + " TEXT NOT NULL,"
+	                 + getString(R.string.campaign_locations) + " TEXT NOT NULL)");
 	}
 
 	@Override

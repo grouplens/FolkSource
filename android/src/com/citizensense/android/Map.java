@@ -24,6 +24,7 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.citizensense.android.conf.Constants;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -33,131 +34,96 @@ import com.google.android.maps.Projection;
 
 /**
  * Map activity
- * @author Phil Brown & Renji Yu
+ * @author Phil Brown 
+ * @author Renji Yu
  */
 public class Map extends MapActivity {
-    	
-    @Override
+	
+    /** OnCreate() is overrided from MapActivity. It creates a  map view,
+     *  gets the locations of a campaign from database and displays them
+     *  according to the location type.
+     */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map);
         G.map = (MapView) findViewById(R.id.mapview);
         G.map.setBuiltInZoomControls(true);
         List<Overlay> mapOverlays = G.map.getOverlays();
-        //TODO: get locs from database
-		String[] locs = {"Minneapolis, MN","Saint Paul, MN","-93, 45"};
-		GeoPoint p = getGeopoint("Minneapolis, MN");
-		GeoPoint q = getGeopoint("Saint Paul, MN");
-		GeoPoint r = getGeopoint("-93, 45");
-		System.out.println(p.getLatitudeE6()+" "+p.getLongitudeE6());
-	
-
+        
+        //get locations from database by searching the campaign id
+		String[] locs = getLocsByCampaignId("unique_server_id_01"); 
+		
+		//display locations by creating PointOverlay/CircleOverlay
 		PointOverlay pointOverlay = null;
 		CircleOverlay circleOverlay = null;
 		for(String loc : locs){
-			if(locType(loc)==1){
+			if(getLocType(loc)==Constants.EXACT_LOCATION){
 				pointOverlay = new PointOverlay(getGeopoint(loc));
 				mapOverlays.add(pointOverlay);
 				G.map.getController().animateTo(getGeopoint(loc));
 			}
-		    circleOverlay = new CircleOverlay(getGeopoint(loc),locType(loc));
+		    circleOverlay = new CircleOverlay(getGeopoint(loc),getRadius(loc));
 	        mapOverlays.add(circleOverlay);
+	        setZoomLevel(loc);
 		}
-        G.map.getController().setZoom(11);
     }
-    class PointOverlay extends Overlay{
-    	private GeoPoint geoPoint;
-
-    	public  PointOverlay(GeoPoint geoPoint){
-    		this.geoPoint = geoPoint;
-    	}
-
-        @Override
-        public void draw(Canvas canvas, MapView mapV, boolean shadow){
-            if(shadow){
-                Projection projection = mapV.getProjection();
-                Point pt = new Point();
-                projection.toPixels(geoPoint,pt);
-                Paint paint = new Paint();
-                Bitmap markerBitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.marker);
-                canvas.drawBitmap(markerBitmap,pt.x-markerBitmap.getWidth()/2 ,pt.y-markerBitmap.getHeight(),paint);
-            }
-        }
-    }   
     
-    class CircleOverlay extends Overlay{
-    	private GeoPoint center;
-    	private int locType;
-
-    	public  CircleOverlay(GeoPoint center,int locType){
-    		this.center = center;
-    		this.locType = locType;
-    	}
+	@Override
+	protected boolean isRouteDisplayed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
     
-        @Override
-        public void draw(Canvas canvas, MapView mapV, boolean shadow){
-            if(shadow){
-                Projection projection = mapV.getProjection();
-                Point pt = new Point();
-                projection.toPixels(center,pt);
-                
-                float circleRadius = 0;
-                if(locType ==1) //set circle to 10 meters
-                	circleRadius = metersToRadius(10, mapV, center.getLatitudeE6()/1000000);
-                else                        //set circle to 10000 meters
-                	circleRadius = metersToRadius(10000, mapV, center.getLatitudeE6()/1000000);
-                
-                Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-                int color = Color.argb(127,255,0,255);
-                circlePaint.setColor(color);
-                circlePaint.setStyle(Style.FILL_AND_STROKE);
-                canvas.drawCircle((float)pt.x, (float)pt.y, circleRadius, circlePaint);
-                circlePaint.setColor(0x99000000);
-                circlePaint.setStyle(Style.STROKE);
-                canvas.drawCircle((float)pt.x, (float)pt.y, circleRadius, circlePaint);
-            }
-        }
+	//set zoom level of the map according to the location's type
+	public void setZoomLevel(String loc){
+		if(getLocType(loc) == Constants.EXACT_LOCATION){
+			G.map.getController().setZoom(15);
+		}else{
+			G.map.getController().setZoom(11);
+		}
+	}
+	
+	/** Get locations of the campaign from database by searching the campaign's id.*/
+    public String[] getLocsByCampaignId(String id){
+    	Campaign c = G.db.getCampaignById(id);
+    	return c.getLocations();
     }
-    /**
-     * processOverlay() adds all the location items to the taskOverlay
-     * it also draws circle for the location, different locations will 
-     * have different circles
-     */
-//    public void processOverlay(MapView mapView,PointOverlay taskOverlay,String[] locs){
-//    	for(String loc:locs){
-//    		GeoPoint point = getGeopoint(loc);
-//    		//GeoPoint point = new GeoPoint(45000000,-93000000);
-//	        if(locType(loc)==1){
-//	        	G.map.getController().animateTo(point); // set center of map to the gps location
-//	        OverlayItem overlayItem = new OverlayItem(point, "title","content");   
-//	        taskOverlay.addOverlayItem(overlayItem);
-//	        //drawCircle();
-//	        }
-//    	}  	
-//    	G.map.getController().setZoom(12);
-//    }
     
-    public int locType(String  loc){ //if it contains digit, it is type 1; otherwise, it's type 2
-    	//TODO: implement the function
+    /** Get the type of the location: (longitude,latitude) is EXACT_LOCATION, 
+     * (city, state) is NONEXACT_LOCATION. */
+    public boolean getLocType(String  loc){ 
     	 Pattern pattern=Pattern.compile("\\d");  
          Matcher matcher=pattern.matcher(loc);
          if(matcher.find()==true)
-        	 return 1;
-         return 2;
+        	 return Constants.EXACT_LOCATION;
+         return Constants.NONEXACT_LOCATION;
     }
     
+    
+    /** Get the radius of the circle centered at loc. If loc is EXACT_LOCATION,
+     *  set the radius to 10 meters, otherwise, set the radius to 10000 meters. 
+     *  This function may be updated if we can get more geo information.*/
+    public float getRadius(String loc){
+    	if(getLocType(loc)== Constants.EXACT_LOCATION){
+    		return 10;
+    	}else{
+    		return 10000;
+    	}
+    }
+    /** Get a GeoPoint from a string of location.*/
     public GeoPoint getGeopoint(String loc){
-    	//TODO: complete the function
-		if(locType(loc) == 1){// if it is a gps location (lat,long)
+		if(getLocType(loc) == Constants.EXACT_LOCATION){
 	    	loc = loc.replaceAll(" ", "");
 	    	String[] long_lat = loc.split(",");
 			int longitude = Integer.parseInt(long_lat[0])*1000000;
 			int latitude = Integer.parseInt(long_lat[1])*1000000;
 			return new GeoPoint(latitude,longitude);
-		}else if(locType(loc)==2){ //if it is (city,state)
+		}else if(getLocType(loc)== Constants.NONEXACT_LOCATION){ 
 			Geocoder  mygeoCoder=new Geocoder(this,Locale.getDefault());
 			List<Address> lstAddress = null;
 			try {
+				// getFromLocationName() will return a list of Address which 
+				// matches the location name(first parameter)
 				lstAddress = mygeoCoder.getFromLocationName(loc,1);
 				if(!lstAddress.isEmpty()){
 					Address address=lstAddress.get(0);
@@ -172,6 +138,8 @@ public class Map extends MapActivity {
 		return null;
     }
     
+
+    
     /**
      * This function calculate the corresponding amount of pixels for the radius in meters
      * Merely use metersToEquatorPixels() will not work. Google Maps uses a Mercator projection. 
@@ -179,14 +147,74 @@ public class Map extends MapActivity {
      * I got this function from: 
      * http://stackoverflow.com/questions/2077054/how-to-compute-a-radius-around-a-point-in-an-android-mapview
      */
-    // 
-    public static int metersToRadius(float meters, MapView map, double latitude) {
+    public static int getPixelsFromMeters(float meters, MapView map, double latitude) {
         return (int) (map.getProjection().metersToEquatorPixels(meters) * (1/ Math.cos(Math.toRadians(latitude))));         
     }
     
-	@Override
-	protected boolean isRouteDisplayed() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    
+    /** 
+     * PointOverlay is an inner class for showing a location as a marker on the map.
+     */
+    class PointOverlay extends Overlay{
+    	/** The GeoPoint to be displayed.*/
+    	private GeoPoint geoPoint;
+
+    	public  PointOverlay(GeoPoint geoPoint){
+    		this.geoPoint = geoPoint;
+    	}
+
+        @Override
+        public void draw(Canvas canvas, MapView mapV, boolean shadow){
+            if(shadow){
+                Projection projection = mapV.getProjection();
+                Point pt = new Point();
+                projection.toPixels(geoPoint,pt);
+                Paint paint = new Paint();
+                Bitmap markerBitmap = BitmapFactory.decodeResource(getApplicationContext().getResources(),R.drawable.marker);
+                //change the coordinates of the marker to make sure the pin is located at the GeoPoint.
+                canvas.drawBitmap(markerBitmap,pt.x-markerBitmap.getWidth()/2 ,pt.y-markerBitmap.getHeight(),paint);
+            }
+        }
+    }   
+    
+    /** 
+     * CircleOverlay is an inner class for drawing a circle on the map.
+     * Its constructor receives two parameters, the first parameter 
+     * is a GeoPoint indicating the center of the circle, the second
+     * parameter is the radius of the circle.
+     */
+    class CircleOverlay extends Overlay{
+    	/** The center GeoPoint of the circle.*/
+    	private GeoPoint center;
+    	/** The radius of the circle.*/
+    	private float radius; 
+
+    	public  CircleOverlay(GeoPoint center,float radius){
+    		this.center = center;
+    		this.radius = radius; //radius received should be in meters
+    	}
+    
+        @Override
+        public void draw(Canvas canvas, MapView mapV, boolean shadow){
+            if(shadow){
+                Projection projection = mapV.getProjection();
+                Point pt = new Point();
+                projection.toPixels(center,pt);
+                
+                float radiusInPixels = getPixelsFromMeters(radius, mapV, center.getLatitudeE6()/1000000);
+                Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+                //set color and style for the inner part of the circle
+                int color = Color.argb(127,255,0,255); // set color to semitransparent purple
+                circlePaint.setColor(color);
+                circlePaint.setStyle(Style.FILL_AND_STROKE);
+                canvas.drawCircle((float)pt.x, (float)pt.y, radiusInPixels, circlePaint);
+                //set color and style for the border
+                circlePaint.setColor(0x99000000);
+                circlePaint.setStyle(Style.STROKE);
+                canvas.drawCircle((float)pt.x, (float)pt.y, radiusInPixels, circlePaint);
+            }
+        }
+    }
+    
+
 }

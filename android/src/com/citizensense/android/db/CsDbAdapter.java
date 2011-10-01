@@ -46,6 +46,13 @@ public class CsDbAdapter {
 		   ContentValues vals = new ContentValues();
 		   vals.put(getString(R.string.campaign_name), c.getName());
 		   vals.put(getString(R.string.campaign_id), c.getId());
+		   String locs = "";
+		   for(int i=0;i<c.getLocations().length-1;i++){
+				   locs += c.getLocations()[i]+"|";
+		   }
+		   locs += c.getLocations()[c.getLocations().length-1];
+		   vals.put(getString(R.string.campaign_locations), locs);
+		   
 		   //TODO put the rest of the info
 		   return database.insert(getString(R.string.campaign_table), null, vals);
 	   }
@@ -68,7 +75,8 @@ public class CsDbAdapter {
 	   public Campaign getCampaignById(String id) {
 		   Cursor cur = database.query(getString(R.string.campaign_table), 
 				                       new String[]{getString(R.string.campaign_id),
-			   						                getString(R.string.campaign_name)}, 
+			   						                getString(R.string.campaign_name),
+			   						                getString(R.string.campaign_locations)}, 
 				                       getString(R.string.campaign_id) + "=\"" + id + "\"", 
 				                       null, null, null, null);
 		   if (cur == null)
@@ -79,6 +87,7 @@ public class CsDbAdapter {
 			   return null;
 		   }
 		   return new Campaign(cur.getString(cur.getColumnIndex(getString(R.string.campaign_id))), 
-				        cur.getString(cur.getColumnIndex(getString(R.string.campaign_name))));
+				        cur.getString(cur.getColumnIndex(getString(R.string.campaign_name))),
+				        cur.getString(cur.getColumnIndex(getString(R.string.campaign_locations))).split("\\|"));
 	   }
 }

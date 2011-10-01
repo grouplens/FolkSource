@@ -51,7 +51,12 @@ public class Campaign {
 	public Campaign(String id, String name) {
 		this.id = id;
 		this.name = name;
-		
+	}
+	
+	public Campaign(String id, String name,String[] locations) {
+		this.id = id;
+		this.name = name;
+		this.locations = locations;
 	}
 	
 	

@@ -41,7 +41,7 @@ public class Home extends Activity implements CampaignParserCallback {
         setContentView(textview);
     }
 
-	@Override
+    @Override
 	public void handleNewCampaign(Campaign c) {
 		//Add campaign to the database
 		G.db.addCampaign(c);
