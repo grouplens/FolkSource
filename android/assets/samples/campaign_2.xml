@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<campaign id="2"
+          name="MetroTransit Rush Hour Bike Racks"
+          description="We at MetroTransit would like to know how much use our on-bus bike racks get during rush hours in Minneapolis."
+          start_date="10/01/2011"
+          end_date="10/08/2011"
+          times="07:00-09:30|14:30-16:30"
+          location="Minneapolis, MN" 
+          owner="Phil">
+          <task name="Take photos of metro transit bike racks during rush hour."
+                instructions="Take a photo the bike racks you see on Metro Transit busses. Upload your location, and complete the form."
+                requirements="gps|location" >
+                <form>
+                  <question question="How many bikes are here?"
+                            type="written_response"
+                            single_line="true" />
+                  <question question="What bus is this? (ex. 84F)"
+                            type="written_response"
+                            single_answer="true" />
+                </form>
+          </task>
+</campaign>
