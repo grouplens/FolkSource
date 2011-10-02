@@ -4,25 +4,84 @@
 
 package com.citizensense.android;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.widget.Gallery;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 
-import com.citizensense.android.util.CampaignAdapter;
+import org.xml.sax.SAXException;
+
+import android.os.Bundle;
+import android.util.Xml;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+
+import com.citizensense.android.net.CampaignParser;
+import com.citizensense.android.net.CampaignParserCallback;
 
 /**
  * The campaign browser allows users to view active campaigns in an "app-store"
  * style browser.
  * @author Phil Brown
  */
-public class CampaignBrowser extends Activity {
+public class CampaignBrowser extends CampaignExplorer implements CampaignParserCallback {
+
+	/** The XML parser used when a campaign is downloaded from the server.*/
+	CampaignParser parser;
 	
-	/** Inflate the view*/
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.campaign_browser);
-        Gallery gallery = (Gallery) findViewById(R.id.gallery);
-        gallery.setAdapter(new CampaignAdapter(this));
-    }//onCreate
+	/** The campaigns retrieved from the server */
+	ArrayList<Campaign> server_campaigns;
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		server_campaigns = new ArrayList<Campaign>();
+		parser = new CampaignParser(this, this);
+		super.onCreate(savedInstanceState);
+	}//onCreate
+	
+	@Override
+	public ArrayList<Campaign> getCampaigns() {
+		// FIXME retrieve campaigns from the gallery
+		try {
+			InputStream stream = getAssets().open("samples/campaign_1.xml");
+			Xml.parse(stream, Xml.Encoding.UTF_8, parser);
+			stream = getAssets().open("samples/campaign_2.xml");
+			Xml.parse(stream, Xml.Encoding.UTF_8, parser);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		}
+		return server_campaigns;
+	}//getCampaigns
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getMenuInflater();
+		menu.setHeaderTitle("");
+		inflater.inflate(R.menu.campaign_browser_context_menu, menu);
+	}//onCreateContextMenu
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		/* Add the campaign to the local database*/
+		case R.id.download:
+			//FIXME this does not work
+			G.db.addCampaign(campaigns.get(this.current_gallery_position));
+			return true;
+		}
+		return super.onContextItemSelected(item);
+	}//onContextItemSelected
+
+	@Override
+	public void handleNewCampaign(Campaign c) {
+		server_campaigns.add(c);
+		G.db.addCampaign(c);
+	}//handleNewCampaign
+	
 }//CampaignBrowser

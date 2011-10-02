@@ -44,8 +44,11 @@ public class CitizenSense extends TabActivity implements OnClickListener {
         Intent intent;
 
         // Create an Intent to launch an Activity for the tab (to be reused)
-        intent = new Intent().setClass(this, Home.class);//CampaignBrowser.class);
+        intent = new Intent().setClass(this, CampaignBrowser.class);
         includeTab(intent, "home", "Campaign Browser", 0);
+        
+        intent = new Intent().setClass(this, MyCampaigns.class);
+        includeTab(intent, "My Campaigns", "My Campaigns", 0);
 
         // Do the same for the other tabs
         intent = new Intent().setClass(this, Map.class);

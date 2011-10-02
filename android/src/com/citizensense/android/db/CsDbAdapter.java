@@ -6,6 +6,7 @@ package com.citizensense.android.db;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -160,11 +161,24 @@ public class CsDbAdapter {
 		}
 		return false;
 	}//deleteCampaign
+	
+	/** Convenience method for getCampaign(String)*/
+	public Object getCampaigns() {
+		return getCampaign(null);
+	}//getCampaign
 	 
 	/** Get a campaign using its unique ID
-	 * @param id the campaign's ID*/
-	public Campaign getCampaignById(String id) {
-		Cursor cur = database.query(DB.CAMPAIGN_TABLE, 
+	 * @param id The campaign's ID. If id is {@code null}, get all campaigns.
+	 * @return The campaign associated with the id, or an arraylist of campaigns
+	 * if id is null*/
+	public Object getCampaign(String id) {
+		ArrayList<Campaign> retrievedCampaigns = new ArrayList<Campaign>();
+		Cursor cur1;
+		String selection = "";
+		if (id != null) {
+			selection = DB.ID + "=\"" + id + "\"";
+		}
+		cur1 = database.query(DB.CAMPAIGN_TABLE, 
 				                    new String[]{DB.ID,
 				                                 DB.NAME,
 				                                 DB.DESCRIPTION,
@@ -173,67 +187,68 @@ public class CsDbAdapter {
 				                                 DB.TIMES,
 				                                 DB.START_DATE,
 				                                 DB.END_DATE}, 
-				                                 DB.ID + "=\"" + id + "\"", 
+				                                 selection, 
 				                                 null, null, null, null);
-		if (cur == null) {
+		if (cur1 == null) {
 			return null;
 		}
-		cur.moveToFirst();
-		if (cur.isAfterLast()) {
-			cur.close();
+		cur1.moveToFirst();
+		if (cur1.isAfterLast()) {
+			cur1.close();
 			return null;
 		}
-		Campaign campaign = new Campaign();
-		campaign.setId(cur.getString(cur.getColumnIndex(DB.ID)));
-		campaign.setName(cur.getString(cur.getColumnIndex(DB.NAME)));
-		campaign.setDescription(cur.getString(cur.getColumnIndex(DB.DESCRIPTION)));
-		campaign.setOwner(cur.getString(cur.getColumnIndex(DB.OWNER)));
-		campaign.setLocations(cur.getString(cur.getColumnIndex(DB.LOCATIONS)).split("|"));
-		campaign.setTimes(cur.getString(cur.getColumnIndex(DB.TIMES)).split("|"));
-		try {
-			campaign.setStartDate(iso8601.parse(cur.getString(cur.getColumnIndex(DB.START_DATE))));
-			campaign.setEndDate(iso8601.parse(cur.getString(cur.getColumnIndex(DB.END_DATE))));
-		} catch (ParseException e) {
-			if (Constants.DEBUG) {
-				Log.e("GET Campaign Failed", "unable to parse dates");
+		do {
+			Campaign campaign = new Campaign();
+			campaign.setId(cur1.getString(cur1.getColumnIndex(DB.ID)));
+			campaign.setName(cur1.getString(cur1.getColumnIndex(DB.NAME)));
+			campaign.setDescription(cur1.getString(cur1.getColumnIndex(DB.DESCRIPTION)));
+			campaign.setOwner(cur1.getString(cur1.getColumnIndex(DB.OWNER)));
+			campaign.setLocations(cur1.getString(cur1.getColumnIndex(DB.LOCATIONS)).split("|"));
+			campaign.setTimes(cur1.getString(cur1.getColumnIndex(DB.TIMES)).split("|"));
+			try {
+				campaign.setStartDate(iso8601.parse(cur1.getString(cur1.getColumnIndex(DB.START_DATE))));
+				campaign.setEndDate(iso8601.parse(cur1.getString(cur1.getColumnIndex(DB.END_DATE))));
+			} catch (ParseException e) {
+				if (Constants.DEBUG) {
+					Log.e("GET Campaign Failed", "unable to parse dates");
+				}
 			}
-		}
 		
-		cur = database.query(DB.TASK_TABLE, 
-				             new String[]{DB.ID,
-				                          DB.NAME,
-				                          DB.INSTRUCTIONS,
-				                          DB.REQUIREMENTS}, 
-				                          DB.ID + "=\"" + id + "\"", 
-				                          null, null, null, null);
-		if (cur == null) {
-			return null;
-		}
-		cur.moveToFirst();
-		if (cur.isAfterLast()) {
-			cur.close();
-			return null;
-		}
-		Task task = campaign.
+			Cursor cur = database.query(DB.TASK_TABLE, 
+										new String[]{DB.ID,
+													 DB.NAME,
+													 DB.INSTRUCTIONS,
+													 DB.REQUIREMENTS}, 
+													 DB.ID + "=\"" + id + "\"", 
+													 null, null, null, null);
+			if (cur == null) {
+				return null;
+			}
+			cur.moveToFirst();
+			if (cur.isAfterLast()) {
+				cur.close();
+				return null;
+			}
+			Task task = campaign.
 		        new Task(cur.getString(cur.getColumnIndex(DB.NAME)),
 				cur.getString(cur.getColumnIndex(DB.INSTRUCTIONS)),
 				cur.getString(cur.getColumnIndex(DB.REQUIREMENTS)).split("|"));
-		cur = database.query(DB.TASK_TABLE, 
+			cur = database.query(DB.TASK_TABLE, 
 				             new String[]{DB.ID,
 				                          DB.NAME,
 				                          DB.INSTRUCTIONS,
 				                          DB.REQUIREMENTS}, 
 				                          DB.ID + "=\"" + id + "\"", 
 				                          null, null, null, null);
-		if (cur == null) {
-			return null;
-		}
-		cur.moveToFirst();
-		if (cur.isAfterLast()) {
-			cur.close();
-			return null;
-		}
-		cur = database.query(DB.QUESTIONS_TABLE, 
+			if (cur == null) {
+				return null;
+			}
+			cur.moveToFirst();
+			if (cur.isAfterLast()) {
+				cur.close();
+				return null;
+			}
+			cur = database.query(DB.QUESTIONS_TABLE, 
 				             new String[]{DB.ID,
 				                          DB.QUESTION,
 				                          DB.TYPE,
@@ -242,29 +257,32 @@ public class CsDbAdapter {
 				                          DB.ANSWERS},  
 				                          DB.ID + "=\"" + id + "\"",
 				                          null, null, null, null);
-		if (cur == null) {
-			return null;
-		}
-		cur.moveToFirst();
-		if (cur.isAfterLast()) {
-			cur.close();
-			return null;
-		}
-		Form form = task.new Form();
-		Question q;
-		do {
-			boolean options;
-			int temp = cur.getInt(cur.getColumnIndex(DB.SINGLE_CHOICE));
-			options = (temp == 1)? true:false;
-			temp = cur.getInt(cur.getColumnIndex(DB.SINGLE_LINE));
-			options = ((temp == 1? true:false) | options);
-			q = new Question(cur.getString(cur.getColumnIndex(DB.QUESTION)),
+			if (cur == null) {
+				return null;
+			}
+			cur.moveToFirst();
+			if (cur.isAfterLast()) {
+				cur.close();
+				return null;
+			}
+			Form form = task.new Form();
+			Question q;
+			do {
+				boolean options;
+				int temp = cur.getInt(cur.getColumnIndex(DB.SINGLE_CHOICE));
+				options = (temp == 1)? true:false;
+				temp = cur.getInt(cur.getColumnIndex(DB.SINGLE_LINE));
+				options = ((temp == 1? true:false) | options);
+				q = new Question(cur.getString(cur.getColumnIndex(DB.QUESTION)),
 					  cur.getInt(cur.getColumnIndex(DB.TYPE)),
 					  cur.getString(cur.getColumnIndex(DB.ANSWERS)).split("|"),
 					  options);
-			form.addQuestion(q);
-		} while (cur.moveToNext());
-		return campaign;
+				form.addQuestion(q);
+			} while (cur.moveToNext());
+			retrievedCampaigns.add(campaign);
+			if (Constants.DEBUG) Log.i("GOT CAMPAIGN", campaign.getName());
+		} while(cur1.moveToNext());
+		return retrievedCampaigns;
 	}//getCampaignById
 	   
 	public long size() {

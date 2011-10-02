@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,14 +19,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.citizensense.android.Campaign;
-import com.citizensense.android.G;
+import com.citizensense.android.Campaign.Task;
+import com.citizensense.android.Campaign.Task.Form;
+import com.citizensense.android.Question;
 import com.citizensense.android.R;
+import com.citizensense.android.conf.Constants;
 
 /**
- * Displays campaigns in the Campaign Browser Gallery.
+ * Displays campaigns as a gallery.
  * @author Phil Brown
  */
-public class CampaignAdapter extends BaseAdapter {
+public class CampaignGalleryAdapter extends BaseAdapter {
 
 	/** Context used to access resources and system services*/
 	private Context context;
@@ -33,21 +37,21 @@ public class CampaignAdapter extends BaseAdapter {
 	private ArrayList<Campaign> campaigns;
 	
 	/** Constructor. Accessed directly from the XML.*/
-	public CampaignAdapter(Context c) {
+	public CampaignGalleryAdapter(Context c, ArrayList<Campaign> campaigns) {
 		context = c;
+		this.campaigns = campaigns;
         TypedArray attr = 
         	context.obtainStyledAttributes(R.styleable.CampaignGallery);
-        attr.recycle();
-        campaigns = new ArrayList<Campaign>();
-        //FIXME populate campaigns directly from the database
-		this.putCampaign(G.db.getCampaignById("1"));
-		this.putCampaign(G.db.getCampaignById("2"));        
-	}//CampaignAdapter
+        attr.recycle();        
+	}//CampaignGalleryAdapter
 	
 	/** Returns the number of campaigns in the gallery*/
 	@Override
 	public int getCount() {
-		return campaigns.size();
+		if (campaigns != null) {
+			return campaigns.size();
+		}
+		return 0;
 	}//getCount
 
 	/** Gets the item located at the provided position
@@ -94,6 +98,9 @@ public class CampaignAdapter extends BaseAdapter {
 		}
 		TextView tv = (TextView) v.findViewById(R.id.campaign_info);
 		ImageView iv = (ImageView) v.findViewById(R.id.campaign_pic);
+		//FIXME
+		iv.setVisibility(View.GONE);
+		/*
 		if (position == 1) {
 			iv.setImageResource(R.drawable.potholes);
 			//tv.setText(G.db.getCampaignById("1").getName());
@@ -102,13 +109,48 @@ public class CampaignAdapter extends BaseAdapter {
 			iv.setImageResource(R.drawable.busrack);
 			//tv.setText(G.db.getCampaignById("2").getName());
 		}
-		Campaign campaign = G.db.getCampaignById(Integer.toString(position+1));
-		if (campaign != null) 
-			tv.setText(campaign.getName());
+		*/
+		Campaign campaign = campaigns.get(position);
+		//unpack campaign and display (for now) FIXME improve it!
+		if (campaign != null) {
+			String name = campaign.getName();
+			String start = campaign.getStartDate().toString();
+			String end = campaign.getEndDate().toString();
+			//TODO unpack full campaign
+			String more = "More Details available";
+			Task t = campaign.getTask();
+			String tname = t.name;
+			String tdesc = t.instructions;
+		
+			Form f = t.getForm();
+			Question[] q = f.getQuestions();
+			if (Constants.DEBUG) Log.i("HOME", "NUMBER OF QUESTIONS: " + q.length);
+			String qs = "";
+			for (int i=0; i<q.length; i++ ) {
+				Log.i("Questions", qs);
+				qs += q[i].toString();
+			}
+			String locs = "";
+			String[] locations = campaign.getLocations();
+			for (int i=0; i<locations.length; i++) {
+				locs += "\n" + locations[i];
+			}
+		
+			tv.setText(name + "\n"
+						 + start + "\n"
+						 + end + "\n"
+						 + more + "\n"
+						 + locs + "\n"
+						 + "task: " + tname + "\n"
+						 + tdesc + "\n"
+						 + "form: " + "\n"
+						 + qs);
+		}
+		
 		v.setLayoutParams(new Gallery.LayoutParams(
 				WindowManager.LayoutParams.FILL_PARENT, 
                 WindowManager.LayoutParams.FILL_PARENT));
 		return v;
 	}//getView
 	
-}//CampaignAdapter
+}//CampaignGalleryAdapter

@@ -20,11 +20,12 @@ import com.citizensense.android.Campaign.Task;
 import com.citizensense.android.Campaign.Task.Form;
 import com.citizensense.android.net.CampaignParser;
 import com.citizensense.android.net.CampaignParserCallback;
-import com.citizensense.android.util.CampaignAdapter;
+import com.citizensense.android.util.CampaignGalleryAdapter;
 
 /**
  * This is the activity that is shown in the main tab, inside the campaign
  * browser.
+ * TODO remove this class!!!
  * @author Phil Brown
  */
 public class Home extends Activity implements CampaignParserCallback {
@@ -57,7 +58,7 @@ public class Home extends Activity implements CampaignParserCallback {
 		}
         
         Gallery gallery = (Gallery) findViewById(R.id.gallery);
-        gallery.setAdapter(new CampaignAdapter(this));
+        gallery.setAdapter(new CampaignGalleryAdapter(this, null));
     }//onCreate
 
     /** This is called after the parser finishes. It inserts the new campaign
@@ -66,7 +67,7 @@ public class Home extends Activity implements CampaignParserCallback {
 	@Override
 	public void handleNewCampaign(Campaign c) {
 		//Add campaign to the database
-		if (G.db.getCampaignById(c.getId()) == null){
+		if (G.db.getCampaign(c.getId()) == null){
 			G.db.addCampaign(c);
 		}
 		//unpack campaign and display

@@ -19,7 +19,7 @@ public class G {
 	/** The Citizen Sense map*/
 	protected static MapView map;
 	/** The currently logged-in user*/
-	protected static User user;
+	public static User user;//FIXME make protected
 	/** The DatabaseAdapter that handles most of the database transactions*/
 	public static CsDbAdapter db;//FIXME make protected
 	/** The application context*/
