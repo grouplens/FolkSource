@@ -14,7 +14,7 @@ import com.google.android.maps.MapView;
  * @author Phil Brown
  * @author Renji Yu
  */
-public class Map extends MapActivity {
+public class abstract Map extends MapActivity implements LocationListener{
     	
 	/** Initialize the map*/
     @Override
@@ -30,4 +30,8 @@ public class Map extends MapActivity {
 	protected boolean isRouteDisplayed() {
 		return false;
 	}//isRouteDisplayed
+	
+	
+	abstract ArrayList<Campaign> getCampaigns(){}
+	abstract void showDialog(){}
 }//Map
