@@ -12,6 +12,7 @@ import com.google.android.maps.MapView;
 /**
  * Map activity
  * @author Phil Brown
+ * @author Renji Yu
  */
 public class Map extends MapActivity {
     	
