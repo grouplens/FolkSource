@@ -91,6 +91,18 @@ public abstract class CampaignExplorer extends ListActivity
 		}
 	}//onResume
 	
+	@Override
+	public void onStart() {
+		super.onStart();
+		//add campaigns to the list
+		if (campaigns != null) {
+			listAdapter = new CampaignListAdapter(this, campaigns);
+			setListAdapter(listAdapter); 
+		}
+	}//onStart
+	
+	
+	
 	/** Get the campaigns to populate the list or gallery*/
 	public abstract ArrayList<Campaign> getCampaigns();//getCampaigns
 	

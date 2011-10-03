@@ -31,9 +31,11 @@ public class Profile extends ListActivity {
         setContentView(R.layout.profile);
         campaigns = new ArrayList<Campaign>();
         ArrayList<String>campaign_ids = G.user.getCampaignIDs();
+        /*
         for(int i = 0; i<campaign_ids.size(); i++) {
         	campaigns.add(((ArrayList<Campaign>) G.db.getCampaign(campaign_ids.get(i))).get(0));
         }
+        */
         setListAdapter(new CampaignListAdapter(this, campaigns));
 	}//onCreate
 	

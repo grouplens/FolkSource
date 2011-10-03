@@ -14,12 +14,14 @@
   <Button 
     android:id="@+id/view_as_list"
     android:text="List"
+    android:background="@drawable/tab_unselected"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_weight="1"/>
   <Button 
     android:id="@+id/view_as_gallery"
-    android:text="Coverflow"
+    android:text="Gallery"
+    android:background="@drawable/tab_unselected"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_weight="1"/>

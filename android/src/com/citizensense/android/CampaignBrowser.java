@@ -81,7 +81,8 @@ public class CampaignBrowser extends CampaignExplorer implements CampaignParserC
 	@Override
 	public void handleNewCampaign(Campaign c) {
 		server_campaigns.add(c);
-		G.db.addCampaign(c);
+		//TODO don't add to db yet.
+		//G.db.addCampaign(c);
 	}//handleNewCampaign
 	
 }//CampaignBrowser
