@@ -6,7 +6,7 @@
     <session-factory>
         <property name="hibernate.connection.driver_class">org.h2.Driver</property>
         <property name="hibernate.connection.password"></property>
-        <property name="hibernate.connection.url">jdbc:h2:tcp://localhost:7080/mem:~/citizen_sense;DB_CLOSE_DELAY=-1</property>
+        <property name="hibernate.connection.url">jdbc:h2:tcp://localhost:7080/mem:~/civic_sense;DB_CLOSE_DELAY=-1</property>
         <property name="hibernate.connection.username">sa</property>
         <property name="hibernate.default_schema">public</property>
         <property name="hibernate.dialect">org.hibernate.dialect.H2Dialect</property>
@@ -31,6 +31,8 @@
 
         <!-- Echo all executed SQL to stdout -->
         <property name="show_sql">false</property>
+        <!--  let hibernate manage the DB schema -->
+        <property name="hibernate.hbm2ddl.auto">create</property>
 
         <!-- Mapping files -->
         <!-- Example: <mapping class="full.name" /> -->
