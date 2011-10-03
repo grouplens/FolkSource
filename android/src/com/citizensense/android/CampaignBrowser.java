@@ -62,7 +62,7 @@ public class CampaignBrowser extends CampaignExplorer implements CampaignParserC
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
-		menu.setHeaderTitle("");
+		menu.setHeaderTitle((campaigns.get(this.current_gallery_position)).getName());
 		inflater.inflate(R.menu.campaign_browser_context_menu, menu);
 	}//onCreateContextMenu
 
@@ -71,7 +71,6 @@ public class CampaignBrowser extends CampaignExplorer implements CampaignParserC
 		switch (item.getItemId()) {
 		/* Add the campaign to the local database*/
 		case R.id.download:
-			//FIXME this does not work
 			G.db.addCampaign(campaigns.get(this.current_gallery_position));
 			return true;
 		}
@@ -80,9 +79,17 @@ public class CampaignBrowser extends CampaignExplorer implements CampaignParserC
 
 	@Override
 	public void handleNewCampaign(Campaign c) {
-		server_campaigns.add(c);
-		//TODO don't add to db yet.
-		//G.db.addCampaign(c);
+		if (!server_campaigns.contains(c)) {
+			server_campaigns.add(c);
+		}
 	}//handleNewCampaign
+	
+	/** In order to avoid the campaign browser to add multiples, this
+	 * line is needed on onResume.*/
+	@Override
+	public void onResume() {
+		this.server_campaigns = new ArrayList<Campaign>();
+		super.onResume();
+	}//onResume
 	
 }//CampaignBrowser

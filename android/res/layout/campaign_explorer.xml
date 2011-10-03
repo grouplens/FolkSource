@@ -25,6 +25,13 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_weight="1"/>
+  <Button 
+    android:id="@+id/view_as_map"
+    android:text="Map"
+    android:background="@drawable/tab_unselected"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"/>
   </LinearLayout>
   <Gallery 
     android:id="@+id/campaign_gallery"
@@ -36,4 +43,11 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_above="@id/button_container" />
+  <!-- Should be using 09CCDff67tEdHO0bFllB1TAEsEEzMrR8pzk6Eow 
+  <com.google.android.maps.MapView
+    android:id="@+id/mapview"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:clickable="true"
+    android:apiKey="09CCDff67tEcOlN7UlGqy6KQm0actG9Wkn8UPuA" /> -->
 </RelativeLayout>

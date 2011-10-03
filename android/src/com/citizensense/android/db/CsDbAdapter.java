@@ -280,8 +280,8 @@ public class CsDbAdapter {
 			campaign.setName(cur1.getString(cur1.getColumnIndex(DB.NAME)));
 			campaign.setDescription(cur1.getString(cur1.getColumnIndex(DB.DESCRIPTION)));
 			campaign.setOwner(cur1.getString(cur1.getColumnIndex(DB.OWNER)));
-			campaign.setLocations(cur1.getString(cur1.getColumnIndex(DB.LOCATIONS)).split("|"));
-			campaign.setTimes(cur1.getString(cur1.getColumnIndex(DB.TIMES)).split("|"));
+			campaign.setLocations(cur1.getString(cur1.getColumnIndex(DB.LOCATIONS)).split("\\|"));
+			campaign.setTimes(cur1.getString(cur1.getColumnIndex(DB.TIMES)).split("\\|"));
 			try {
 				campaign.setStartDate(dateFormat.parse(cur1.getString(cur1.getColumnIndex(DB.START_DATE))));
 				campaign.setEndDate(dateFormat.parse(cur1.getString(cur1.getColumnIndex(DB.END_DATE))));
@@ -309,7 +309,7 @@ public class CsDbAdapter {
 			Task task = campaign.
 		        new Task(cur.getString(cur.getColumnIndex(DB.NAME)),
 				cur.getString(cur.getColumnIndex(DB.INSTRUCTIONS)),
-				cur.getString(cur.getColumnIndex(DB.REQUIREMENTS)).split("|"));
+				cur.getString(cur.getColumnIndex(DB.REQUIREMENTS)).split("\\|"));
 			cur = database.query(DB.TASK_TABLE, 
 				             new String[]{DB.ID,
 				                          DB.NAME,
@@ -352,7 +352,7 @@ public class CsDbAdapter {
 				options = ((temp == 1? true:false) | options);
 				q = new Question(cur.getString(cur.getColumnIndex(DB.QUESTION)),
 					  cur.getInt(cur.getColumnIndex(DB.TYPE)),
-					  cur.getString(cur.getColumnIndex(DB.ANSWERS)).split("|"),
+					  cur.getString(cur.getColumnIndex(DB.ANSWERS)).split("\\|"),
 					  options);
 				form.addQuestion(q);
 			} while (cur.moveToNext());

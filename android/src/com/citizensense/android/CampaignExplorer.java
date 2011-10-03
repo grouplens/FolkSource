@@ -45,6 +45,7 @@ public abstract class CampaignExplorer extends ListActivity
 	
 	Button listMode;
 	Button galleryMode;
+	Button mapMode;
 	
 	/** The current View within the gallery*/
 	View current_gallery_view;
@@ -69,39 +70,17 @@ public abstract class CampaignExplorer extends ListActivity
 		listMode.setOnClickListener(this);
 		galleryMode = (Button) findViewById(R.id.view_as_gallery);
 		galleryMode.setOnClickListener(this);
-		
-		//get the campaigns to use
-		campaigns = getCampaigns();
-		
-		//add campaigns to the gallery
-		galleryAdapter = new CampaignGalleryAdapter(this, campaigns);
-		gallery.setAdapter(galleryAdapter);
-		registerForContextMenu(gallery);
-		
+		mapMode = (Button) findViewById(R.id.view_as_map);
+		//mapMode.setOnClickListener(this);
+		//registerForContextMenu(G.map);
 		
 	}//onCreate
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		//add campaigns to the list
-		if (campaigns != null) {
-			listAdapter = new CampaignListAdapter(this, campaigns);
-			setListAdapter(listAdapter);
-		}
+		refresh();
 	}//onResume
-	
-	@Override
-	public void onStart() {
-		super.onStart();
-		//add campaigns to the list
-		if (campaigns != null) {
-			listAdapter = new CampaignListAdapter(this, campaigns);
-			setListAdapter(listAdapter); 
-		}
-	}//onStart
-	
-	
 	
 	/** Get the campaigns to populate the list or gallery*/
 	public abstract ArrayList<Campaign> getCampaigns();//getCampaigns
@@ -131,4 +110,16 @@ public abstract class CampaignExplorer extends ListActivity
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {}//onNothingSelected
 	
+	/** Refresh the view*/
+	public void refresh() {
+		//re-retrieve the campaigns. TODO move to non-UI thread
+		campaigns = getCampaigns();
+		//add campaigns to the list
+		if (campaigns != null) {
+			listAdapter = new CampaignListAdapter(this, campaigns);
+			setListAdapter(listAdapter);
+			galleryAdapter = new CampaignGalleryAdapter(this, campaigns);
+			gallery.setAdapter(galleryAdapter);
+		}
+	}//refresh
 }//CampaignExplorer
