@@ -2,14 +2,26 @@ package org.citizensense.model;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+@Entity
 public class Campaign {
 
+	@Id
 	private Long id;
+	@Column(name="description")
 	private String description;
+	@Column(name="start_date")
 	private Date start_date;
+	@Column(name="end_date")
 	private Date end_date;
 	private String times; //figure out if this is actually how we want to represent this
-	private User owner;
+	//private User owner;
+	
+	@OneToMany(mappedBy="task")
 	private ArrayList<Task> tasks;
 	
 	/**
@@ -52,11 +64,11 @@ public class Campaign {
 	public void setEndDate(Date end_date) {
 		this.end_date = end_date;
 	}
-	public User getOwner() {
-		return owner;
-	}
-	public void setOwner(User owner) {
-		this.owner = owner;
-	}
+//	public User getOwner() {
+//		return owner;
+//	}
+//	public void setOwner(User owner) {
+//		this.owner = owner;
+//	}
 
 }

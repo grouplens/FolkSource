@@ -1,12 +1,30 @@
 package org.citizensense.model;
 
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
 public class Task {
+	@Column(name="name")
 	private String name;
+	@Column(name="instructions")
 	private String instructions;
+	@Column(name="requirements")
 	private String requirements; // possibly wrong datatype, but for now
 	private Form form;
 	private Location loc;
+	@Column(name="id")
 	private int ID;
+
+	@ManyToOne
+	@JoinColumn(name="campaign_id", nullable=false)
+	private Campaign camp;
+	
+	@ManyToOne
+	@JoinColumn(name="user_id", nullable=false)
+	
+	@Column(name="incentive")
+	private Incentive incentive;
 
 	public Location getLocation() {
 		return loc;

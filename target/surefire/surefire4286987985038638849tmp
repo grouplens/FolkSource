@@ -1,0 +1,5 @@
+#surefire
+#Wed Oct 05 13:14:57 CDT 2011
+user.dir=/export/scratch/thebault/workspace/server
+localRepository=/export/scratch/thebault/maven-repository
+basedir=/export/scratch/thebault/workspace/server

@@ -8,8 +8,8 @@
 	<name>Citizen Sense</name>
 
 	<properties>
-		<db.username>sa</db.username>
-		<db.password></db.password>
+		<db.username>postgres</db.username>
+		<db.password>stut5ade</db.password>
 		<db.schema>public</db.schema>
 		<db.connection.driver.class>org.h2.Driver</db.connection.driver.class>
 		<db.url>jdbc:h2:tcp://localhost:7080/mem:~/civic_sense;DB_CLOSE_DELAY=-1</db.url>
