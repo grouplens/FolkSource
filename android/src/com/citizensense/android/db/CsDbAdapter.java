@@ -188,8 +188,8 @@ public class CsDbAdapter {
 		campaign.setName(cur.getString(cur.getColumnIndex(DB.NAME)));
 		campaign.setDescription(cur.getString(cur.getColumnIndex(DB.DESCRIPTION)));
 		campaign.setOwner(cur.getString(cur.getColumnIndex(DB.OWNER)));
-		campaign.setLocations(cur.getString(cur.getColumnIndex(DB.LOCATIONS)).split("|"));
-		campaign.setTimes(cur.getString(cur.getColumnIndex(DB.TIMES)).split("|"));
+		campaign.setLocations(cur.getString(cur.getColumnIndex(DB.LOCATIONS)).split("\\|"));
+		campaign.setTimes(cur.getString(cur.getColumnIndex(DB.TIMES)).split("\\|"));
 		try {
 			campaign.setStartDate(iso8601.parse(cur.getString(cur.getColumnIndex(DB.START_DATE))));
 			campaign.setEndDate(iso8601.parse(cur.getString(cur.getColumnIndex(DB.END_DATE))));

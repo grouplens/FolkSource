@@ -25,6 +25,8 @@
                   android:label="Home" />
         <activity android:name=".Map"
                   android:label="Map" />
+       <activity android:name=".MyCampaignMap"
+                  android:label="MyCampaignMap" />
         <activity android:name=".Profile"
                   android:label="Profile" />
         <uses-library android:name="com.google.android.maps"></uses-library>
