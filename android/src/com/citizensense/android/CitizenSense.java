@@ -22,7 +22,7 @@ import android.widget.Toast;
 public class CitizenSense extends TabActivity implements OnClickListener {
     
 	/** Reference to the tab controller*/
-	TabHost tabHost;
+	static TabHost tabHost;
 	/** Reference to the view inside the tabHost*/
 	View tabView;
 	
@@ -45,16 +45,16 @@ public class CitizenSense extends TabActivity implements OnClickListener {
 
         // Create an Intent to launch an Activity for the tab (to be reused)
         intent = new Intent().setClass(this, CampaignBrowser.class);
-        includeTab(intent, "home", "Campaign Browser", 0);
+        includeTab(intent, "home", "Browse", 0);
         
         // Do the same for the other tabs
         intent = new Intent().setClass(this, MyCampaigns.class);
         includeTab(intent, "My Campaigns", "My Campaigns", 0);
 
-        /*
+        
         intent = new Intent().setClass(this, Map.class);
         includeTab(intent, "map", "Map", 0);
-        */
+        
         
         intent = new Intent().setClass(this, Profile.class);
         includeTab(intent, "profile", "Me", 0);
@@ -64,6 +64,11 @@ public class CitizenSense extends TabActivity implements OnClickListener {
         //or in the onSavedInstanceState bundle
         tabHost.setCurrentTab(0);
     }//onCreate
+    
+    /** Open the map tab*/
+    public static void openMap() {
+    	tabHost.setCurrentTab(2);
+    }//openMap
     
     /**
      * Include tab in the layout

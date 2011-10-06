@@ -71,7 +71,7 @@ public abstract class CampaignExplorer extends ListActivity
 		galleryMode = (Button) findViewById(R.id.view_as_gallery);
 		galleryMode.setOnClickListener(this);
 		mapMode = (Button) findViewById(R.id.view_as_map);
-		//mapMode.setOnClickListener(this);
+		mapMode.setOnClickListener(this);
 		//registerForContextMenu(G.map);
 		
 	}//onCreate
@@ -95,6 +95,9 @@ public abstract class CampaignExplorer extends ListActivity
 		else if (v == galleryMode) {
 			list.setVisibility(View.GONE);
 			gallery.setVisibility(View.VISIBLE);
+		}
+		else if (v == mapMode) {
+			CitizenSense.openMap();
 		}
 	}//onClick
 	

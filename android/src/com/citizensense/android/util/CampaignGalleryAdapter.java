@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -94,12 +95,18 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 		if (v == null) {
 	         LayoutInflater vi = (LayoutInflater)context.getSystemService(
 	        		                          Context.LAYOUT_INFLATER_SERVICE);
-	         v = vi.inflate(R.layout.campaign_item, null);
+	         v = vi.inflate(R.layout.campaign, null);
 		}
-		TextView tv = (TextView) v.findViewById(R.id.campaign_info);
-		ImageView iv = (ImageView) v.findViewById(R.id.campaign_pic);
+		TextView title = (TextView) v.findViewById(R.id.campaign_title);
+		TextView descr = (TextView) v.findViewById(R.id.campaign_description);
+		TextView info = (TextView) v.findViewById(R.id.campaign_info);
+		ImageView image = (ImageView) v.findViewById(R.id.campaign_image);
+		Button map_button = (Button) v.findViewById(R.id.map);
+		Button task_button = (Button) v.findViewById(R.id.task);
+		Button d_or_d = (Button) v.findViewById(R.id.download_or_delete);
+		//Button more = (Button) v.findViewById(R.id.more);
 		//FIXME
-		iv.setVisibility(View.GONE);
+		//iv.setVisibility(View.GONE);
 		/*
 		if (position == 1) {
 			iv.setImageResource(R.drawable.potholes);
@@ -113,11 +120,27 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 		Campaign campaign = campaigns.get(position);
 		//unpack campaign and display (for now) FIXME improve it!
 		if (campaign != null) {
-			String name = campaign.getName();
-			String start = campaign.getStartDate().toString();
-			String end = campaign.getEndDate().toString();
+			title.setText(campaign.getName());
+			//title.setText(name);
+			String start = "Start Date:\n " + campaign.getStartDate().toString();
+			String end = "End Date:\n " + campaign.getEndDate().toString();
+			String[]time_intervals = campaign.getTimes();
+			String times = "Times:\n ";
+			for (int i=0; i<time_intervals.length; i++) {
+				times += time_intervals[i] + "\n";
+				
+			}
+
+			String locs = "Locations: ";
+			String[] locations = campaign.getLocations();
+			for (int i=0; i<locations.length; i++) {
+				locs += "\n" + locations[i];
+			}
+			String information = start + "\n" + end + "\n" + times + locs;
+			info.setText(information);
+			descr.setText(campaign.getDescription());
 			//TODO unpack full campaign
-			String more = "More Details available";
+			//String more = "More Details available";
 			Task t = campaign.getTask();
 			String tname = t.name;
 			String tdesc = t.instructions;
@@ -130,21 +153,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 				Log.i("Questions", qs);
 				qs += q[i].toString();
 			}
-			String locs = "";
-			String[] locations = campaign.getLocations();
-			for (int i=0; i<locations.length; i++) {
-				locs += "\n" + locations[i];
-			}
-		
-			tv.setText(name + "\n"
-						 + start + "\n"
-						 + end + "\n"
-						 + more + "\n"
-						 + locs + "\n"
-						 + "task: " + tname + "\n"
-						 + tdesc + "\n"
-						 + "form: " + "\n"
-						 + qs);
+			//TODO something with the buttons
 		}
 		
 		v.setLayoutParams(new Gallery.LayoutParams(
