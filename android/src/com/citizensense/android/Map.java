@@ -43,6 +43,7 @@ public class Map extends MapActivity {
      *  gets the locations of a campaign from database and displays them
      *  according to the location type.
      */
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.map);
@@ -64,8 +65,8 @@ public class Map extends MapActivity {
 			}
 		    circleOverlay = new CircleOverlay(getGeopoint(loc),getRadius(loc));
 	        mapOverlays.add(circleOverlay);
-	        setZoomLevel(loc);
 		}
+		setZoomLevel(locs);
     }
     
 	@Override
@@ -75,12 +76,17 @@ public class Map extends MapActivity {
 	}
     
 	//set zoom level of the map according to the location's type
-	public void setZoomLevel(String loc){
-		if(getLocType(loc) == Constants.EXACT_LOCATION){
-			G.map.getController().setZoom(15);
-		}else{
-			G.map.getController().setZoom(11);
+	public void setZoomLevel(String[] locs){
+		int count_exact_location = 0;
+		for(String loc: locs){
+			if(getLocType(loc)== Constants.EXACT_LOCATION){
+				count_exact_location++;
+			}
+			
 		}
+		int zoomLevel = (15*count_exact_location + 
+				10*(locs.length-count_exact_location))/locs.length;
+		G.map.getController().setZoom(zoomLevel);
 	}
 	
 	/** Get locations of the campaign from database by searching the campaign's id.*/
