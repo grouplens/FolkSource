@@ -95,7 +95,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 		if (v == null) {
 	         LayoutInflater vi = (LayoutInflater)context.getSystemService(
 	        		                          Context.LAYOUT_INFLATER_SERVICE);
-	         v = vi.inflate(R.layout.campaign, null);
+	         v = vi.inflate(R.layout.relative_campaign, null);
 		}
 		TextView title = (TextView) v.findViewById(R.id.campaign_title);
 		TextView descr = (TextView) v.findViewById(R.id.campaign_description);
@@ -122,8 +122,8 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 		if (campaign != null) {
 			title.setText(campaign.getName());
 			//title.setText(name);
-			String start = "Start Date:\n " + campaign.getStartDate().toString();
-			String end = "End Date:\n " + campaign.getEndDate().toString();
+			String start = "Start Date: " + campaign.getStartDate().toString();
+			String end = "End Date: " + campaign.getEndDate().toString();
 			String[]time_intervals = campaign.getTimes();
 			String times = "Times:\n ";
 			for (int i=0; i<time_intervals.length; i++) {
