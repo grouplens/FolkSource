@@ -8,12 +8,12 @@
 	<name>Citizen Sense</name>
 
 	<properties>
-		<db.username>postgres</db.username>
-		<db.password>stut5ade</db.password>
+		<db.username>citizensense</db.username>
+		<db.password></db.password>
 		<db.schema>public</db.schema>
-		<db.connection.driver.class>org.h2.Driver</db.connection.driver.class>
-		<db.url>jdbc:h2:tcp://localhost:7080/mem:~/civic_sense;DB_CLOSE_DELAY=-1</db.url>
-		<db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
+		<db.connection.driver.class>org.postgresql.Driver</db.connection.driver.class>
+		<db.url>jdbc:postgresql://localhost/citizensense</db.url>
+		<db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
 		<db.connection.maxcount>40</db.connection.maxcount>
 	</properties>
 
@@ -92,6 +92,67 @@
 		</pluginManagement>
 
 		<plugins>
+
+			<plugin>
+				<groupId>org.codehaus.cargo</groupId>
+				<artifactId>cargo-maven2-plugin</artifactId>
+				<version>1.1.0</version>
+
+				<configuration>
+					<container>
+						<containerId>tomcat7x</containerId>
+						<home>/export/scratch/tomcat7/apache-tomcat-7.0.22</home>
+						<type>installed</type>
+					</container>
+
+					<configuration>
+						<type>standalone</type>
+						<properties>
+							<cargo.servlet.port>9080</cargo.servlet.port>
+							<cargo.hostname>localhost</cargo.hostname>
+							<!-- Only needed when using Tomcat. -->
+							<cargo.rmi.port>9089</cargo.rmi.port>
+						</properties>
+
+						<deployables>
+							<deployable>
+								<artifactId>${project.artifactId}</artifactId>
+								<groupId>${project.groupId}</groupId>
+								<type>war</type>
+								<properties>
+									<context>citizensense</context>
+								</properties>
+							</deployable>
+						</deployables>
+
+						<home>${project.build.directory}/tomcat7x</home>
+					</configuration>
+
+					<wait>true</wait>
+				</configuration>
+
+				<executions>
+					<execution>
+						<id>container-start-test</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+
+						<configuration>
+							<wait>false</wait>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>container-stop-test</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
@@ -144,10 +205,21 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>tomcat-maven-plugin</artifactId>
-			<version>1.1</version>
-			<type>maven-plugin</type>
+			<groupId>javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.12.1.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.mcpat.slf4j</groupId>
+			<artifactId>slf4cldc-simple</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>8.4-702.jdbc3</version>
+			<type>jar</type>
+			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
 </project>

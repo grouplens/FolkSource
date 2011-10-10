@@ -2,17 +2,17 @@ package org.citizensense.controller;
 
 import java.util.Collection;
 
-import org.citizensense.model.Campaign;
+import org.citizensense.model.User;
 import org.citizensense.util.*;
 
 import com.opensymphony.xwork2.ModelDriven;
 import org.apache.struts2.rest.DefaultHttpHeaders;
 import org.apache.struts2.rest.HttpHeaders;
 
-public class CampaignController implements ModelDriven<Object>{
+public class UserController implements ModelDriven<Object>{
 	
-	Campaign camp = new Campaign();
-	private Collection<Campaign> list;
+	User user = new User();
+	private Collection<User> list;
 	private int id;
 	/**
 	 * @param args
@@ -24,7 +24,7 @@ public class CampaignController implements ModelDriven<Object>{
 
 	@Override
 	public Object getModel() {
-		return (list != null ? list : camp);
+		return (list != null ? list : user);
 	}
 	
 	public HttpHeaders show() {
@@ -33,8 +33,9 @@ public class CampaignController implements ModelDriven<Object>{
 	
 	public void setId(String id) {
 		if (id != null)
-			this.camp = CampaignService.getCampaigns().get(Integer.parseInt(id)-1);
-		this.id = Integer.parseInt(id);		
+			this.user = UserService.findUser(Integer.parseInt(id));
+		if(this.user != null)
+			this.id = Integer.parseInt(id);		
 	}
 	
 	public int getId() {
@@ -42,7 +43,7 @@ public class CampaignController implements ModelDriven<Object>{
 	}
 	
 	public HttpHeaders index() {
-		list = CampaignService.getCampaigns();
+		list = UserService.getUsers();
 		return new DefaultHttpHeaders("index").disableCaching();
 	}
 

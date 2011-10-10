@@ -3,6 +3,7 @@
     "http://struts.apache.org/dtds/struts-2.0.dtd">
 
 <struts>
+    
     <constant name="struts.enable.SlashesInActionNames" value="true"/>
     <constant name="struts.mapper.alwaysSelectFullNamespace" value="false"/>
     <constant name="struts.mapper.class" value="rest" />
@@ -11,12 +12,12 @@
     <constant name="struts.convention.action.suffix" value="Controller"/>
     <constant name="struts.convention.action.mapAllMatches" value="true"/>
     <constant name="struts.convention.default.parent.package" value="citizen-sense"/>
-    <constant name="struts.convention.package.locators" value="api,oauth,account"/>
-    <constant name="struts.convention.package.locators.basePackage" value="org.grouplens.bl.controller"/>
+    <constant name="struts.convention.package.locators" value="controller"/>
+    <constant name="struts.convention.package.locators.basePackage" value="org.citizensense"/>
     <constant name="struts.convention.result.path" value="/jsp/"/>
         
     
-    <package name="citizen-s" extends="struts-default">
+    <package name="citizen-sense" extends="rest-default">
         <!-- 
         <result-types>
             <result-type name="exceptionResult" class="org.grouplens.bl.struts.result.ExceptionResult" />
@@ -40,7 +41,7 @@
             -->
             
             <interceptor-stack name="cs">
-                <interceptor-ref name="struts-base" />
+                <interceptor-ref name="restDefaultStack" />
                 
                 <!-- Content parsing goes before concurrent replay since we can only stream input once. -->
                <!--  <interceptor-ref name="contentParser" />             
@@ -59,10 +60,10 @@
         
         <default-interceptor-ref name="cs"/>
         
-        <global-results>
+        <!-- <global-results> -->
             <!-- The following results, excluding 'replay' and 'ambiguous', match the definitions
                  in the GlobalResult enum. -->
-            <result name="ok" type="modelDrivenDto">
+            <!-- <result name="ok" type="modelDrivenDto">
                 <param name="status">200</param>
             </result>
             <result name="created" type="modelDrivenDto">
@@ -90,14 +91,15 @@
             <result name="error" type="exceptionResult">
                 <param name="error">500</param>
             </result>
-        </global-results>
+            -->
+        <!-- </global-results> -->
         
-        <global-exception-mappings>
+        <!-- <global-exception-mappings>
             <exception-mapping exception="java.lang.Throwable" result="error"/>
-
+		-->
              <!-- These mapping names are somewhat confusing, but the http spec likes to interchange
                   authorize and authenticate, where we have a distinction. -->
-            <exception-mapping exception="org.grouplens.bl.UnauthorizedException" result="forbidden"/>
+        <!--     <exception-mapping exception="org.grouplens.bl.UnauthorizedException" result="forbidden"/>
             <exception-mapping exception="org.grouplens.bl.InvalidMetaIdException" result="forbidden"/>
             <exception-mapping exception="org.grouplens.bl.AuthenticationException" result="unauthorized"/>
             
@@ -106,49 +108,8 @@
             <exception-mapping exception="org.grouplens.bl.ValidationException" result="bad_request"/>
             <exception-mapping exception="org.grouplens.common.dto.ParseException" result="bad_request"/>
         </global-exception-mappings>
+        -->
 
     </package>
     
-    <package name="booklens-auth" extends="booklens">
-        <interceptors>
-            <!-- booklens specific interceptors -->
-            <interceptor name="tempTokenAuthentication" class="org.grouplens.bl.struts.interceptor.TemporaryTokenAuthenticationInterceptor" />
-            <interceptor name="noTokenAuthentication" class="org.grouplens.bl.struts.interceptor.NoTokenAuthenticationInterceptor" />
-            <interceptor name="userAware" class="org.grouplens.bl.struts.interceptor.UserAwareInterceptor" />
-            
-            <interceptor-stack name="bl-auth">
-                <interceptor-ref name="struts-base" />
-                
-                <interceptor-ref name="hibernate" />
-                <interceptor-ref name="exceptionLog" />
-            </interceptor-stack>
-        </interceptors>
-        
-        <default-interceptor-ref name="bl-auth"/>
-    </package>
-    
-    <package name="booklens-account" extends="booklens">
-        <interceptors>
-            <interceptor name="requiresUser" class="org.grouplens.bl.struts.interceptor.UserRequiredInterceptor" />
-            <interceptor name="userAware" class="org.grouplens.bl.struts.interceptor.UserAwareInterceptor" />
-            
-            <interceptor-stack name="bl-account">
-                <interceptor-ref name="struts-base" />
-                <interceptor-ref name="hibernate" />
-                <interceptor-ref name="requiresUser" />
-                <interceptor-ref name="userAware" />
-                <interceptor-ref name="exceptionLog" />
-            </interceptor-stack>
-        </interceptors>
-        
-        <default-interceptor-ref name="bl-account"/>
-        
-        <global-results>
-            <result name="login" type="redirect">
-                <param name="location">/account/login</param>
-                <param name="parse">true</param>
-                <param name="forward">${loginForward}</param>
-            </result>
-        </global-results>
-    </package>
 </struts>

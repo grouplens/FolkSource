@@ -1,15 +1,33 @@
 package org.citizensense.model;
 
-import java.util.ArrayList;
-
-import javax.persistence.Column;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
 public class User {
-	@Column(name="id")
 	private int Id;
-	@OneToMany(mappedBy="task")
-	private ArrayList<Task> tasks;
-	
+	private String name;
+	private int points;
+	private String badges;
+
+	public int getId() {
+		return Id;
+	}
+	public void setId(int id) {
+		Id = id;
+	}
+	public String getBadges() {
+		return badges;
+	}
+	public void setBadges(String badges) {
+		this.badges = badges;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getPoints() {
+		return points;
+	}
+	public void setPoints(int points) {
+		this.points = points;
+	}
 }
