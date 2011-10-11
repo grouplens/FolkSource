@@ -69,6 +69,7 @@ public abstract class Map extends MapActivity  implements LocationListener{
 		}
 	}
 
+	/** This method will return a list of campaigns close to the user.*/
 	public ArrayList<Campaign> getInRangeCampaigns(Location location) {
 		ArrayList<Campaign> results = new ArrayList<Campaign>(); 
 		for(Campaign campaign : campaigns){
