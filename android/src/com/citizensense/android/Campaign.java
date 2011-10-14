@@ -4,6 +4,7 @@
 
 package com.citizensense.android;
 
+
 import java.util.ArrayList;
 import java.util.Date;
 
