@@ -4,6 +4,7 @@
 
 package com.citizensense.android.util;
 
+
 import java.util.ArrayList;
 
 import android.content.Context;

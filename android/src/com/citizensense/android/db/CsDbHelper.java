@@ -13,6 +13,7 @@ import android.util.Log;
 import com.citizensense.android.G;
 import com.citizensense.android.conf.Constants;
 
+
 /**
  * Provides an easy implementation for creating and upgrading the 
  * database.

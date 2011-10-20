@@ -20,6 +20,7 @@ import com.citizensense.android.Question;
 import com.citizensense.android.R;
 import com.citizensense.android.conf.Constants;
 
+
 public class CampaignParser implements ContentHandler {
 
 	/** The callback function for when the parser has completed*/

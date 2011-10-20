@@ -4,6 +4,7 @@
 
 package com.citizensense.android.db;
 
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

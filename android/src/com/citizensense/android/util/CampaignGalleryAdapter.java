@@ -26,6 +26,7 @@ import com.citizensense.android.Question;
 import com.citizensense.android.R;
 import com.citizensense.android.conf.Constants;
 
+
 /**
  * Displays campaigns as a gallery.
  * @author Phil Brown

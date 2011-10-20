@@ -4,6 +4,7 @@
 
 package com.citizensense.android.conf;
 
+
 /** Configuration constants
  * @author Phil Brown
  */

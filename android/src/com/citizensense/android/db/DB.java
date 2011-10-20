@@ -7,6 +7,7 @@ package com.citizensense.android.db;
 /** Contains static variables used by the database
  * @author Phil Brown
  */
+
 public class DB {
 	
 	/** Used for logcat debugging*/
