@@ -21,6 +21,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -41,9 +42,6 @@ import android.widget.Toast;
  * @author Renji Yu
  */
 public class LocationService extends Service implements LocationListener{
-   private static final int NOTIFICATION_ID = 1;
-	
-   private NotificationManager notificationManager;
 
    /** manager for location updates */
    private LocationManager locationManager;
@@ -51,9 +49,6 @@ public class LocationService extends Service implements LocationListener{
    /** campaigns to be checked*/
    private ArrayList<Campaign> campaigns;
    
-   private ArrayList<Campaign> inRangeCampaigns;
-   
-     
    /**
     * Required method, but not used by us for now.
     */
@@ -70,9 +65,6 @@ public class LocationService extends Service implements LocationListener{
    public void onCreate() {
       super.onCreate();
       
-      this.notificationManager = 
-          (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-      
       // register for location updates
       this.locationManager = 
          (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -82,8 +74,33 @@ public class LocationService extends Service implements LocationListener{
             Constants.MIN_DISTANCE_BETWEEN_UPDATES, this);
       
       campaigns  = G.intent_campagins;
-      
-      showNotification();//Just put here for test
+      setProximityAlert();
+   }
+   
+   
+   /** Use the addProximityAlert method  of LocationManager to set alert for every
+    *  location. . When the device detects that it has entered or exited the area 
+    *  surrounding the location, the given PendingIntent will broadcasted.*/
+   public  void setProximityAlert(){
+	   if(campaigns == null) return; 
+       for(Campaign campaign : campaigns){
+       	for(String loc : campaign.getLocations()){
+       		GeoPoint point = Map.getGeopoint(this, loc);
+			double latitude = (double)point.getLatitudeE6()/1000000.0;
+			double longitude = (double)point.getLongitudeE6()/1000000.0;
+			Intent intent = new Intent(campaign.getName()+":"+loc);
+			PendingIntent proximityIntent = PendingIntent.getBroadcast(this, 0 , intent, PendingIntent.FLAG_CANCEL_CURRENT);
+			locationManager.addProximityAlert(
+			        latitude, // the latitude of the central point of the alert region
+			        longitude, // the longitude of the central point of the alert region
+			        Map.getRadius(loc), // the radius of the central point of the alert region, in meters
+			        -1, // time for this proximity alert, in milliseconds, or -1 to indicate no expiration 
+			        proximityIntent // will be used to generate an Intent to fire when entry to or exit from the alert region is detected
+			   );
+			IntentFilter filter = new IntentFilter(campaign.getName()+":"+loc);
+		    registerReceiver(new ProximityIntentReceiver(), filter);
+       	}
+       }
    }
 
    /**
@@ -102,35 +119,11 @@ public class LocationService extends Service implements LocationListener{
       super.onDestroy();
       this.locationManager.removeUpdates(this);
    }
-
    
-   /**
-    * Show a notification while this service is running.
-    */
-   public void showNotification() {
-	      String text = getString(R.string.notification_text);
-	      Notification notification = new Notification(R.drawable.ic_notification, text,
-	                                                   System.currentTimeMillis());
-	      notification.flags = Notification.FLAG_AUTO_CANCEL;
-	      
-	      String contentTitle = getString(R.string.app_name);
-	      String contentText = getString(R.string.notification_content_text);
-	      Intent intent = new Intent(this,CitizenSense.class);
-	      PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent, 0);
-	      notification.setLatestEventInfo(getApplicationContext(), contentTitle,
-	    		  contentText, pIntent);
-	      notificationManager.notify(NOTIFICATION_ID, notification);
-   }
-
-
 	@Override
 	public void onLocationChanged(Location location) {
-		if(getInRangeCampaigns(location).size() != 0){
-			this.inRangeCampaigns = getInRangeCampaigns(location);
-			showNotification();
-		}
+		
 	}
-	
 	
 	@Override
 	public void onProviderDisabled(String arg0) {
@@ -138,13 +131,11 @@ public class LocationService extends Service implements LocationListener{
 		
 	}
 	
-	
 	@Override
 	public void onProviderEnabled(String arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-	
 	
 	@Override
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
@@ -153,34 +144,38 @@ public class LocationService extends Service implements LocationListener{
 	}
 	
 
+	/** Since we are using addProximityAlert() provided by LocationManager,
+	 *  we no longer need the following methods.*/
+	
+	
 	/** This method will return a list of campaigns close to the user.*/
-	public ArrayList<Campaign> getInRangeCampaigns(Location location) {
-		ArrayList<Campaign> results = new ArrayList<Campaign>(); 
-		if(campaigns != null){
-			for(Campaign campaign : campaigns){
-				if(isInRange(location,campaign)){
-					results.add(campaign);
-				}
-			}
-		}
-		return results;
-	}
+//	public ArrayList<Campaign> getInRangeCampaigns(Location location) {
+//		ArrayList<Campaign> results = new ArrayList<Campaign>(); 
+//		if(campaigns != null){
+//			for(Campaign campaign : campaigns){
+//				if(isInRange(location,campaign)){
+//					results.add(campaign);
+//				}
+//			}
+//		}
+//		return results;
+//	}
 	
 	/** Check if the user is in the range of a campaign.*/
-	public boolean isInRange(Location location, Campaign campaign){
-		if(campaign != null){
-			for(String loc : campaign.getLocations()){
-				GeoPoint point = Map.getGeopoint(this,loc);
-				Location camLocation = new Location("CampaignLocation");
-				double lat = (double)point.getLatitudeE6()/1000000.0;
-				double lon = (double)point.getLongitudeE6()/1000000.0;
-				camLocation.setLatitude(lat);
-				camLocation.setLongitude(lon);
-				if(location.distanceTo(camLocation) <= Map.getRadius(loc)){
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+//	public boolean isInRange(Location location, Campaign campaign){
+//		if(campaign != null){
+//			for(String loc : campaign.getLocations()){
+//				GeoPoint point = Map.getGeopoint(this,loc);
+//				Location camLocation = new Location("CampaignLocation");
+//				double lat = (double)point.getLatitudeE6()/1000000.0;
+//				double lon = (double)point.getLongitudeE6()/1000000.0;
+//				camLocation.setLatitude(lat);
+//				camLocation.setLongitude(lon);
+//				if(location.distanceTo(camLocation) <= Map.getRadius(loc)){
+//					return true;
+//				}
+//			}
+//		}
+//		return false;
+//	}
 }
