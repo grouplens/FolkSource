@@ -73,7 +73,6 @@ public class CsDbAdapter {
 	/** Add a campaign to the database
 	 * @param c Campaign object to store in the database */
 	public long addCampaign(Campaign c) {
-		//TODO print campaign contents
 		String selection = "";
 		String insert = "INSERT INTO CAMPAIGNS";
 		//add the campaign to the database
