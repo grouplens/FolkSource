@@ -1,6 +1,6 @@
 /* Copyright (c) 2006-2011 Regents of the University of Minnesota.
    For licensing terms, see the file LICENSE.
- */
+ 
 
 package com.citizensense.android.util;
 
@@ -21,18 +21,18 @@ import com.citizensense.android.Campaign;
 import com.citizensense.android.G;
 import com.citizensense.android.R;
 
-/**
+*//**
  * Displays campaigns in the Campaign Browser Gallery.
  * @author Phil Brown
- */
+ *//*
 public class CampaignAdapter extends BaseAdapter {
 
-	/** Context used to access resources and system services*/
+	*//** Context used to access resources and system services*//*
 	private Context context;
-	/** Contains the campaigns in the gallery */
+	*//** Contains the campaigns in the gallery *//*
 	private ArrayList<Campaign> campaigns;
 	
-	/** Constructor. Accessed directly from the XML.*/
+	*//** Constructor. Accessed directly from the XML.*//*
 	public CampaignAdapter(Context c) {
 		context = c;
         TypedArray attr = 
@@ -44,30 +44,30 @@ public class CampaignAdapter extends BaseAdapter {
 		this.putCampaign(G.db.getCampaignById("2"));        
 	}//CampaignAdapter
 	
-	/** Returns the number of campaigns in the gallery*/
+	*//** Returns the number of campaigns in the gallery*//*
 	@Override
 	public int getCount() {
 		return campaigns.size();
 	}//getCount
 
-	/** Gets the item located at the provided position
-	 * @param position index of the Campaign in the gallery */
+	*//** Gets the item located at the provided position
+	 * @param position index of the Campaign in the gallery *//*
 	@Override
 	public Object getItem(int position) {
 		return campaigns.get(position);
 	}//getItem
 
-	/** Gets the ID of the Campaign
-	 * @param position index of the campaign*/
+	*//** Gets the ID of the Campaign
+	 * @param position index of the campaign*//*
 	@Override
 	public long getItemId(int position) {
 		String id = campaigns.get(position).getId();
 		return Long.parseLong(id);
 	}//getItemId
 	
-	/** Get the position (index) of the campaign, if it exists in the gallery.
+	*//** Get the position (index) of the campaign, if it exists in the gallery.
 	 * Returns -1 if no campaign is found.
-	 * @param campaign campaign to search for */
+	 * @param campaign campaign to search for *//*
 	public long getPosition(Campaign campaign) {
     	if (campaigns.contains(campaign)) {
     		return campaigns.indexOf(campaign);
@@ -77,13 +77,13 @@ public class CampaignAdapter extends BaseAdapter {
     	}
     }//getPosition
     
-	/** Insert a campaign into the gallery*/
+	*//** Insert a campaign into the gallery*//*
     public void putCampaign(Campaign campaign) {
     	campaigns.add(campaign);
     }//putCampaign
 
-    /** Inflate a view that is customized for each particular campaign in the 
-     * gallery.*/
+    *//** Inflate a view that is customized for each particular campaign in the 
+     * gallery.*//*
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View v = convertView;
@@ -112,3 +112,4 @@ public class CampaignAdapter extends BaseAdapter {
 	}//getView
 	
 }//CampaignAdapter
+*/

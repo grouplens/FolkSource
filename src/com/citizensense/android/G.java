@@ -5,6 +5,7 @@
 package com.citizensense.android;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.citizensense.android.db.CsDbAdapter;
 import com.google.android.maps.MapView;
@@ -19,9 +20,11 @@ public class G {
 	/** The Citizen Sense map*/
 	protected static MapView map;
 	/** The currently logged-in user*/
-	protected static User user;
+	public static User user;//FIXME make protected
 	/** The DatabaseAdapter that handles most of the database transactions*/
 	public static CsDbAdapter db;//FIXME make protected
 	/** The application context*/
 	public static Context app_context;
+	/** Stores important info, including the number of campaigns in the database. */
+	public static SharedPreferences memory;
 }//G
