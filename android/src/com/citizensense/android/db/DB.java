@@ -8,6 +8,9 @@ package com.citizensense.android.db;
  * @author Phil Brown
  */
 public class DB {
+	
+	/** Used for logcat debugging*/
+	public static final String TAG = "DATABASE";
 
 	/** Current version of the database (used for upgrades) */
 	public static final int DATABASE_VERSION = 1;
