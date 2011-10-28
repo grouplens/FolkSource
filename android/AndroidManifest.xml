@@ -29,9 +29,14 @@
                   android:label="Map" />
         <activity android:name=".Profile"
                   android:label="Profile" />
+        <activity android:name=".Sense"
+                  android:label="Sense" />
         <uses-library android:name="com.google.android.maps"></uses-library>
     </application>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permission.CAMERA"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-feature android:name="android.hardware.camera" />
 </manifest>

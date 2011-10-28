@@ -16,8 +16,10 @@ import android.content.Context;
 import android.util.Log;
 
 import com.citizensense.android.Campaign;
+import com.citizensense.android.Form;
 import com.citizensense.android.Question;
 import com.citizensense.android.R;
+import com.citizensense.android.Task;
 import com.citizensense.android.conf.Constants;
 
 public class CampaignParser implements ContentHandler {
@@ -27,9 +29,9 @@ public class CampaignParser implements ContentHandler {
 	/** The campaign to return via the callback*/
 	private Campaign campaign;
 	/** The campaign task to return */
-	private Campaign.Task task;
+	private Task task;
 	/** The campaign task's form to return*/
-	private Campaign.Task.Form form;
+	private Form form;
 	/** DEBUG tag used for Logging*/
 	private final String TAG = "XML Parser";
 	/** This is the date format required by start and end dates.*/
@@ -166,13 +168,14 @@ public class CampaignParser implements ContentHandler {
 				this.logAttributes(atts);
 			}
 			String reqs = atts.getValue("requirements");
-			this.task = campaign.new Task(atts.getValue("name"), 
+			this.task = new Task(atts.getValue("name"), 
 					                      atts.getValue("instructions"),
 					                      reqs.split("\\|"));
-			
+			campaign.setTask(this.task);
 		}
 		if(localName.equalsIgnoreCase("FORM")) {
-			this.form = this.task.new Form();
+			this.form = new Form();
+			this.task.setForm(form);
 		}
 		if(localName.equalsIgnoreCase("QUESTION")) {
 			if (Constants.DEBUG) {
