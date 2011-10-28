@@ -4,6 +4,8 @@
 
 package com.citizensense.android;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -27,4 +29,6 @@ public class G {
 	public static Context app_context;
 	/** Stores important info, including the number of campaigns in the database. */
 	public static SharedPreferences memory;
+	
+	public static ArrayList<Campaign> globalCampaigns;
 }//G
