@@ -80,6 +80,7 @@ public abstract class CampaignExplorer extends ListActivity
 	public void onResume() {
 		super.onResume();
 		refresh();
+		//TODO only refresh if something has changed.
 	}//onResume
 	
 	/** Get the campaigns to populate the list or gallery*/

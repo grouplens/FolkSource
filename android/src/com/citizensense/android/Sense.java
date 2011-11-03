@@ -8,8 +8,8 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -31,25 +31,32 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * Complete a task, or "Sense"
+ * Complete a task, or "Sense" data
  * @author Phil Brown
  */
-public class Sense extends Activity {
+public class Sense extends LocationActivity {
 
 	/** Contains the campaign object that the user is completing a task for.*/
 	private Campaign campaign;
-	
 	/** The index of the currently-selected question in the form. */
 	private int questionsIndex;
-	
+	/** The Uri of the image that the user is submitting, or null if none has
+	 * been assigned. */
+	private Uri imageUri;
 	/** Used for receiving Intent back from the camera. */
 	public static final int CAMERA_CAPTURE_REQUEST_CODE = 100;
+	/** 
+	 * This contains all of the answers that the user has completed. Using a 
+	 * HashMap will be effective for storage, because 1) it is simple, 2) it
+	 * is Serializable (which may be helpful), and 3) It will be easy to
+	 * port answers to XML. */
+	private HashMap<String, String> answers;
 	
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 	    if (requestCode == CAMERA_CAPTURE_REQUEST_CODE) {
 	        if (resultCode == RESULT_OK) {
-	        	//data.getData() contains the fileUri where the file is saved.
+	        	this.imageUri = data.getData();
 	        	CheckBox hasTakenPhoto = (CheckBox) findViewById(R.id.chkbox_photo_complete);
 	        	hasTakenPhoto.setChecked(true);
 	        	TextView uploadComplete = (TextView) findViewById(R.id.upload_text);
@@ -61,6 +68,9 @@ public class Sense extends Activity {
 	        	Toast.makeText(this, "could not use incompatible camera app", 
 	        			       Toast.LENGTH_SHORT).show();
 	        }
+	    }
+	    else {
+	    	super.onActivityResult(requestCode, resultCode, data);
 	    }
 	}//onActivityResult
 	
@@ -116,6 +126,7 @@ public class Sense extends Activity {
 				form_container.addView(layouts[questionsIndex]);
 			}
 		});
+		this.requestLocation();
 	}//onCreate
 	
 	/** Unpacks passed-in campaign from the intent. */
@@ -205,8 +216,7 @@ public class Sense extends Activity {
 										}
 									}
 								}
-								
-							}//onCheckChanged
+							}
 						});
 						ans.addView(rb);
 					}
@@ -239,5 +249,31 @@ public class Sense extends Activity {
 		}
 		return layouts;
 	}//renderForm
+		
+	public void submit() {
+		if (!this.hasLocationFix()) {
+			this.requestLocation();
+		}
+		else {
+			//complete submittal
+		}
+	}//submit
+
+	@Override
+	public boolean allowsNetworksLocations() {
+		return true;
+	}//allowsNetworksLocations
+
+	@Override
+	public void onGpsFirstFix() {}
+
+	@Override
+	public void onSatelliteEvent(int count) {}
+
+	@Override
+	public void onGpsStarted() {}
+
+	@Override
+	public void onGpsStopped() {}
 	
 }//Sense

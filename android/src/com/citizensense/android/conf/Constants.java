@@ -20,4 +20,16 @@ public interface Constants {
 	public static final String DB_SIZE = "db_size";
 	
 	public static final String DB_DATE_FORMAT = "MM/dd/yyyy";
+	
+	/** Minimum time between updates for the network location listener in the
+	 * main activity. */
+	public static final long MAIN_NETWORK_TIME_BETWEEN_UPDATES = 1000 * 1;
+	/** Minimum time between updates for the GPS location listener in the
+	 * main activity. */
+	public static final long MAIN_GPS_TIME_BETWEEN_UPDATES = 1000 * 60;
+	/** Minimum time between updates for the GPS location listener in the
+	 * tracking service. */
+	public static final long SERVICE_GPS_TIME_BETWEEN_UPDATES = 1000 * 1;
+	/** Minimum distance between updates for location listeners (in meters) */
+	public static final long MIN_DISTANCE_BETWEEN_UPDATES = 1;
 }//Constants

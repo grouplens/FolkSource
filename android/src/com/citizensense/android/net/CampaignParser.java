@@ -51,7 +51,7 @@ public class CampaignParser implements ContentHandler {
 	@Override
 	public void characters(char[] arg0, int arg1, int arg2) throws SAXException {
 		if (Constants.DEBUG) {
-			Log.i(TAG, "characters");
+			Log.d(TAG, "characters");
 		}
 	}//characters
 
@@ -60,8 +60,8 @@ public class CampaignParser implements ContentHandler {
 	public void endDocument() throws SAXException {
 		// TODO call handler
 		if (Constants.DEBUG) {
-			Log.i(TAG, "End of Document");
-			Log.i(TAG, "calling callback");
+			Log.d(TAG, "End of Document");
+			Log.d(TAG, "calling callback");
 		}
 		callback.handleNewCampaign(this.campaign);
 	}//endDocument
@@ -71,14 +71,14 @@ public class CampaignParser implements ContentHandler {
 			throws SAXException {
 		tab = tab.substring(2);
 		if (Constants.DEBUG)  {
-			Log.i(TAG, tab + "</" + localName + ">");
+			Log.d(TAG, tab + "</" + localName + ">");
 		}
 	}//endElement
 
 	@Override
 	public void endPrefixMapping(String prefix) throws SAXException {
 		if (Constants.DEBUG)  {
-			Log.i(TAG, "end prefix mapping");
+			Log.d(TAG, "end prefix mapping");
 		}
 	}//endPrefixMapping
 
@@ -86,7 +86,7 @@ public class CampaignParser implements ContentHandler {
 	public void ignorableWhitespace(char[] ch, int start, int length)
 			throws SAXException {
 		if (Constants.DEBUG)  {
-			Log.i(TAG, "ignorableWhitespace");
+			Log.d(TAG, "ignorableWhitespace");
 		}
 	}//ignorableWhitespace
 
@@ -94,21 +94,21 @@ public class CampaignParser implements ContentHandler {
 	public void processingInstruction(String target, String data)
 			throws SAXException {
 		if (Constants.DEBUG)  {
-			Log.i(TAG, "processingInstruction");
+			Log.d(TAG, "processingInstruction");
 		}
 	}//processingInstruction
 
 	@Override
 	public void setDocumentLocator(Locator locator) {
 		if (Constants.DEBUG)  {
-			Log.i(TAG, "setDocumentLocator");
+			Log.d(TAG, "setDocumentLocator");
 		}
 	}//setDocumentLocator
 
 	@Override
 	public void skippedEntity(String name) throws SAXException {
 		if (Constants.DEBUG)  {
-			Log.i(TAG, "skippedEntity");
+			Log.d(TAG, "skippedEntity");
 		}
 	}//skippedEntity
 
@@ -116,7 +116,7 @@ public class CampaignParser implements ContentHandler {
 	@Override
 	public void startDocument() throws SAXException {
 		if (Constants.DEBUG)  {
-			Log.i(TAG, "Document Start");
+			Log.d(TAG, "Document Start");
 		}
 		this.campaign = new Campaign();
 	}//startDocument
@@ -127,7 +127,7 @@ public class CampaignParser implements ContentHandler {
 	public void startElement(String uri, String localName, String qName,
 			Attributes atts) throws SAXException {
 		if (Constants.DEBUG)  {
-			Log.i(TAG, tab + "<" + localName + ">");
+			Log.d(TAG, tab + "<" + localName + ">");
 		}
 		tab += "  ";
 		if(localName.equalsIgnoreCase("CAMPAIGN")) {
@@ -142,7 +142,7 @@ public class CampaignParser implements ContentHandler {
 				campaign.setStartDate(this.dateFormat.parse(startDate));
 			} catch (ParseException e) {
 				e.printStackTrace();
-				Log.i("TAG", "Invalid Date Format: start_date=" 
+				Log.e("TAG", "Invalid Date Format: start_date=" 
 						     + atts.getValue("start_date")
 						     + ". Should use format" 
 						     + dateFormat.toLocalizedPattern());
@@ -152,7 +152,7 @@ public class CampaignParser implements ContentHandler {
 				campaign.setEndDate(this.dateFormat.parse(endDate));
 			} catch (ParseException e) {
 				e.printStackTrace();
-				Log.i("TAG", "Invalid Date Format: end_date=" 
+				Log.e("TAG", "Invalid Date Format: end_date=" 
 					         + atts.getValue("end_date")
 						     + ". Should use format" 
 						     + dateFormat.toLocalizedPattern());
@@ -205,7 +205,7 @@ public class CampaignParser implements ContentHandler {
 	public void startPrefixMapping(String prefix, String uri)
 			throws SAXException {
 		if (Constants.DEBUG)  {
-			Log.i(TAG, "startPrefixMapping");
+			Log.d(TAG, "startPrefixMapping");
 		}
 	}//startPrefixMapping
 	
