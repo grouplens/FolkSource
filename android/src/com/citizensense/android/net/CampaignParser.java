@@ -22,6 +22,11 @@ import com.citizensense.android.R;
 import com.citizensense.android.Task;
 import com.citizensense.android.conf.Constants;
 
+/**
+ * Parses a Campaign Object that is (or will be) downloaded from the Citizen
+ * Sense servers.
+ * @author Phil Brown
+ */
 public class CampaignParser implements ContentHandler {
 
 	/** The callback function for when the parser has completed*/

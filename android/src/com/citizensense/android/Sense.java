@@ -10,12 +10,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import com.citizensense.android.conf.Constants;
+
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -56,17 +60,21 @@ public class Sense extends LocationActivity {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 	    if (requestCode == CAMERA_CAPTURE_REQUEST_CODE) {
 	        if (resultCode == RESULT_OK) {
-	        	this.imageUri = data.getData();
+	        	//this.imageUri = data.getData();//FIXME this gets null
+	        	//uri is already set. Do nothing.
 	        	CheckBox hasTakenPhoto = (CheckBox) findViewById(R.id.chkbox_photo_complete);
 	        	hasTakenPhoto.setChecked(true);
+	        	validateForm();
 	        	TextView uploadComplete = (TextView) findViewById(R.id.upload_text);
 	        	uploadComplete.setText("Photo updated successfully!");
 	        } else if (resultCode == RESULT_CANCELED) {
 	            // User canceled the image capture. Do nothing
+	        	this.imageUri = null;
 	        } else {
 	            // Image capture failed
 	        	Toast.makeText(this, "could not use incompatible camera app", 
 	        			       Toast.LENGTH_SHORT).show();
+	        	this.imageUri = null;
 	        }
 	    }
 	    else {
@@ -88,10 +96,22 @@ public class Sense extends LocationActivity {
 				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
 			    Uri fileUri = getOutputImageUri(); // create a file to save the image
+			    Sense.this.imageUri = fileUri; //FIXME does this get set to null???
 			    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
 
 			    // start the image capture Intent
 			    startActivityForResult(intent, CAMERA_CAPTURE_REQUEST_CODE);
+			}
+		});
+		Button upload = (Button) findViewById(R.id.upload_photo);
+		//FIXME make this a file chooser instead.
+		upload.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Sense.this.imageUri=Uri.parse("fake://uri");
+				CheckBox hasTakenPhoto = (CheckBox) findViewById(R.id.chkbox_photo_complete);
+	        	hasTakenPhoto.setChecked(true);
+	        	validateForm();
 			}
 		});
 		final LinearLayout form_container = (LinearLayout) findViewById(R.id.form_container);
@@ -126,6 +146,14 @@ public class Sense extends LocationActivity {
 				form_container.addView(layouts[questionsIndex]);
 			}
 		});
+		Button submit = (Button) findViewById(R.id.submit);
+		submit.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				submit();
+			}
+		});
+		this.answers = new HashMap<String, String>();
 		this.requestLocation();
 	}//onCreate
 	
@@ -145,12 +173,12 @@ public class Sense extends LocationActivity {
 	}//setQuestionsIndex
 	
 	/** Create a File for saving an image */
-	private static Uri getOutputImageUri(){
+	private Uri getOutputImageUri(){
 	    // To be safe, you should check that the SDCard is mounted
-	    File mediaStorageDir = new File(Environment.getExternalStorageState(), "CitizenSense");
-	    if (! mediaStorageDir.exists()){
-	        if (! mediaStorageDir.mkdirs()){
-	            Log.d("CitizenSense", "failed to create directory");
+	    File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "CitizenSense");
+	    if (!mediaStorageDir.exists()){
+	        if (!mediaStorageDir.mkdirs()){
+	            Log.e("CitizenSense", "failed to create directory");
 	            return null;
 	        }
 	    }
@@ -158,6 +186,9 @@ public class Sense extends LocationActivity {
 	    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 	    File mediaFile = new File(mediaStorageDir.getPath() + File.separator +
 	        "IMG_"+ timeStamp + ".jpg");
+	    if (Constants.DEBUG) {
+	    	Log.d("Sense", "Image URI set to " + mediaFile.getName());
+	    }
 	    return Uri.fromFile(mediaFile);
 	}//getOutputImageUri
 	
@@ -192,7 +223,7 @@ public class Sense extends LocationActivity {
 			if (questions[i].type == Question.MULTIPLE_CHOICE) {
 				String[] answers = questions[i].getAnswers();
 				final ArrayList<RadioButton> radiogroup = new ArrayList<RadioButton>();
-				for (String option : answers) {
+				for (final String option : answers) {
 					LinearLayout ans = new LinearLayout(this);
 					ans.setOrientation(LinearLayout.HORIZONTAL);
 					ans.setLayoutParams(new LinearLayout.LayoutParams(
@@ -204,6 +235,7 @@ public class Sense extends LocationActivity {
 								LinearLayout.LayoutParams.FILL_PARENT, 
 								LinearLayout.LayoutParams.WRAP_CONTENT));
 						radiogroup.add(rb);
+						final String questionString = questions[i].getQuestion();
 						rb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 							/** If a button is selected, unselect the rest. */
 							@Override
@@ -215,7 +247,9 @@ public class Sense extends LocationActivity {
 											b.setChecked(false);
 										}
 									}
+									Sense.this.answers.put(questionString, option);
 								}
+								validateForm();
 							}
 						});
 						ans.addView(rb);
@@ -226,6 +260,17 @@ public class Sense extends LocationActivity {
 								LinearLayout.LayoutParams.FILL_PARENT, 
 								LinearLayout.LayoutParams.WRAP_CONTENT));
 						ans.addView(cb);
+						final String questionString = questions[i].getQuestion();
+						cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+							@Override
+							public void onCheckedChanged(CompoundButton buttonView,
+									boolean isChecked) {
+								if (isChecked) {
+									Sense.this.answers.put(questionString, option);
+								}
+								validateForm();
+							}
+						});
 					}
 					TextView tv = new TextView(this);
 					tv.setText(option);
@@ -239,23 +284,80 @@ public class Sense extends LocationActivity {
 			}
 			else if (questions[i].type == Question.WRITTEN_RESPONSE) {
 				EditText et = new EditText(this);
+				final String questionString = questions[i].getQuestion();
 				et.setSingleLine(questions[i].isSingleLine());
 				et.setGravity(Gravity.TOP);
 				et.setLayoutParams(new LinearLayout.LayoutParams(
 						LinearLayout.LayoutParams.FILL_PARENT, 
 						LinearLayout.LayoutParams.FILL_PARENT));
 				layouts[i].addView(et);
+				et.addTextChangedListener(new TextWatcher() {
+					@Override
+					public void afterTextChanged(Editable s) {}
+
+					@Override
+					public void beforeTextChanged(CharSequence s, int start,
+							int count, int after) {}
+
+					@Override
+					public void onTextChanged(CharSequence s, int start,
+							int before, int count) {
+						if (s.length() != 0) {
+							Sense.this.answers.put(questionString, s.toString());
+							validateForm();
+						}
+						else {
+							Sense.this.answers.put(questionString, null);
+							invalidateForm();
+						}
+					}
+				});
 			}
 		}
 		return layouts;
 	}//renderForm
+	
+	/** Sets the submit button to disabled. This is used when not all answers,
+	 * or the location, or the image have been added. */
+	public void invalidateForm() {
+		((Button) findViewById(R.id.submit)).setEnabled(false);
+	}//invalidateForm
+	
+	/** If all the answers to the form are answered, validate that a photo and
+	 * location are set and enable the submit button. */
+	public void validateForm() {
+		if (this.answers.size() == campaign.getTask().getForm().getQuestions().length) {
+			if (this.hasLocationFix()) {
+				if (this.imageUri != null) {
+					((Button) findViewById(R.id.submit)).setEnabled(true);
+				}
+				else {
+					if (Constants.DEBUG) {
+						Log.d("Sense", "no image Uri");
+					}
+				}
+			}
+			else {
+				if (Constants.DEBUG) {
+					Log.d("Sense", "no location fix");
+				}
+			}
+		}
+		else {
+			if (Constants.DEBUG) {
+				Log.d("Sense", "there are unanswered questions");
+			}
+		}
+	}//validateForm
 		
 	public void submit() {
 		if (!this.hasLocationFix()) {
 			this.requestLocation();
 		}
 		else {
-			//complete submittal
+			Toast.makeText(this, "Task Complete!", Toast.LENGTH_SHORT).show();
+			//TODO get answers, image, and location written to xml and sent to server.
+			this.finish();
 		}
 	}//submit
 

@@ -32,8 +32,9 @@ import android.widget.Toast;
 import com.citizensense.android.conf.Constants;
 
 /** 
- * Superclass for creating location-aware activities without re-implementing
- * the same code multiple times. 
+ * Abstract class for creating location-aware activities. Location services 
+ * include LocationListener, GpsStatus.Listener, network/wifi state, satellite
+ * information, location settings, etc.
  * @author Phil Brown
  */
 public abstract class LocationActivity extends Activity 
@@ -343,10 +344,7 @@ public abstract class LocationActivity extends Activity
 	 * necessary processes to get a location fix if there isn't already one
 	 * available. */
 	public void requestLocation() {
-		if (this.isGPSEnabled()) {
-			requestGpsLocation();
-		}
-		else if (this.allowsNetworksLocations()) {
+		if (this.allowsNetworksLocations()) {
 			if (this.isNetworkLocationEnabled()) {
 				if (this.isNetworkAvailable()) {
 					requestNetworkLocation();
@@ -360,6 +358,9 @@ public abstract class LocationActivity extends Activity
 			else {
 				requestLocationSettings();
 			}
+		}
+		else if (this.isGPSEnabled()) {
+			requestGpsLocation();
 		}
 		else {
 			requestLocationSettings();
@@ -423,5 +424,7 @@ public abstract class LocationActivity extends Activity
 	   
 	/** Called when the GPS system has stopped */
 	public abstract void onGpsStopped();
+	
+	//*** TODO make dialogs asyncTasks, and force a timeout.
 
 }//LocationActivity
