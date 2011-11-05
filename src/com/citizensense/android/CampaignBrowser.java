@@ -39,6 +39,8 @@ public class CampaignBrowser extends CampaignExplorer implements CampaignParserC
 		server_campaigns = new ArrayList<Campaign>();
 		parser = new CampaignParser(this, this);
 		super.onCreate(savedInstanceState);
+		//TODO remove this
+		G.globalCampaigns = getCampaigns();
 	}//onCreate
 	
 	@Override
