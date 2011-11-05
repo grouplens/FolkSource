@@ -20,4 +20,8 @@ public interface Constants {
 	public static final String DB_SIZE = "db_size";
 	
 	public static final String DB_DATE_FORMAT = "MM/dd/yyyy";
+	
+	/** This is a type of campaign location*/
+	public static final boolean EXACT_LOCATION = true,
+	                            NONEXACT_LOCATION = false;
 }//Constants
