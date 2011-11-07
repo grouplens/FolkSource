@@ -112,7 +112,7 @@ public abstract class CampaignExplorer extends ListActivity
     		 				   long id) {
     	current_gallery_view = view;
     	current_gallery_position = position;
-    	updateIndicator(view, position);
+    	updateIndicator(position);
     }//onItemSelected
 	
 	@Override
@@ -132,14 +132,14 @@ public abstract class CampaignExplorer extends ListActivity
 	}//refresh
 	
 	/** Update the index indicator at the bottom of the campaign view. */
-	public void updateIndicator(View v, int position) {
+	public void updateIndicator(int position) {
 		int totalAdds = gallery.getCount();
 		TextView temp;
-		LinearLayout indicator = (LinearLayout) v.findViewById(R.id.gallery_index_indicator);
+		LinearLayout indicator = (LinearLayout) findViewById(R.id.gallery_index_indicator);
 		indicator.removeAllViews();
 		for (int i = 0; i < totalAdds; i++) {
 			temp = new TextView(this);
-			temp.setText("à  ");
+			temp.setText("¥  ");
 			temp.setGravity(Gravity.CENTER);
 			if (i == position){
 				temp.setTextColor(Color.BLUE);
