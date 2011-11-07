@@ -31,30 +31,29 @@ public abstract class CampaignExplorer extends ListActivity
 									   implements OnClickListener,
 									              OnItemSelectedListener {
 
-	//FIXME: add modifiers to all class variables!!!
 	/** Adapter for adding campaigns to the gallery*/
-	CampaignGalleryAdapter galleryAdapter;
+	protected CampaignGalleryAdapter galleryAdapter;
 	
 	/** Adapter for adding campaigns to the list*/
-	CampaignListAdapter listAdapter;
+	protected CampaignListAdapter listAdapter;
 	
 	/** List of campaigns inflated by the view*/
-	ArrayList<Campaign> campaigns;
+	protected ArrayList<Campaign> campaigns;
 	
 	/** The gallery where the campaigns are stored in gallery mode*/
-	Gallery gallery;
+	protected Gallery gallery;
 	
 	/** The list where the campaigns are stored in list mode*/
-	ListView list;
+	protected ListView list;
 	
-	Button listMode;
-	Button galleryMode;
-	Button mapMode;
+	/** Button indicating the way that the on-screen campaigns should be
+	 * displayed. */
+	protected Button listMode, galleryMode, mapMode;
 	
 	/** The current View within the gallery*/
-	View current_gallery_view;
+	protected View current_gallery_view;
 	/** The current position of the gallery*/
-	int current_gallery_position;
+	protected int current_gallery_position;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -131,7 +130,8 @@ public abstract class CampaignExplorer extends ListActivity
 		}
 	}//refresh
 	
-	/** Update the index indicator at the bottom of the campaign view. */
+	/** Update the index indicator at the bottom of the campaign view. 
+	 * @param position the current gallery position */
 	public void updateIndicator(int position) {
 		int totalAdds = gallery.getCount();
 		TextView temp;
@@ -150,4 +150,5 @@ public abstract class CampaignExplorer extends ListActivity
 			indicator.addView(temp, i);
 		}
 	}//updateIndicator
+	
 }//CampaignExplorer

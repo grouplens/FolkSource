@@ -33,14 +33,15 @@ import com.google.android.maps.Projection;
 /**
  * Map activity
  * @author Phil Brown
+ * @author Renji Yu
  */
 public class Map extends MapActivity {
 	
-	/** For CampaignBrowser view, this refers to all the campaigns get from server;
-	 *  for MyCampaign view, this refers to all campaigns stored in local database. */
+	/** Contains the set of {@link Campaign Campaigns} currently displayed on 
+	 * the map */
 	protected ArrayList<Campaign> campaigns;	
 	  	
-	/** Initialize the map*/
+	/** Initialize the map */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +56,7 @@ public class Map extends MapActivity {
     	
         //Currently, simply use a global variable.
         //Its value is set in CampaginBrowser by getCampaigns();
+    	//FIXME remove the global variable and unpack the campaigns from intent.
         campaigns = G.globalCampaigns;
         
 		PointOverlay pointOverlay = null;
@@ -74,13 +76,18 @@ public class Map extends MapActivity {
         setZoomLevel();
     }//onResume
 
-    /** Required by MapActivity. Currently unused.*/
+    /** 
+     * Required by MapActivity. Currently unused.
+     */
 	@Override
 	protected boolean isRouteDisplayed() {
 		return false;
 	}//isRouteDisplayed
 	
-	/** Get campaigns from the local Android database. */
+	/** 
+	 * Get campaigns from the local database. 
+	 * FIXME get campaigns should unpack the intent. 
+	 */
 	ArrayList<Campaign> getCampaigns() {
 		ArrayList<Campaign> results = new ArrayList<Campaign>();
 		for(String campaignID: G.user.getCampaignIDs()){
@@ -89,7 +96,10 @@ public class Map extends MapActivity {
 		return results;
 	}//getCampaigns
 	
-	/** Set zoom level of the map according to the location's type.*/
+	/** 
+	 * Set zoom level of the map according to the location's type.
+	 * FIXME compute the zoom based on the set of campaigns displayed on the map
+	 */
 	public void setZoomLevel(){
 		G.map.getController().setZoom(11);
 	}//setZoomLevel
@@ -101,34 +111,44 @@ public class Map extends MapActivity {
     	return c.getLocations();
     }//getLocsByCampaignId
     
-    /** Get the type of the location: (longitude,latitude) is EXACT_LOCATION, 
-     * (city, state) is NONEXACT_LOCATION. */
+    /** 
+     * Get the type of the location. {@link Constants#EXACT_LOCATION
+     * EXACT_LOCATION} refers to an exact (longitude,latitude) point, whereas
+     * {@link Constants#NONEXACT_LOCATION NONEXACT_LOCATION} refers to a 
+     * (city, state) reference. 
+     */
     public boolean getLocType(String loc){ 
     	 Pattern pattern=Pattern.compile("\\d");  
          Matcher matcher=pattern.matcher(loc);
-         if (matcher.find() == true)
+         if (matcher.find() == true) {
         	 return Constants.EXACT_LOCATION;
+         }
          return Constants.NONEXACT_LOCATION;
     }//getLocType
     
-    
-    /** Get the radius of the circle centered at loc. If loc is EXACT_LOCATION,
-     *  set the radius to 10 meters, otherwise, set the radius to 10000 meters. 
-     *  This function may be updated if we can get more geo information.
-     *  TODO improve this based on database information. */
+    /** 
+     * Get the radius of the circle centered at the given location. If the
+     * given location is an {@link Constants#EXACT_LOCATION EXACT_LOCATION},
+     * set the radius to 10 meters, otherwise, set the radius to 10000 meters. 
+     * This function may be updated if we can get more geo information, such as
+     * the size of cities.
+     * TODO improve this based on database information. 
+     */
     public float getRadius(String loc){
     	if (getLocType(loc) == Constants.EXACT_LOCATION) {
     		return 10;
-    	}else{
+    	}else {
     		return 10000;
     	}
     }//getRadius
     
     /** 
-     * Get a GeoPoint from a string.
+     * Parse an address (as a String) and return a {@link GeoPoint GeoPoint} 
+     * for that location.
      * @param loc the String parameter
-     * @return the geopoint object, or null if getLocType(loc) is not
-     * EXACT_LOCATION or NONEXACT_LOCATION.
+     * @return the geopoint object, or null if {@link #getLocType(String) 
+     * getLocType(loc)} is not {@link Constants#EXACT_LOCATION 
+     * EXACT_LOCATION} or {@link Constants#NONEXACT_LOCATION NONEXACT_LOCATION}.
      */
     public GeoPoint getGeopoint(String loc){
 		if (getLocType(loc) == Constants.EXACT_LOCATION) {
@@ -166,11 +186,17 @@ public class Map extends MapActivity {
 		}
     }//getGeopoint
     
-    /**This function calculate the corresponding amount of pixels for the radius in meters.
-     * Merely use metersToEquatorPixels() will not work. Google Maps uses a Mercator projection. 
-     * This means that the further you get from the equator the more distorted the distances become.
-     * I got this function from: http://stackoverflow.com/questions/2077054/how-to-compute-a-radius
-     * -around-a-point-in-an-android-mapview*/
+    /**
+     * This function calculate the corresponding amount of pixels for the 
+     * radius in meters. Rarely does metersToEquatorPixels() work. Google Maps 
+     * uses a "Mercator" projection. This means that the further you get from 
+     * the equator, the more distorted the distances become.
+     * @param meters The meters to convert
+     * @param map The current MapView
+     * @param latitude The latitude of the center point
+     * @see <a href="http://stackoverflow.com/questions/2077054/how-to-compute-a-radius-around-a-point-in-an-android-mapview">
+     How to compute a radius around a point in an Android MapView?</a>
+     */
     public int getPixelsFromMeters(float meters, MapView map, double latitude) {
     	double m = (map.getProjection()
     			       .metersToEquatorPixels(meters) 
@@ -178,36 +204,40 @@ public class Map extends MapActivity {
     	return (int) m;
     }//getPixelsFromMeters
      
-    /** PointOverlay is an inner class for showing a location as a marker on the map.*/
-    class PointOverlay extends Overlay{
+    /** PointOverlay is an inner class for showing a location as a marker on 
+     * the map.*/
+    class PointOverlay extends Overlay {
+    	
     	/** The GeoPoint to be displayed.*/
     	private GeoPoint geoPoint;
 
     	/**
-    	 * FIXME add documentation
+    	 * Constructs a new {@link #PointOverlay PointOverlay} Object and 
+    	 * initializes the {@link #geoPoint geoPoint}.
     	 * @param geoPoint
     	 */
-    	public  PointOverlay(GeoPoint geoPoint){
+    	public PointOverlay(GeoPoint geoPoint){
     		this.geoPoint = geoPoint;
     	}//PointOverlay
 
         @Override
         public void draw(Canvas canvas, MapView mapV, boolean shadow){
-            if(shadow){
+            if (shadow) {
                 Projection projection = mapV.getProjection();
                 Point pt = new Point();
                 projection.toPixels(geoPoint, pt);
                 Paint paint = new Paint();
-                Bitmap markerBitmap = BitmapFactory
+                Bitmap marker = BitmapFactory
                                      .decodeResource(getApplicationContext()
-                                     .getResources(),R.drawable.marker);
-                //change the coordinates of the marker to make sure the pin 
-                //is located at the GeoPoint.
-                canvas.drawBitmap(markerBitmap,
-                		          pt.x - markerBitmap.getWidth() / 2,
-                		          pt.y - markerBitmap.getHeight(),
-                		          paint);
+                                     .getResources(), R.drawable.marker);
+                //center the bitmap so that it points to the center of pt
+                canvas.drawBitmap(marker,
+                		          pt.x - (marker.getWidth() / 2),
+                		          pt.y - marker.getHeight(),
+                		          paint); 
+                marker.recycle();
             }
+            //TODO else statement...
         }//draw
     }//PointOverlay
     

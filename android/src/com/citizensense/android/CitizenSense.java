@@ -43,21 +43,17 @@ public class CitizenSense extends TabActivity implements OnClickListener {
         tabHost = getTabHost();
         Intent intent;
 
-        // Create an Intent to launch an Activity for the tab (to be reused)
         intent = new Intent().setClass(this, CampaignBrowser.class);
-        includeTab(intent, "home", "Browse", 0);
+        includeTab(intent, "home", null, android.R.drawable.ic_menu_search);
         
-        // Do the same for the other tabs
         intent = new Intent().setClass(this, MyCampaigns.class);
-        includeTab(intent, "My Campaigns", "My Campaigns", 0);
+        includeTab(intent, "My Campaigns", null, android.R.drawable.ic_menu_gallery);
 
-        
         intent = new Intent().setClass(this, Map.class);
-        includeTab(intent, "map", "Map", 0);
-        
+        includeTab(intent, "map", null, android.R.drawable.ic_menu_mapmode);
         
         intent = new Intent().setClass(this, Profile.class);
-        includeTab(intent, "profile", "Me", 0);
+        includeTab(intent, "profile", null, android.R.drawable.ic_menu_myplaces);
 
         
         //TODO Save the last tab they were on and store it in sharedPreferences
