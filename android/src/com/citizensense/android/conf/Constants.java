@@ -32,4 +32,7 @@ public interface Constants {
 	
 	
 	public static final int NO_EXPIRATION = -1;
+	
+	/** id for proximity notification*/
+	public static final int PROXIMITY_NOTIFICATION_ID = 1;
 }//Constants

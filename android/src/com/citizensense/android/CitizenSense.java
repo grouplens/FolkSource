@@ -4,8 +4,6 @@
 
 package com.citizensense.android;
 
-import java.util.ArrayList;
-
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -55,10 +53,7 @@ public class CitizenSense extends TabActivity implements OnClickListener {
 
         
         intent = new Intent().setClass(this, Map.class);
-        //put campaigns in intent and send it to Map
-        intent.putParcelableArrayListExtra("intentCampaigns", G.intent_campagins);
         includeTab(intent, "map", "Map", 0);
-        
         
         intent = new Intent().setClass(this, Profile.class);
         includeTab(intent, "profile", "Me", 0);
@@ -68,8 +63,6 @@ public class CitizenSense extends TabActivity implements OnClickListener {
         //or in the onSavedInstanceState bundle
         tabHost.setCurrentTab(0);
         
-        //start the LocationService to track the user's location
-        startLocationService();
     }//onCreate
     
     /** Open the map tab*/
@@ -120,18 +113,5 @@ public class CitizenSense extends TabActivity implements OnClickListener {
 		}
 		
 	}//onClick
-	
-	
-    public void startLocationService(){
-        Intent intent = new Intent();
-        intent.setClass(this, LocationService.class);
-        startService(intent);
-    }
-    
-    public void stopLocationService(){
-        Intent intent = new Intent();
-        intent.setClass(this, LocationService.class);
-        stopService(intent);
-    }
 	
 }//CitizenSense

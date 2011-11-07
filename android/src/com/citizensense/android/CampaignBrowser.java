@@ -17,7 +17,6 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.citizensense.android.net.CampaignParser;
 import com.citizensense.android.net.CampaignParserCallback;

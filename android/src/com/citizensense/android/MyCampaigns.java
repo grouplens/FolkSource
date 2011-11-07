@@ -7,11 +7,10 @@ package com.citizensense.android;
 import java.util.ArrayList;
 
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.Toast;
 
 /** 
  * Shows the campaigns that the user has downloaded

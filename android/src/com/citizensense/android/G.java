@@ -29,6 +29,4 @@ public class G {
 	public static Context app_context;
 	/** Stores important info, including the number of campaigns in the database. */
 	public static SharedPreferences memory;
-	/** Campaigns as intent data to send to Map*/
-	public static ArrayList<Campaign> intent_campagins;
 }//G

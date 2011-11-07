@@ -6,6 +6,7 @@ package com.citizensense.android;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 
 import com.citizensense.android.conf.Constants;
 import com.citizensense.android.db.CsDbAdapter;
@@ -27,5 +28,8 @@ public class Init extends Application {
 		G.user = new User();
 		G.user.login("", "");//TODO remove this, handle logins another way.
 		G.app_context = this.getApplicationContext();
+		
 	}//onCreate
+	
+
 }//Init

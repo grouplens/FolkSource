@@ -7,6 +7,7 @@ package com.citizensense.android;
 import java.util.ArrayList;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,7 +16,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.citizensense.android.util.CampaignGalleryAdapter;
 import com.citizensense.android.util.CampaignListAdapter;
@@ -74,7 +74,12 @@ public abstract class CampaignExplorer extends ListActivity
 		mapMode = (Button) findViewById(R.id.view_as_map);
 		mapMode.setOnClickListener(this);
 		//registerForContextMenu(G.map);
-		G.intent_campagins = getCampaigns();
+		
+		//set campaigns for LocationService
+		LocationService.campaigns = getCampaigns();
+        //start the LocationService to track the user's location
+        startLocationService();
+		
 	}//onCreate
 	
 	@Override
@@ -118,7 +123,7 @@ public abstract class CampaignExplorer extends ListActivity
 	public void refresh() {
 		//re-retrieve the campaigns. TODO move to non-UI thread
 		campaigns = getCampaigns();
-		G.intent_campagins = campaigns;
+		
 		//add campaigns to the list
 		if (campaigns != null) {
 			listAdapter = new CampaignListAdapter(this, campaigns);
@@ -127,4 +132,16 @@ public abstract class CampaignExplorer extends ListActivity
 			gallery.setAdapter(galleryAdapter);
 		}
 	}//refresh
+	
+    public void startLocationService(){
+        Intent intent = new Intent();
+        intent.setClass(this, LocationService.class);
+        startService(intent);
+    }
+    
+    public void stopLocationService(){
+        Intent intent = new Intent();
+        intent.setClass(this, LocationService.class);
+        stopService(intent);
+    }
 }//CampaignExplorer
