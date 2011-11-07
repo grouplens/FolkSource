@@ -7,14 +7,18 @@ package com.citizensense.android;
 import java.util.ArrayList;
 
 import android.app.ListActivity;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.Gallery;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.citizensense.android.util.CampaignGalleryAdapter;
 import com.citizensense.android.util.CampaignListAdapter;
@@ -108,12 +112,13 @@ public abstract class CampaignExplorer extends ListActivity
     		 				   long id) {
     	current_gallery_view = view;
     	current_gallery_position = position;
+    	updateIndicator(view, position);
     }//onItemSelected
 	
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {}//onNothingSelected
 	
-	/** Refresh the view*/
+	/** Refresh the view and update the gallery index indicator */
 	public void refresh() {
 		//re-retrieve the campaigns. TODO move to non-UI thread
 		campaigns = getCampaigns();
@@ -125,4 +130,24 @@ public abstract class CampaignExplorer extends ListActivity
 			gallery.setAdapter(galleryAdapter);
 		}
 	}//refresh
+	
+	/** Update the index indicator at the bottom of the campaign view. */
+	public void updateIndicator(View v, int position) {
+		int totalAdds = gallery.getCount();
+		TextView temp;
+		LinearLayout indicator = (LinearLayout) v.findViewById(R.id.gallery_index_indicator);
+		indicator.removeAllViews();
+		for (int i = 0; i < totalAdds; i++) {
+			temp = new TextView(this);
+			temp.setText("à  ");
+			temp.setGravity(Gravity.CENTER);
+			if (i == position){
+				temp.setTextColor(Color.BLUE);
+			}
+			else {
+				temp.setTextColor(Color.LTGRAY);
+			}
+			indicator.addView(temp, i);
+		}
+	}//updateIndicator
 }//CampaignExplorer
