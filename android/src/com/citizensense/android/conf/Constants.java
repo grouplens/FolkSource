@@ -32,4 +32,7 @@ public interface Constants {
 	public static final long SERVICE_GPS_TIME_BETWEEN_UPDATES = 1000 * 1;
 	/** Minimum distance between updates for location listeners (in meters) */
 	public static final long MIN_DISTANCE_BETWEEN_UPDATES = 1;
+	/** This is a type of campaign location*/
+	public static final boolean EXACT_LOCATION = true,
+	                            NONEXACT_LOCATION = false;
 }//Constants

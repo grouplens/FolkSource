@@ -4,6 +4,8 @@
 
 package com.citizensense.android;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -30,4 +32,6 @@ public class G {
 	public static SharedPreferences memory;
 	/** A location object used by the locationActivity */
 	public static Location location;
+	//TODO remove this. Instead, use intent
+	public static ArrayList<Campaign> globalCampaigns;
 }//G

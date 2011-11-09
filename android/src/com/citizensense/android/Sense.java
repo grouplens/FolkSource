@@ -60,7 +60,7 @@ public class Sense extends LocationActivity {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 	    if (requestCode == CAMERA_CAPTURE_REQUEST_CODE) {
 	        if (resultCode == RESULT_OK) {
-	        	//this.imageUri = data.getData();//FIXME this gets null
+	        	//this.imageUri = data.getData();
 	        	//uri is already set. Do nothing.
 	        	CheckBox hasTakenPhoto = (CheckBox) findViewById(R.id.chkbox_photo_complete);
 	        	hasTakenPhoto.setChecked(true);
@@ -96,7 +96,7 @@ public class Sense extends LocationActivity {
 				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
 			    Uri fileUri = getOutputImageUri(); // create a file to save the image
-			    Sense.this.imageUri = fileUri; //FIXME does this get set to null???
+			    Sense.this.imageUri = fileUri;
 			    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
 
 			    // start the image capture Intent

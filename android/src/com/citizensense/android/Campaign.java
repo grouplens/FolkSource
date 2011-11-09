@@ -209,7 +209,24 @@ public class Campaign implements Parcelable {
 		this.endDate = endDate;
 	}//setEndDate
 	
+	/** Set the image contained in this campaign. */
+	public void setImage() {
+		//TODO
+	}//setImage
 	
+	/** Get this campaign's image
+	 * FIXME */
+	public int getImage() {
+		if (this.getId().equals("1")) {
+			return R.drawable.potholes;
+		}
+		else if (this.getId().equals("2")) {
+			return R.drawable.busrack;
+		}
+		else {
+			return R.drawable.profile_default;
+		}
+	}//getImage
 		
 		
 }//Campaign
