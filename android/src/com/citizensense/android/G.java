@@ -61,9 +61,8 @@ public class G {
 	}
 
 	/** Send intent data to Map. */
-	public static void sendIntentData(Context context) {
+	public static void sendIntentData(Context context,ArrayList<Campaign> campaigns) {
 		Intent intent = new Intent(context, Map.class);
-		ArrayList<Campaign> campaigns = MyCampaigns.staticGetCampaigns();
 		intent.putParcelableArrayListExtra(
 				context.getString(R.string.campaigns), campaigns);
 		context.startActivity(intent);
