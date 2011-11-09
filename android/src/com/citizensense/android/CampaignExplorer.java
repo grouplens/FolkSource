@@ -75,11 +75,6 @@ public abstract class CampaignExplorer extends ListActivity
 		mapMode.setOnClickListener(this);
 		//registerForContextMenu(G.map);
 		
-		//set campaigns for LocationService
-		LocationService.campaigns = getCampaigns();
-        //start the LocationService to track the user's location
-        startLocationService();
-		
 	}//onCreate
 	
 	@Override
@@ -123,7 +118,6 @@ public abstract class CampaignExplorer extends ListActivity
 	public void refresh() {
 		//re-retrieve the campaigns. TODO move to non-UI thread
 		campaigns = getCampaigns();
-		
 		//add campaigns to the list
 		if (campaigns != null) {
 			listAdapter = new CampaignListAdapter(this, campaigns);
@@ -133,15 +127,5 @@ public abstract class CampaignExplorer extends ListActivity
 		}
 	}//refresh
 	
-    public void startLocationService(){
-        Intent intent = new Intent();
-        intent.setClass(this, LocationService.class);
-        startService(intent);
-    }
-    
-    public void stopLocationService(){
-        Intent intent = new Intent();
-        intent.setClass(this, LocationService.class);
-        stopService(intent);
-    }
+
 }//CampaignExplorer

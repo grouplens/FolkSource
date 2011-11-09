@@ -7,10 +7,10 @@ package com.citizensense.android;
 import java.util.ArrayList;
 
 import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 
 /** 
  * Shows the campaigns that the user has downloaded
@@ -18,9 +18,19 @@ import android.view.View;
  */
 public class MyCampaigns extends CampaignExplorer {
 	
+	@Override 
+	public void onResume(){
+		super.onResume();
+		System.out.println(staticGetCampaigns().size());
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<Campaign> getCampaigns() {
+		return staticGetCampaigns();
+	}//getCampaigns
+	
+	public static ArrayList<Campaign> staticGetCampaigns() {
 		ArrayList<Campaign> campaigns = new ArrayList<Campaign>();
 		int j = 1;
 		int index = 1;
@@ -32,9 +42,8 @@ public class MyCampaigns extends CampaignExplorer {
 			}
 			index++;
 		}
-
 		return campaigns;
-	}//getCampaigns
+	}
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
@@ -56,5 +65,7 @@ public class MyCampaigns extends CampaignExplorer {
 		}
 		return super.onContextItemSelected(item);
 	}//onContextItemSelected
+	
+	
 	
 }//MyCampaigns

@@ -11,7 +11,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-
 /** 
  * Campaign Object
  * @author Phil Brown
@@ -224,7 +223,7 @@ public class Campaign implements Parcelable{
 	
 	
 	/** This defines the task associated with the exclusive campaign object.*/
-	public class Task{
+	public class Task {
 		/** Provides a description of how to complete this task*/
 		public String instructions;
 		/** This task's name*/
@@ -252,8 +251,8 @@ public class Campaign implements Parcelable{
 			this.instructions = instructions;
 			this.requirements = requirements;
 			Campaign.this.setTask(this);
-		}//Task	
-
+		}//Task
+		
 		/** Sets the form
 		 * @param f the new form*/
 		public void setForm(Form f) {
@@ -295,6 +294,8 @@ public class Campaign implements Parcelable{
 				}
 				return q;
 			}//getQuestions
+			
 		}//Form
 	}//Task
+	
 }//Campaign

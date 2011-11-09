@@ -22,6 +22,7 @@ import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.citizensense.android.conf.Constants;
 import com.google.android.maps.GeoPoint;
@@ -58,8 +59,8 @@ public class Map extends MapActivity {
 		super.onResume();
 		// update intent data
 		campaigns = getIntent().getParcelableArrayListExtra(
-				getString(R.string.map_campaigns));
-		if(campaigns != null){
+				getString(R.string.campaigns));
+		if (campaigns != null) {
 			for (Campaign campaign : campaigns) {
 				for (String loc : campaign.getLocations()) {
 					if (getLocType(loc) == Constants.EXACT_LOCATION) {
@@ -70,9 +71,9 @@ public class Map extends MapActivity {
 					circleOverlay = new CircleOverlay(getGeopoint(loc),
 							getRadius(loc));
 					mapOverlays.add(circleOverlay);
-					setZoomLevel(loc);
 				}
 			}
+			setZoomLevel();
 		}
 	}
 
@@ -82,9 +83,27 @@ public class Map extends MapActivity {
 		return false;
 	}// isRouteDisplayed
 
-	/** Set zoom level of the map according to the location's type. */
+	/** Get campaigns from the local Android database. */
+	ArrayList<Campaign> getCampaigns() {
+		ArrayList<Campaign> results = new ArrayList<Campaign>();
+		for (String campaignID : G.user.getCampaignIDs()) {
+			results.add((Campaign) G.db.getCampaign(campaignID));
+		}
+		return results;
+	}// getCampaigns
+
+	/**
+	 * Get locations of the campaign from database by searching the campaign's
+	 * id.
+	 */
+	public String[] getLocsByCampaignId(String id) {
+		Campaign c = (Campaign) G.db.getCampaign(id);
+		return c.getLocations();
+	}// getLocsByCampaignId
+
+	/** Set zoom level of the map. */
 	// Should be updated.
-	public void setZoomLevel(String loc) {
+	public void setZoomLevel() {
 		G.map.getController().setZoom(12);
 	}
 
@@ -122,8 +141,8 @@ public class Map extends MapActivity {
 		if (getLocType(loc) == Constants.EXACT_LOCATION) {
 			loc = loc.replaceAll(" ", "");
 			String[] long_lat = loc.split(",");
-			int longitude = Integer.parseInt(long_lat[0]) * 1000000;
-			int latitude = Integer.parseInt(long_lat[1]) * 1000000;
+			int longitude = (int) (Integer.parseInt(long_lat[0]) * 1E6);
+			int latitude = (int) (Integer.parseInt(long_lat[1]) * 1E6);
 			return new GeoPoint(latitude, longitude);
 		} else if (getLocType(loc) == Constants.NONEXACT_LOCATION) {
 			Geocoder mygeoCoder = new Geocoder(context, Locale.getDefault());
@@ -132,18 +151,25 @@ public class Map extends MapActivity {
 				// getFromLocationName() will return a list of Address which
 				// matches the location name(first parameter)
 				lstAddress = mygeoCoder.getFromLocationName(loc, 1);
-				if (!lstAddress.isEmpty()) {
+				if (lstAddress.isEmpty()) {
+					Log.e("Map.getGeopoint", "Geocoder did not find any "
+							+ "addresses. Returning null.");
+					return null;
+				} else {
 					Address address = lstAddress.get(0);
 					int latitude = (int) (address.getLatitude() * 1E6);
 					int longitude = (int) (address.getLongitude() * 1E6);
 					return new GeoPoint(latitude, longitude);
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				Log.e("Map.getGeopoint", "Geocoder failed. Returning null");
+				return null;
 			}
+		} else {
+			Log.e("Map.getGeopoint", "Invalid Location type. Returning null");
+			return null;
 		}
-		return null;
-	}
+	}// getGeopoint
 
 	/**
 	 * This function calculate the corresponding amount of pixels for the radius
@@ -153,11 +179,11 @@ public class Map extends MapActivity {
 	 * from: http://stackoverflow.com/questions/2077054/how-to-compute-a-radius
 	 * -around-a-point-in-an-android-mapview
 	 */
-	public static int getPixelsFromMeters(float meters, MapView map,
-			double latitude) {
-		return (int) (map.getProjection().metersToEquatorPixels(meters) * (1 / Math
+	public int getPixelsFromMeters(float meters, MapView map, double latitude) {
+		double m = (map.getProjection().metersToEquatorPixels(meters) * (1 / Math
 				.cos(Math.toRadians(latitude))));
-	}
+		return (int) m;
+	}// getPixelsFromMeters
 
 	/**
 	 * PointOverlay is an inner class for showing a location as a marker on the
@@ -167,9 +193,14 @@ public class Map extends MapActivity {
 		/** The GeoPoint to be displayed. */
 		private GeoPoint geoPoint;
 
+		/**
+		 * FIXME add documentation
+		 * 
+		 * @param geoPoint
+		 */
 		public PointOverlay(GeoPoint geoPoint) {
 			this.geoPoint = geoPoint;
-		}
+		}// PointOverlay
 
 		@Override
 		public void draw(Canvas canvas, MapView mapV, boolean shadow) {
@@ -181,12 +212,12 @@ public class Map extends MapActivity {
 				Bitmap markerBitmap = BitmapFactory.decodeResource(
 						getApplicationContext().getResources(),
 						R.drawable.marker);
-				// change the coordinates of the marker to make sure the pin is
-				// located at the GeoPoint.
+				// change the coordinates of the marker to make sure the pin
+				// is located at the GeoPoint.
 				canvas.drawBitmap(markerBitmap, pt.x - markerBitmap.getWidth()
 						/ 2, pt.y - markerBitmap.getHeight(), paint);
 			}
-		}
+		}// draw
 	}// PointOverlay
 
 	/**
@@ -205,7 +236,7 @@ public class Map extends MapActivity {
 		public CircleOverlay(GeoPoint center, float radius) {
 			this.center = center;
 			this.radius = radius; // radius received should be in meters
-		}
+		}// CircleOverlay
 
 		@Override
 		public void draw(Canvas canvas, MapView mapV, boolean shadow) {
@@ -218,9 +249,7 @@ public class Map extends MapActivity {
 						center.getLatitudeE6() / 1000000);
 				Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 				// set color and style for the inner part of the circle
-				int color = Color.argb(127, 255, 0, 255); // set color to
-															// semitransparent
-															// purple
+				int color = Color.argb(127, 255, 0, 255); // set color
 				circlePaint.setColor(color);
 				circlePaint.setStyle(Style.FILL_AND_STROKE);
 				canvas.drawCircle((float) pt.x, (float) pt.y, radiusInPixels,
@@ -231,6 +260,6 @@ public class Map extends MapActivity {
 				canvas.drawCircle((float) pt.x, (float) pt.y, radiusInPixels,
 						circlePaint);
 			}
-		}
+		}// draw
 	}// CircleOverlay
 }// Map
