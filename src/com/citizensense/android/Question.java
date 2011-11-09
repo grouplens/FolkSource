@@ -4,6 +4,8 @@
 
 package com.citizensense.android;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 /**
@@ -11,7 +13,7 @@ import android.util.Log;
  * retrieved from the server.
  * @author Phil Brown
  */
-public class Question {
+public class Question implements Parcelable {
 
 	/** Question type telling the app to show the answers in a drop-down
 	 * menu */
@@ -33,6 +35,35 @@ public class Question {
 	
 	/** Available answers for multiple choice questions */
 	public String[] answers;
+	
+
+	/** This CREATOR is used to parcel this Object. */
+	public static final Parcelable.Creator<Question> CREATOR =
+        new Parcelable.Creator<Question>() {
+     
+		/** Construct and return an Ad from a Parcel*/
+		@Override
+		public Question createFromParcel(Parcel in) {
+			return new Question(in);
+		}//createFromParcel
+
+		/**
+		 * Creates a new array of Adds
+		 */
+		@Override
+		public Question[] newArray(int size) {
+			return new Question[size];
+		}//newArray
+	};
+	
+	/** Constructor. Initializes the question from a Parcel Object.*/
+	public Question(Parcel in) {
+		this.single_choice = in.readByte() == 1;
+		this.single_line = in.readByte() == 1;
+		this.type = in.readInt();
+		this.question = in.readString();
+		this.answers = in.createStringArray();
+	}//Question
 	
 	/** Create a new Question
 	 * @param question The Question text
@@ -118,5 +149,19 @@ public class Question {
 		}
 		return false;
 	}//isSingleChoice
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}//describeContents
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		out.writeByte((byte) (this.single_choice ? 1 : 0));
+		out.writeByte((byte) (this.single_line ? 1 : 0));
+		out.writeInt(this.type);
+		out.writeString(this.question);
+		out.writeStringArray(this.answers);
+	}//writeToParcel
 	
 }//Question

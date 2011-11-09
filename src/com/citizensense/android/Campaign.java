@@ -10,11 +10,14 @@ import java.util.Date;
 import android.R.drawable;
 import android.util.Log;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /** 
  * Campaign Object
  * @author Phil Brown
  */
-public class Campaign {
+public class Campaign implements Parcelable {
 
 	ArrayList<String> user_tokens;
 	/*The tokens associated with participating users.
@@ -30,8 +33,6 @@ public class Campaign {
 	private String name;
 	/** Description of the campaign. */
 	private String description;
-	
-
 	/** The campaign organizer. This should later be a new Object, not a String.*/
 	private String owner;
 	/** The task defined by this campaign*/
@@ -43,9 +44,60 @@ public class Campaign {
 	/** Date the campaign ends.*/
 	private Date endDate;
 	
+	/** This CREATOR is used to parcel this Object. */
+	public static final Parcelable.Creator<Campaign> CREATOR =
+        new Parcelable.Creator<Campaign>() {
+     
+		/** Construct and return an Ad from a Parcel*/
+		@Override
+		public Campaign createFromParcel(Parcel in) {
+			return new Campaign(in);
+		}//createFromParcel
+
+		/**
+		 * Creates a new array of Adds
+		 */
+		@Override
+		public Campaign[] newArray(int size) {
+			return new Campaign[size];
+		}//newArray
+	};
+	
+	/** Create a new campaign from the given Parcel. */
+	public Campaign(Parcel in) {
+		this.id = in.readString();
+		this.times = in.createStringArray();
+		this.locations = in.createStringArray();
+		this.name = in.readString();
+		this.description = in.readString();
+		this.owner = in.readString();
+		this.task = in.readParcelable(Task.class.getClassLoader());
+		this.isComplete = in.readByte() == 1;
+		this.startDate = new Date(in.readLong());
+		this.endDate = new Date(in.readLong());
+	}//Campaign
+	
 	/** An empty constructor is used by the XML Parser and by the Database.*/
 	public Campaign() {}//Campaign
 	
+	@Override
+	public int describeContents() {
+		return 0;
+	}//describeContents
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		out.writeString(this.id);
+		out.writeStringArray(this.times);
+		out.writeStringArray(this.locations);
+		out.writeString(this.name);
+		out.writeString(this.description);
+		out.writeString(this.owner);
+		out.writeParcelable(this.task, 0);
+		out.writeByte((byte) (isComplete ? 1 : 0));
+		out.writeLong(this.startDate.getTime());
+		out.writeLong(this.endDate.getTime());
+	}//writeToParcel
 	
 	/** This should request campaign incentives from the server.*/
 	public String[]getIncentives() {
@@ -178,81 +230,6 @@ public class Campaign {
 			return R.drawable.profile_default;
 		}
 	}//getImage
-	
-	/** This defines the task associated with the exclusive campaign object.*/
-	public class Task {
-		/** Provides a description of how to complete this task*/
-		public String instructions;
-		/** This task's name*/
-		public String name;
-		/** The requirements for this task (such as gps, photo, etc)*/
-		public String[] requirements;
-		/** The form associated with this task*/
-		private Form form;
-		//public boolean requiresPhoto;
-		//public boolean requiresLocation;
-		/*
-		public boolean requiresVideo;
-		public boolean requiresSoundClip;
-		public boolean requiresAccelerometerData;
-		*/
-		/**
-		 * Constructor. Initiates variables and assigns this task to this
-		 * campaign.
-		 * @param name The name of the Task
-		 * @param instructions The instructions for performing the task
-		 * @param v The View associated with this Task's form.
-		 */
-		public Task(String name, String instructions, String[] requirements) {
-			this.name = name;
-			this.instructions = instructions;
-			this.requirements = requirements;
-			Campaign.this.setTask(this);
-		}//Task
 		
-		/** Sets the form
-		 * @param f the new form*/
-		public void setForm(Form f) {
-			this.form = f;
-		}//setForm
 		
-		/** gets the form*/
-		public Form getForm() {
-			return this.form;
-		}//getForm
-		
-		/** 
-		 * This is the form object associated with this task. A Form merely 
-		 * contains an ArrayList of Question Objects.
-		 */
-		public class Form {
-			/** Holds the questions*/
-			private ArrayList<Question> questions;
-			
-			/** Constructor. Initializes the questions and sets the form as this
-			 * task's form.*/
-			public Form() {
-				questions = new ArrayList<Question>();
-				Campaign.Task.this.setForm(this);
-			}//Form
-			
-			/** Add a new Question to this form
-			 * @param q new Question*/
-			public void addQuestion(Question q) {
-				questions.add(q);
-			}//addQuestion
-			
-			/** get this form's questions*/
-			public Question[] getQuestions() {
-				Log.i("CAMPAIGN", "Number of Questions: " + questions.size());
-				Question[] q = new Question[questions.size()];
-				for (int i=0; i<questions.size(); i++) {
-					q[i] = questions.get(i);
-				}
-				return q;
-			}//getQuestions
-			
-		}//Form
-	}//Task
-	
 }//Campaign

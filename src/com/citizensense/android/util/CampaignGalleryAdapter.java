@@ -7,12 +7,14 @@ package com.citizensense.android.util;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
@@ -22,10 +24,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.citizensense.android.Campaign;
-import com.citizensense.android.Campaign.Task;
-import com.citizensense.android.Campaign.Task.Form;
+import com.citizensense.android.Form;
 import com.citizensense.android.Question;
 import com.citizensense.android.R;
+import com.citizensense.android.Sense;
+import com.citizensense.android.Task;
 import com.citizensense.android.conf.Constants;
 
 /**
@@ -120,7 +123,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 			//tv.setText(G.db.getCampaignById("2").getName());
 		}
 		*/
-		Campaign campaign = campaigns.get(position);
+		final Campaign campaign = campaigns.get(position);
 		//unpack campaign and display (for now) FIXME improve it!
 		if (campaign != null) {
 			title.setText(campaign.getName());
@@ -177,7 +180,15 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 				qs += q[i].toString();
 			}
 			image.setImageResource(campaign.getImage());
-			//TODO something with the buttons
+			//DO something with the buttons
+			task_button.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent i = new Intent(context, Sense.class);
+					i.putExtra("campaign", campaign);
+					context.startActivity(i);
+				}
+			});
 		}
 		
 		v.setLayoutParams(new Gallery.LayoutParams(
