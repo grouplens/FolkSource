@@ -5,4 +5,5 @@
     <string name="app_name">CitizenSense</string>
     <string name="written_response">written_response</string>
     <string name="multiple_choice">multiple_choice</string>
+    <string name="campaign_intent">campaign</string>
 </resources>
