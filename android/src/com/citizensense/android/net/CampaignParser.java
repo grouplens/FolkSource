@@ -16,10 +16,17 @@ import android.content.Context;
 import android.util.Log;
 
 import com.citizensense.android.Campaign;
+import com.citizensense.android.Form;
 import com.citizensense.android.Question;
 import com.citizensense.android.R;
+import com.citizensense.android.Task;
 import com.citizensense.android.conf.Constants;
 
+/**
+ * Parses a Campaign Object that is (or will be) downloaded from the Citizen
+ * Sense servers.
+ * @author Phil Brown
+ */
 public class CampaignParser implements ContentHandler {
 
 	/** The callback function for when the parser has completed*/
@@ -27,9 +34,9 @@ public class CampaignParser implements ContentHandler {
 	/** The campaign to return via the callback*/
 	private Campaign campaign;
 	/** The campaign task to return */
-	private Campaign.Task task;
+	private Task task;
 	/** The campaign task's form to return*/
-	private Campaign.Task.Form form;
+	private Form form;
 	/** DEBUG tag used for Logging*/
 	private final String TAG = "XML Parser";
 	/** This is the date format required by start and end dates.*/
@@ -49,7 +56,7 @@ public class CampaignParser implements ContentHandler {
 	@Override
 	public void characters(char[] arg0, int arg1, int arg2) throws SAXException {
 		if (Constants.DEBUG) {
-			Log.i(TAG, "characters");
+			Log.d(TAG, "characters");
 		}
 	}//characters
 
@@ -58,8 +65,8 @@ public class CampaignParser implements ContentHandler {
 	public void endDocument() throws SAXException {
 		// TODO call handler
 		if (Constants.DEBUG) {
-			Log.i(TAG, "End of Document");
-			Log.i(TAG, "calling callback");
+			Log.d(TAG, "End of Document");
+			Log.d(TAG, "calling callback");
 		}
 		callback.handleNewCampaign(this.campaign);
 	}//endDocument
@@ -69,14 +76,14 @@ public class CampaignParser implements ContentHandler {
 			throws SAXException {
 		tab = tab.substring(2);
 		if (Constants.DEBUG)  {
-			Log.i(TAG, tab + "</" + localName + ">");
+			Log.d(TAG, tab + "</" + localName + ">");
 		}
 	}//endElement
 
 	@Override
 	public void endPrefixMapping(String prefix) throws SAXException {
 		if (Constants.DEBUG)  {
-			Log.i(TAG, "end prefix mapping");
+			Log.d(TAG, "end prefix mapping");
 		}
 	}//endPrefixMapping
 
@@ -84,7 +91,7 @@ public class CampaignParser implements ContentHandler {
 	public void ignorableWhitespace(char[] ch, int start, int length)
 			throws SAXException {
 		if (Constants.DEBUG)  {
-			Log.i(TAG, "ignorableWhitespace");
+			Log.d(TAG, "ignorableWhitespace");
 		}
 	}//ignorableWhitespace
 
@@ -92,21 +99,21 @@ public class CampaignParser implements ContentHandler {
 	public void processingInstruction(String target, String data)
 			throws SAXException {
 		if (Constants.DEBUG)  {
-			Log.i(TAG, "processingInstruction");
+			Log.d(TAG, "processingInstruction");
 		}
 	}//processingInstruction
 
 	@Override
 	public void setDocumentLocator(Locator locator) {
 		if (Constants.DEBUG)  {
-			Log.i(TAG, "setDocumentLocator");
+			Log.d(TAG, "setDocumentLocator");
 		}
 	}//setDocumentLocator
 
 	@Override
 	public void skippedEntity(String name) throws SAXException {
 		if (Constants.DEBUG)  {
-			Log.i(TAG, "skippedEntity");
+			Log.d(TAG, "skippedEntity");
 		}
 	}//skippedEntity
 
@@ -114,7 +121,7 @@ public class CampaignParser implements ContentHandler {
 	@Override
 	public void startDocument() throws SAXException {
 		if (Constants.DEBUG)  {
-			Log.i(TAG, "Document Start");
+			Log.d(TAG, "Document Start");
 		}
 		this.campaign = new Campaign();
 	}//startDocument
@@ -125,7 +132,7 @@ public class CampaignParser implements ContentHandler {
 	public void startElement(String uri, String localName, String qName,
 			Attributes atts) throws SAXException {
 		if (Constants.DEBUG)  {
-			Log.i(TAG, tab + "<" + localName + ">");
+			Log.d(TAG, tab + "<" + localName + ">");
 		}
 		tab += "  ";
 		if(localName.equalsIgnoreCase("CAMPAIGN")) {
@@ -140,7 +147,7 @@ public class CampaignParser implements ContentHandler {
 				campaign.setStartDate(this.dateFormat.parse(startDate));
 			} catch (ParseException e) {
 				e.printStackTrace();
-				Log.i("TAG", "Invalid Date Format: start_date=" 
+				Log.e("TAG", "Invalid Date Format: start_date=" 
 						     + atts.getValue("start_date")
 						     + ". Should use format" 
 						     + dateFormat.toLocalizedPattern());
@@ -150,7 +157,7 @@ public class CampaignParser implements ContentHandler {
 				campaign.setEndDate(this.dateFormat.parse(endDate));
 			} catch (ParseException e) {
 				e.printStackTrace();
-				Log.i("TAG", "Invalid Date Format: end_date=" 
+				Log.e("TAG", "Invalid Date Format: end_date=" 
 					         + atts.getValue("end_date")
 						     + ". Should use format" 
 						     + dateFormat.toLocalizedPattern());
@@ -166,13 +173,14 @@ public class CampaignParser implements ContentHandler {
 				this.logAttributes(atts);
 			}
 			String reqs = atts.getValue("requirements");
-			this.task = campaign.new Task(atts.getValue("name"), 
+			this.task = new Task(atts.getValue("name"), 
 					                      atts.getValue("instructions"),
 					                      reqs.split("\\|"));
-			
+			campaign.setTask(this.task);
 		}
 		if(localName.equalsIgnoreCase("FORM")) {
-			this.form = this.task.new Form();
+			this.form = new Form();
+			this.task.setForm(form);
 		}
 		if(localName.equalsIgnoreCase("QUESTION")) {
 			if (Constants.DEBUG) {
@@ -202,7 +210,7 @@ public class CampaignParser implements ContentHandler {
 	public void startPrefixMapping(String prefix, String uri)
 			throws SAXException {
 		if (Constants.DEBUG)  {
-			Log.i(TAG, "startPrefixMapping");
+			Log.d(TAG, "startPrefixMapping");
 		}
 	}//startPrefixMapping
 	
