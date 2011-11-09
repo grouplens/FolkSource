@@ -30,6 +30,7 @@ public class MyCampaigns extends CampaignExplorer {
 		return staticGetCampaigns();
 	}//getCampaigns
 	
+	/** We create this static method for other classes who want to use getCampaigns functionality. */
 	public static ArrayList<Campaign> staticGetCampaigns() {
 		ArrayList<Campaign> campaigns = new ArrayList<Campaign>();
 		int j = 1;
