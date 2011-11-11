@@ -168,8 +168,8 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 			//TODO unpack full campaign
 			//String more = "More Details available";
 			Task t = campaign.getTask();
-			String tname = t.name;
-			String tdesc = t.instructions;
+			String tname = t.getName();
+			String tdesc = t.getInstructions();
 		
 			Form f = t.getForm();
 			Question[] q = f.getQuestions();

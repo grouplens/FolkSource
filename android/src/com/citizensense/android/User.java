@@ -6,13 +6,18 @@ package com.citizensense.android;
 
 import java.util.ArrayList;
 
+import org.json.JSONObject;
+import org.w3c.dom.Document;
+
+import android.os.Parcel;
+
 /**
  * This class defines the logged in user. Not sure yet what to do with
  * anonymous users. Login credentials should be received from the server and
  * handled safely, similar to how Cyclopath works - with tokens, etc.
  * @author Phil Brown
  */
-public class User {
+public class User implements Item {
 	/** The user's username*/
 	private String username;
 	/** The token retrieved from the server*/
@@ -47,5 +52,41 @@ public class User {
 	public ArrayList<String> getCampaignIDs() {
 		return campaign_ids;
 	}//getCampaignIDs
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String buildXML() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createFromXML(Document document) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String buildJSON() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createFromJSON(JSONObject object) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }//User

@@ -45,7 +45,17 @@ public class CampaignBrowser extends CampaignExplorer implements CampaignParserC
 	
 	@Override
 	public ArrayList<Campaign> getCampaigns() {
-		// FIXME retrieve campaigns from the gallery
+		/* FIXME retrieve campaigns from the gallery. 
+		 * The following code should do it:
+		XMLResponseHandler handler = new XMLResponseHandler();
+		handler.setCallback(new XMLResponseHandler.Callback() {
+			@Override
+			public void invoke(Document doc) {
+				//TODO handle document
+			}
+		});
+		new GetRequest(this, Campaign.class, null, handler, true).execute();
+		 */
 		try {
 			InputStream stream = getAssets().open("samples/campaign_1.xml");
 			Xml.parse(stream, Xml.Encoding.UTF_8, parser);

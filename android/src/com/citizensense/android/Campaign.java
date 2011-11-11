@@ -7,8 +7,8 @@ package com.citizensense.android;
 import java.util.ArrayList;
 import java.util.Date;
 
-import android.R.drawable;
-import android.util.Log;
+import org.json.JSONObject;
+import org.w3c.dom.Document;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -17,7 +17,7 @@ import android.os.Parcelable;
  * Campaign Object
  * @author Phil Brown
  */
-public class Campaign implements Parcelable {
+public class Campaign implements Item {
 
 	ArrayList<String> user_tokens;
 	/*The tokens associated with participating users.
@@ -231,5 +231,83 @@ public class Campaign implements Parcelable {
 		}
 	}//getImage
 		
+	@Override
+	public String buildXML() {
+		StringBuilder campaign = new StringBuilder();
+		campaign.append("<org.citizensense.model.Campaign>");
+		campaign.append("<id>" + this.getId() + "</id>");
+		campaign.append("<start__date class=\"sql-timestamp\">" 
+				        + this.getStartDate() + "</start__date>");
+		campaign.append("<end__date class=\"sql-timestamp\">"
+				        + this.getEndDate() + "</end__date>");
+		//FIXME campaign owner...
+		campaign.append("<owner__id></owner__id>");
+		//Task ID is the same as the campaign ID.
+		//FIXME Why do we need any of the below attributes?
+		campaign.append("<task__id>" + this.getId() + "</task__id>");
+		campaign.append("<tasks class=\"org.hibernate.collection.PersistentBag\">");
+		campaign.append("<bag/>");
+		campaign.append("<initialized>true</initialized>");
+		campaign.append("<owner class=\"org.citizensense.model.Campaign\" reference=\"../..\"/>");
+		campaign.append("<cachedSize>-1</cachedSize>");
+		campaign.append("<role>org.citizensense.model.Campaign.tasks</role>");
+		campaign.append("<key class=\"long\">1</key>");
+		campaign.append("<dirty>false</dirty>");
+		campaign.append("<storedSnapshot class=\"list\"/>");
+		campaign.append("</tasks>");
+		campaign.append("</org.citizensense.model.Campaign>");
+		return campaign.toString();
+	}//buildXML
+
+	@Override
+	public void createFromXML(Document document) {
+		// TODO Auto-generated method stub
+		// TODO Don't forget about com.citizensense.android.net.CampaignParser.java
+	}//createFromXML
+
+	@Override
+	public String buildJSON() {
+		StringBuilder campaign = new StringBuilder();
+		campaign.append("{\"id\":" + this.getId() + ",");
+		campaign.append("\"end_date\":{\"nanos\":0,");
+		campaign.append("\"time\":" + this.getEndDate().getTime() + ",");
+		campaign.append("\"minutes\":" + this.getEndDate().getMinutes() + ",");
+		campaign.append("\"seconds\":" + this.getEndDate().getSeconds() + ",");
+		campaign.append("\"hours\":" + this.getEndDate().getHours() + ",");
+		campaign.append("\"month\":" + this.getEndDate().getMonth() + ",");
+		campaign.append("\"timezoneOffset\":" + this.getEndDate().getTimezoneOffset() + ",");
+		campaign.append("\"year\":" + this.getEndDate().getYear() + ",");
+		campaign.append("\"day\":" + this.getEndDate().getDay() + ",");
+		campaign.append("\"date\":" + this.getEndDate().getDate() + "},");
+		campaign.append("\"description\":\"" + this.getDescription() + "\",");
+		campaign.append("\"owner_id\":" + 0 + ",");//TODO implement owner id
+		campaign.append("\"task_id\":" + this.getId() + ",");
+		campaign.append("\"tasks\":[");
+		if (this.getTask() == null) {
+			campaign.append("],");
+		}
+		else {
+			campaign.append("{\"id\":" + this.getId() + ",");
+			campaign.append("\"instructions\":\"" + this.getTask().getInstructions() + "\",");
+			campaign.append("\"name\":\"" + this.getTask().getName() + "\",");
+			campaign.append("\"submissions\":[]}],");//Submissions aren't stored locally
+		}
+		campaign.append("\"start_date\":{\"nanos\":0,\"time\":" + this.getStartDate().getTime() + ",");
+		campaign.append("\"minutes\":" + this.getStartDate().getMinutes() + ",");
+		campaign.append("\"seconds\":" + this.getStartDate().getSeconds() + ",");
+		campaign.append("\"hours\":" + this.getStartDate().getHours() + ",");
+		campaign.append("\"month\":" + this.getStartDate().getMonth() + ",");
+		campaign.append("\"timezoneOffset\":" + this.getStartDate().getTimezoneOffset() + ",");
+		campaign.append("\"year\":" + this.getStartDate().getYear() + ",");
+		campaign.append("\"day\":" + this.getStartDate().getDay() + ",");
+		campaign.append("\"date\":" + this.getStartDate().getDate() + "}}");
+		return campaign.toString();
+	}//buildJSON
+
+	@Override
+	public void createFromJSON(JSONObject object) {
+		// TODO Auto-generated method stub
+		
+	}//createFromJSON
 		
 }//Campaign

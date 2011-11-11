@@ -4,6 +4,9 @@
 
 package com.citizensense.android;
 
+import org.json.JSONObject;
+import org.w3c.dom.Document;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -11,13 +14,13 @@ import android.os.Parcelable;
  * This defines the task associated with the exclusive campaign object.
  *  @author Phil Brown
  */
-public class Task implements Parcelable {
+public class Task implements Item {
 	/** Provides a description of how to complete this task*/
-	public String instructions;
+	private String instructions;
 	/** This task's name*/
-	public String name;
+	private String name;
 	/** The requirements for this task (such as gps, photo, etc)*/
-	public String[] requirements;
+	private String[] requirements;
 	/** The form associated with this task*/
 	private Form form;
 	
@@ -61,17 +64,6 @@ public class Task implements Parcelable {
 		//Campaign.this.setTask(this);
 	}//Task
 	
-	/** Sets the form
-	 * @param f the new form*/
-	public void setForm(Form f) {
-		this.form = f;
-	}//setForm
-	
-	/** gets the form*/
-	public Form getForm() {
-		return this.form;
-	}//getForm
-	
 	@Override
 	public int describeContents() {
 		return 0;
@@ -84,4 +76,64 @@ public class Task implements Parcelable {
 		out.writeStringArray(this.requirements);
 		out.writeParcelable(this.form, 0);
 	}//writeToParcel
+	
+	public String getInstructions() {
+		return instructions;
+	}//getInstructions
+
+	public void setInstructions(String instructions) {
+		this.instructions = instructions;
+	}//setInstructions
+
+	public String getName() {
+		return name;
+	}//getName
+
+	public void setName(String name) {
+		this.name = name;
+	}//setName
+	
+	/** gets the form*/
+	public Form getForm() {
+		return this.form;
+	}//getForm
+	
+	/** Sets the form
+	 * @param f the new form*/
+	public void setForm(Form f) {
+		this.form = f;
+	}//setForm
+
+	public String[] getRequirements() {
+		return requirements;
+	}//getRequirements
+
+	public void setRequirements(String[] requirements) {
+		this.requirements = requirements;
+	}//setRequirements
+
+	@Override
+	public String buildXML() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createFromXML(Document document) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String buildJSON() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void createFromJSON(JSONObject object) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }//Task
