@@ -64,6 +64,11 @@ public class Task implements Item {
 		//Campaign.this.setTask(this);
 	}//Task
 	
+	/** Default Constructor */
+	public Task() {
+		this(null, null, null);
+	}//Task
+	
 	@Override
 	public int describeContents() {
 		return 0;

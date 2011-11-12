@@ -7,6 +7,8 @@ package com.citizensense.android;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 
@@ -306,8 +308,19 @@ public class Campaign implements Item {
 
 	@Override
 	public void createFromJSON(JSONObject object) {
-		// TODO Auto-generated method stub
-		
+		//Iterator iterator = object.keys();
+		this.id = object.optString("id");
+		JSONObject end_date = object.optJSONObject("end_date");
+		this.endDate = new Date(Long.parseLong(end_date.optString("time")));
+		this.description = object.optString("description");
+		//TODO this.owner = object.getString("owner_id");
+		JSONArray tasks = object.optJSONArray("tasks");
+		JSONObject task = tasks.optJSONObject(0);
+		this.task = new Task();
+		this.task.setInstructions(task.optString("instructions"));
+		this.task.setName(task.optString("name"));
+		JSONObject start_date = object.optJSONObject("start_date");
+		this.startDate = new Date(Long.parseLong(start_date.optString("time")));
 	}//createFromJSON
 		
 }//Campaign
