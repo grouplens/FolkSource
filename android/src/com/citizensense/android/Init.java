@@ -5,7 +5,6 @@
 package com.citizensense.android;
 
 import java.util.ArrayList;
-
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -33,5 +32,4 @@ public class Init extends Application {
 
 		G.startLocationService();
 	}//onCreate
-	
 }//Init

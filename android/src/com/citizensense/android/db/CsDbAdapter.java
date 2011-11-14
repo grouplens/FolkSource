@@ -4,7 +4,6 @@
 
 package com.citizensense.android.db;
 
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,10 +18,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.citizensense.android.Campaign;
+import com.citizensense.android.Form;
 import com.citizensense.android.G;
-import com.citizensense.android.Campaign.Task;
-import com.citizensense.android.Campaign.Task.Form;
 import com.citizensense.android.Question;
+import com.citizensense.android.Task;
 import com.citizensense.android.conf.Constants;
 
 /**
@@ -74,7 +73,6 @@ public class CsDbAdapter {
 	/** Add a campaign to the database
 	 * @param c Campaign object to store in the database */
 	public long addCampaign(Campaign c) {
-		//TODO print campaign contents
 		String selection = "";
 		String insert = "INSERT INTO CAMPAIGNS";
 		//add the campaign to the database
@@ -307,10 +305,10 @@ public class CsDbAdapter {
 				cur.close();
 				return null;
 			}
-			Task task = campaign.
-		        new Task(cur.getString(cur.getColumnIndex(DB.NAME)),
+			Task task = new Task(cur.getString(cur.getColumnIndex(DB.NAME)),
 				cur.getString(cur.getColumnIndex(DB.INSTRUCTIONS)),
 				cur.getString(cur.getColumnIndex(DB.REQUIREMENTS)).split("\\|"));
+			campaign.setTask(task);
 			cur = database.query(DB.TASK_TABLE, 
 				             new String[]{DB.ID,
 				                          DB.NAME,
@@ -343,7 +341,7 @@ public class CsDbAdapter {
 				cur.close();
 				return null;
 			}
-			Form form = task.new Form();
+			Form form = new Form();
 			Question q;
 			do {
 				boolean options;
@@ -358,6 +356,7 @@ public class CsDbAdapter {
 				form.addQuestion(q);
 			} while (cur.moveToNext());
 			retrievedCampaigns.add(campaign);
+			task.setForm(form);
 			if (Constants.DEBUG) Log.i("GOT CAMPAIGN", campaign.getName());
 		} while(cur1.moveToNext());
 		return retrievedCampaigns;

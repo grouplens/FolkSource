@@ -48,6 +48,4 @@ public class User {
 		return campaign_ids;
 	}//getCampaignIDs
 	
-	
-	
 }//User

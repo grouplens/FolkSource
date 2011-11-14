@@ -17,13 +17,7 @@ import android.view.ContextMenu.ContextMenuInfo;
  * @author Phil Brown
  */
 public class MyCampaigns extends CampaignExplorer {
-	
-	@Override 
-	public void onResume(){
-		super.onResume();
-		System.out.println(staticGetCampaigns().size());
-	}
-	
+		
 	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<Campaign> getCampaigns() {
@@ -66,7 +60,5 @@ public class MyCampaigns extends CampaignExplorer {
 		}
 		return super.onContextItemSelected(item);
 	}//onContextItemSelected
-	
-	
 	
 }//MyCampaigns

@@ -16,8 +16,6 @@ import android.util.Xml;
 import android.widget.Gallery;
 import android.widget.TextView;
 
-import com.citizensense.android.Campaign.Task;
-import com.citizensense.android.Campaign.Task.Form;
 import com.citizensense.android.net.CampaignParser;
 import com.citizensense.android.net.CampaignParserCallback;
 import com.citizensense.android.util.CampaignGalleryAdapter;

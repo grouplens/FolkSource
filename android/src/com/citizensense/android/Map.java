@@ -33,7 +33,6 @@ import com.google.android.maps.Projection;
 
 /**
  * Map activity
- * 
  * @author Phil Brown
  * @author Renji Yu
  */
@@ -92,6 +91,11 @@ public class Map extends MapActivity {
 		return results;
 	}// getCampaigns
 
+	/** Set zoom level of the map. */
+	// Should be updated.
+	public void setZoomLevel() {
+		G.map.getController().setZoom(12);
+	}
 	/**
 	 * Get locations of the campaign from database by searching the campaign's
 	 * id.
@@ -100,12 +104,6 @@ public class Map extends MapActivity {
 		Campaign c = (Campaign) G.db.getCampaign(id);
 		return c.getLocations();
 	}// getLocsByCampaignId
-
-	/** Set zoom level of the map. */
-	// Should be updated.
-	public void setZoomLevel() {
-		G.map.getController().setZoom(12);
-	}
 
 	/**
 	 * Get the type of the location: (longitude,latitude) is EXACT_LOCATION,

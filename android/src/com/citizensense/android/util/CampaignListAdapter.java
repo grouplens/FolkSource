@@ -4,7 +4,6 @@
 
 package com.citizensense.android.util;
 
-
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -12,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.citizensense.android.Campaign;
@@ -44,16 +44,35 @@ public class CampaignListAdapter extends ArrayAdapter<Campaign> {
 			LayoutInflater vi = 
 				(LayoutInflater)context.getSystemService(
 						Context.LAYOUT_INFLATER_SERVICE);
-			v = vi.inflate(R.layout.campaign_list_item, null);
+			v = vi.inflate(R.layout.relative_campaign_list_item, null);
 		}
 		Campaign campaign = campaigns.get(position);//this.getItem(position);
 		if(campaign != null) {
 			TextView title = (TextView) v.findViewById(R.id.campaign_title);
-			TextView stats = (TextView) v.findViewById(R.id.campaign_stats);
+			//TextView stats = (TextView) v.findViewById(R.id.campaign_stats);
+			TextView descr = (TextView) v.findViewById(R.id.campaign_description);
+			descr.setText(campaign.getDescription());
+			ImageView img = (ImageView) v.findViewById(R.id.list_image);
+			img.setImageResource(campaign.getImage());
 			//TextView points = (TextView) v.findViewById(R.id.campaign_points);
 			title.setText(campaign.getName());
+			
+			TextView locs = (TextView) v.findViewById(R.id.campaign_location);
+			String locString = "";
+			String[] loc = campaign.getLocations();
+			for (int i = 0; i < loc.length; i++) {
+				locString += loc[i];
+				if (i != loc.length - 1) {
+					locString += "; ";
+				}
+			}
+			locs.setText(locString);
+			
+			TextView timeLeft = (TextView) v.findViewById(R.id.campaign_timeleft);
+			timeLeft.setText(campaign.getStartDate().toLocaleString() + " - " + campaign.getEndDate().toLocaleString());
+			
 			//FIXME
-			stats.setText("46 participants   278 photos   high score: 465");
+			//stats.setText("46 participants   278 photos   high score: 465");
 			//points.setText("My Points: 120");
 			if (G.user != null) {
 				//TODO points.setText(G.user.getPoints());

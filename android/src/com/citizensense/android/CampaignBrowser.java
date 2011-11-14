@@ -26,18 +26,16 @@ import com.citizensense.android.net.CampaignParserCallback;
 /**
  * The campaign browser allows users to view active campaigns in an "app-store"
  * style browser.
- * 
  * @author Phil Brown
  */
-public class CampaignBrowser extends CampaignExplorer implements
-		CampaignParserCallback {
+public class CampaignBrowser extends CampaignExplorer implements CampaignParserCallback {
 
 	/** The XML parser used when a campaign is downloaded from the server. */
 	CampaignParser parser;
-
+	
 	/** The campaigns retrieved from the server */
 	ArrayList<Campaign> server_campaigns;
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		server_campaigns = new ArrayList<Campaign>();

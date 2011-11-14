@@ -7,15 +7,17 @@ package com.citizensense.android;
 import java.util.ArrayList;
 import java.util.Date;
 
+import android.R.drawable;
+import android.util.Log;
+
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 /** 
  * Campaign Object
  * @author Phil Brown
  */
-public class Campaign implements Parcelable{
+public class Campaign implements Parcelable {
 
 	ArrayList<String> user_tokens;
 	/*The tokens associated with participating users.
@@ -31,8 +33,6 @@ public class Campaign implements Parcelable{
 	private String name;
 	/** Description of the campaign. */
 	private String description;
-	
-
 	/** The campaign organizer. This should later be a new Object, not a String.*/
 	private String owner;
 	/** The task defined by this campaign*/
@@ -44,37 +44,60 @@ public class Campaign implements Parcelable{
 	/** Date the campaign ends.*/
 	private Date endDate;
 	
+	/** This CREATOR is used to parcel this Object. */
+	public static final Parcelable.Creator<Campaign> CREATOR =
+        new Parcelable.Creator<Campaign>() {
+     
+		/** Construct and return an Ad from a Parcel*/
+		@Override
+		public Campaign createFromParcel(Parcel in) {
+			return new Campaign(in);
+		}//createFromParcel
+
+		/**
+		 * Creates a new array of Adds
+		 */
+		@Override
+		public Campaign[] newArray(int size) {
+			return new Campaign[size];
+		}//newArray
+	};
+	
+	/** Create a new campaign from the given Parcel. */
+	public Campaign(Parcel in) {
+		this.id = in.readString();
+		this.times = in.createStringArray();
+		this.locations = in.createStringArray();
+		this.name = in.readString();
+		this.description = in.readString();
+		this.owner = in.readString();
+		this.task = in.readParcelable(Task.class.getClassLoader());
+		this.isComplete = in.readByte() == 1;
+		this.startDate = new Date(in.readLong());
+		this.endDate = new Date(in.readLong());
+	}//Campaign
+	
 	/** An empty constructor is used by the XML Parser and by the Database.*/
 	public Campaign() {}//Campaign
 	
-	/** Constructor to use when re-constructing object from a parcel.*/
-	public Campaign(Parcel in) {
-		readFromParcel(in);
-	}
-	
-	/** Called from the constructor to create this object from a parcel.*/
-	private void readFromParcel(Parcel in) {
-		id = in.readString();
-		in.readStringArray(times);
-		in.readStringArray(locations);
-		name = in.readString();
-		description = in.readString();
-		//TODO: read Task
-		
-		owner = in.readString();
-		//read boolean value isComplete
-		boolean[]  booleanArray = new boolean[1];
-		in.readBooleanArray(booleanArray);
-		isComplete = booleanArray[0];
-		//read startDate
-		int[] startDateArray = new int[3];
-		int[] endDateArray = new int[3];
-		in.readIntArray(startDateArray);
-		in.readIntArray(endDateArray);
-		startDate = new Date(startDateArray[2],startDateArray[0],startDateArray[1]);
-		endDate = new Date(endDateArray[2],endDateArray[0],endDateArray[1]);
-	}
-	
+	@Override
+	public int describeContents() {
+		return 0;
+	}//describeContents
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		out.writeString(this.id);
+		out.writeStringArray(this.times);
+		out.writeStringArray(this.locations);
+		out.writeString(this.name);
+		out.writeString(this.description);
+		out.writeString(this.owner);
+		out.writeParcelable(this.task, 0);
+		out.writeByte((byte) (isComplete ? 1 : 0));
+		out.writeLong(this.startDate.getTime());
+		out.writeLong(this.endDate.getTime());
+	}//writeToParcel
 	
 	/** This should request campaign incentives from the server.*/
 	public String[]getIncentives() {
@@ -189,113 +212,24 @@ public class Campaign implements Parcelable{
 		this.endDate = endDate;
 	}//setEndDate
 	
-	@Override
-	public int describeContents() {
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-	      dest.writeString(id);
-	      dest.writeStringArray(times);
-	      dest.writeStringArray(locations);
-	      dest.writeString(name);
-	      dest.writeString(description);
-	      //TODO: write Task
-	      
-	      dest.writeString(owner);
-	      //There is no function for writing a single boolean
-	      dest.writeBooleanArray(new boolean[]{isComplete});
-	      //Write Date as an integer array
-	      dest.writeIntArray(new int[]{startDate.getMonth(),startDate.getDay(),startDate.getYear()});
-	      dest.writeIntArray(new int[]{endDate.getMonth(),endDate.getDay(),endDate.getYear()});
-		
-	}
+	/** Set the image contained in this campaign. */
+	public void setImage() {
+		//TODO
+	}//setImage
 	
-	public class CampaignCreator implements Parcelable.Creator<Campaign> {
-	      public Campaign createFromParcel(Parcel source) {
-	            return new Campaign(source);
-	      }
-	      public Campaign[] newArray(int size) {
-	            return new Campaign[size];
-	      }
-	}
-	
-	
-	/** This defines the task associated with the exclusive campaign object.*/
-	public class Task {
-		/** Provides a description of how to complete this task*/
-		public String instructions;
-		/** This task's name*/
-		public String name;
-		/** The requirements for this task (such as gps, photo, etc)*/
-		public String[] requirements;
-		/** The form associated with this task*/
-		private Form form;
-		//public boolean requiresPhoto;
-		//public boolean requiresLocation;
-		/*
-		public boolean requiresVideo;
-		public boolean requiresSoundClip;
-		public boolean requiresAccelerometerData;
-		*/
-		/**
-		 * Constructor. Initiates variables and assigns this task to this
-		 * campaign.
-		 * @param name The name of the Task
-		 * @param instructions The instructions for performing the task
-		 * @param v The View associated with this Task's form.
-		 */
-		public Task(String name, String instructions, String[] requirements) {
-			this.name = name;
-			this.instructions = instructions;
-			this.requirements = requirements;
-			Campaign.this.setTask(this);
-		}//Task
+	/** Get this campaign's image
+	 * FIXME */
+	public int getImage() {
+		if (this.getId().equals("1")) {
+			return R.drawable.potholes;
+		}
+		else if (this.getId().equals("2")) {
+			return R.drawable.busrack;
+		}
+		else {
+			return R.drawable.profile_default;
+		}
+	}//getImage
 		
-		/** Sets the form
-		 * @param f the new form*/
-		public void setForm(Form f) {
-			this.form = f;
-		}//setForm
 		
-		/** gets the form*/
-		public Form getForm() {
-			return this.form;
-		}//getForm
-		
-		/** 
-		 * This is the form object associated with this task. A Form merely 
-		 * contains an ArrayList of Question Objects.
-		 */
-		public class Form {
-			/** Holds the questions*/
-			private ArrayList<Question> questions;
-			
-			/** Constructor. Initializes the questions and sets the form as this
-			 * task's form.*/
-			public Form() {
-				questions = new ArrayList<Question>();
-				Campaign.Task.this.setForm(this);
-			}//Form
-			
-			/** Add a new Question to this form
-			 * @param q new Question*/
-			public void addQuestion(Question q) {
-				questions.add(q);
-			}//addQuestion
-			
-			/** get this form's questions*/
-			public Question[] getQuestions() {
-				Log.i("CAMPAIGN", "Number of Questions: " + questions.size());
-				Question[] q = new Question[questions.size()];
-				for (int i=0; i<questions.size(); i++) {
-					q[i] = questions.get(i);
-				}
-				return q;
-			}//getQuestions
-			
-		}//Form
-	}//Task
-	
 }//Campaign

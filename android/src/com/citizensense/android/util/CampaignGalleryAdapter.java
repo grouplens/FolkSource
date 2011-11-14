@@ -7,10 +7,14 @@ package com.citizensense.android.util;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
@@ -20,12 +24,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.citizensense.android.Campaign;
-import com.citizensense.android.Campaign.Task;
-import com.citizensense.android.Campaign.Task.Form;
+import com.citizensense.android.Form;
 import com.citizensense.android.Question;
 import com.citizensense.android.R;
+import com.citizensense.android.Sense;
+import com.citizensense.android.Task;
 import com.citizensense.android.conf.Constants;
-
 
 /**
  * Displays campaigns as a gallery.
@@ -96,15 +100,16 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 		if (v == null) {
 	         LayoutInflater vi = (LayoutInflater)context.getSystemService(
 	        		                          Context.LAYOUT_INFLATER_SERVICE);
-	         v = vi.inflate(R.layout.relative_campaign, null);
+	         v = vi.inflate(R.layout.relative_campaign_gallery_item, null);
 		}
 		TextView title = (TextView) v.findViewById(R.id.campaign_title);
 		TextView descr = (TextView) v.findViewById(R.id.campaign_description);
-		TextView info = (TextView) v.findViewById(R.id.campaign_info);
+		//TextView info = (TextView) v.findViewById(R.id.campaign_info);
 		ImageView image = (ImageView) v.findViewById(R.id.campaign_image);
 		Button map_button = (Button) v.findViewById(R.id.map);
 		Button task_button = (Button) v.findViewById(R.id.task);
 		Button d_or_d = (Button) v.findViewById(R.id.download_or_delete);
+		
 		//Button more = (Button) v.findViewById(R.id.more);
 		//FIXME
 		//iv.setVisibility(View.GONE);
@@ -118,7 +123,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 			//tv.setText(G.db.getCampaignById("2").getName());
 		}
 		*/
-		Campaign campaign = campaigns.get(position);
+		final Campaign campaign = campaigns.get(position);
 		//unpack campaign and display (for now) FIXME improve it!
 		if (campaign != null) {
 			title.setText(campaign.getName());
@@ -131,14 +136,34 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 				times += time_intervals[i] + "\n";
 				
 			}
-
-			String locs = "Locations: ";
-			String[] locations = campaign.getLocations();
-			for (int i=0; i<locations.length; i++) {
-				locs += "\n" + locations[i];
+			//Set status by computing if the current date is before or after
+			//the end date of the campaign.
+			//TODO add hour accuracy.
+			Time endDate = new Time();
+			endDate.set(campaign.getEndDate().getDay(), campaign.getEndDate().getMonth(), campaign.getEndDate().getYear());
+			Time now = new Time();
+			now.setToNow();
+			String isOpen = endDate.before(now) ? "Open" : "Closed";
+			TextView status = (TextView) v.findViewById(R.id.campaign_status);
+			status.setText("Status: " + isOpen);
+			if (isOpen.equals("Open")) {
+				status.setTextColor(Color.GREEN);
 			}
-			String information = start + "\n" + end + "\n" + times + locs;
-			info.setText(information);
+			else {
+				status.setTextColor(Color.RED);
+			}
+			
+			String locs = "";
+			String[] locations = campaign.getLocations();
+			for (int i = 0; i < locations.length; i++) {
+				locs += locations[i];
+				if (i != locations.length - 1) {
+					locs += "\n";
+				}
+			}
+			TextView where = (TextView) v.findViewById(R.id.campaign_location);
+			where.setText(locs);
+			//info.setText(information);
 			descr.setText(campaign.getDescription());
 			//TODO unpack full campaign
 			//String more = "More Details available";
@@ -154,7 +179,16 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 				Log.i("Questions", qs);
 				qs += q[i].toString();
 			}
-			//TODO something with the buttons
+			image.setImageResource(campaign.getImage());
+			//DO something with the buttons
+			task_button.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent i = new Intent(context, Sense.class);
+					i.putExtra("campaign", campaign);
+					context.startActivity(i);
+				}
+			});
 		}
 		
 		v.setLayoutParams(new Gallery.LayoutParams(

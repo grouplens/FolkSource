@@ -7,15 +7,18 @@ package com.citizensense.android;
 import java.util.ArrayList;
 
 import android.app.ListActivity;
-import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.Gallery;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.citizensense.android.util.CampaignGalleryAdapter;
 import com.citizensense.android.util.CampaignListAdapter;
@@ -28,30 +31,29 @@ public abstract class CampaignExplorer extends ListActivity
 									   implements OnClickListener,
 									              OnItemSelectedListener {
 
-	//FIXME: add modifiers to all class variables!!!
 	/** Adapter for adding campaigns to the gallery*/
-	CampaignGalleryAdapter galleryAdapter;
+	protected CampaignGalleryAdapter galleryAdapter;
 	
 	/** Adapter for adding campaigns to the list*/
-	CampaignListAdapter listAdapter;
+	protected CampaignListAdapter listAdapter;
 	
 	/** List of campaigns inflated by the view*/
-	ArrayList<Campaign> campaigns;
+	protected ArrayList<Campaign> campaigns;
 	
 	/** The gallery where the campaigns are stored in gallery mode*/
-	Gallery gallery;
+	protected Gallery gallery;
 	
 	/** The list where the campaigns are stored in list mode*/
-	ListView list;
+	protected ListView list;
 	
-	Button listMode;
-	Button galleryMode;
-	Button mapMode;
+	/** Button indicating the way that the on-screen campaigns should be
+	 * displayed. */
+	protected Button listMode, galleryMode, mapMode;
 	
 	/** The current View within the gallery*/
-	View current_gallery_view;
+	protected View current_gallery_view;
 	/** The current position of the gallery*/
-	int current_gallery_position;
+	protected int current_gallery_position;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -109,12 +111,13 @@ public abstract class CampaignExplorer extends ListActivity
     		 				   long id) {
     	current_gallery_view = view;
     	current_gallery_position = position;
+    	updateIndicator(position);
     }//onItemSelected
 	
 	@Override
 	public void onNothingSelected(AdapterView<?> arg0) {}//onNothingSelected
 	
-	/** Refresh the view*/
+	/** Refresh the view and update the gallery index indicator */
 	public void refresh() {
 		//re-retrieve the campaigns. TODO move to non-UI thread
 		campaigns = getCampaigns();
@@ -127,5 +130,25 @@ public abstract class CampaignExplorer extends ListActivity
 		}
 	}//refresh
 	
-
+	/** Update the index indicator at the bottom of the campaign view. 
+	 * @param position the current gallery position */
+	public void updateIndicator(int position) {
+		int totalAdds = gallery.getCount();
+		TextView temp;
+		LinearLayout indicator = (LinearLayout) findViewById(R.id.gallery_index_indicator);
+		indicator.removeAllViews();
+		for (int i = 0; i < totalAdds; i++) {
+			temp = new TextView(this);
+			temp.setText("? ");
+			temp.setGravity(Gravity.CENTER);
+			if (i == position){
+				temp.setTextColor(Color.BLUE);
+			}
+			else {
+				temp.setTextColor(Color.LTGRAY);
+			}
+			indicator.addView(temp, i);
+		}
+	}//updateIndicator
+	
 }//CampaignExplorer
