@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import android.view.View;
 
 import com.citizensense.android.net.CampaignParser;
 import com.citizensense.android.net.CampaignParserCallback;
+import com.citizensense.android.net.GetRequest;
+import com.citizensense.android.net.XMLResponseHandler;
 
 /**
  * The campaign browser allows users to view active campaigns in an "app-store"
@@ -45,17 +48,20 @@ public class CampaignBrowser extends CampaignExplorer implements CampaignParserC
 	
 	@Override
 	public ArrayList<Campaign> getCampaigns() {
-		/* FIXME retrieve campaigns from the gallery. 
-		 * The following code should do it:
+		/*
+		// FIXME retrieve campaigns from the gallery. 
+		 // The following code should do it:
 		XMLResponseHandler handler = new XMLResponseHandler();
-		handler.setCallback(new XMLResponseHandler.Callback() {
+		handler.setCallback(new XMLResponseHandler.StringCallback() {
+			
 			@Override
-			public void invoke(Document doc) {
-				//TODO handle document
+			public void invoke(String xml) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 		new GetRequest(this, Campaign.class, null, handler, true).execute();
-		 */
+		*/
 		try {
 			InputStream stream = getAssets().open("samples/campaign_1.xml");
 			Xml.parse(stream, Xml.Encoding.UTF_8, parser);

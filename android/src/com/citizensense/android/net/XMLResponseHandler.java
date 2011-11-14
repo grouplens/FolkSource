@@ -6,7 +6,6 @@ package com.citizensense.android.net;
 
 import java.io.IOException;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -16,6 +15,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.util.EntityUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -32,7 +32,7 @@ public class XMLResponseHandler implements ResponseHandler<Document> {
 	private Document document;
 	/** This handler's callback. This is run when this handler completes its
 	 * task of parsing the {@link HttpResponse} */
-	private Callback callback;
+	private Callback<?> callback;
 	
 	/**
 	 * Constructs a new XMLResponseHandler
@@ -43,7 +43,7 @@ public class XMLResponseHandler implements ResponseHandler<Document> {
 	
 	/** Set the {@link Callback} for this handler. This is useful because it
 	 * allows the calling class to get the returned {@link Document}. */
-	public void setCallback(Callback callback) {
+	public void setCallback(Callback<?> callback) {
 		this.callback = callback;
 	}//setCallback
 	
@@ -62,10 +62,16 @@ public class XMLResponseHandler implements ResponseHandler<Document> {
         }
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		try {
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			this.document = builder.parse(entity.getContent());
 			if (this.callback != null) {
-				callback.invoke(this.document);
+				if (this.callback instanceof DocumentCallback) {
+					((DocumentCallback) callback).invoke(factory.newDocumentBuilder().parse(entity.getContent()));
+				}
+				else if (this.callback instanceof StringCallback) {
+					((StringCallback) callback).invoke(EntityUtils.toString(entity));
+				}
+				else {
+					//invalid callback
+				}
 			}
 			return this.document;
 		} catch (ParserConfigurationException e1) {
@@ -81,12 +87,35 @@ public class XMLResponseHandler implements ResponseHandler<Document> {
 	}//handleResponse
 	
 	/** Callback for this {@link XMLResponseHandler} */
-	public interface Callback {
+	public interface Callback<T extends Object> {
 		
-		/** Invoke the callback, passing in the {@link Document} that the 
-		 * handler has finished receiving and parsing. */
-		public void invoke(Document doc);
+		/** Invoke the callback, passing in the parsed XML as a {@link T} */
+		public void invoke(T xml);
 		
 	}//Callback
+	
+	/**
+	 * Used to return an XML document, which can be used with the DOM parser.
+	 */
+	public interface DocumentCallback extends Callback<Document> {
+		/** 
+		 * Invoke the callback, passing in the {@link Document} that the 
+		 * handler has finished receiving and parsing.
+		 */
+		@Override
+		public void invoke(Document doc);
+	}//DocumentCallback
+	
+	/** 
+	 * Used to return an XML String, which can be used with the SAX parser.
+	 */
+	public interface StringCallback extends Callback<String>{
+		/** 
+		 * Invoke the callback, passing in the XML (as a String) that the 
+		 * handler has finished receiving and parsing.
+		 */
+		@Override
+		public void invoke(String xml);
+	}//StringCallback
 
 }//XMLResponseHandler

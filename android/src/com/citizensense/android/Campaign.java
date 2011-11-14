@@ -265,7 +265,13 @@ public class Campaign implements Item {
 	public void createFromXML(Document document) {
 		// TODO Auto-generated method stub
 		// TODO Don't forget about com.citizensense.android.net.CampaignParser.java
+		
 	}//createFromXML
+	
+	@Override
+	public void createFromXML(String string) {
+		
+	}
 
 	@Override
 	public String buildJSON() {

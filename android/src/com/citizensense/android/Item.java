@@ -24,10 +24,15 @@ public interface Item extends Parcelable {
 	public String buildXML();
 	
 	/**
-	 * Instantiate a new Item given an XML {@link Document}.
+	 * Instantiate a new Item given an XML {@link Document} (using the DOM parser).
 	 * @param document
 	 */
 	public void createFromXML(Document document);
+	
+	/**
+	 * Instantiate a new Item given an XML as a String (using the SAX parser).
+	 */
+	public void createFromXML(String string);
 	
 	/** 
 	 * Return the {@link Item} as a String representation of an JSON document.

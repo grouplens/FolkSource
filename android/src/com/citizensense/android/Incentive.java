@@ -39,6 +39,12 @@ public class Incentive implements Item {
 		// TODO Auto-generated method stub
 		
 	}
+	
+
+	@Override
+	public void createFromXML(String string) {
+		
+	}
 
 	@Override
 	public String buildJSON() {
