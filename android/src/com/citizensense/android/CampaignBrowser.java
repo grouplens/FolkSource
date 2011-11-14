@@ -4,11 +4,11 @@
 
 package com.citizensense.android;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import android.os.Bundle;
@@ -56,8 +56,14 @@ public class CampaignBrowser extends CampaignExplorer implements CampaignParserC
 			
 			@Override
 			public void invoke(String xml) {
-				// TODO Auto-generated method stub
-				
+				ByteArrayInputStream stream = new ByteArrayInputStream(xml.getBytes());
+				try {
+					Xml.parse(stream, Xml.Encoding.UTF_8, parser);//TODO change parser to handle new XML format
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (SAXException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		new GetRequest(this, Campaign.class, null, handler, true).execute();
