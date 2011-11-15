@@ -10,8 +10,6 @@ import java.util.ArrayList;
 
 import org.xml.sax.SAXException;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Xml;
 import android.view.ContextMenu;
@@ -30,7 +28,7 @@ import com.citizensense.android.net.CampaignParserCallback;
  */
 public class CampaignBrowser extends CampaignExplorer implements CampaignParserCallback {
 
-	/** The XML parser used when a campaign is downloaded from the server. */
+	/** The XML parser used when a campaign is downloaded from the server.*/
 	CampaignParser parser;
 	
 	/** The campaigns retrieved from the server */
@@ -58,7 +56,7 @@ public class CampaignBrowser extends CampaignExplorer implements CampaignParserC
 			e.printStackTrace();
 		}
 		return server_campaigns;
-	}// getCampaigns
+	}//getCampaigns
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
@@ -86,15 +84,13 @@ public class CampaignBrowser extends CampaignExplorer implements CampaignParserC
 			server_campaigns.add(c);
 		}
 	}//handleNewCampaign
-
-	/**
-	 * In order to avoid the campaign browser to add multiples, this line is
-	 * needed on onResume.
-	 */
+	
+	/** In order to avoid the campaign browser to add multiples, this
+	 * line is needed on onResume.*/
 	@Override
 	public void onResume() {
 		this.server_campaigns = new ArrayList<Campaign>();
 		super.onResume();
-	}// onResume
-
-}// CampaignBrowser
+	}//onResume
+	
+}//CampaignBrowser

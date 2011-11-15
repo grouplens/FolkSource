@@ -17,7 +17,7 @@ import android.view.ContextMenu.ContextMenuInfo;
  * @author Phil Brown
  */
 public class MyCampaigns extends CampaignExplorer {
-		
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<Campaign> getCampaigns() {

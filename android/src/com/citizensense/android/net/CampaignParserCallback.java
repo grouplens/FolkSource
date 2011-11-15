@@ -4,7 +4,6 @@
 
 package com.citizensense.android.net;
 
-
 import com.citizensense.android.Campaign;
 
 /** Contains the callback method which is called after a CampaignParser 

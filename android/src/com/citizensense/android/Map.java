@@ -23,6 +23,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.citizensense.android.conf.Constants;
 import com.google.android.maps.GeoPoint;
@@ -39,9 +40,7 @@ import com.google.android.maps.Projection;
 public class Map extends MapActivity {
 
 	private ArrayList<Campaign> campaigns;
-	private PointOverlay pointOverlay;
-	private CircleOverlay circleOverlay;
-	List<Overlay> mapOverlays;
+	private List<Overlay> mapOverlays;
 
 	/** Initialize the map */
 	@Override
@@ -56,21 +55,30 @@ public class Map extends MapActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		
+		PointOverlay pointOverlay;
+		CircleOverlay circleOverlay;
 		// update intent data
 		campaigns = getIntent().getParcelableArrayListExtra(
 				getString(R.string.campaigns));
 		if (campaigns != null) {
 			for (Campaign campaign : campaigns) {
 				for (String loc : campaign.getLocations()) {
-					if (getLocType(loc) == Constants.EXACT_LOCATION) {
-						pointOverlay = new PointOverlay(getGeopoint(loc));
-						mapOverlays.add(pointOverlay);
-						G.map.getController().animateTo(getGeopoint(loc));
+					GeoPoint point = getGeopoint(loc);
+					if (point != null) {
+						if (getLocType(loc) == Constants.EXACT_LOCATION) {
+							pointOverlay = new PointOverlay(getGeopoint(loc));
+							mapOverlays.add(pointOverlay);
+							G.map.getController().animateTo(getGeopoint(loc));
+						}
+						circleOverlay = new CircleOverlay(getGeopoint(loc),
+								getRadius(loc));
+						mapOverlays.add(circleOverlay);
+					} else {
+						Toast.makeText(
+								this,
+								"Geocoder failed, can't show some campaigns, please try later.",
+								Toast.LENGTH_LONG).show();
 					}
-					circleOverlay = new CircleOverlay(getGeopoint(loc),
-							getRadius(loc));
-					mapOverlays.add(circleOverlay);
 				}
 			}
 			setZoomLevel();

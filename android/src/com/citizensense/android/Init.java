@@ -4,7 +4,6 @@
 
 package com.citizensense.android;
 
-import java.util.ArrayList;
 import android.app.Application;
 import android.content.Context;
 import com.citizensense.android.conf.Constants;
