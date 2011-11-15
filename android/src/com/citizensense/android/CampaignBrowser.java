@@ -65,30 +65,27 @@ public class CampaignBrowser extends CampaignExplorer implements CampaignParserC
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
-		menu.setHeaderTitle((campaigns.get(this.current_gallery_position))
-				.getName());
+		menu.setHeaderTitle((campaigns.get(this.current_gallery_position)).getName());
 		inflater.inflate(R.menu.campaign_browser_context_menu, menu);
-	}// onCreateContextMenu
+	}//onCreateContextMenu
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		/* Add the campaign to the local database */
-		case R.id.download:{
+		/* Add the campaign to the local database*/
+		case R.id.download:
 			G.db.addCampaign(campaigns.get(this.current_gallery_position));
-			G.resetLocationService();
-		}
 			return true;
 		}
 		return super.onContextItemSelected(item);
-	}// onContextItemSelected
+	}//onContextItemSelected
 
 	@Override
 	public void handleNewCampaign(Campaign c) {
 		if (!server_campaigns.contains(c)) {
 			server_campaigns.add(c);
 		}
-	}// handleNewCampaign
+	}//handleNewCampaign
 
 	/**
 	 * In order to avoid the campaign browser to add multiples, this line is

@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
-
 import com.citizensense.android.db.CsDbAdapter;
 import com.google.android.maps.MapView;
 
@@ -68,3 +67,4 @@ public class G {
 	}
 
 }// G
+

@@ -56,6 +56,7 @@ public class Map extends MapActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
+		
 		// update intent data
 		campaigns = getIntent().getParcelableArrayListExtra(
 				getString(R.string.campaigns));

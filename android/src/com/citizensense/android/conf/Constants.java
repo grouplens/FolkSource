@@ -29,13 +29,14 @@ public interface Constants {
 	public static final long MAIN_GPS_TIME_BETWEEN_UPDATES = 1000 * 60;
 	/** Minimum time between updates for the GPS location listener in the
 	 * tracking service. */ 
-	public static final long SERVICE_GPS_TIME_BETWEEN_UPDATES = 0;//should be updated
+	/** Minimum time between updates for the GPS location listener in the
+	 * tracking service. */
+	public static final long SERVICE_GPS_TIME_BETWEEN_UPDATES = 1000 * 1;
 	/** Minimum distance between updates for location listeners (in meters) */
-	public static final float MIN_DISTANCE_BETWEEN_UPDATES = 0;//should be updated
+	public static final long MIN_DISTANCE_BETWEEN_UPDATES = 1;	
 	/** This is a type of campaign location*/
-	public static final boolean EXACT_LOCATION = true;
-
-	public static final boolean NONEXACT_LOCATION = false;
+	public static final boolean EXACT_LOCATION = true,
+	                            NONEXACT_LOCATION = false;
 	
 	
 	public static final int NO_EXPIRATION = -1;

@@ -7,8 +7,6 @@ package com.citizensense.android;
 import java.util.ArrayList;
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
-
 import com.citizensense.android.conf.Constants;
 import com.citizensense.android.db.CsDbAdapter;
 
