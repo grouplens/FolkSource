@@ -49,7 +49,7 @@ public class Campaign {
 	public List<Task> getTasks() {
 		return tasks;
 	}
-	public void setTasks(ArrayList<Task> tasks) {
+	public void setTasks(List<Task> tasks) {
 		this.tasks = tasks;
 	}
 	public String getDescription() {

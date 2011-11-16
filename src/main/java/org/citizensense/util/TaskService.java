@@ -1,42 +1,51 @@
 package org.citizensense.util;
 
 import java.util.List;
+import java.util.Set;
+
 import org.citizensense.model.*;
 import org.citizensense.util.*;
 import org.hibernate.Session;
 
 
-public class CampaignService {
+public class TaskService {
 
 	
-	public static List<Campaign> getCampaigns() {
-		List<Campaign> campaigns;
+	public static List<Task> getTasks() {
+		List<Task> tasks;
+
 		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
 		//Session session = HibernateFactory.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
-		campaigns = session.createQuery("from Campaign").list();
+		tasks = session.createQuery("from Task").list();
+//		for(Task t : tasks) {
+//			submissions = session.createQuery("from Task as t join from ").list();
+//			t.setSubmissions(submissions);
+//		}
 		session.getTransaction().commit();
 		
-		return campaigns;
+		for(Task t: tasks) {
+			getSubmissions(t);
+		}
+		
+		return tasks;
 	}
 	
-	public static List<Campaign> getCampaigns(int id) {
-		List<Campaign> campaigns;
+	public static void getSubmissions(Task t) {
+		List<Submission> submissions;
 		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
-		//Session session = HibernateFactory.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
-		campaigns = session.createQuery("from Campaign where id= "+id).list();
-		session.getTransaction().commit();
+		submissions = session.createQuery("from Submission where task_id= " + t.getId()).list();
 		
-		return campaigns;
+		t.setSubmissions(submissions);
 	}
 
-	public static void save(Campaign camp) {
+	public static void save(Task t) {
 		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
-		session.save(camp);
+		session.save(t);
 		session.getTransaction().commit();
 		
 	}

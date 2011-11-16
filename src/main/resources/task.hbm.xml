@@ -2,17 +2,15 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="org.citizensense.model">
-<class name="User" table="users">
+<class name="Task" table="tasks">
 	<id name="id" column="id">
 		<generator class="native" />
 	</id>
-	<property name="name" />
-	<bag name="tasks" lazy="false">
-		<key column="camp_id" not-null="false"/>
-		<!-- <index column="id" base="1" />-->
-		<one-to-many class="Task" />
-	</bag>
-	<property name="points" />
-	<property name="badges" />
+	<property name="instructions" />
+	<list name="submissions" lazy="false" >
+		<key column="task_id" />
+		<index column="id" />
+		<one-to-many class="Submission"/>
+	</list>
 </class>
 </hibernate-mapping>

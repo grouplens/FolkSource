@@ -39,20 +39,9 @@
         <!--  <mapping class="org.citizensense.model.Campaign" table="campaigns" />-->
         <mapping resource="campaign.hbm.xml" />
         <mapping resource="user.hbm.xml" />
-   
-     <!--   <hibernate-mapping package="org.citizensense.model">
-<class name="Campaign" table="campaigns">
-<id name="id" columd="id">
-<generator class="native" />
-</id>
-<property name="start_date" />
-<property name="end_date" />
-<property name="description" />
-<property name="task_id" />
-<property name="owner_id" />
-
-</class>
-</hibernate-mapping>-->
+        <mapping resource="incentive.hbm.xml" />
+        <mapping resource="task.hbm.xml" />
+        <mapping resource="submission.hbm.xml" />
         
     </session-factory>
 </hibernate-configuration>

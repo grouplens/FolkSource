@@ -1,13 +1,15 @@
 package org.citizensense.model;
 
-import javax.persistence.OneToMany;
-
-public abstract class Incentive {
+public  class Incentive {
 	private String type;
 	private int id;
-	@OneToMany(mappedBy="incentive")
 	private int task_id;
-	private String value;
+	private double value;
+	private String description;
+
+	public Incentive() {
+		
+	}
 
 	public String getType() {
 		return type;
@@ -16,10 +18,38 @@ public abstract class Incentive {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
-	public abstract void  setValue(String value);
-	public abstract String getValue();
-	
+
+	public double getValue() {
+		return value;
+	}
+
+	public void setValue(double value) {
+		this.value = value;
+	}
+
+	public int getTask_id() {
+		return task_id;
+	}
+
+	public void setTask_id(int task_id) {
+		this.task_id = task_id;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 	
 
 }

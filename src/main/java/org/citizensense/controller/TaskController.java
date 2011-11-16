@@ -1,19 +1,24 @@
 package org.citizensense.controller;
 
+
 import java.util.Collection;
 
-import org.citizensense.model.Campaign;
+import org.citizensense.model.Incentive;
+import org.citizensense.model.Task;
 import org.citizensense.util.*;
 
 import com.opensymphony.xwork2.ModelDriven;
 import org.apache.struts2.rest.DefaultHttpHeaders;
 import org.apache.struts2.rest.HttpHeaders;
 
-public class CampaignController implements ModelDriven<Object>{
+public class TaskController implements ModelDriven<Object>{
 	
-	Campaign camp = new Campaign();
-	private Collection<Campaign> list;
+
+	private Collection<Task> list;
 	private int id;
+	private Task task = new Task();
+	
+	
 	/**
 	 * @param args
 	 */
@@ -22,19 +27,20 @@ public class CampaignController implements ModelDriven<Object>{
 
 	}
 
+
 	@Override
 	public Object getModel() {
-		return (list != null ? list : camp);
+		return (list != null ? list : task);
 	}
 	
 	public HttpHeaders show() {
-		return new DefaultHttpHeaders("show").disableCaching();
+		return new DefaultHttpHeaders("show");
 	}
 	
 	public void setId(String id) {
 		if (id != null)
-			this.camp = CampaignService.getCampaigns(Integer.parseInt(id)).get(0);
-		//this.id = Integer.parseInt(id);		
+			this.task = TaskService.getTasks().get(Integer.parseInt(id)-1);
+		this.id = Integer.parseInt(id);		
 	}
 	
 	public int getId() {
@@ -42,13 +48,13 @@ public class CampaignController implements ModelDriven<Object>{
 	}
 	
 	public HttpHeaders index() {
-		list = CampaignService.getCampaigns();
+		list = TaskService.getTasks();
 		return new DefaultHttpHeaders("index").disableCaching();
 	}
 	
 	public HttpHeaders create()
 	{
-		CampaignService.save(camp);
+		TaskService.save(task);
 		return new DefaultHttpHeaders("create");
 	}
 

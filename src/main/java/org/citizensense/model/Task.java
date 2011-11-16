@@ -1,38 +1,28 @@
 package org.citizensense.model;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import java.util.List;
+import java.util.Set;
 
 public class Task {
-	@Column(name="name")
 	private String name;
-	@Column(name="instructions")
 	private String instructions;
-	@Column(name="requirements")
-	private String requirements; // possibly wrong datatype, but for now
-	private Form form;
-	private Location loc;
-	@Column(name="id")
-	private int ID;
+//	private String requirements; // possibly wrong datatype, but for now
+//	private Form form;
+//	private Location loc;
+	private int id;
+	private List<Submission> submissions;
 
-	@ManyToOne
-	@JoinColumn(name="campaign_id", nullable=false)
 	private Campaign camp;
 	
-	@ManyToOne
-	@JoinColumn(name="user_id", nullable=false)
-	
-	@Column(name="incentive")
 	private Incentive incentive;
 
-	public Location getLocation() {
-		return loc;
-	}
-
-	public void setLocation(Location loc) {
-		this.loc = loc;
-	}
+//	public Location getLocation() {
+//		return loc;
+//	}
+//
+//	public void setLocation(Location loc) {
+//		this.loc = loc;
+//	}
 
 	public String getName() {
 		return name;
@@ -50,19 +40,35 @@ public class Task {
 		this.instructions = instructions;
 	}
 
-	public String getRequirements() {
-		return requirements;
+	public List<Submission> getSubmissions() {
+		return submissions;
 	}
 
-	public void setRequirements(String requirements) {
-		this.requirements = requirements;
+	public void setSubmissions(List<Submission> submissions) {
+		this.submissions = submissions;
 	}
 
-	public Form getForm() {
-		return form;
+	public int getId() {
+		return id;
 	}
 
-	public void setForm(Form form) {
-		this.form = form;
+	public void setId(int id) {
+		this.id = id;
 	}
+
+//	public String getRequirements() {
+//		return requirements;
+//	}
+//
+//	public void setRequirements(String requirements) {
+//		this.requirements = requirements;
+//	}
+//
+//	public Form getForm() {
+//		return form;
+//	}
+//
+//	public void setForm(Form form) {
+//		this.form = form;
+//	}
 }

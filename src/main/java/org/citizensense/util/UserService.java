@@ -18,9 +18,23 @@ public class UserService {
 		users = session.createQuery("from User").list();
 		session.getTransaction().commit();
 		
+		for(User u : users) {
+			getIncentives(u);
+		}
 		return users;
 	}
 	
+	private static void getIncentives(User u) {
+		List<User> users;
+		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
+		//Session session = HibernateFactory.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		
+		users = session.createQuery("from IncentivesPh	interesting, I don'").list();
+		session.getTransaction().commit();
+		
+	}
+
 	public static User findUser(int id) {
 		List<User> users = getUsers();
 		User u = null;
@@ -30,6 +44,13 @@ public class UserService {
 		}
 		
 		return u;
+	}
+	
+	public static void save(User u) {
+		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		session.save(u);
+		session.getTransaction().commit();
 	}
 
 }

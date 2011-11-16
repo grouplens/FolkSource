@@ -46,5 +46,9 @@ public class UserController implements ModelDriven<Object>{
 		list = UserService.getUsers();
 		return new DefaultHttpHeaders("index").disableCaching();
 	}
+	public HttpHeaders create() {
+		UserService.save(user);
+		return new DefaultHttpHeaders("create");
+	}
 
 }
