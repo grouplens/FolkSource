@@ -16,7 +16,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Xml;
 
-import com.citizensense.android.net.CampaignParser2;
+import com.citizensense.android.parsers.CampaignParser;
+import com.citizensense.android.parsers.CampaignParser2;
 
 /** 
  * Campaign Object
@@ -266,34 +267,33 @@ public class Campaign implements Item {
 
 	@Override
 	public void createFromXML(Document document) {
-		// TODO Auto-generated method stub
-		// TODO Don't forget about com.citizensense.android.net.CampaignParser.java
-		
+		// Required by Item, but not implemented		
 	}//createFromXML
 	
 	@Override
 	public void createFromXML(String xml) {
 		try {
-			Xml.parse(xml, new CampaignParser2(new CampaignParser2.Callback() {
+			Xml.parse(xml, new CampaignParser(new CampaignParser.Callback() {
+				
 				@Override
-				public void handle(Campaign[] campaigns) {
-					Campaign.this.setId(campaigns[0].getId());
-					Campaign.this.setName(campaigns[0].getName());
-					Campaign.this.setDescription(campaigns[0].getDescription());
-					Campaign.this.setStartDate(campaigns[0].getStartDate());
-					Campaign.this.setEndDate(campaigns[0].getEndDate());
+				public void invoke(Campaign campaign) {
+					Campaign.this.setId(campaign.getId());
+					Campaign.this.setName(campaign.getName());
+					Campaign.this.setDescription(campaign.getDescription());
+					Campaign.this.setStartDate(campaign.getStartDate());
+					Campaign.this.setEndDate(campaign.getEndDate());
 					//FIXME Campaign.this.setImage()
-					Campaign.this.setLocations(campaigns[0].getLocations());
-					Campaign.this.setOwner(campaigns[0].getOwner());
-					Campaign.this.setTask(campaigns[0].getTask());
-					Campaign.this.setTimes(campaigns[0].getTimes());
-					//FIXME Campaign.this.setIncentives(campaigns[0].getIncentives());
+					Campaign.this.setLocations(campaign.getLocations());
+					Campaign.this.setOwner(campaign.getOwner());
+					Campaign.this.setTask(campaign.getTask());
+					Campaign.this.setTimes(campaign.getTimes());
+					//FIXME Campaign.this.setIncentives(campaign.getIncentives());
 				}
 			}));
 		} catch (SAXException e) {
 			e.printStackTrace();
 		}
-	}
+	}//createFromXML
 
 	@Override
 	public String buildJSON() {
@@ -350,5 +350,10 @@ public class Campaign implements Item {
 		JSONObject start_date = object.optJSONObject("start_date");
 		this.startDate = new Date(Long.parseLong(start_date.optString("time")));
 	}//createFromJSON
+
+	@Override
+	public String getItemName() {
+		return "campaign";
+	}//getItemName
 		
 }//Campaign

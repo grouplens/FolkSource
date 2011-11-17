@@ -38,6 +38,15 @@ public class XMLResponseHandler implements ResponseHandler<Document> {
 	 * Constructs a new XMLResponseHandler
 	 */
 	public XMLResponseHandler() {
+		this(null);
+	}//XMLResponseHandler
+	
+	/**
+	 * Constructs a new XMLResponseHandler with the given callback
+	 * @param callback
+	 */
+	public XMLResponseHandler(Callback<?> callback) {
+		this.callback = callback;
 		this.document = null;
 	}//XMLResponseHandler
 	
@@ -54,6 +63,7 @@ public class XMLResponseHandler implements ResponseHandler<Document> {
         if (statusLine.getStatusCode() >= 300) {
             throw new HttpResponseException(statusLine.getStatusCode(),
                     statusLine.getReasonPhrase());
+            
         }
 
         HttpEntity entity = response.getEntity();
@@ -88,10 +98,8 @@ public class XMLResponseHandler implements ResponseHandler<Document> {
 	
 	/** Callback for this {@link XMLResponseHandler} */
 	public interface Callback<T extends Object> {
-		
 		/** Invoke the callback, passing in the parsed XML as a {@link T} */
 		public void invoke(T xml);
-		
 	}//Callback
 	
 	/**

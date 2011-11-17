@@ -2,7 +2,7 @@
    For licensing terms, see the file LICENSE.
  */
 
-package com.citizensense.android.net;
+package com.citizensense.android.parsers;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,9 +25,10 @@ import com.citizensense.android.conf.Constants;
 /**
  * Parses a Campaign Object that is (or will be) downloaded from the Citizen
  * Sense servers.
+ * TODO delete this method after starting work with the new server/XML
  * @author Phil Brown
  */
-public class CampaignParser implements ContentHandler {
+public class LegacyCampaignParser implements ContentHandler {
 
 	/** The callback function for when the parser has completed*/
 	private CampaignParserCallback callback;
@@ -48,7 +49,7 @@ public class CampaignParser implements ContentHandler {
 	private Context c;
 
 	/** Constructor */
-	public CampaignParser(Context context, CampaignParserCallback callback) {
+	public LegacyCampaignParser(Context context, CampaignParserCallback callback) {
 		this.c = context;
 		this.callback = callback;
 	}//Parser
@@ -224,5 +225,15 @@ public class CampaignParser implements ContentHandler {
 			Log.i(TAG, tab + atts.getLocalName(i) + "=" + v);
 		}
 	}//logAttributes
+	
+	/** Contains the callback method which is called after a LegacyCampaignParser 
+	 * completes successfully
+	 */
+	public interface CampaignParserCallback {
+
+		/** This method hands a campaign object back to the class that made the call
+		 * to the CampaignParser.*/
+		public void handleNewCampaign(Campaign c);//handleNewCampaign
+	}//CampaignParserCallback
 
 }//CampaignParser

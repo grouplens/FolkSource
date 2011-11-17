@@ -1,8 +1,10 @@
-package com.citizensense.android.net;
+/* Copyright (c) 2006-2011 Regents of the University of Minnesota.
+   For licensing terms, see the file LICENSE.
+ */
 
-import java.text.ParseException;
+package com.citizensense.android.parsers;
+
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -11,58 +13,56 @@ import org.xml.sax.SAXException;
 
 import android.util.Log;
 
-import com.citizensense.android.Campaign;
+import com.citizensense.android.Item;
 import com.citizensense.android.conf.Constants;
 
 /**
- * This SAX Parser will work with the new XML format, as created by the server
+ * Provides the constructs for creating a simple SAX Parser for {@link Item}s 
+ * or {@code Item[]}s in Citizen Sense.
  * @author Phil Brown
  */
-public class CampaignParser2 implements ContentHandler {
+public abstract class XMLParser implements ContentHandler {
 
-	/** {@link Campaign} that is being parsed */
-	private Campaign campaign;
-	/** {@link Campaign} Array used for storing Campaigns that are parsed as a list.*/
-	private ArrayList<Campaign> campaigns;
 	/** The callback function for when the parser has completed*/
-	private Callback callback;
+	@SuppressWarnings("rawtypes")
+	protected Callback callback;
 	/** DEBUG tag used for Logging*/
-	private final String TAG = "CampaignParser";
+	protected String TAG = "XMLParser";
 	/** Used for nicely formatting debug statements*/
-	private String tab = "";
+	protected String tab = "";
 	/** This is the date format required by start and end dates.*/
-	public final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	protected final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 	/** This indicates whether or not the SAX parser is currently buffering 
 	 * characters. This is base, in part, on code found online.
 	 * @see <a href="http://www.ctctlabs.com/index.php/blog/detail/parsing_xml_on_android/">
 	 Parsing XML on Android</a>*/
-	private boolean isBuffering = false;
+	protected boolean isBuffering = false;
 	/** This stores the buffer while {@link #isBuffering}==true.
 	 * @see <a href="http://www.ctctlabs.com/index.php/blog/detail/parsing_xml_on_android/">
 	 Parsing XML on Android</a>*/
-	private StringBuffer buffer;
+	protected StringBuffer buffer;
+	
+	/** Construct a new XMLParser */
+	protected XMLParser() {
+		this(null);
+	}//XMLParser
 	
 	/**
-	 * Constructs a new Campaign Parser
-	 */
-	public CampaignParser2() {
-		this.campaigns = new ArrayList<Campaign>();
-	}
-	
-	/**
-	 * Construct a new Campaign Parser and specifies a {@link Callback}.
+	 * Construct a new XMLParser with the given {@link Callback}
 	 * @param callback
 	 */
-	public CampaignParser2(Callback callback) {
-		this();
+	@SuppressWarnings("rawtypes")
+	protected XMLParser(Callback callback) {
 		this.callback = callback;
-	}//CampaignParser
+		this.TAG = getTag();
+	}//XMLParser
 	
 	/**
-	 * Set the callback for this XML Parser.
+	 * Set the {@link Callback} to call after this {@link XMLParser} has 
+	 * completed
 	 * @param callback
 	 */
-	public void setCallback(Callback callback) {
+	protected void setCallback(Callback<?> callback) {
 		this.callback = callback;
 	}//setCallback
 	
@@ -72,72 +72,29 @@ public class CampaignParser2 implements ContentHandler {
 		if (Constants.DEBUG) {
 			Log.d(TAG, "characters");
 		}
-		if(this.isBuffering) {
-            this.buffer.append(ch, start, length);
-        }
 	}//characters
-
+	
+	/** Invokes the callback after this parser has completed. */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void endDocument() throws SAXException {
 		if (Constants.DEBUG) {
 			Log.d(TAG, "End of Document");
 		}
-		Campaign[] c = new Campaign[this.campaigns.size()];
-		callback.handle(this.campaigns.toArray(c));
+		this.callback.invoke(getParsedObject());
 	}//endDocument
 
 	@Override
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
 		tab = tab.substring(2);
+		String content = this.buffer.toString();
+		Log.i(TAG, tab + content);
 		if (Constants.DEBUG)  {
 			Log.d(TAG, tab + "</" + localName + ">");
 		}
-		if (localName.equalsIgnoreCase("org.citizensense.model.Campaign")) {
-			this.campaigns.add(campaign);
-			this.campaign = null;
-		}
-		else {
-			this.isBuffering = false; 
-			String content = this.buffer.toString();
-			if (localName.equalsIgnoreCase("id")) {
-				this.campaign.setId(content);
-			}
-			else if (localName.equalsIgnoreCase("name")) {
-				this.campaign.setName(content);
-			}
-			else if (localName.equalsIgnoreCase("description")) {
-				this.campaign.setDescription(content);
-			}
-			else if (localName.equalsIgnoreCase("start__date")) {
-				try {
-					campaign.setStartDate(this.dateFormat.parse(content));
-				} catch (ParseException e) {
-					Log.e("TAG", "Invalid Date Format: start_date=" 
-						     + content
-						     + ". Should use format" 
-						     + dateFormat.toLocalizedPattern());
-					e.printStackTrace();
-				}
-			}
-			else if (localName.equalsIgnoreCase("end__date")) {
-				try {
-					campaign.setEndDate(this.dateFormat.parse(content));
-				} catch (ParseException e) {
-					Log.e("TAG", "Invalid Date Format: start_date=" 
-						     + content
-						     + ". Should use format" 
-						     + dateFormat.toLocalizedPattern());
-					e.printStackTrace();
-				}
-			}
-			else if (localName.equalsIgnoreCase("owner__id")) {
-				//FIXME this will work for now
-				this.campaign.setOwner(content);
-			}
-		}
 	}//endElement
-
+	
 	@Override
 	public void endPrefixMapping(String prefix) throws SAXException {
 		if (Constants.DEBUG)  {
@@ -192,15 +149,8 @@ public class CampaignParser2 implements ContentHandler {
 		if (Constants.DEBUG) {
 			this.logAttributes(atts);
 		}
-		if (localName.equalsIgnoreCase("org.citizensense.model.Campaign")) {
-			this.campaign = new Campaign();
-		}
-		else {
-			this.buffer = new StringBuffer("");
-			this.isBuffering = true;
-		}
 	}//startElement
-
+	
 	@Override
 	public void startPrefixMapping(String prefix, String uri)
 			throws SAXException {
@@ -219,15 +169,20 @@ public class CampaignParser2 implements ContentHandler {
 			Log.i(TAG, tab + atts.getLocalName(i) + "=" + v);
 		}
 	}//logAttributes
-
-	/**
-	 * This callback returns Campaign[] back to the method that invoked
-	 * this {@link CampaignParser2}.
-	 * @author Phil Brown
+	
+	/** Returns the TAG used for debugging. */
+	public abstract String getTag();
+	
+	/** Returns the callback item */
+	public abstract Object getParsedObject();
+	
+	/** 
+	 * Return the Object (generally an {@link Item} or {@code Item[]}) 
+	 * after this {@link XMLParser} completes.
 	 */
-	public interface Callback {
-		/** Handle the newly-parsed {@link Campaigns}. */
-		public void handle(Campaign[] campaigns);
+	protected interface Callback<T extends Object> {
+		/** Handle the Object */
+		public void invoke(T object);
 	}//Callback
 	
 }//XMLParser

@@ -130,6 +130,19 @@ public abstract class CampaignExplorer extends ListActivity
 		}
 	}//refresh
 	
+	/** Set the campaigns. Basically, this is the refresh button but without
+	 * calling getCampaigns(). 
+	 * TODO merge methods (such as refresh(boolean))*/
+	public void setCampaigns(ArrayList<Campaign> c) {
+		this.campaigns = c;
+		if (campaigns != null) {
+			listAdapter = new CampaignListAdapter(this, campaigns);
+			setListAdapter(listAdapter);
+			galleryAdapter = new CampaignGalleryAdapter(this, campaigns);
+			gallery.setAdapter(galleryAdapter);
+		}
+	}//setCampaigns
+	
 	/** Update the index indicator at the bottom of the campaign view. 
 	 * @param position the current gallery position */
 	public void updateIndicator(int position) {

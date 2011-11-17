@@ -47,4 +47,10 @@ public interface Item extends Parcelable {
 	 */
 	public void createFromJSON(JSONObject object);
 	
+	/**
+	 * Get the name of the {@link Item}. This will be used in the URL that
+	 * gets or sends data to the server, so it must be lowercase.
+	 */
+	public String getItemName();
+	
 }//Item

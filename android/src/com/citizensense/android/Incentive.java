@@ -58,4 +58,9 @@ public class Incentive implements Item {
 		
 	}
 
+	@Override
+	public String getItemName() {
+		return "incentive";
+	}//getItemName
+
 }

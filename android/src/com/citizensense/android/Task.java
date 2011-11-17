@@ -146,5 +146,10 @@ public class Task implements Item {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public String getItemName() {
+		return "task";
+	}//getItemName
 	
 }//Task

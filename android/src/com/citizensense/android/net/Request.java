@@ -6,6 +6,8 @@ package com.citizensense.android.net;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
+import java.lang.reflect.TypeVariable;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -16,16 +18,16 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.w3c.dom.Document;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
-import com.citizensense.android.Campaign;
-import com.citizensense.android.Incentive;
 import com.citizensense.android.Item;
-import com.citizensense.android.Task;
-import com.citizensense.android.User;
+import com.citizensense.android.conf.Constants;
 
 /**
  * HTTP Request
@@ -57,16 +59,16 @@ public class Request extends AsyncTask<Void, Void, HttpResponse> {
 	/** Format Type */
 	public static final int XML = 0, JSON = 1;
 	/** The root URL of the server. */
-	public static final String BASE_URL = "http://ugly.cs.umn.edu:8081";
+	public static final String BASE_URL = "http://ugly.cs.umn.edu:8080";
 	
 	/**
 	 * Create a GET Request
-	 * @param context used to access the App UI
+	 * @param context used to access the application UI
 	 * @param itemType the type of item to get
 	 * @param id the id of the item to get
 	 * @param handler processes the data after it is received
 	 */
-	protected Request(Context context, Class<?> itemType, String id, 
+	private Request(Context context, Class<? extends Item> itemType, String id, 
 			          ResponseHandler<?> handler, boolean showPopup) {
 		this(context, handler, showPopup);
 		this.requestType = GET;
@@ -75,28 +77,61 @@ public class Request extends AsyncTask<Void, Void, HttpResponse> {
 			throw new IllegalArgumentException("Invalid handler." +
 					"Must be JSONResponseHandler or XMLResponseHandler");
 		}
-		if (itemType.isInstance(Campaign.class)) {
-			url += (id == null ? "campaign" : "campaign/" + id);
+		Method getItemName;
+		try {
+			//FIXME - this reflection always fails
+			TypeVariable<?>[] items = itemType.getTypeParameters();
+			getItemName = items[0].getClass().getMethod("getItemName", (Class[]) null);
+			String name = getItemName.invoke((Object[]) null, 
+					                         (Object[]) null).toString();
+			url += (id == null ? name : name + "/" + id);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Log.e("HTTP Request", "Reflection Failed. Using Default url builder");
+			//If this is caught, use this less scalable url builder
+			if (itemType.getName().equalsIgnoreCase("com.citizensense.android.Campaign")) {
+				url += (id == null ? "campaign" : "campaign/" + id);
+			}
+			else if (itemType.getName().equalsIgnoreCase("com.citizensense.android.Task")) {
+				url += (id == null ? "task" : "task/" + id);
+			}
+			else if (itemType.getName().equalsIgnoreCase("com.citizensense.android.User")) {
+				url += (id == null ? "user" : "user/" + id);
+			}
+			else if (itemType.getName().equalsIgnoreCase("com.citizensense.android.Incentive")) {
+				url += (id == null ? "incentive" : "incentive/" + id);
+			}
+			else {
+				/* This will never happen, however this is where more Items can
+				 * be added in the future. */
+			}
 		}
-		else if (itemType.isInstance(Task.class)) {
-			url += (id == null ? "task" : "task/" + id);
-		}
-		else if (itemType.isInstance(User.class)) {
-			url += (id == null ? "user" : "user/" + id);
-		}
-		else if (itemType.isInstance(Incentive.class)) {
-			url += (id == null ? "incentive" : "incentive/" + id);
-		}
-		else {
-			/* This will never happen, however this is where more Items can
-			 * be added in the future. */
-		}
-		if (handler instanceof JSONResponseHandler) {
-			url += ".json";
-		}
-		else {//Document.class
-			url += ".xml";
-		}
+	}//Request
+	
+	/**
+	 * Create a GET Request
+	 * @param context used to access the application UI
+	 * @param itemType the type of item to get
+	 * @param id the id of the item to get
+	 * @param handler processes the data after it is received
+	 */
+	protected Request(Context context, Class<? extends Item> itemType, String id, 
+	          JSONResponseHandler handler, boolean showPopup) {
+		this(context, itemType, id, (ResponseHandler<JSONArray>) handler, showPopup);
+		url += ".json";
+	}//Request
+	
+	/**
+	 * Create a GET Request
+	 * @param context used to access the application UI
+	 * @param itemType the type of item to get
+	 * @param id the id of the item to get
+	 * @param handler processes the data after it is received
+	 */
+	protected Request(Context context, Class<? extends Item> itemType, String id, 
+	          XMLResponseHandler handler, boolean showPopup) {
+		this(context, itemType, id, (ResponseHandler<Document>) handler, showPopup);
+		url += ".xml";
 	}//Request
 	
 	/**
@@ -115,22 +150,7 @@ public class Request extends AsyncTask<Void, Void, HttpResponse> {
 		this.requestType = POST;
 		this.data = data;
 		this.inputFormat = format;
-		if (data instanceof Campaign) {
-			url += "campaign";
-		}
-		else if (data instanceof Task) {
-			url += "task";
-		}
-		else if (data instanceof User) {
-			url += "user";
-		}
-		else if (data instanceof Incentive) {
-			url += "incentive";
-		}
-		else {
-			/* This will never happen, however this is where more Items can
-			 * be added in the future. */
-		}
+		url += data.getItemName();
 		if (format == JSON) {
 			url += ".json";
 		}
@@ -152,7 +172,7 @@ public class Request extends AsyncTask<Void, Void, HttpResponse> {
 	private Request(Context context, ResponseHandler<?> handler, 
 			        boolean showPopup) {
 		this.showPopup = showPopup;
-		this.url = BASE_URL + "/citizensense/";
+		this.url = BASE_URL + "/csense/";
 		this.context = context;
 		this.handler = handler;
 	}//Request
@@ -160,6 +180,9 @@ public class Request extends AsyncTask<Void, Void, HttpResponse> {
 	/** Creates and shows the dialog */
 	@Override
 	protected void onPreExecute() {
+		if (Constants.DEBUG) {
+			Log.i("Request", url);
+		}
 		if (showPopup) {
 			dialog = new ProgressDialog(context);
 			if (requestType == GET) {
@@ -198,6 +221,9 @@ public class Request extends AsyncTask<Void, Void, HttpResponse> {
 				}
 				else {
 					entity = new StringEntity(data.buildXML());
+				}
+				if (Constants.DEBUG) {
+					Log.i("Request", entity.toString());
 				}
 				entity.setContentType("text/xml"); 
 				post.setHeader("Content-Type",

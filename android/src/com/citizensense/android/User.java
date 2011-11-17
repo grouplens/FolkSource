@@ -94,5 +94,10 @@ public class User implements Item {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public String getItemName() {
+		return "user";
+	}//getItemName
 	
 }//User
