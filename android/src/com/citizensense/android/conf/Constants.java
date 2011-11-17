@@ -36,8 +36,8 @@ public interface Constants {
 	public static final boolean EXACT_LOCATION = true,
 	                            NONEXACT_LOCATION = false;
 	
-	
-	public static final int NO_EXPIRATION = -1;
+	/** Time for the proximity alert, in milliseconds, or -1 to indicate no expiration  */
+	public static final int PROX_ALERT_EXPIRATION = -1;
 	
 	/** id for proximity notification*/
 	public static final int PROXIMITY_NOTIFICATION_ID = 1;

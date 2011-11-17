@@ -38,8 +38,10 @@ import com.google.android.maps.Projection;
  * @author Renji Yu
  */
 public class Map extends MapActivity {
-
+	
+	/** campaigns showed on the map */
 	private ArrayList<Campaign> campaigns;
+	/** overlays for displaying point/circle */
 	private List<Overlay> mapOverlays;
 
 	/** Initialize the map */

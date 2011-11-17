@@ -21,24 +21,9 @@ public class MyCampaigns extends CampaignExplorer {
 	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<Campaign> getCampaigns() {
-		return staticGetCampaigns();
+		return G.getMyCampaigns();
 	}//getCampaigns
 	
-	/** We create this static method for other classes who want to use getCampaigns functionality. */
-	public static ArrayList<Campaign> staticGetCampaigns() {
-		ArrayList<Campaign> campaigns = new ArrayList<Campaign>();
-		int j = 1;
-		int index = 1;
-		while (j <= G.db.size()) {
-			ArrayList<Campaign> c = (ArrayList<Campaign>) G.db.getCampaign(Integer.toString(index));
-			if (c != null) {
-				campaigns.add(((ArrayList<Campaign>) G.db.getCampaign(Integer.toString(index))).get(0));
-				j++;
-			}
-			index++;
-		}
-		return campaigns;
-	}
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,

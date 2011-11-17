@@ -4,7 +4,10 @@
 
 package com.citizensense.android;
 
+import java.util.HashMap;
+
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
 import com.citizensense.android.conf.Constants;
 import com.citizensense.android.db.CsDbAdapter;
@@ -26,7 +29,8 @@ public class Init extends Application {
 		G.user = new User();
 		G.user.login("", "");//TODO remove this, handle logins another way.
 		G.app_context = this.getApplicationContext();
-
+		
+		G.proximityMap = new HashMap<String,PendingIntent>();
 		G.startLocationService();
 	}//onCreate
 }//Init
