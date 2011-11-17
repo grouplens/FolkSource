@@ -72,6 +72,7 @@ public class G {
 	}
 
 	/** Get campaigns from the local database. */
+	@SuppressWarnings("unchecked")
 	public static ArrayList<Campaign> getMyCampaigns() {
 		ArrayList<Campaign> campaigns = new ArrayList<Campaign>();
 		int j = 1;

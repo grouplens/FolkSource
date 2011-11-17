@@ -22,8 +22,8 @@ import com.citizensense.android.conf.Constants;
 import com.google.android.maps.GeoPoint;
 
 /**
- * Background service that handles location changed.
- * 
+ * Background service that handles location related functionalities.
+ * Right now it provides proximity alert service.
  * @author Renji Yu
  */
 public class LocationService extends Service {
@@ -64,11 +64,7 @@ public class LocationService extends Service {
 		}
 	}
 
-	/**
-	 * Use the addProximityAlert method of LocationManager to set alert for
-	 * every location. When the device detects that it has entered or exited the
-	 * area surrounding the location, the given PendingIntent will broadcasted.
-	 */
+	/** Set proximity alert for all campaigns. */
 	public void setProximityAlert() {
 		if (campaigns.size() == 0)
 			return;
@@ -77,7 +73,7 @@ public class LocationService extends Service {
 		}
 		previousCampaigns = campaigns;
 	}
-
+	/** Handle updates of campaigns for proximity alert. */
 	public void resetProximityAlert() {
 		campaigns = G.getMyCampaigns();// refresh the campaigns
 		for (Campaign campaign : previousCampaigns) {
@@ -92,7 +88,7 @@ public class LocationService extends Service {
 		}
 	}
 
-	/** Add ProximityAlert for a campaign. */
+	/** Add proximity alert for a campaign. */
 	public void addProximityAlert(Campaign campaign) {
 		for (String loc : campaign.getLocations()) {
 			GeoPoint point = Map.getGeopoint(this, loc);
@@ -119,7 +115,7 @@ public class LocationService extends Service {
 		}
 	}
 
-	/** Remove ProximityAlert for a campaign. */
+	/** Remove proximity alert for a campaign. */
 	public void removeProximityAlert(Campaign campaign) {
 		for (String loc : campaign.getLocations()) {
 			String location = campaign.getName() + ":" + loc;
@@ -147,5 +143,4 @@ public class LocationService extends Service {
 	public void onDestroy() {
 		super.onDestroy();
 	}
-
 }
