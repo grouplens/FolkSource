@@ -8,6 +8,7 @@
 	</id>
 	<property name="start_date" />
 	<property name="end_date" />
+	<property name="title" />
 	<property name="description" />
 	<property name="task_id" />
 	<property name="owner_id" />

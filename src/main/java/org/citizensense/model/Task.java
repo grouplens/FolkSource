@@ -4,12 +4,14 @@ import java.util.List;
 import java.util.Set;
 
 public class Task {
+	private int id;
 	private String name;
 	private String instructions;
+	private boolean required;
 //	private String requirements; // possibly wrong datatype, but for now
 //	private Form form;
 //	private Location loc;
-	private int id;
+
 	private List<Submission> submissions;
 
 	private Campaign camp;
@@ -54,6 +56,14 @@ public class Task {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public boolean isRequired() {
+		return required;
+	}
+
+	public void setRequired(boolean required) {
+		this.required = required;
 	}
 
 //	public String getRequirements() {

@@ -16,15 +16,14 @@ public class Campaign {
 
 	//@Id
 	private Long id;
-	//@Column(name="description")
+	private String title;
 	private String description;
-	//@Column(name="start_date")
 	private Date start_date;
-//	@Column(name="end_date")
 	private Date end_date;
 	private String times; //figure out if this is actually how we want to represent this
 	private int owner_id;
 	private int task_id;
+
 	//private User owner;
 	
 //	@OneToMany(mappedBy="task")
@@ -87,6 +86,12 @@ public class Campaign {
 	}
 	public void setTask_id(int task_id) {
 		this.task_id = task_id;
+	}
+	public String getTitle() {
+		return title;
+	}
+	public void setTitle(String title) {
+		this.title = title;
 	}
 
 }

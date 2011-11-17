@@ -7,6 +7,7 @@
 		<generator class="native" />
 	</id>
 	<property name="instructions" />
+	<property name="required"/>
 	<list name="submissions" lazy="false" >
 		<key column="task_id" />
 		<index column="id" />
