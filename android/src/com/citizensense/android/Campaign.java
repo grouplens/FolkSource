@@ -10,9 +10,13 @@ import java.util.Date;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Xml;
+
+import com.citizensense.android.net.CampaignParser2;
 
 /** 
  * Campaign Object
@@ -268,8 +272,27 @@ public class Campaign implements Item {
 	}//createFromXML
 	
 	@Override
-	public void createFromXML(String string) {
-		
+	public void createFromXML(String xml) {
+		try {
+			Xml.parse(xml, new CampaignParser2(new CampaignParser2.Callback() {
+				@Override
+				public void handle(Campaign[] campaigns) {
+					Campaign.this.setId(campaigns[0].getId());
+					Campaign.this.setName(campaigns[0].getName());
+					Campaign.this.setDescription(campaigns[0].getDescription());
+					Campaign.this.setStartDate(campaigns[0].getStartDate());
+					Campaign.this.setEndDate(campaigns[0].getEndDate());
+					//FIXME Campaign.this.setImage()
+					Campaign.this.setLocations(campaigns[0].getLocations());
+					Campaign.this.setOwner(campaigns[0].getOwner());
+					Campaign.this.setTask(campaigns[0].getTask());
+					Campaign.this.setTimes(campaigns[0].getTimes());
+					//FIXME Campaign.this.setIncentives(campaigns[0].getIncentives());
+				}
+			}));
+		} catch (SAXException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
