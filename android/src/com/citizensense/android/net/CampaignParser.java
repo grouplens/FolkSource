@@ -42,7 +42,7 @@ public class CampaignParser implements ContentHandler {
 	/** This is the date format required by start and end dates.*/
 	public final SimpleDateFormat dateFormat = new SimpleDateFormat("mm/dd/yyyy");
 	/** Used for nicely formatting debug statements*/
-	public String tab = "";
+	private String tab = "";
 	
 	/** Context used for accessing resources.*/
 	private Context c;

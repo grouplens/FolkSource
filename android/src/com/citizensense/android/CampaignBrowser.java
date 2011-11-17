@@ -4,7 +4,6 @@
 
 package com.citizensense.android;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -18,11 +17,11 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.citizensense.android.net.CampaignParser;
+import com.citizensense.android.net.CampaignParser2;
 import com.citizensense.android.net.CampaignParserCallback;
-import com.citizensense.android.net.GetRequest;
-import com.citizensense.android.net.XMLResponseHandler;
 
 /**
  * The campaign browser allows users to view active campaigns in an "app-store"
@@ -56,11 +55,8 @@ public class CampaignBrowser extends CampaignExplorer implements CampaignParserC
 			
 			@Override
 			public void invoke(String xml) {
-				ByteArrayInputStream stream = new ByteArrayInputStream(xml.getBytes());
 				try {
-					Xml.parse(stream, Xml.Encoding.UTF_8, parser);//TODO change parser to handle new XML format
-				} catch (IOException e) {
-					e.printStackTrace();
+					Xml.parse(xml, parser);//TODO change parser to handle new XML format
 				} catch (SAXException e) {
 					e.printStackTrace();
 				}
@@ -73,6 +69,20 @@ public class CampaignBrowser extends CampaignExplorer implements CampaignParserC
 			Xml.parse(stream, Xml.Encoding.UTF_8, parser);
 			stream = getAssets().open("samples/campaign_2.xml");
 			Xml.parse(stream, Xml.Encoding.UTF_8, parser);
+			/*
+			//The below will also parse the campaign(s) in campaign_3.xml using the new format.
+			stream = getAssets().open("samples/campaign_3.xml");
+			Xml.parse(stream, Xml.Encoding.UTF_8, new CampaignParser2(new CampaignParser2.Callback() {
+				
+				@Override
+				public void handle(Campaign[] campaigns) {
+					Toast.makeText(CampaignBrowser.this, "SUCCESS", Toast.LENGTH_SHORT).show();
+					for (Campaign c : campaigns) {
+						handleNewCampaign(c);
+					}
+				}
+			}));
+			*/
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
