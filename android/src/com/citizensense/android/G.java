@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
+import android.location.LocationManager;
 
 import com.citizensense.android.db.CsDbAdapter;
 import com.google.android.maps.MapView;
@@ -41,6 +42,9 @@ public class G {
 	
 	/** HashMap stores PendingIntent for adding/removing ProximityAlert. */
 	public static HashMap<String, PendingIntent> proximityMap;
+	
+	/** manager for location updates */
+	public static LocationManager locationManager;
 
 	/** Call this function to start LocationService. */
 	public static void startLocationService() {

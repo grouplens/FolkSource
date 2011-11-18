@@ -28,8 +28,7 @@ import com.google.android.maps.GeoPoint;
  */
 public class LocationService extends Service {
 
-	/** manager for location updates */
-	private LocationManager locationManager;
+
 
 	/** campaigns to be checked */
 	private ArrayList<Campaign> campaigns;
@@ -51,9 +50,6 @@ public class LocationService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		// register for location updates
-		this.locationManager = (LocationManager) this
-				.getSystemService(Context.LOCATION_SERVICE);
 
 		campaigns = G.getMyCampaigns();
 		if (previousCampaigns == null) {// It's the first time to call
@@ -100,7 +96,7 @@ public class LocationService extends Service {
 				PendingIntent proximityIntent = PendingIntent.getBroadcast(
 						this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 				G.proximityMap.put(location, proximityIntent);
-				locationManager.addProximityAlert(latitude, longitude,
+				G.locationManager.addProximityAlert(latitude, longitude,
 						Map.getRadius(loc), // the radius of the central point
 											// of the alert region, in meters
 						Constants.PROX_ALERT_EXPIRATION, 
@@ -121,7 +117,7 @@ public class LocationService extends Service {
 			String location = campaign.getName() + ":" + loc;
 			PendingIntent proximityIntent = G.proximityMap.get(location);
 			if (proximityIntent != null) {
-				locationManager.removeProximityAlert(proximityIntent);
+				G.locationManager.removeProximityAlert(proximityIntent);
 				G.proximityMap.remove(location);
 			}
 		}

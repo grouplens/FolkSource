@@ -9,28 +9,35 @@ import java.util.HashMap;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.location.LocationManager;
+
 import com.citizensense.android.conf.Constants;
 import com.citizensense.android.db.CsDbAdapter;
 
-/** This initialization file is called when the user first launches 
- * Citizen Sense.
+/**
+ * This initialization file is called when the user first launches Citizen
+ * Sense.
+ * 
  * @author Phil Brown
  */
 public class Init extends Application {
 
-	/** Initialize static variables.*/
-	@Override 
+	/** Initialize static variables. */
+	@Override
 	public void onCreate() {
 		super.onCreate();
-		G.memory = this.getSharedPreferences(Constants.MEM_LOC, 
-				                             Context.MODE_PRIVATE);
+		G.memory = this.getSharedPreferences(Constants.MEM_LOC,
+				Context.MODE_PRIVATE);
 		G.db = new CsDbAdapter(this);
 		G.db.open();
 		G.user = new User();
-		G.user.login("", "");//TODO remove this, handle logins another way.
+		G.user.login("", "");// TODO remove this, handle logins another way.
 		G.app_context = this.getApplicationContext();
-		
-		G.proximityMap = new HashMap<String,PendingIntent>();
+
+		G.locationManager = (LocationManager) this
+				.getSystemService(Context.LOCATION_SERVICE); 
+															
+		G.proximityMap = new HashMap<String, PendingIntent>();
 		G.startLocationService();
-	}//onCreate
-}//Init
+	}// onCreate
+}// Init

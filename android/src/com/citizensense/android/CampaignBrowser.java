@@ -72,7 +72,10 @@ public class CampaignBrowser extends CampaignExplorer implements CampaignParserC
 		switch (item.getItemId()) {
 		/* Add the campaign to the local database*/
 		case R.id.download:
+		{
 			G.db.addCampaign(campaigns.get(this.current_gallery_position));
+			G.resetLocationService();
+		}
 			return true;
 		}
 		return super.onContextItemSelected(item);
