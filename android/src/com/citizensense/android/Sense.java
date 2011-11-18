@@ -220,7 +220,7 @@ public class Sense extends LocationActivity {
 										LinearLayout.LayoutParams.FILL_PARENT));
 			layouts[i].addView(question);
 			/* Responses */
-			if (questions[i].type == Question.MULTIPLE_CHOICE) {
+			if (questions[i].getType() == Question.MULTIPLE_CHOICE) {
 				String[] answers = questions[i].getAnswers();
 				final ArrayList<RadioButton> radiogroup = new ArrayList<RadioButton>();
 				for (final String option : answers) {
@@ -282,7 +282,7 @@ public class Sense extends LocationActivity {
 					layouts[i].addView(ans);
 				}
 			}
-			else if (questions[i].type == Question.WRITTEN_RESPONSE) {
+			else if (questions[i].getType() == Question.WRITTEN_RESPONSE) {
 				EditText et = new EditText(this);
 				final String questionString = questions[i].getQuestion();
 				et.setSingleLine(questions[i].isSingleLine());
