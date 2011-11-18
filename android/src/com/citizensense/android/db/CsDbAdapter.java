@@ -173,13 +173,13 @@ public class CsDbAdapter {
 			int selectint = q[i].getType();
 			insert += "\n  " + DB.TYPE + "=" + selectint;
 			vals.put(DB.TYPE, q[i].getType());
-			selectint = q[i].single_choice? 1:0;
+			selectint = q[i].isSingleChoice()? 1:0;
 			insert += "\n  " + DB.SINGLE_CHOICE + "=" + selectint;
 			vals.put(DB.SINGLE_CHOICE, selectint);
-			selectint = q[i].single_line? 1:0;
+			selectint = q[i].isSingleLine()? 1:0;
 			insert += "\n  " + DB.SINGLE_LINE + "=" + selectint;
 			vals.put(DB.SINGLE_LINE, selectint);
-			temp = q[i].answers;
+			temp = q[i].getAnswers();
 			String answers = "";
 			//This is a little overchecked. FIXME
 			if (temp != null) {//if it is a written response, not mutliple choice

@@ -57,18 +57,12 @@ public class TaskParser extends XMLParser {
 		this.isBuffering = false; 
 		String content = this.buffer.toString();
 		if (localName.equalsIgnoreCase("id")) {
-			this.task.setName("");//a name is not really needed, but used throughout the app.
-			//FIXME MAYBE this.task.setId(content);
+			//a name is not really needed, but used throughout the app.
+			this.task.setName("");
 		}
-		/*//This will never happen
-		else if (localName.equalsIgnoreCase("name")) {
-			this.task.setName(content);
-		}
-		*/
 		else if (localName.equalsIgnoreCase("instructions")) {
 			this.task.setInstructions(content);
 		}
-		
 	}//endElement
 	
 	@Override
