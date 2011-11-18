@@ -121,14 +121,28 @@ public abstract class CampaignExplorer extends ListActivity
 	public void refresh() {
 		//re-retrieve the campaigns. TODO move to non-UI thread
 		campaigns = getCampaigns();
-		//add campaigns to the list
+		this.refreshView();
+	}//refresh
+	
+	/** 
+	 * Set the campaigns stored in the list/gallery
+	 * @param campaign
+	 */
+	public void setCampaigns(ArrayList<Campaign> campaigns) {
+		this.campaigns = campaigns;
+		this.refreshView();
+	}//setCampaigns
+	
+	/** Refresh the Gallery and List Views to reflect changes made in
+	 * {@link #refresh()} */
+	private void refreshView() {
 		if (campaigns != null) {
 			listAdapter = new CampaignListAdapter(this, campaigns);
 			setListAdapter(listAdapter);
 			galleryAdapter = new CampaignGalleryAdapter(this, campaigns);
 			gallery.setAdapter(galleryAdapter);
 		}
-	}//refresh
+	}//refreshView
 	
 	/** Update the index indicator at the bottom of the campaign view. 
 	 * @param position the current gallery position */

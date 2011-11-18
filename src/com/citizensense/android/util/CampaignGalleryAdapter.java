@@ -130,11 +130,13 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 			//title.setText(name);
 			String start = "Start Date: " + campaign.getStartDate().toString();
 			String end = "End Date: " + campaign.getEndDate().toString();
-			String[]time_intervals = campaign.getTimes();
-			String times = "Times:\n ";
-			for (int i=0; i<time_intervals.length; i++) {
-				times += time_intervals[i] + "\n";
-				
+			if (campaign.getTimes() != null) {
+				String[]time_intervals = campaign.getTimes();
+				String times = "Times:\n ";
+				for (int i=0; i<time_intervals.length; i++) {
+					times += time_intervals[i] + "\n";
+					
+				}
 			}
 			//Set status by computing if the current date is before or after
 			//the end date of the campaign.
@@ -155,10 +157,12 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 			
 			String locs = "";
 			String[] locations = campaign.getLocations();
-			for (int i = 0; i < locations.length; i++) {
-				locs += locations[i];
-				if (i != locations.length - 1) {
-					locs += "\n";
+			if (locations != null) {
+				for (int i = 0; i < locations.length; i++) {
+					locs += locations[i];
+					if (i != locations.length - 1) {
+						locs += "\n";
+					}
 				}
 			}
 			TextView where = (TextView) v.findViewById(R.id.campaign_location);
@@ -168,18 +172,22 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 			//TODO unpack full campaign
 			//String more = "More Details available";
 			Task t = campaign.getTask();
-			String tname = t.name;
-			String tdesc = t.instructions;
-		
-			Form f = t.getForm();
-			Question[] q = f.getQuestions();
-			if (Constants.DEBUG) Log.i("HOME", "NUMBER OF QUESTIONS: " + q.length);
-			String qs = "";
-			for (int i=0; i<q.length; i++ ) {
-				Log.i("Questions", qs);
-				qs += q[i].toString();
+			if (t != null) {
+				String tname = t.getName();
+				String tdesc = t.getInstructions();
+			
+				Form f = t.getForm();
+				Question[] q = f.getQuestions();
+				if (Constants.DEBUG) Log.i("HOME", "NUMBER OF QUESTIONS: " + q.length);
+				String qs = "";
+				for (int i=0; i<q.length; i++ ) {
+					Log.i("Questions", qs);
+					qs += q[i].toString();
+				}
 			}
-			image.setImageResource(campaign.getImage());
+			if (campaign.getImage() != 0) {
+				image.setImageResource(campaign.getImage());
+			}
 			//DO something with the buttons
 			task_button.setOnClickListener(new OnClickListener() {
 				@Override

@@ -1,0 +1,66 @@
+<list>
+  <org.citizensense.model.Campaign>
+    <id>1</id>
+    <description>just a test 1</description>
+    <start__date class="sql-timestamp">2011-10-06 16:05:06.0</start__date>
+    <end__date class="sql-timestamp">2011-10-15 16:05:06.0</end__date>
+    <owner__id>11</owner__id>
+    <task__id>5</task__id>
+    <tasks class="org.hibernate.collection.PersistentBag">
+      <bag/>
+      <initialized>true</initialized>
+      <owner class="org.citizensense.model.Campaign" reference="../.."/>
+      <cachedSize>-1</cachedSize>
+      <role>org.citizensense.model.Campaign.tasks</role>
+      <key class="long">1</key>
+      <dirty>false</dirty>
+      <storedSnapshot class="list"/>
+    </tasks>
+  </org.citizensense.model.Campaign>
+  <org.citizensense.model.Campaign>
+    <id>9</id>
+    <description>just a test 2</description>
+    <start__date class="sql-timestamp">2011-10-16 10:00:00.0</start__date>
+    <end__date class="sql-timestamp">2011-11-15 20:00:00.0</end__date>
+    <owner__id>11</owner__id>
+    <task__id>5</task__id>
+    <tasks class="org.hibernate.collection.PersistentBag">
+      <bag>
+        <org.citizensense.model.Task>
+          <instructions>tell us about your favorite study spots</instructions>
+          <id>5</id>
+          <submissions class="org.hibernate.collection.PersistentList">
+            <list>
+              <null/>
+              <org.citizensense.model.Submission>
+                <id>1</id>
+                <task__id>0</task__id>
+                <notes>a hidden room in Keller</notes>
+                <gps__location>44.974677|-93.231571</gps__location>
+              </org.citizensense.model.Submission>
+            </list>
+            <initialized>true</initialized>
+            <owner class="org.citizensense.model.Task" reference="../.."/>
+            <cachedSize>-1</cachedSize>
+            <role>org.citizensense.model.Task.submissions</role>
+            <key class="int">5</key>
+            <dirty>false</dirty>
+            <storedSnapshot class="list">
+              <null/>
+              <org.citizensense.model.Submission reference="../../list/org.citizensense.model.Submission"/>
+            </storedSnapshot>
+          </submissions>
+        </org.citizensense.model.Task>
+      </bag>
+      <initialized>true</initialized>
+      <owner class="org.citizensense.model.Campaign" reference="../.."/>
+      <cachedSize>-1</cachedSize>
+      <role>org.citizensense.model.Campaign.tasks</role>
+      <key class="long">9</key>
+      <dirty>false</dirty>
+      <storedSnapshot class="list">
+        <org.citizensense.model.Task reference="../../bag/org.citizensense.model.Task"/>
+      </storedSnapshot>
+    </tasks>
+  </org.citizensense.model.Campaign>
+</list>

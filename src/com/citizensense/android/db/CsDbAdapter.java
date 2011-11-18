@@ -132,13 +132,13 @@ public class CsDbAdapter {
 		selection = c.getId();
 		insert += "\n  " + DB.ID + "=" + selection;
 		vals.put(DB.ID, selection);
-		selection = c.getTask().name;
+		selection = c.getTask().getName();
 		insert += "\n  " + DB.NAME + "=" + selection;
 		vals.put(DB.NAME, selection);
-		selection = c.getTask().instructions;
+		selection = c.getTask().getInstructions();
 		insert += "\n  " + DB.INSTRUCTIONS + "=" + selection;
 		vals.put(DB.INSTRUCTIONS, selection);
-		temp = c.getTask().requirements;
+		temp = c.getTask().getRequirements();
 		String requirements = "";
 		for(int i = 0; i<temp.length; i++) {
 			requirements += temp[i];
