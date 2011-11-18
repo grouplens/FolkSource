@@ -77,35 +77,11 @@ public class Request extends AsyncTask<Void, Void, HttpResponse> {
 			throw new IllegalArgumentException("Invalid handler." +
 					"Must be JSONResponseHandler or XMLResponseHandler");
 		}
-		Method getItemName;
-		try {
-			//FIXME - this reflection always fails
-			TypeVariable<?>[] items = itemType.getTypeParameters();
-			getItemName = items[0].getClass().getMethod("getItemName", (Class[]) null);
-			String name = getItemName.invoke((Object[]) null, 
-					                         (Object[]) null).toString();
-			url += (id == null ? name : name + "/" + id);
-		} catch (Exception e) {
-			e.printStackTrace();
-			Log.e("HTTP Request", "Reflection Failed. Using Default url builder");
-			//If this is caught, use this less scalable url builder
-			if (itemType.getName().equalsIgnoreCase("com.citizensense.android.Campaign")) {
-				url += (id == null ? "campaign" : "campaign/" + id);
-			}
-			else if (itemType.getName().equalsIgnoreCase("com.citizensense.android.Task")) {
-				url += (id == null ? "task" : "task/" + id);
-			}
-			else if (itemType.getName().equalsIgnoreCase("com.citizensense.android.User")) {
-				url += (id == null ? "user" : "user/" + id);
-			}
-			else if (itemType.getName().equalsIgnoreCase("com.citizensense.android.Incentive")) {
-				url += (id == null ? "incentive" : "incentive/" + id);
-			}
-			else {
-				/* This will never happen, however this is where more Items can
-				 * be added in the future. */
-			}
-		}
+		/* This assumes that the URL item string will always be equal to the 
+		 * lowercase Item name. */
+		String[] pkgs = (itemType.getName()).split("\\.");
+		String s = pkgs[pkgs.length - 1].toLowerCase();
+		url += (id == null ? s : s + "/" + id);
 	}//Request
 	
 	/**
@@ -181,7 +157,7 @@ public class Request extends AsyncTask<Void, Void, HttpResponse> {
 	@Override
 	protected void onPreExecute() {
 		if (Constants.DEBUG) {
-			Log.i("Request", url);
+			Log.d("Request", "***URL***  " + url);
 		}
 		if (showPopup) {
 			dialog = new ProgressDialog(context);
