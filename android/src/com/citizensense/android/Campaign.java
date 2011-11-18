@@ -7,17 +7,23 @@ package com.citizensense.android;
 import java.util.ArrayList;
 import java.util.Date;
 
-import android.R.drawable;
-import android.util.Log;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Xml;
+
+import com.citizensense.android.parsers.CampaignParser;
+import com.citizensense.android.parsers.CampaignParser2;
 
 /** 
  * Campaign Object
  * @author Phil Brown
  */
-public class Campaign implements Parcelable {
+public class Campaign implements Item {
 
 	ArrayList<String> user_tokens;
 	/*The tokens associated with participating users.
@@ -231,5 +237,123 @@ public class Campaign implements Parcelable {
 		}
 	}//getImage
 		
+	@Override
+	public String buildXML() {
+		StringBuilder campaign = new StringBuilder();
+		campaign.append("<org.citizensense.model.Campaign>");
+		campaign.append("<id>" + this.getId() + "</id>");
+		campaign.append("<start__date class=\"sql-timestamp\">" 
+				        + this.getStartDate() + "</start__date>");
+		campaign.append("<end__date class=\"sql-timestamp\">"
+				        + this.getEndDate() + "</end__date>");
+		//FIXME campaign owner...
+		campaign.append("<owner__id></owner__id>");
+		//Task ID is the same as the campaign ID.
+		//FIXME Why do we need any of the below attributes?
+		campaign.append("<task__id>" + this.getId() + "</task__id>");
+		campaign.append("<tasks class=\"org.hibernate.collection.PersistentBag\">");
+		campaign.append("<bag/>");
+		campaign.append("<initialized>true</initialized>");
+		campaign.append("<owner class=\"org.citizensense.model.Campaign\" reference=\"../..\"/>");
+		campaign.append("<cachedSize>-1</cachedSize>");
+		campaign.append("<role>org.citizensense.model.Campaign.tasks</role>");
+		campaign.append("<key class=\"long\">1</key>");
+		campaign.append("<dirty>false</dirty>");
+		campaign.append("<storedSnapshot class=\"list\"/>");
+		campaign.append("</tasks>");
+		campaign.append("</org.citizensense.model.Campaign>");
+		return campaign.toString();
+	}//buildXML
+
+	@Override
+	public void createFromXML(Document document) {
+		// Required by Item, but not implemented		
+	}//createFromXML
+	
+	@Override
+	public void createFromXML(String xml) {
+		try {
+			Xml.parse(xml, new CampaignParser(new CampaignParser.Callback() {
+				
+				@Override
+				public void invoke(Campaign campaign) {
+					Campaign.this.setId(campaign.getId());
+					Campaign.this.setName(campaign.getName());
+					Campaign.this.setDescription(campaign.getDescription());
+					Campaign.this.setStartDate(campaign.getStartDate());
+					Campaign.this.setEndDate(campaign.getEndDate());
+					//FIXME Campaign.this.setImage()
+					Campaign.this.setLocations(campaign.getLocations());
+					Campaign.this.setOwner(campaign.getOwner());
+					Campaign.this.setTask(campaign.getTask());
+					Campaign.this.setTimes(campaign.getTimes());
+					//FIXME Campaign.this.setIncentives(campaign.getIncentives());
+				}
+			}));
+		} catch (SAXException e) {
+			e.printStackTrace();
+		}
+	}//createFromXML
+
+	@Override
+	public String buildJSON() {
+		StringBuilder campaign = new StringBuilder();
+		campaign.append("{\"id\":" + this.getId() + ",");
+		campaign.append("\"end_date\":{\"nanos\":0,");
+		campaign.append("\"time\":" + this.getEndDate().getTime() + ",");
+		campaign.append("\"minutes\":" + this.getEndDate().getMinutes() + ",");
+		campaign.append("\"seconds\":" + this.getEndDate().getSeconds() + ",");
+		campaign.append("\"hours\":" + this.getEndDate().getHours() + ",");
+		campaign.append("\"month\":" + this.getEndDate().getMonth() + ",");
+		campaign.append("\"timezoneOffset\":" + this.getEndDate().getTimezoneOffset() + ",");
+		campaign.append("\"year\":" + this.getEndDate().getYear() + ",");
+		campaign.append("\"day\":" + this.getEndDate().getDay() + ",");
+		campaign.append("\"date\":" + this.getEndDate().getDate() + "},");
+		campaign.append("\"description\":\"" + this.getDescription() + "\",");
+		campaign.append("\"owner_id\":" + 0 + ",");//TODO implement owner id
+		campaign.append("\"task_id\":" + this.getId() + ",");
+		campaign.append("\"tasks\":[");
+		if (this.getTask() == null) {
+			campaign.append("],");
+		}
+		else {
+			campaign.append("{\"id\":" + this.getId() + ",");
+			campaign.append("\"instructions\":\"" + this.getTask().getInstructions() + "\",");
+			campaign.append("\"name\":\"" + this.getTask().getName() + "\",");
+			campaign.append("\"submissions\":[]}],");//Submissions aren't stored locally
+		}
+		campaign.append("\"start_date\":{\"nanos\":0,\"time\":" + this.getStartDate().getTime() + ",");
+		campaign.append("\"minutes\":" + this.getStartDate().getMinutes() + ",");
+		campaign.append("\"seconds\":" + this.getStartDate().getSeconds() + ",");
+		campaign.append("\"hours\":" + this.getStartDate().getHours() + ",");
+		campaign.append("\"month\":" + this.getStartDate().getMonth() + ",");
+		campaign.append("\"timezoneOffset\":" + this.getStartDate().getTimezoneOffset() + ",");
+		campaign.append("\"year\":" + this.getStartDate().getYear() + ",");
+		campaign.append("\"day\":" + this.getStartDate().getDay() + ",");
+		campaign.append("\"date\":" + this.getStartDate().getDate() + "}}");
+		return campaign.toString();
+	}//buildJSON
+
+	@Override
+	public void createFromJSON(JSONObject object) {
+		//Iterator iterator = object.keys();
+		this.id = object.optString("id");
+		JSONObject end_date = object.optJSONObject("end_date");
+		this.endDate = new Date(Long.parseLong(end_date.optString("time")));
+		this.description = object.optString("description");
+		//TODO this.owner = object.getString("owner_id");
+		JSONArray tasks = object.optJSONArray("tasks");
+		JSONObject task = tasks.optJSONObject(0);
+		this.task = new Task();
+		this.task.setInstructions(task.optString("instructions"));
+		this.task.setName(task.optString("name"));
+		JSONObject start_date = object.optJSONObject("start_date");
+		this.startDate = new Date(Long.parseLong(start_date.optString("time")));
+	}//createFromJSON
+
+	@Override
+	public String getItemName() {
+		return "campaign";
+	}//getItemName
 		
 }//Campaign

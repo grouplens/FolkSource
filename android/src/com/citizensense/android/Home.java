@@ -16,8 +16,7 @@ import android.util.Xml;
 import android.widget.Gallery;
 import android.widget.TextView;
 
-import com.citizensense.android.net.CampaignParser;
-import com.citizensense.android.net.CampaignParserCallback;
+import com.citizensense.android.parsers.LegacyCampaignParser;
 import com.citizensense.android.util.CampaignGalleryAdapter;
 
 /**
@@ -26,10 +25,10 @@ import com.citizensense.android.util.CampaignGalleryAdapter;
  * TODO remove this class!!!
  * @author Phil Brown
  */
-public class Home extends Activity implements CampaignParserCallback {
+public class Home extends Activity implements LegacyCampaignParser.CampaignParserCallback {
 	
 	/** The XML parser used when a campaign is downloaded from the server.*/
-	CampaignParser parser;
+	LegacyCampaignParser parser;
 	
 	/** The textview used in the view. This is a temporary view that is used
 	 * to help debug and show that the database is working.*/
@@ -40,7 +39,7 @@ public class Home extends Activity implements CampaignParserCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.campaign_browser);
         
-        parser = new CampaignParser(this, this);
+        parser = new LegacyCampaignParser(this, this);
         
         textview = (TextView) findViewById(R.id.inf);
         
@@ -75,8 +74,8 @@ public class Home extends Activity implements CampaignParserCallback {
 		//TODO unpack full campaign
 		String more = "More Details available";
 		Task t = c.getTask();
-		String tname = t.name;
-		String tdesc = t.instructions;
+		String tname = t.getName();
+		String tdesc = t.getInstructions();
 		
 		Form f = t.getForm();
 		Question[] q = f.getQuestions();
