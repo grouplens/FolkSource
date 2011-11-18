@@ -17,9 +17,9 @@ public class Question implements Parcelable {
 
 	/** Question type telling the app to show the answers in a drop-down
 	 * menu */
-	public static final int MULTIPLE_CHOICE = 0;
+	public static final int MULTIPLE_CHOICE = 1;
 	/** Question type telling the app to show the question and an EditText. */
-	public static final int WRITTEN_RESPONSE = 1;
+	public static final int WRITTEN_RESPONSE = 0;
 		
 	/** Whether or not a multiple choice question can have multiple answers */
 	private boolean single_choice;
@@ -121,7 +121,7 @@ public class Question implements Parcelable {
 		else {
 			q += "\n";
 		}
-		Log.i("QUESTION", "Number of answers: " + answers.length);
+		Log.i("QUESTION", "Number of answers: " + this.answers.length);
 		for (int i = 0; i < this.answers.length; i++) {
 			Log.i("QUESTION", "index=" + i + ", q=" + q);
 			q += "  " + (i+1) + ") " + answers[i] + "\n";

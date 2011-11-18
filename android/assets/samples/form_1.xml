@@ -1,0 +1,13 @@
+<list>
+   <org.citizensense.model.Question>
+      <question>How many potholes are here?</question>
+      <type>written_repsonse</type>
+      <single_line>true</single_line>
+   </org.citizensense.model.Question>
+   <org.citizensense.model.Question>
+      <question>Where are you?</question>
+      <type>multiple_choice</type>
+      <single_answer>true</single_answer>
+      <answers>Minneapolis|Saint Paul</answers>
+   </org.citizensense.model.Question>
+</list>

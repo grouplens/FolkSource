@@ -4,6 +4,8 @@
 
 package com.citizensense.android;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.xml.sax.SAXException;
@@ -156,6 +158,7 @@ public class CampaignBrowser extends CampaignExplorer {
 	 */
 	public void handleNewTask(final Campaign c, final Task t) {
 		c.setTask(t);
+		/*
 		XMLResponseHandler handler = new XMLResponseHandler();
 		handler.setCallback(new XMLResponseHandler.StringCallback() {
 			
@@ -176,6 +179,21 @@ public class CampaignBrowser extends CampaignExplorer {
 			}
 		});
 		new GetRequest(this, Task.class, c.getId(), handler, true).execute();
+		*/
+		try {
+			InputStream stream = getAssets().open("samples/form_1.xml");
+			Xml.parse(stream, Xml.Encoding.UTF_8, new FormParser(new FormParser.Callback() {
+				
+				@Override
+				public void invoke(Form form) {
+					handleNewForm(c, t, form);
+				}
+			}));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		}
 	}//handleNewTask
 	
 	/**

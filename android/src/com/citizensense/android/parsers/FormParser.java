@@ -48,7 +48,7 @@ public class FormParser extends XMLParser {
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
 		super.endElement(uri, localName, qName);
-		if (localName.equalsIgnoreCase("org.citizensense.model.Form")) {
+		if (localName.equalsIgnoreCase("org.citizensense.model.Question")) {
 			this.form.addQuestion(this.question);
 			this.question = null;
 		}
@@ -59,7 +59,12 @@ public class FormParser extends XMLParser {
 				question.setQuestion(content);
 			}
 			else if (localName.equalsIgnoreCase("type")) {
-				question.setType(Integer.parseInt(content));
+				if (content.equals("written_repsonse")) {
+					question.setType(Question.WRITTEN_RESPONSE);
+				}
+				else {
+					question.setType(Question.MULTIPLE_CHOICE);
+				}
 			}
 			else if (localName.equalsIgnoreCase("single_line")) {
 				question.setSingle_line(Boolean.parseBoolean(content));
@@ -77,7 +82,7 @@ public class FormParser extends XMLParser {
 	public void startElement(String uri, String localName, String qName,
 			Attributes atts) throws SAXException {
 		super.startElement(uri, localName, qName, atts);
-		if (localName.equalsIgnoreCase("org.citizensense.model.Campaign")) {
+		if (localName.equalsIgnoreCase("org.citizensense.model.Question")) {
 			this.question = new Question();
 		}
 		else {
