@@ -18,23 +18,19 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.citizensense.android.net.GetRequest;
 import com.citizensense.android.net.XMLResponseHandler;
 import com.citizensense.android.parsers.CampaignListParser;
-import com.citizensense.android.parsers.LegacyCampaignParser;
+import com.citizensense.android.parsers.FormParser;
+import com.citizensense.android.parsers.TaskParser;
 
 /**
  * The campaign browser allows users to view active campaigns in an "app-store"
  * style browser.
  * @author Phil Brown
  */
-public class CampaignBrowser extends CampaignExplorer 
-                             implements LegacyCampaignParser.CampaignParserCallback {
-
-	/** The XML parser used when a campaign is downloaded from the server.*/
-	LegacyCampaignParser parser;
+public class CampaignBrowser extends CampaignExplorer {
 	
 	/** The campaigns retrieved from the server */
 	ArrayList<Campaign> server_campaigns;
@@ -42,7 +38,6 @@ public class CampaignBrowser extends CampaignExplorer
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		server_campaigns = new ArrayList<Campaign>();
-		parser = new LegacyCampaignParser(this, this);
 		super.onCreate(savedInstanceState);
 	}// onCreate
 	
@@ -76,13 +71,14 @@ public class CampaignBrowser extends CampaignExplorer
 			}
 		});
 //		new GetRequest(this, Campaign.class, null, handler, true).execute();
-		
+		/*
 		try {
+			CampaignParser parser = new CampaignParser();
 			InputStream stream = getAssets().open("samples/campaign_1.xml");
 			Xml.parse(stream, Xml.Encoding.UTF_8, parser);
 			stream = getAssets().open("samples/campaign_2.xml");
 			Xml.parse(stream, Xml.Encoding.UTF_8, parser);
-			/*
+
 			//The below will also parse the campaigns in campaign_3.xml using the new format.
 			stream = getAssets().open("samples/campaign_3.xml");
 			Xml.parse(stream, Xml.Encoding.UTF_8, new CampaignListParser(new CampaignListParser.Callback() {
@@ -96,13 +92,13 @@ public class CampaignBrowser extends CampaignExplorer
 				}
 				
 			}));
-			*/
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
 			e.printStackTrace();
 		}
-		
+		*/
 		return server_campaigns;
 	}//getCampaigns
 
@@ -129,12 +125,91 @@ public class CampaignBrowser extends CampaignExplorer
 		return super.onContextItemSelected(item);
 	}//onContextItemSelected
 
-	@Override
-	public void handleNewCampaign(Campaign c) {
+	/**
+	 * Handle parsing a new {@link Campaign}
+	 * @param c
+	 */
+	public void handleNewCampaign(final Campaign c) {
 		if (!server_campaigns.contains(c)) {
-			server_campaigns.add(c);
+			XMLResponseHandler handler = new XMLResponseHandler();
+			handler.setCallback(new XMLResponseHandler.StringCallback() {
+				
+				@Override
+				public void invoke(String xml) {
+					try {
+						Xml.parse(xml, new TaskParser(new TaskParser.Callback() {
+	
+							@Override
+							public void invoke(Task t) {
+								handleNewTask(c, t);
+							}
+							
+						}));
+					} catch (SAXException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			new GetRequest(this, Task.class, c.getId(), handler, true).execute();
 		}
 	}//handleNewCampaign
+	
+	/**
+	 * Handle parsing a new {@link Task}
+	 * @param c
+	 * @param t
+	 */
+	public void handleNewTask(final Campaign c, final Task t) {
+		c.setTask(t);
+		/*
+		XMLResponseHandler handler = new XMLResponseHandler();
+		handler.setCallback(new XMLResponseHandler.StringCallback() {
+			
+			@Override
+			public void invoke(String xml) {
+				try {
+					Xml.parse(xml, new FormParser(new FormParser.Callback() {
+
+						@Override
+						public void invoke(Form form) {
+							handleNewForm(c, t, form);
+						}
+						
+					}));
+				} catch (SAXException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		new GetRequest(this, Task.class, c.getId(), handler, true).execute();
+		*/
+		try {
+			InputStream stream = getAssets().open("samples/form_1.xml");
+			Xml.parse(stream, Xml.Encoding.UTF_8, new FormParser(new FormParser.Callback() {
+				
+				@Override
+				public void invoke(Form form) {
+					handleNewForm(c, t, form);
+				}
+			}));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		}
+	}//handleNewTask
+	
+	/**
+	 * Handle parsing a new {@link Form} and store the final {@link Campaign}
+	 * in {@link #server_campaigns}.
+	 * @param c
+	 * @param t
+	 * @param f
+	 */
+	public void handleNewForm(Campaign c, Task t, Form f) {
+		t.setForm(f);
+		server_campaigns.add(c);
+	}//handleNewForm
 	
 	/** In order to avoid the campaign browser to add multiples, this
 	 * line is needed on onResume.*/

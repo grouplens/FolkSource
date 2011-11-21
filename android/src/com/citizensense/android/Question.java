@@ -22,19 +22,19 @@ public class Question implements Parcelable {
 	public static final int WRITTEN_RESPONSE = 1;
 		
 	/** Whether or not a multiple choice question can have multiple answers */
-	public boolean single_choice;
+	private boolean single_choice;
 	
 	/** Whether or not a written response question should be multiple lines*/
-	public boolean single_line;
+	private boolean single_line;
 	
 	/** The type of question. */
-	public int type;
+	private int type;
 	
 	/** The question text */
-	public String question;
+	private String question;
 	
 	/** Available answers for multiple choice questions */
-	public String[] answers;
+	private String[] answers;
 	
 
 	/** This CREATOR is used to parcel this Object. */
@@ -56,7 +56,17 @@ public class Question implements Parcelable {
 		}//newArray
 	};
 	
-	/** Constructor. Initializes the question from a Parcel Object.*/
+	/**
+	 * Constructs a new, empty Question
+	 */
+	public Question() {
+		
+	}//Question
+	
+	/** 
+	 * Constructs a new Question from the given {@link Parcel}
+	 * @param in
+	 */
 	public Question(Parcel in) {
 		this.single_choice = in.readByte() == 1;
 		this.single_line = in.readByte() == 1;
@@ -111,7 +121,7 @@ public class Question implements Parcelable {
 		else {
 			q += "\n";
 		}
-		Log.i("QUESTION", "Number of answers: " + answers.length);
+		Log.i("QUESTION", "Number of answers: " + this.answers.length);
 		for (int i = 0; i < this.answers.length; i++) {
 			Log.i("QUESTION", "index=" + i + ", q=" + q);
 			q += "  " + (i+1) + ") " + answers[i] + "\n";
@@ -163,5 +173,25 @@ public class Question implements Parcelable {
 		out.writeString(this.question);
 		out.writeStringArray(this.answers);
 	}//writeToParcel
+
+	public void setSingle_choice(boolean single_choice) {
+		this.single_choice = single_choice;
+	}//setSingle_choice
+
+	public void setSingle_line(boolean single_line) {
+		this.single_line = single_line;
+	}//setSingle_line
+
+	public void setType(int type) {
+		this.type = type;
+	}//setType
+
+	public void setQuestion(String question) {
+		this.question = question;
+	}//setQuestion
+
+	public void setAnswers(String[] answers) {
+		this.answers = answers;
+	}//setAnswer
 	
 }//Question

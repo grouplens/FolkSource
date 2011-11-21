@@ -6,8 +6,6 @@ package com.citizensense.android.net;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Method;
-import java.lang.reflect.TypeVariable;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
