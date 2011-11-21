@@ -4,6 +4,8 @@
 
 package com.citizensense.android;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.xml.sax.SAXException;
@@ -16,6 +18,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.citizensense.android.net.GetRequest;
 import com.citizensense.android.net.XMLResponseHandler;
@@ -72,14 +75,14 @@ public class CampaignBrowser extends CampaignExplorer
 				}
 			}
 		});
-		new GetRequest(this, Campaign.class, null, handler, true).execute();
-		/*
+//		new GetRequest(this, Campaign.class, null, handler, true).execute();
+		
 		try {
 			InputStream stream = getAssets().open("samples/campaign_1.xml");
 			Xml.parse(stream, Xml.Encoding.UTF_8, parser);
 			stream = getAssets().open("samples/campaign_2.xml");
 			Xml.parse(stream, Xml.Encoding.UTF_8, parser);
-			
+			/*
 			//The below will also parse the campaigns in campaign_3.xml using the new format.
 			stream = getAssets().open("samples/campaign_3.xml");
 			Xml.parse(stream, Xml.Encoding.UTF_8, new CampaignListParser(new CampaignListParser.Callback() {
@@ -91,14 +94,15 @@ public class CampaignBrowser extends CampaignExplorer
 						handleNewCampaign(c);
 					}
 				}
+				
 			}));
-			
+			*/
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
 			e.printStackTrace();
 		}
-		*/
+		
 		return server_campaigns;
 	}//getCampaigns
 

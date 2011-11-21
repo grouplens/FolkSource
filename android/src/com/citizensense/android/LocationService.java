@@ -7,6 +7,7 @@ package com.citizensense.android;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.R;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -28,14 +29,12 @@ import com.google.android.maps.GeoPoint;
  */
 public class LocationService extends Service {
 
-
-
 	/** campaigns to be checked */
 	private ArrayList<Campaign> campaigns;
 
 	/** used for checking whether a campaign is added or removed */
 	private ArrayList<Campaign> previousCampaigns;
-
+	
 	/**
 	 * Required method, but not used by us for now.
 	 */
@@ -86,16 +85,21 @@ public class LocationService extends Service {
 
 	/** Add proximity alert for a campaign. */
 	public void addProximityAlert(Campaign campaign) {
+		String proximityMapKey;
+		String campaignInfo;
 		for (String loc : campaign.getLocations()) {
 			GeoPoint point = Map.getGeopoint(this, loc);
 			if (point != null) {
 				double latitude = (double) point.getLatitudeE6() / 1000000.0;
 				double longitude = (double) point.getLongitudeE6() / 1000000.0;
-				String location = campaign.getName() + ":" + loc;
-				Intent intent = new Intent(location);
+				proximityMapKey = campaign.getName() + ":" + loc;
+				campaignInfo = proximityMapKey;
+				Intent intent = new Intent(campaignInfo);
+				//put Campaign information, so the notification can show the campaign name
+				intent.putExtra("Campaign:Location", campaignInfo);
 				PendingIntent proximityIntent = PendingIntent.getBroadcast(
 						this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-				G.proximityMap.put(location, proximityIntent);
+				G.proximityMap.put(proximityMapKey, proximityIntent);
 				G.locationManager.addProximityAlert(latitude, longitude,
 						Map.getRadius(loc), // the radius of the central point
 											// of the alert region, in meters
@@ -114,11 +118,11 @@ public class LocationService extends Service {
 	/** Remove proximity alert for a campaign. */
 	public void removeProximityAlert(Campaign campaign) {
 		for (String loc : campaign.getLocations()) {
-			String location = campaign.getName() + ":" + loc;
-			PendingIntent proximityIntent = G.proximityMap.get(location);
+			String proximityMapKey = campaign.getName() + ":" + loc;
+			PendingIntent proximityIntent = G.proximityMap.get(proximityMapKey);
 			if (proximityIntent != null) {
 				G.locationManager.removeProximityAlert(proximityIntent);
-				G.proximityMap.remove(location);
+				G.proximityMap.remove(proximityMapKey);
 			}
 		}
 	}

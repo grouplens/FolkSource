@@ -49,8 +49,8 @@ public class CitizenSense extends TabActivity implements OnClickListener {
         intent = new Intent().setClass(this, MyCampaigns.class);
         includeTab(intent, "My Campaigns", null, android.R.drawable.ic_menu_gallery);
 
-        intent = new Intent().setClass(this, Map.class);
-        includeTab(intent, "map", null, android.R.drawable.ic_menu_mapmode);
+        G.mapIntent = new Intent().setClass(this, Map.class);
+        includeTab(G.mapIntent, "map", null, android.R.drawable.ic_menu_mapmode);
         
         intent = new Intent().setClass(this, Profile.class);
         includeTab(intent, "profile", null, android.R.drawable.ic_menu_myplaces);

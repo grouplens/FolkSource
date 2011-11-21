@@ -59,6 +59,8 @@ public class Map extends MapActivity {
 		super.onResume();
 		PointOverlay pointOverlay;
 		CircleOverlay circleOverlay;
+		//When we open the map, clear the overlay first
+		mapOverlays.clear();
 		// update intent data
 		campaigns = getIntent().getParcelableArrayListExtra(
 				getString(R.string.campaigns));
@@ -70,11 +72,11 @@ public class Map extends MapActivity {
 						if (getLocType(loc) == Constants.EXACT_LOCATION) {
 							pointOverlay = new PointOverlay(getGeopoint(loc));
 							mapOverlays.add(pointOverlay);
-							G.map.getController().animateTo(getGeopoint(loc));
 						}
 						circleOverlay = new CircleOverlay(getGeopoint(loc),
 								getRadius(loc));
 						mapOverlays.add(circleOverlay);
+						G.map.getController().animateTo(getGeopoint(loc));
 					} else {
 						Toast.makeText(
 								this,

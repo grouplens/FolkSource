@@ -25,116 +25,121 @@ import com.citizensense.android.util.CampaignListAdapter;
 
 /**
  * Abstract activity for displaying campaigns to the user
+ * 
  * @author Phil Brown
  */
-public abstract class CampaignExplorer extends ListActivity 
-									   implements OnClickListener,
-									              OnItemSelectedListener {
+public abstract class CampaignExplorer extends ListActivity implements
+		OnClickListener, OnItemSelectedListener {
 
-	/** Adapter for adding campaigns to the gallery*/
+	/** Adapter for adding campaigns to the gallery */
 	protected CampaignGalleryAdapter galleryAdapter;
-	
-	/** Adapter for adding campaigns to the list*/
+
+	/** Adapter for adding campaigns to the list */
 	protected CampaignListAdapter listAdapter;
-	
-	/** List of campaigns inflated by the view*/
+
+	/** List of campaigns inflated by the view */
 	protected ArrayList<Campaign> campaigns;
-	
-	/** The gallery where the campaigns are stored in gallery mode*/
+
+	/** The gallery where the campaigns are stored in gallery mode */
 	protected Gallery gallery;
-	
-	/** The list where the campaigns are stored in list mode*/
+
+	/** The list where the campaigns are stored in list mode */
 	protected ListView list;
-	
-	/** Button indicating the way that the on-screen campaigns should be
-	 * displayed. */
+
+	/**
+	 * Button indicating the way that the on-screen campaigns should be
+	 * displayed.
+	 */
 	protected Button listMode, galleryMode, mapMode;
-	
-	/** The current View within the gallery*/
+
+	/** The current View within the gallery */
 	protected View current_gallery_view;
-	/** The current position of the gallery*/
+	/** The current position of the gallery */
 	protected int current_gallery_position;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.campaign_explorer);
-		//show list or gallery (and hide the other one)
+		// show list or gallery (and hide the other one)
 		list = (ListView) findViewById(android.R.id.list);
 		gallery = (Gallery) findViewById(R.id.campaign_gallery);
 		registerForContextMenu(gallery);
 		registerForContextMenu(list);
 		gallery.setOnItemSelectedListener(this);
-		//list.setOnItemSelectedListener(this);
-		//TODO: save which view the user last used (otherwise, default to gallery).
+		// list.setOnItemSelectedListener(this);
+		// TODO: save which view the user last used (otherwise, default to
+		// gallery).
 		list.setVisibility(View.GONE);
-		
+
 		listMode = (Button) findViewById(R.id.view_as_list);
 		listMode.setOnClickListener(this);
 		galleryMode = (Button) findViewById(R.id.view_as_gallery);
 		galleryMode.setOnClickListener(this);
 		mapMode = (Button) findViewById(R.id.view_as_map);
 		mapMode.setOnClickListener(this);
-		//registerForContextMenu(G.map);
-		
-	}//onCreate
-	
+		// registerForContextMenu(G.map);
+
+	}// onCreate
+
 	@Override
 	public void onResume() {
 		super.onResume();
 		refresh();
-	}//onResume
-	
-	/** Get the campaigns to populate the list or gallery*/
-	public abstract ArrayList<Campaign> getCampaigns();//getCampaigns
-	
+	}// onResume
+
+	/** Get the campaigns to populate the list or gallery */
+	public abstract ArrayList<Campaign> getCampaigns();// getCampaigns
+
 	/** Called when a view is clicked */
 	@Override
 	public void onClick(View v) {
 		if (v == listMode) {
 			gallery.setVisibility(View.GONE);
 			list.setVisibility(View.VISIBLE);
-		}
-		else if (v == galleryMode) {
+		} else if (v == galleryMode) {
 			list.setVisibility(View.GONE);
 			gallery.setVisibility(View.VISIBLE);
-		}
-		else if (v == mapMode) {
+		} else if (v == mapMode) {
+			if (campaigns != null)
+				G.setIntentData(campaigns);
 			CitizenSense.openMap();
 		}
-	}//onClick
-	
+	}// onClick
+
 	@Override
-    public void onItemSelected(AdapterView<?> parent, 
-    		 				   View view,
-    		 				   int position, 
-    		 				   long id) {
-    	current_gallery_view = view;
-    	current_gallery_position = position;
-    	updateIndicator(position);
-    }//onItemSelected
-	
+	public void onItemSelected(AdapterView<?> parent, View view, int position,
+			long id) {
+		current_gallery_view = view;
+		current_gallery_position = position;
+		updateIndicator(position);
+	}// onItemSelected
+
 	@Override
-	public void onNothingSelected(AdapterView<?> arg0) {}//onNothingSelected
-	
+	public void onNothingSelected(AdapterView<?> arg0) {
+	}// onNothingSelected
+
 	/** Refresh the view and update the gallery index indicator */
 	public void refresh() {
-		//re-retrieve the campaigns. TODO move to non-UI thread
+		// re-retrieve the campaigns. TODO move to non-UI thread
 		campaigns = getCampaigns();
 		this.refreshView();
-	}//refresh
-	
-	/** 
+	}// refresh
+
+	/**
 	 * Set the campaigns stored in the list/gallery
+	 * 
 	 * @param campaign
 	 */
 	public void setCampaigns(ArrayList<Campaign> campaigns) {
 		this.campaigns = campaigns;
 		this.refreshView();
-	}//setCampaigns
-	
-	/** Refresh the Gallery and List Views to reflect changes made in
-	 * {@link #refresh()} */
+	}// setCampaigns
+
+	/**
+	 * Refresh the Gallery and List Views to reflect changes made in
+	 * {@link #refresh()}
+	 */
 	private void refreshView() {
 		if (campaigns != null) {
 			listAdapter = new CampaignListAdapter(this, campaigns);
@@ -142,10 +147,14 @@ public abstract class CampaignExplorer extends ListActivity
 			galleryAdapter = new CampaignGalleryAdapter(this, campaigns);
 			gallery.setAdapter(galleryAdapter);
 		}
-	}//refreshView
-	
-	/** Update the index indicator at the bottom of the campaign view. 
-	 * @param position the current gallery position */
+	}// refreshView
+
+	/**
+	 * Update the index indicator at the bottom of the campaign view.
+	 * 
+	 * @param position
+	 *            the current gallery position
+	 */
 	public void updateIndicator(int position) {
 		int totalAdds = gallery.getCount();
 		TextView temp;
@@ -155,14 +164,13 @@ public abstract class CampaignExplorer extends ListActivity
 			temp = new TextView(this);
 			temp.setText("? ");
 			temp.setGravity(Gravity.CENTER);
-			if (i == position){
+			if (i == position) {
 				temp.setTextColor(Color.BLUE);
-			}
-			else {
+			} else {
 				temp.setTextColor(Color.LTGRAY);
 			}
 			indicator.addView(temp, i);
 		}
-	}//updateIndicator
-	
-}//CampaignExplorer
+	}// updateIndicator
+
+}// CampaignExplorer

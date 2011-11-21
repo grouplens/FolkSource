@@ -39,12 +39,15 @@ public class G {
 	public static SharedPreferences memory;
 	/** A location object used by the locationActivity */
 	public static Location location;
-	
+
 	/** HashMap stores PendingIntent for adding/removing ProximityAlert. */
 	public static HashMap<String, PendingIntent> proximityMap;
-	
+
 	/** manager for location updates */
 	public static LocationManager locationManager;
+
+	/** intent for sending data to map */
+	public static Intent mapIntent;
 
 	/** Call this function to start LocationService. */
 	public static void startLocationService() {
@@ -67,12 +70,10 @@ public class G {
 	}
 
 	/** Send intent data to Map. */
-	public static void sendIntentData(Context context,
-			ArrayList<Campaign> campaigns) {
-		Intent intent = new Intent(context, Map.class);
-		intent.putParcelableArrayListExtra(
-				context.getString(R.string.campaigns), campaigns);
-		context.startActivity(intent);
+	public static void setIntentData(ArrayList<Campaign> campaigns) {
+		if (G.mapIntent != null)
+		G.mapIntent.putParcelableArrayListExtra(
+				G.app_context.getString(R.string.campaigns), campaigns);
 	}
 
 	/** Get campaigns from the local database. */

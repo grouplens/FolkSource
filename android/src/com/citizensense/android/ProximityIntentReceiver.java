@@ -21,26 +21,33 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 		Boolean entering = intent.getBooleanExtra(
 				LocationManager.KEY_PROXIMITY_ENTERING, false);
 		if (entering) {
-			showNotification(context);
+			//get the campaign information from intent
+			String campaigninfo = intent.getStringExtra("Campaign:Location");
+			if(campaigninfo != null){
+				showNotification(context,campaigninfo);
+			}
 		}
 	}
 
 	/**
 	 * Show a notification while this service is running.
 	 */
-	public void showNotification(Context context) {
+	public void showNotification(Context context,String info) {
 
 		/** manager for notification */
 		NotificationManager notificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
-		String text = context.getString(R.string.notification_text);
+		String campaignName = info.split(":")[0];
+		String location = info.split(":")[1];
+		
+		String text = context.getString(R.string.notification_text)+" "+campaignName;
 		Notification notification = new Notification(
 				R.drawable.ic_notification, text, System.currentTimeMillis());
 		notification.flags = Notification.FLAG_AUTO_CANCEL;
 
 		String contentTitle = context.getString(R.string.app_name);
 		String contentText = context
-				.getString(R.string.notification_content_text);
+				.getString(R.string.notification_content_text)+" "+campaignName+". Its location is "+location;
 		// If the user click the notification, CitizenSense will be invoked
 		Intent intent = new Intent(context, CitizenSense.class);
 		PendingIntent pIntent = PendingIntent
