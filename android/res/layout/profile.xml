@@ -22,16 +22,17 @@
         <TextView android:id="@+id/username"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
-          android:text="Phil Brown"
+          android:text="Username"
           android:textSize="22sp"
           android:paddingTop="20dp" />
-        <TextView android:id="@+id/username"
+        <TextView 
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="New to the Neighborhood"
           android:textSize="16sp" />
       </LinearLayout>
     </LinearLayout>
+  <!--
   <LinearLayout 
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -47,6 +48,7 @@
       android:text="Badges"
       android:paddingLeft="15dp" />
   </LinearLayout>
+  -->
   <ListView android:id="@android:id/list"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"

@@ -4,41 +4,50 @@
 
 package com.citizensense.android;
 
-import java.util.ArrayList;
+import java.io.InputStream;
 
 import android.app.ListActivity;
 import android.os.Bundle;
+import android.util.Xml;
+import android.widget.TextView;
 
-import com.citizensense.android.util.CampaignListAdapter;
+import com.citizensense.android.parsers.IncentiveParser;
+import com.citizensense.android.util.LeaderboardAdapter;
 
 /**
- * User's main profile page. Has a picture, user info, and statuses on incentives
- * and participation in subscribed campaigns.
+ * Replacement class for the profile
  * @author Phil Brown
  *
  */
 public class Profile extends ListActivity {
-
-	/** The campaigns that the user is currently participating in.
-	 * TODO This ought to be moved to a new tab called "My Campaigns"*/
-	ArrayList<Campaign> campaigns;
 	
-	/** Create the view*/
-	@SuppressWarnings("unchecked")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.profile);
-        campaigns = new ArrayList<Campaign>();
-        ArrayList<String>campaign_ids = G.user.getCampaignIDs();
-        /*
-        for(int i = 0; i<campaign_ids.size(); i++) {
-        	campaigns.add(((ArrayList<Campaign>) G.db.getCampaign(campaign_ids.get(i))).get(0));
-        }
-        */
-        setListAdapter(new CampaignListAdapter(this, campaigns));
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.profile);
+		TextView username = (TextView) findViewById(R.id.username);
+		username.setText(G.user.getUsername());
+		//TODO construct a request to get the leaderboard, providing the current username to the server
+		getIncentive();
 	}//onCreate
 	
-	
-	 
+	/** Get the leaderboard incentive locally */
+	private void getIncentive() { 
+		//TODO get incentive from the server.
+		try {
+			InputStream stream = G.app_context.getAssets().open("samples/incentive_3.xml");
+			Xml.parse(stream, 
+					  Xml.Encoding.UTF_8, 
+					  new IncentiveParser(new IncentiveParser.Callback() {
+				/** set the list adapter using the retrieved leaderboard. */
+				@Override
+				public void invoke(Incentive i) {
+					setListAdapter(new LeaderboardAdapter(Profile.this, 
+							                              i.getLeaderbaord()));
+				}
+			}));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}//getIncentive
 }//Profile

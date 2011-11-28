@@ -14,6 +14,7 @@
   <EditText 
     android:id="@+id/password_field"
     android:hint="password"
+    android:password="true"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:padding="5dp"
