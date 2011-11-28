@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 
+import android.content.SharedPreferences.Editor;
 import android.os.Parcel;
 
 /**
@@ -29,7 +30,7 @@ public class User implements Item {
 	/** The empty constructor creates a new, empty user and initializes 
 	 * variables.*/
 	public User() {
-		username = "";
+		//username = "";
 		token = "";
 		campaign_ids = new ArrayList<String>();
 	}//User
@@ -38,7 +39,12 @@ public class User implements Item {
 	 * should instead interact with the server*/
 	public void login(String username, String password) {
 		//TODO login with server, get info, etc.
-		this.username = "Phil";
+		this.username = username;
+        CitizenSense.username.setText(username);
+        //TODO save login across sessions (include Token)
+        //Editor e = G.memory.edit();
+        //e.putString("username", username);
+        //e.commit();
 		campaign_ids.add("1");
 		campaign_ids.add("2");
 	}//login

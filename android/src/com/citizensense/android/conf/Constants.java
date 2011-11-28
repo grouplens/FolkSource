@@ -11,7 +11,10 @@ public interface Constants {
 
 	/** This tag is used to determine whether or not to print a Log statement
 	 * in many places throughout the app.*/
-	public static final boolean DEBUG=true;
+	public static final boolean DEBUG = true;
+	
+	/** This is used to denote whether or not to use local campaigns for testing*/
+	public static final boolean localCampaignsOnly = true;
 	
 	/** The name of the sharedPreferences file where G.memory is located.*/
 	public static final String MEM_LOC = "citizenSenseMem";

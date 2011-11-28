@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent" >
+  <EditText 
+    android:id="@+id/username_field"
+    android:hint="username"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:layout_margin="10dp"
+    android:layout_centerVertical="true" />
+  <EditText 
+    android:id="@+id/password_field"
+    android:hint="password"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:layout_margin="10dp"
+    android:layout_below="@id/username_field" />
+  <TextView 
+    android:id="@+id/title"
+    android:text="Login to Citizen Sense"
+    android:textStyle="bold"
+    android:textColor="#FFFFFF"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:layout_margin="10dp"
+    android:layout_above="@id/username_field" />
+  <Button
+    android:id="@+id/login_btn"
+    android:text="Login"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp"
+    android:layout_margin="10dp"
+    android:layout_below="@id/password_field"
+    android:layout_alignParentRight="true" />
+</RelativeLayout>

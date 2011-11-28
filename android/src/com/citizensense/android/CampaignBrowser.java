@@ -19,10 +19,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.citizensense.android.conf.Constants;
 import com.citizensense.android.net.GetRequest;
 import com.citizensense.android.net.XMLResponseHandler;
 import com.citizensense.android.parsers.CampaignListParser;
 import com.citizensense.android.parsers.FormParser;
+import com.citizensense.android.parsers.LegacyCampaignParser;
 import com.citizensense.android.parsers.TaskParser;
 
 /**
@@ -46,59 +48,78 @@ public class CampaignBrowser extends CampaignExplorer {
 		
 		// FIXME retrieve campaigns from the gallery. 
 		 // The following code should do it:
-		XMLResponseHandler handler = new XMLResponseHandler();
-		handler.setCallback(new XMLResponseHandler.StringCallback() {
-			
-			@Override
-			public void invoke(String xml) {
-				try {
-					Xml.parse(xml, new CampaignListParser(new CampaignListParser.Callback() {
-
-						@Override
-						public void invoke(ArrayList<Campaign> campaigns) {
-							Log.i("CampaignBrowser", "Retrieved " 
-									       + campaigns.size() + " campaigns.");
-							//TODO remove this line.
-							G.globalCampaigns = campaigns;
-							for (Campaign c : campaigns) {
-								handleNewCampaign(c);
-							}
-							CampaignBrowser.this.setCampaigns(campaigns);
+		if (Constants.localCampaignsOnly) {
+			try {
+				InputStream stream = getAssets().open("samples/campaign_1.xml");
+				Xml.parse(stream, Xml.Encoding.UTF_8, new LegacyCampaignParser(this, new LegacyCampaignParser.CampaignParserCallback() {
+					
+					@Override
+					public void handleNewCampaign(Campaign c) {
+						if (!server_campaigns.contains(c)) {
+							server_campaigns.add(c);
 						}
-						
-					}));
-				} catch (SAXException e) {
-					e.printStackTrace();
-				}
+					}//handleNewCampaign
+				}));
+				stream = getAssets().open("samples/campaign_2.xml");
+				Xml.parse(stream, Xml.Encoding.UTF_8, new LegacyCampaignParser(this, new LegacyCampaignParser.CampaignParserCallback() {
+					
+					@Override
+					public void handleNewCampaign(Campaign c) {
+						if (!server_campaigns.contains(c)) {
+							server_campaigns.add(c);
+						}
+					}//handleNewCampaign
+				}));
+				
+				//The below will also parse the campaigns in campaign_3.xml using the new format.
+				/*
+				stream = getAssets().open("samples/campaign_3.xml");
+				Xml.parse(stream, Xml.Encoding.UTF_8, new CampaignListParser(new CampaignListParser.Callback() {
+					
+					@Override
+					public void invoke(ArrayList<Campaign> campaigns) {
+						Toast.makeText(CampaignBrowser.this, "SUCCESS", Toast.LENGTH_SHORT).show();
+						for (Campaign c : campaigns) {
+							handleNewCampaign(c);
+						}
+					}
+				}));
+				*/
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (SAXException e) {
+				e.printStackTrace();
 			}
-		});
-		new GetRequest(this, Campaign.class, null, handler, true).execute();
-		/*
-		try {
-			InputStream stream = getAssets().open("samples/campaign_1.xml");
-			Xml.parse(stream, Xml.Encoding.UTF_8, parser);
-			stream = getAssets().open("samples/campaign_2.xml");
-			Xml.parse(stream, Xml.Encoding.UTF_8, parser);
-			
-			//The below will also parse the campaigns in campaign_3.xml using the new format.
-			stream = getAssets().open("samples/campaign_3.xml");
-			Xml.parse(stream, Xml.Encoding.UTF_8, new CampaignListParser(new CampaignListParser.Callback() {
+		}
+		else {
+			XMLResponseHandler handler = new XMLResponseHandler();
+			handler.setCallback(new XMLResponseHandler.StringCallback() {
 				
 				@Override
-				public void invoke(ArrayList<Campaign> campaigns) {
-					Toast.makeText(CampaignBrowser.this, "SUCCESS", Toast.LENGTH_SHORT).show();
-					for (Campaign c : campaigns) {
-						handleNewCampaign(c);
+				public void invoke(String xml) {
+					try {
+						Xml.parse(xml, new CampaignListParser(new CampaignListParser.Callback() {
+	
+							@Override
+							public void invoke(ArrayList<Campaign> campaigns) {
+								Log.i("CampaignBrowser", "Retrieved " 
+										       + campaigns.size() + " campaigns.");
+								//TODO remove this line.
+								G.globalCampaigns = campaigns;
+								for (Campaign c : campaigns) {
+									handleNewCampaign(c);
+								}
+								CampaignBrowser.this.setCampaigns(campaigns);
+							}
+							
+						}));
+					} catch (SAXException e) {
+						e.printStackTrace();
 					}
 				}
-			}));
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
+			});
+			new GetRequest(this, Campaign.class, null, handler, true).execute();
 		}
-		*/
 		return server_campaigns;
 	}//getCampaigns
 

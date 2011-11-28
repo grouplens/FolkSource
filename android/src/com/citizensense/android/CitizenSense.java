@@ -23,6 +23,9 @@ public class CitizenSense extends TabActivity implements OnClickListener {
     
 	/** Reference to the tab controller*/
 	static TabHost tabHost;
+	
+	static TextView username;
+	
 	/** Reference to the view inside the tabHost*/
 	View tabView;
 	
@@ -31,13 +34,16 @@ public class CitizenSense extends TabActivity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        
+        username = (TextView) findViewById(R.id.quick_profile_text);
         ((ImageView) findViewById(R.id.updates_menu_image)).setOnClickListener(this);
         ((ImageView) findViewById(R.id.updates_menu_menu)).setOnClickListener(this);
         ((TextView) findViewById(R.id.updates_menu_text)).setOnClickListener(this);
         ((ImageView) findViewById(R.id.quick_profile_image)).setOnClickListener(this);
         ((ImageView) findViewById(R.id.quick_profile_menu)).setOnClickListener(this);
-        ((TextView) findViewById(R.id.quick_profile_text)).setOnClickListener(this);
+        if (G.user.getUsername() != null) {
+        	username.setText(G.user.getUsername());
+        }
+        username.setOnClickListener(this);
         ((TextView) findViewById(R.id.quick_profile_pts)).setOnClickListener(this);
         
         tabHost = getTabHost();
@@ -59,7 +65,17 @@ public class CitizenSense extends TabActivity implements OnClickListener {
         //TODO Save the last tab they were on and store it in sharedPreferences
         //or in the onSavedInstanceState bundle
         tabHost.setCurrentTab(0);
+        
     }//onCreate
+    
+    @Override
+    public void onResume() {
+    	super.onResume();
+    	if (G.user.getUsername() == null) {
+    		Intent intent = new Intent(this, Login.class);
+    		startActivity(intent);
+    	}
+    }//onResume
     
     /** Open the map tab*/
     public static void openMap() {
