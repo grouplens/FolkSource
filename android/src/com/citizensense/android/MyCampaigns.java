@@ -18,6 +18,10 @@ import android.view.ContextMenu.ContextMenuInfo;
  */
 public class MyCampaigns extends CampaignExplorer {
 	
+	/** Referenced in {@link #onContextItemSelected(MenuItem)} to know which
+	 * item was clicked. */
+	private boolean list_clicked;
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<Campaign> getCampaigns() {
@@ -50,16 +54,37 @@ public class MyCampaigns extends CampaignExplorer {
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
-		menu.setHeaderTitle((campaigns.get(this.current_gallery_position)).getName());
+		switch(v.getId()) {
+			case (R.id.campaign_gallery) : {
+				menu.setHeaderTitle((campaigns.get(this.current_gallery_position)).getName());
+				list_clicked = false;
+				break;
+			}
+			case (android.R.id.list) : {
+				menu.setHeaderTitle((campaigns.get(this.current_list_position)).getName());
+				list_clicked = true;
+				break;
+			}
+			default : {
+				menu.setHeaderTitle("Campaign");
+				list_clicked = false;
+				break;
+			}
+		}
 		inflater.inflate(R.menu.my_campaigns_context_menu, menu);
 	}//onCreateContextMenu
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		/* Remove the campaign to the local database*/
+		/* Remove the campaign from the local database*/
 		case R.id.delete:
-			G.db.deleteCampaign((campaigns.get(this.current_gallery_position)));
+			if (this.list_clicked) {
+				G.db.deleteCampaign((campaigns.get(this.current_list_position)));
+			} 
+			else {
+				G.db.deleteCampaign((campaigns.get(this.current_gallery_position)));
+			}
 			refresh();
 			return true;
 		}

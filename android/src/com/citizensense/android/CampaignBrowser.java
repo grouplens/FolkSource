@@ -35,7 +35,11 @@ import com.citizensense.android.parsers.TaskParser;
 public class CampaignBrowser extends CampaignExplorer {
 	
 	/** The campaigns retrieved from the server */
-	ArrayList<Campaign> server_campaigns;
+	public ArrayList<Campaign> server_campaigns;
+	
+	/** Referenced in {@link #onContextItemSelected(MenuItem)} to know which
+	 * item was clicked. */
+	private boolean list_clicked;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -128,7 +132,23 @@ public class CampaignBrowser extends CampaignExplorer {
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		MenuInflater inflater = getMenuInflater();
-		menu.setHeaderTitle((campaigns.get(this.current_gallery_position)).getName());
+		switch(v.getId()) {
+			case (R.id.campaign_gallery) : {
+				menu.setHeaderTitle((campaigns.get(this.current_gallery_position)).getName());
+				list_clicked = false;
+				break;
+			}
+			case (android.R.id.list) : {
+				menu.setHeaderTitle((campaigns.get(this.current_list_position)).getName());
+				list_clicked = true;
+				break;
+			}
+			default : {
+				menu.setHeaderTitle("Campaign");
+				list_clicked = false;
+				break;
+			}
+		}
 		inflater.inflate(R.menu.campaign_browser_context_menu, menu);
 	}//onCreateContextMenu
 
@@ -137,7 +157,12 @@ public class CampaignBrowser extends CampaignExplorer {
 		switch (item.getItemId()) {
 		/* Add the campaign to the local database*/
 		case R.id.download:
-			G.db.addCampaign(campaigns.get(this.current_gallery_position));
+			if (this.list_clicked) {
+				G.db.addCampaign(campaigns.get(this.current_list_position));
+			} 
+			else {
+				G.db.addCampaign(campaigns.get(this.current_gallery_position));
+			}
 			return true;
 		}
 		return super.onContextItemSelected(item);

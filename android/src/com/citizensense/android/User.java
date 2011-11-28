@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 
-import android.content.SharedPreferences.Editor;
 import android.os.Parcel;
 
 /**
