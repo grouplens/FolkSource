@@ -4,12 +4,16 @@
 
 package com.citizensense.android;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 
 import android.os.Parcel;
+import android.util.Xml;
+
+import com.citizensense.android.parsers.IncentiveParser;
 
 /**
  * This class defines the logged in user. Not sure yet what to do with
@@ -25,11 +29,17 @@ public class User implements Item {
 	/** A list of the ids associated with campaigns in which this user is
 	 * participating. */
 	private ArrayList<String> campaign_ids;
+	/** this user's incentives */
+	private Incentive incentive;
+	/** this user's id*/
+	public int id;
+	/** This is used with the {@link Incentive#LEADERBOARD leaderboard}.*/
+	public int score;
 	
 	/** The empty constructor creates a new, empty user and initializes 
 	 * variables.*/
 	public User() {
-		username = "";
+		//username = "";
 		token = "";
 		campaign_ids = new ArrayList<String>();
 	}//User
@@ -37,8 +47,12 @@ public class User implements Item {
 	/** Login to the App. For now, this simply sets some static variables, but
 	 * should instead interact with the server*/
 	public void login(String username, String password) {
-		//TODO login with server, get info, etc.
-		this.username = "Phil";
+		this.username = username;
+        CitizenSense.username.setText(username);
+        //TODO save login across sessions (include Token)
+        //Editor e = G.memory.edit();
+        //e.putString("username", username);
+        //e.commit();
 		campaign_ids.add("1");
 		campaign_ids.add("2");
 	}//login
@@ -47,6 +61,18 @@ public class User implements Item {
 	public String getUsername() {
 		return username;
 	}//getUsername
+	
+	public void setUsername(String username) {
+		this.username = username;
+	}//setUsername
+	
+	public void setScore(int score) {
+		this.score = score;
+	}//setScore
+	
+	public void setId(int id) {
+		this.id = id;
+	}//setId
 	
 	/** Get the campaign ids for the campaigns this user participates in.*/
 	public ArrayList<String> getCampaignIDs() {

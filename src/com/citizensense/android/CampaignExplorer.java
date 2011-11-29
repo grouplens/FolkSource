@@ -7,12 +7,14 @@ package com.citizensense.android;
 import java.util.ArrayList;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.Gallery;
@@ -50,11 +52,11 @@ public abstract class CampaignExplorer extends ListActivity
 	 * displayed. */
 	protected Button listMode, galleryMode, mapMode;
 	
-	/** The current View within the gallery*/
-	protected View current_gallery_view;
-	/** The current position of the gallery*/
-	protected int current_gallery_position;
-	
+	/** The current View within the set*/
+	protected View current_gallery_view, current_list_view;
+	/** The current position of the set*/
+	protected int current_gallery_position, current_list_position;
+		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -65,8 +67,47 @@ public abstract class CampaignExplorer extends ListActivity
 		registerForContextMenu(gallery);
 		registerForContextMenu(list);
 		gallery.setOnItemSelectedListener(this);
-		//list.setOnItemSelectedListener(this);
-		//TODO: save which view the user last used (otherwise, default to gallery).
+		gallery.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, 
+					                View view, 
+					                int position,
+					                long id) {
+				Intent intent = new Intent(CampaignExplorer.this, CampaignPage.class);
+				intent.putExtra(CampaignExplorer.this.getString(R.string.campaign_intent), 
+						        campaigns.get(current_gallery_position));
+				CampaignExplorer.this.startActivity(intent);
+			}
+		});
+		list.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> parent, 
+					                  View view,
+					                  int position, 
+					                  long id) {
+				current_list_view = view;
+				current_list_position = position;
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {}
+		});
+		list.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, 
+					                View view, 
+					                int position,
+					                long id) {
+				current_list_view = view;
+				current_list_position = position;
+				Intent intent = new Intent(CampaignExplorer.this, CampaignPage.class);
+				intent.putExtra(CampaignExplorer.this.getString(R.string.campaign_intent), 
+						        campaigns.get(current_list_position));
+				CampaignExplorer.this.startActivity(intent);
+			}
+		});
 		list.setVisibility(View.GONE);
 		
 		listMode = (Button) findViewById(R.id.view_as_list);

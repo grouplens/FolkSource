@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.citizensense.android.Campaign;
 import com.citizensense.android.Form;
+import com.citizensense.android.G;
 import com.citizensense.android.Question;
 import com.citizensense.android.R;
 import com.citizensense.android.Sense;
@@ -110,6 +111,14 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 		Button task_button = (Button) v.findViewById(R.id.task);
 		Button d_or_d = (Button) v.findViewById(R.id.download_or_delete);
 		
+		final Campaign campaign = campaigns.get(position);
+		
+		if (G.db.getCampaign(campaign.getId()) == null) {
+			d_or_d.setText("Download");
+		}
+		else {
+			d_or_d.setText("Delete");
+		}
 		//Button more = (Button) v.findViewById(R.id.more);
 		//FIXME
 		//iv.setVisibility(View.GONE);
@@ -123,7 +132,6 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 			//tv.setText(G.db.getCampaignById("2").getName());
 		}
 		*/
-		final Campaign campaign = campaigns.get(position);
 		//unpack campaign and display (for now) FIXME improve it!
 		if (campaign != null) {
 			title.setText(campaign.getName());
@@ -142,10 +150,17 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 			//the end date of the campaign.
 			//TODO add hour accuracy.
 			Time endDate = new Time();
-			endDate.set(campaign.getEndDate().getDay(), campaign.getEndDate().getMonth(), campaign.getEndDate().getYear());
+			endDate.set(campaign.getEndDate().getDay(), 
+					    campaign.getEndDate().getMonth(), 
+					    campaign.getEndDate().getYear());
+			Time startDate = new Time();
+			startDate.set(campaign.getStartDate().getDay(), 
+				          campaign.getStartDate().getMonth(), 
+				          campaign.getStartDate().getYear());
 			Time now = new Time();
 			now.setToNow();
-			String isOpen = endDate.before(now) ? "Open" : "Closed";
+			String isOpen = (now.after(startDate) && endDate.before(now)) ? 
+					        "Open" : "Closed";
 			TextView status = (TextView) v.findViewById(R.id.campaign_status);
 			status.setText("Status: " + isOpen);
 			if (isOpen.equals("Open")) {
@@ -196,6 +211,23 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 					i.putExtra("campaign", campaign);
 					context.startActivity(i);
 				}
+			});
+			d_or_d.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					Button d = (Button) v;
+					if (d.getText().equals("Download")) {
+						G.db.addCampaign(campaign);
+						d.setText("Delete");
+					}
+					else {
+						G.db.deleteCampaign(campaign);
+						d.setText("Download");
+					}
+					
+				}
+				
 			});
 		}
 		

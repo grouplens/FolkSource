@@ -17,7 +17,6 @@ import android.os.Parcelable;
 import android.util.Xml;
 
 import com.citizensense.android.parsers.CampaignParser;
-import com.citizensense.android.parsers.CampaignParser2;
 
 /** 
  * Campaign Object

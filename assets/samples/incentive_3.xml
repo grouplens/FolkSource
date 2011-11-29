@@ -1,0 +1,25 @@
+<list>
+  <org.citizensense.model.Incentive>
+    <type>leaderboard</type>
+    <user>
+      <userid>2</userid>
+      <name>loren</name>
+      <score>23</score>
+    </user>
+    <user>
+      <userid>5</userid>
+      <name>phil</name>
+      <score>17</score>
+    </user>
+    <user>
+      <userid>3</userid>
+      <name>jake</name>
+      <score>14</score>
+    </user>
+    <user>
+      <userid>8</userid>
+      <name>renji</name>
+      <score>9</score>
+    </user>
+  </org.citizensense.model.Incentive>
+</list>
