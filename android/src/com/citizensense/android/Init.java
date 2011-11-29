@@ -25,7 +25,7 @@ public class Init extends Application {
 		G.db = new CsDbAdapter(this);
 		G.db.open();
 		G.user = new User();
-		G.user.login("", "");//TODO remove this, handle logins another way.
+		//G.user.login("", "");//TODO remove this, handle logins another way.
 		G.app_context = this.getApplicationContext();
 	}//onCreate
 }//Init

@@ -39,7 +39,7 @@ public class TaskParser extends XMLParser {
 	@Override
 	public Object getParsedObject() {
 		return this.task;
-	}//getItem
+	}//getParsedObject
 	
 	@Override
 	public void characters(char[] ch, int start, int length)

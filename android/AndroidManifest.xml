@@ -33,6 +33,11 @@
                   android:label="Profile" />
         <activity android:name=".Sense"
                   android:label="Sense" />
+        <activity android:name=".Login"
+                  android:label="Login"
+                  android:windowSoftInputMode="adjustPan" />
+        <activity android:name=".CampaignPage"
+                  android:label="CampaignPage" />
         <uses-library android:name="com.google.android.maps"></uses-library>
     </application>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>
