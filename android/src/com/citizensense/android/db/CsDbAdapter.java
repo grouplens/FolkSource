@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.citizensense.android.Campaign;
 import com.citizensense.android.Form;
 import com.citizensense.android.G;
+import com.citizensense.android.MyCampaigns;
 import com.citizensense.android.Question;
 import com.citizensense.android.Task;
 import com.citizensense.android.conf.Constants;
@@ -210,6 +211,8 @@ public class CsDbAdapter {
 		size++;
 		memEditor.putLong(Constants.DB_SIZE, size);
 		memEditor.commit();
+		//add notification
+		MyCampaigns.addProximityAlert(c);
 		return 0L;
 	}//addCampaign
 	   
@@ -229,6 +232,8 @@ public class CsDbAdapter {
 					size--;
 					memEditor.putLong(Constants.DB_SIZE, size);
 					memEditor.commit();
+					//remove notification
+					MyCampaigns.removeProximityAlert(c);
 					return true;
 				}
 	    			  

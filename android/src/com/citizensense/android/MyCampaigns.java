@@ -5,16 +5,27 @@
 package com.citizensense.android;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.LocationManager;
+import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
+
+import com.citizensense.android.conf.Constants;
+import com.google.android.maps.GeoPoint;
 
 /** 
  * Shows the campaigns that the user has downloaded
  * @author Phil Brown
+ * @author Renji Yu
  */
 public class MyCampaigns extends CampaignExplorer {
 	
@@ -22,12 +33,44 @@ public class MyCampaigns extends CampaignExplorer {
 	 * item was clicked. */
 	private boolean list_clicked;
 	
+	/** Contains a copy of the campaigns in the database. This is used to 
+	 * determine if and when a {@link ProximityAlert} should be added or removed.*/
+	private ArrayList<Campaign> myCampaigns;
+	
+	/** HashMap stores PendingIntent for adding/removing ProximityAlert. */
+	public static HashMap<String, PendingIntent> proximityMap;
+	
+	/** manager for location updates */
+	public static LocationManager locationManager;
+		
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE); 
+		proximityMap = new HashMap<String, PendingIntent>();
+		super.onCreate(savedInstanceState);
+	}//onCreate
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		Intent intent = getIntent();
+		if (intent != null) {
+			//open the campaign (this has been opened from a PendingIntent.
+			String c_id = intent.getStringExtra(getString(R.string.campaign_intent));
+			for (int i = 0; i < campaigns.size(); i++) {
+				Campaign c = campaigns.get(i);
+				if (c.getId().equals(c_id)) {
+					this.gallery.setSelection(i);
+					break;
+				}
+			}
+		}
+	}//onResume
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<Campaign> getCampaigns() {
 		ArrayList<Campaign> campaigns = new ArrayList<Campaign>();
-		//long j = G.db.size();
-		//Toast.makeText(getApplicationContext(), "Size: " + j, Toast.LENGTH_SHORT).show();
 		int j = 1;
 		int index = 1;
 		while (j <= G.db.size()) {
@@ -38,14 +81,13 @@ public class MyCampaigns extends CampaignExplorer {
 			}
 			index++;
 		}
-		/*
-		for (int i=1; i<=G.db.size(); i++) {
-			ArrayList<Campaign> c = (ArrayList<Campaign>) G.db.getCampaign(Integer.toString(i));
-			if (c != null) {
-				campaigns.add(((ArrayList<Campaign>) G.db.getCampaign(Integer.toString(i))).get(0));
-			}
+		this.campaigns = campaigns;//not too slick here, but needed
+		if (myCampaigns == null) {
+			this.setProximityAlerts();
 		}
-		*/
+		else {
+			this.resetProximityAlerts();
+		}
 		return campaigns;
 	}//getCampaigns
 	
@@ -90,5 +132,84 @@ public class MyCampaigns extends CampaignExplorer {
 		}
 		return super.onContextItemSelected(item);
 	}//onContextItemSelected
+	
+	/** Set proximity alerts for all campaigns. */
+	@SuppressWarnings("unchecked")
+	public void setProximityAlerts() {
+		if (campaigns.size() == 0)
+			return;
+		for (Campaign c : campaigns) {
+			addProximityAlert(c);
+		}
+		myCampaigns = (ArrayList<Campaign>) campaigns.clone();
+	}//setProximityAlerts
+	
+	/** This two-step process updates the proximity alerts in Citizen Sense by
+	 * first removing extra Proximity Alerts, then adding the ones that have
+	 * yet to be added. */
+	public void resetProximityAlerts() {
+		for (int index = 0; index < myCampaigns.size(); index++) {
+			Campaign c = myCampaigns.get(index);
+			if (!campaigns.contains(c)) {
+				removeProximityAlert(c);
+			}
+		}
+		for (int index = 0; index < campaigns.size(); index++) {
+			Campaign c = campaigns.get(index);
+			if (!myCampaigns.contains(c)) {
+				addProximityAlert(c);
+			}
+		}
+	}//resetProximityAlerts
+
+	/** Add a proximity alert for the given campaign
+	 * @param campaign */
+	public static void addProximityAlert(Campaign campaign) {
+		String proximityMapKey;
+		for (String loc : campaign.getLocations()) {
+			GeoPoint point = Map.getGeopoint(G.app_context, loc);
+			if (point != null) {
+				double latitude = (double) point.getLatitudeE6() / 1000000.0;
+				double longitude = (double) point.getLongitudeE6() / 1000000.0;
+				proximityMapKey = campaign.getName() + ":" + loc;
+				Intent intent = new Intent(proximityMapKey);
+				//put Campaign information, so the notification can show the campaign name
+				intent.putExtra("Campaign:Location", proximityMapKey);
+				PendingIntent proximityIntent = PendingIntent.getBroadcast(
+						G.app_context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+				proximityMap.put(proximityMapKey, proximityIntent);
+				locationManager.addProximityAlert(latitude, 
+						                          longitude,
+						                          /*the radius of the central 
+						                           * point of the alert region, 
+						                           * in meters*/
+						                          Map.getRadius(loc), 
+						                          Constants.PROXIMITY_ALERT_EXPIRATION,
+						                          /* a PendingIntent that will 
+						                           * be used to generate an 
+						                           * Intent to fire when entry 
+						                           * to or exit from the alert 
+						                           * region is detected*/
+						                          proximityIntent);
+				IntentFilter filter = new IntentFilter(""//campaign.getId() + ":" 
+						                              + campaign.getName() 
+						                              + ":" + loc);
+				G.app_context.registerReceiver(new ProximityIntentReceiver(), filter);
+			}
+		}
+	}//addProximityAlert
+
+	/** Remove proximity alert for the given campaign.
+	 * @param campaign */
+	public static void removeProximityAlert(Campaign campaign) {
+		for (String loc : campaign.getLocations()) {
+			String proximityMapKey = campaign.getName() + ":" + loc;
+			PendingIntent proximityIntent = proximityMap.get(proximityMapKey);
+			if (proximityIntent != null) {
+				locationManager.removeProximityAlert(proximityIntent);
+				proximityMap.remove(proximityMapKey);
+			}
+		}
+	}//removeProximityAlert
 	
 }//MyCampaigns

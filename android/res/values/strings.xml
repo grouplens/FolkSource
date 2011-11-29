@@ -6,4 +6,6 @@
     <string name="written_response">written_response</string>
     <string name="multiple_choice">multiple_choice</string>
     <string name="campaign_intent">campaign</string>
+    <string name="notification_text">In range of</string>
+    <string name="notification_content_text">You are in range of</string>
 </resources>

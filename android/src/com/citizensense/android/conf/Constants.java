@@ -38,4 +38,12 @@ public interface Constants {
 	/** This is a type of campaign location*/
 	public static final boolean EXACT_LOCATION = true,
 	                            NONEXACT_LOCATION = false;
+	/** This is used when creating new Proximity Alerts in 
+	 * {@link com.citizensense.android.MyCampaigns MyCampaigns}. Setting the
+	 * expiration to -1 will set the alert to never expire. Otherwise, set this
+	 * to a time, in millisecods, for the alert to expire.  */
+	public static final int PROXIMITY_ALERT_EXPIRATION = -1;
+	/** This ID is used for accessing the proximity notification. 
+	 * FIXME use different notification IDs for different campaigns. */
+	public static final int PROXIMITY_NOTIFICATION_ID = 1;
 }//Constants
