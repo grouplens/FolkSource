@@ -8,4 +8,5 @@
     <string name="campaign_intent">campaign</string>
     <string name="notification_text">In range of</string>
     <string name="notification_content_text">You are in range of</string>
+    <string name="proximity_alert_intent">id:name:location</string>
 </resources>

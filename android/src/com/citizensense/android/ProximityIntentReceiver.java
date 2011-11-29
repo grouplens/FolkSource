@@ -30,13 +30,13 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 		 */
 		Boolean entering = intent.getBooleanExtra(
 				LocationManager.KEY_PROXIMITY_ENTERING, false);
-		String campaignInfo = intent.getStringExtra("Campaign:Location");
+		String campaignInfo = intent.getStringExtra(context.getString(R.string.proximity_alert_intent));
 		if (campaignInfo != null) {
 			if (entering) {
 				showNotification(context, campaignInfo);
 			}
 			else {
-				hideNotification(context);
+				hideNotification(context, campaignInfo);
 			}
 		}
 	}//onReceive
@@ -44,22 +44,24 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 	/**
 	 * Hides the notification when the user leaves the proximity
 	 */
-	public void hideNotification(Context c) {
+	public void hideNotification(Context c, String info) {
+		int notification_id = MyCampaigns.notificationIDs.get(info);
 		NotificationManager nm;
 		nm = (NotificationManager) 
 		     c.getSystemService(Context.NOTIFICATION_SERVICE);
-		nm.cancel(Constants.PROXIMITY_NOTIFICATION_ID);
+		nm.cancel(notification_id);
 	}//hideNotification
 
 	/**
 	 * Show a notification while this service is running.
 	 */
-	public void showNotification(Context context,String info) {
+	public void showNotification(Context context, String info) {
 		NotificationManager nm;
 		nm = (NotificationManager) 
 		      context.getSystemService(Context.NOTIFICATION_SERVICE);
-		String name = info.split(":")[0];
-		String location = info.split(":")[1];
+		String id = info.split(":")[0];
+		String name = info.split(":")[1];
+		String location = info.split(":")[2];
 		String text = context.getString(R.string.notification_text) + " " + name;
 		Notification notification;
 		notification = new Notification(R.drawable.ic_notification, 
@@ -71,14 +73,15 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 		String contentText;
 		contentText = context.getString(R.string.notification_content_text)
 		                                + " " + name + ". Its location is " + location;
-		// If the user click the notification, CitizenSense will be invoked
+		// If the user click the notification, CitizenSense will be invoked and
+		//opened to display the campaign discussed in the notification
 		Intent intent = new Intent(context, CitizenSense.class);
-		PendingIntent pIntent = PendingIntent
-				.getActivity(context, 0, intent, 0);
-		notification.setLatestEventInfo(context, contentTitle, contentText,
-				pIntent);
-		nm.notify(Constants.PROXIMITY_NOTIFICATION_ID,
-				notification);
+		intent.putExtra(context.getString(R.string.campaign_intent), id);
+		PendingIntent pIntent;
+		pIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		notification.setLatestEventInfo(context, contentTitle, contentText, pIntent);
+		int notification_id = MyCampaigns.notificationIDs.get(info);
+		nm.notify(notification_id, notification);
 	}//showNotification
 
 }//ProximityIntentReceiver

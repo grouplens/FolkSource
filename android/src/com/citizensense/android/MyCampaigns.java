@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.LocationManager;
-import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
@@ -39,24 +37,17 @@ public class MyCampaigns extends CampaignExplorer {
 	
 	/** HashMap stores PendingIntent for adding/removing ProximityAlert. */
 	public static HashMap<String, PendingIntent> proximityMap;
+	/** This stores the notification IDs used for each proximity alert. */
+	public static HashMap<String, Integer> notificationIDs;
 	
 	/** manager for location updates */
 	public static LocationManager locationManager;
-		
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE); 
-		proximityMap = new HashMap<String, PendingIntent>();
-		super.onCreate(savedInstanceState);
-	}//onCreate
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		Intent intent = getIntent();
-		if (intent != null) {
-			//open the campaign (this has been opened from a PendingIntent.
-			String c_id = intent.getStringExtra(getString(R.string.campaign_intent));
+		if (G.notification_campaign_id != null) {
+			String c_id = G.notification_campaign_id;
 			for (int i = 0; i < campaigns.size(); i++) {
 				Campaign c = campaigns.get(i);
 				if (c.getId().equals(c_id)) {
@@ -169,15 +160,17 @@ public class MyCampaigns extends CampaignExplorer {
 		for (String loc : campaign.getLocations()) {
 			GeoPoint point = Map.getGeopoint(G.app_context, loc);
 			if (point != null) {
-				double latitude = (double) point.getLatitudeE6() / 1000000.0;
-				double longitude = (double) point.getLongitudeE6() / 1000000.0;
-				proximityMapKey = campaign.getName() + ":" + loc;
+				double latitude = (double) point.getLatitudeE6() / 1E6;
+				double longitude = (double) point.getLongitudeE6() / 1E6;
+				proximityMapKey = campaign.getId() + ":" + campaign.getName() + ":" + loc;
 				Intent intent = new Intent(proximityMapKey);
 				//put Campaign information, so the notification can show the campaign name
-				intent.putExtra("Campaign:Location", proximityMapKey);
+				intent.putExtra(G.app_context.getString(R.string.proximity_alert_intent), proximityMapKey);
 				PendingIntent proximityIntent = PendingIntent.getBroadcast(
 						G.app_context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 				proximityMap.put(proximityMapKey, proximityIntent);
+				G.notification_id++;
+				notificationIDs.put(proximityMapKey, G.notification_id);
 				locationManager.addProximityAlert(latitude, 
 						                          longitude,
 						                          /*the radius of the central 
@@ -191,9 +184,7 @@ public class MyCampaigns extends CampaignExplorer {
 						                           * to or exit from the alert 
 						                           * region is detected*/
 						                          proximityIntent);
-				IntentFilter filter = new IntentFilter(""//campaign.getId() + ":" 
-						                              + campaign.getName() 
-						                              + ":" + loc);
+				IntentFilter filter = new IntentFilter(proximityMapKey);
 				G.app_context.registerReceiver(new ProximityIntentReceiver(), filter);
 			}
 		}
@@ -203,11 +194,12 @@ public class MyCampaigns extends CampaignExplorer {
 	 * @param campaign */
 	public static void removeProximityAlert(Campaign campaign) {
 		for (String loc : campaign.getLocations()) {
-			String proximityMapKey = campaign.getName() + ":" + loc;
+			String proximityMapKey = campaign.getId() + ":" + campaign.getName() + ":" + loc;
 			PendingIntent proximityIntent = proximityMap.get(proximityMapKey);
 			if (proximityIntent != null) {
 				locationManager.removeProximityAlert(proximityIntent);
 				proximityMap.remove(proximityMapKey);
+				notificationIDs.remove(proximityMapKey);
 			}
 		}
 	}//removeProximityAlert
