@@ -34,4 +34,7 @@ public class G {
 	public static Location location;
 	//TODO remove this. Instead, use intent
 	public static ArrayList<Campaign> globalCampaigns;
+	/** This is used when a user clicks a notification in order to open the correct
+	 * campaign.*/
+	public static String notification_campaign_id;
 }//G

@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -117,7 +118,7 @@ public class Map extends MapActivity {
      * {@link Constants#NONEXACT_LOCATION NONEXACT_LOCATION} refers to a 
      * (city, state) reference. 
      */
-    public boolean getLocType(String loc){ 
+    public static boolean getLocType(String loc){ 
     	 Pattern pattern=Pattern.compile("\\d");  
          Matcher matcher=pattern.matcher(loc);
          if (matcher.find() == true) {
@@ -134,7 +135,7 @@ public class Map extends MapActivity {
      * the size of cities.
      * TODO improve this based on database information. 
      */
-    public float getRadius(String loc){
+    public static float getRadius(String loc){
     	if (getLocType(loc) == Constants.EXACT_LOCATION) {
     		return 10;
     	}else {
@@ -203,6 +204,41 @@ public class Map extends MapActivity {
     			    * (1 / Math.cos(Math.toRadians(latitude)))); 
     	return (int) m;
     }//getPixelsFromMeters
+    
+    /** static function to be used for LocationService */
+	public static GeoPoint getGeopoint(Context context, String loc) {
+		if (getLocType(loc) == Constants.EXACT_LOCATION) {
+			loc = loc.replaceAll(" ", "");
+			String[] long_lat = loc.split(",");
+			int longitude = (int) (Integer.parseInt(long_lat[0]) * 1E6);
+			int latitude = (int) (Integer.parseInt(long_lat[1]) * 1E6);
+			return new GeoPoint(latitude, longitude);
+		} else if (getLocType(loc) == Constants.NONEXACT_LOCATION) {
+			Geocoder mygeoCoder = new Geocoder(context, Locale.getDefault());
+			List<Address> lstAddress = null;
+			try {
+				// getFromLocationName() will return a list of Address which
+				// matches the location name(first parameter)
+				lstAddress = mygeoCoder.getFromLocationName(loc, 1);
+				if (lstAddress.isEmpty()) {
+					Log.e("Map.getGeopoint", "Geocoder did not find any "
+							+ "addresses. Returning null.");
+					return null;
+				} else {
+					Address address = lstAddress.get(0);
+					int latitude = (int) (address.getLatitude() * 1E6);
+					int longitude = (int) (address.getLongitude() * 1E6);
+					return new GeoPoint(latitude, longitude);
+				}
+			} catch (IOException e) {
+				Log.e("Map.getGeopoint", "Geocoder failed. Returning null");
+				return null;
+			}
+		} else {
+			Log.e("Map.getGeopoint", "Invalid Location type. Returning null");
+			return null;
+		}
+	}// getGeopoint
      
     /** PointOverlay is an inner class for showing a location as a marker on 
      * the map.*/
