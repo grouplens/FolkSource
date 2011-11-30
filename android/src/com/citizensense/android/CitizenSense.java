@@ -56,6 +56,7 @@ public class CitizenSense extends TabActivity implements OnClickListener {
         includeTab(intent, "My Campaigns", null, android.R.drawable.ic_menu_gallery);
 
         intent = new Intent().setClass(this, Map.class);
+        //intent.putExtra(getString(R.string.campaign_intent), 0);
         includeTab(intent, "map", null, android.R.drawable.ic_menu_mapmode);
         
         intent = new Intent().setClass(this, Profile.class);
@@ -65,7 +66,6 @@ public class CitizenSense extends TabActivity implements OnClickListener {
         //TODO Save the last tab they were on and store it in sharedPreferences
         //or in the onSavedInstanceState bundle
         tabHost.setCurrentTab(0);
-        
     }//onCreate
     
     @Override

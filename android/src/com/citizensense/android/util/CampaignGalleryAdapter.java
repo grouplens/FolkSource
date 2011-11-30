@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.citizensense.android.Campaign;
+import com.citizensense.android.CitizenSense;
 import com.citizensense.android.Form;
 import com.citizensense.android.G;
 import com.citizensense.android.Question;
@@ -203,7 +204,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 			if (campaign.getImage() != 0) {
 				image.setImageResource(campaign.getImage());
 			}
-			//DO something with the buttons
+			//task button
 			task_button.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -212,8 +213,17 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 					context.startActivity(i);
 				}
 			});
+			//map button
+			map_button.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					G.currentCampaigns = new ArrayList<Campaign>();
+					G.currentCampaigns.add(campaign);
+					CitizenSense.openMap();
+				}
+			});
+			//download & delete button
 			d_or_d.setOnClickListener(new OnClickListener() {
-
 				@Override
 				public void onClick(View v) {
 					Button d = (Button) v;
@@ -227,10 +237,8 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 					}
 					
 				}
-				
 			});
 		}
-		
 		v.setLayoutParams(new Gallery.LayoutParams(
 				WindowManager.LayoutParams.FILL_PARENT, 
                 WindowManager.LayoutParams.FILL_PARENT));

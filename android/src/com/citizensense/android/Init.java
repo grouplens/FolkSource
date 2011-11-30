@@ -4,6 +4,7 @@
 
 package com.citizensense.android;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.Application;
@@ -30,7 +31,6 @@ public class Init extends Application {
 		G.db.open();
 		G.user = new User();
 		G.app_context = this.getApplicationContext();
-		//G.notification_id = 0;
 		
 		MyCampaigns.locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE); 
 		MyCampaigns.proximityMap = new HashMap<String, PendingIntent>();

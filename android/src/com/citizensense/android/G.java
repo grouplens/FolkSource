@@ -32,8 +32,10 @@ public class G {
 	public static SharedPreferences memory;
 	/** A location object used by the locationActivity */
 	public static Location location;
-	//TODO remove this. Instead, use intent
-	public static ArrayList<Campaign> globalCampaigns;
+	/** Because we have activities within tabs, we cannot pass intent from one to
+	 * another. The work around is to store campaigns here as needed to pass them
+	 * from one tab to another. */
+	public static ArrayList<Campaign> currentCampaigns;
 	/** This is used when a user clicks a notification in order to open the correct
 	 * campaign.*/
 	public static String notification_campaign_id;

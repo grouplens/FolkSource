@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -54,18 +55,30 @@ public class Map extends MapActivity {
     @Override
     public void onResume() {
     	super.onResume();
-    	
-        //Currently, simply use a global variable.
-        //Its value is set in CampaginBrowser by getCampaigns();
-    	//FIXME remove the global variable and unpack the campaigns from intent.
-        campaigns = G.globalCampaigns;
-        
+    	/*
+    	Intent i = getIntent();
+    	int val = 0;
+    	if (i != null) {
+    		val = i.getIntExtra(getString(R.string.campaign_intent), 0);
+    	}
+    	if (val == 0) {
+    		campaigns = null;
+    		return;
+    	}
+    	else {
+    		campaigns = G.currentCampaigns;
+    	}
+    	*/
+    	this.campaigns = G.currentCampaigns;
+    	if (campaigns == null) {
+    		this.campaigns = new ArrayList<Campaign>();
+    	}
 		PointOverlay pointOverlay = null;
 		CircleOverlay circleOverlay = null;
 		List<Overlay> mapOverlays = G.map.getOverlays();
         for(Campaign campaign : campaigns){
         	for(String loc : campaign.getLocations()){
-    			if(getLocType(loc)==Constants.EXACT_LOCATION){
+    			if(getLocType(loc) == Constants.EXACT_LOCATION){
     				pointOverlay = new PointOverlay(getGeopoint(loc));
     				mapOverlays.add(pointOverlay);
     				G.map.getController().animateTo(getGeopoint(loc));
@@ -84,18 +97,6 @@ public class Map extends MapActivity {
 	protected boolean isRouteDisplayed() {
 		return false;
 	}//isRouteDisplayed
-	
-	/** 
-	 * Get campaigns from the local database. 
-	 * FIXME get campaigns should unpack the intent. 
-	 */
-	ArrayList<Campaign> getCampaigns() {
-		ArrayList<Campaign> results = new ArrayList<Campaign>();
-		for(String campaignID: G.user.getCampaignIDs()){
-			results.add((Campaign) G.db.getCampaign(campaignID));
-		}
-		return results;
-	}//getCampaigns
 	
 	/** 
 	 * Set zoom level of the map according to the location's type.

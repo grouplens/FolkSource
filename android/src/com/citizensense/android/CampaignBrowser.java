@@ -109,7 +109,7 @@ public class CampaignBrowser extends CampaignExplorer {
 								Log.i("CampaignBrowser", "Retrieved " 
 										       + campaigns.size() + " campaigns.");
 								//TODO remove this line.
-								G.globalCampaigns = campaigns;
+								//G.currentCampaigns = campaigns;
 								for (Campaign c : campaigns) {
 									handleNewCampaign(c);
 								}
@@ -124,7 +124,7 @@ public class CampaignBrowser extends CampaignExplorer {
 			});
 			new GetRequest(this, Campaign.class, null, handler, true).execute();
 		}
-		G.globalCampaigns = server_campaigns;
+		//G.currentCampaigns = server_campaigns;
 		return server_campaigns;
 	}//getCampaigns
 

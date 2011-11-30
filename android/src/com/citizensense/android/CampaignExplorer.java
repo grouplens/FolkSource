@@ -141,6 +141,7 @@ public abstract class CampaignExplorer extends ListActivity
 			gallery.setVisibility(View.VISIBLE);
 		}
 		else if (v == mapMode) {
+			G.currentCampaigns = this.campaigns;
 			CitizenSense.openMap();
 		}
 	}//onClick
