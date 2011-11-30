@@ -70,7 +70,7 @@ public class CampaignBrowser extends CampaignExplorer {
 				}
 			}
 		});
-//		new GetRequest(this, Campaign.class, null, handler, true).execute();
+		new GetRequest(this, Campaign.class, null, handler, true).execute();
 		/*
 		try {
 			CampaignParser parser = new CampaignParser();
