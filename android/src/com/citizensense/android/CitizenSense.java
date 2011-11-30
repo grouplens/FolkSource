@@ -75,12 +75,39 @@ public class CitizenSense extends TabActivity implements OnClickListener {
     		Intent intent = new Intent(this, Login.class);
     		startActivity(intent);
     	}
+    	Intent intent = getIntent();
+		if (intent != null) {
+			//open the campaign (this has been opened from a PendingIntent).
+			String c_id = intent.getStringExtra(getString(R.string.campaign_intent));
+			G.notification_campaign_id = c_id;
+			if (c_id != null) {
+				openMyCampaigns();
+			}
+		}
+		else {
+			G.notification_campaign_id = null;
+		}
     }//onResume
     
     /** Open the map tab*/
     public static void openMap() {
     	tabHost.setCurrentTab(2);
     }//openMap
+    
+    /** Open the My Campaigns tab*/
+    public static void openMyCampaigns() {
+    	tabHost.setCurrentTab(1);
+    }//openMyCampaigns
+    
+    /** Open the Home tab*/
+    public static void openHome() {
+    	tabHost.setCurrentTab(0);
+    }//openHome
+    
+    /** Open the Profile tab*/
+    public static void openProfile() {
+    	tabHost.setCurrentTab(3);
+    }//openProfile
     
     /**
      * Include tab in the layout

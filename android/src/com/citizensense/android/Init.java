@@ -4,8 +4,12 @@
 
 package com.citizensense.android;
 
+import java.util.HashMap;
+
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.location.LocationManager;
 
 import com.citizensense.android.conf.Constants;
 import com.citizensense.android.db.CsDbAdapter;
@@ -25,7 +29,10 @@ public class Init extends Application {
 		G.db = new CsDbAdapter(this);
 		G.db.open();
 		G.user = new User();
-		//G.user.login("", "");//TODO remove this, handle logins another way.
 		G.app_context = this.getApplicationContext();
+		//G.notification_id = 0;
+		
+		MyCampaigns.locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE); 
+		MyCampaigns.proximityMap = new HashMap<String, PendingIntent>();
 	}//onCreate
 }//Init
