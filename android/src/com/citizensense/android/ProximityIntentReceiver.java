@@ -4,8 +4,6 @@
 
 package com.citizensense.android;
 
-import com.citizensense.android.conf.Constants;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -45,11 +43,12 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 	 * Hides the notification when the user leaves the proximity
 	 */
 	public void hideNotification(Context c, String info) {
-		int notification_id = MyCampaigns.notificationIDs.get(info);
+		//int notification_id = MyCampaigns.notificationIDs.get(info);
 		NotificationManager nm;
 		nm = (NotificationManager) 
 		     c.getSystemService(Context.NOTIFICATION_SERVICE);
-		nm.cancel(notification_id);
+		String id = info.split(":")[0];
+		nm.cancel(Integer.parseInt(id));
 	}//hideNotification
 
 	/**
@@ -78,10 +77,10 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 		Intent intent = new Intent(context, CitizenSense.class);
 		intent.putExtra(context.getString(R.string.campaign_intent), id);
 		PendingIntent pIntent;
-		pIntent = PendingIntent.getActivity(context, 0, intent, 0);
+		pIntent = PendingIntent.getActivity(context, 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
 		notification.setLatestEventInfo(context, contentTitle, contentText, pIntent);
-		int notification_id = MyCampaigns.notificationIDs.get(info);
-		nm.notify(notification_id, notification);
+		//this means that campaign ids must be numeric!
+		nm.notify(Integer.parseInt(id), notification);
 	}//showNotification
 
 }//ProximityIntentReceiver

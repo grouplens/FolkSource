@@ -37,8 +37,6 @@ public class MyCampaigns extends CampaignExplorer {
 	
 	/** HashMap stores PendingIntent for adding/removing ProximityAlert. */
 	public static HashMap<String, PendingIntent> proximityMap;
-	/** This stores the notification IDs used for each proximity alert. */
-	public static HashMap<String, Integer> notificationIDs;
 	
 	/** manager for location updates */
 	public static LocationManager locationManager;
@@ -51,7 +49,7 @@ public class MyCampaigns extends CampaignExplorer {
 			for (int i = 0; i < campaigns.size(); i++) {
 				Campaign c = campaigns.get(i);
 				if (c.getId().equals(c_id)) {
-					this.gallery.setSelection(i);
+					this.gallery.setSelection(i);//, true);
 					break;
 				}
 			}
@@ -169,20 +167,10 @@ public class MyCampaigns extends CampaignExplorer {
 				PendingIntent proximityIntent = PendingIntent.getBroadcast(
 						G.app_context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 				proximityMap.put(proximityMapKey, proximityIntent);
-				G.notification_id++;
-				notificationIDs.put(proximityMapKey, G.notification_id);
 				locationManager.addProximityAlert(latitude, 
 						                          longitude,
-						                          /*the radius of the central 
-						                           * point of the alert region, 
-						                           * in meters*/
 						                          Map.getRadius(loc), 
 						                          Constants.PROXIMITY_ALERT_EXPIRATION,
-						                          /* a PendingIntent that will 
-						                           * be used to generate an 
-						                           * Intent to fire when entry 
-						                           * to or exit from the alert 
-						                           * region is detected*/
 						                          proximityIntent);
 				IntentFilter filter = new IntentFilter(proximityMapKey);
 				G.app_context.registerReceiver(new ProximityIntentReceiver(), filter);
@@ -199,7 +187,6 @@ public class MyCampaigns extends CampaignExplorer {
 			if (proximityIntent != null) {
 				locationManager.removeProximityAlert(proximityIntent);
 				proximityMap.remove(proximityMapKey);
-				notificationIDs.remove(proximityMapKey);
 			}
 		}
 	}//removeProximityAlert
