@@ -3,8 +3,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   android:orientation="vertical"
   android:layout_width="fill_parent"
-  android:layout_height="fill_parent"
-  android:background="#66CC33">
+  android:layout_height="fill_parent">
   <TextView 
     android:id="@+id/campaign_title"
     android:layout_width="fill_parent"
@@ -12,9 +11,8 @@
     android:gravity="center_horizontal"
     android:padding="10dp"
     android:textSize="24sp"
-    android:textColor="#000000"
+    android:textColor="#FFFFFF"
     android:text="Campaign Title"
-    android:background="#FFFFCC"
     android:layout_alignParentTop="true" />
   <CheckBox 
     android:id="@+id/chkbox_photo_complete"
@@ -29,7 +27,7 @@
     android:id="@+id/upload_text"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:textColor="#000000"
+    android:textColor="#FFFFFF"
     android:layout_marginLeft="10dp"
     android:layout_toRightOf="@id/chkbox_photo_complete"
     android:layout_alignTop="@id/chkbox_photo_complete"
@@ -53,14 +51,6 @@
     android:layout_marginTop="10dp"
     android:orientation="vertical"
     android:layout_below="@id/capture_photo" />
-  <Button 
-    android:id="@+id/upload_photo"
-    android:layout_height="wrap_content"  
-    android:layout_width="wrap_content" 
-    android:text="Upload Photo" 
-    android:layout_alignTop="@+id/capture_photo" 
-    android:layout_alignLeft="@+id/previous_question">
-  </Button>
   <Button 
     android:id="@+id/next_question"
     android:layout_width="wrap_content"

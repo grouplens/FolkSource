@@ -103,17 +103,6 @@ public class Sense extends LocationActivity {
 			    startActivityForResult(intent, CAMERA_CAPTURE_REQUEST_CODE);
 			}
 		});
-		Button upload = (Button) findViewById(R.id.upload_photo);
-		//FIXME make this a file chooser instead.
-		upload.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Sense.this.imageUri=Uri.parse("fake://uri");
-				CheckBox hasTakenPhoto = (CheckBox) findViewById(R.id.chkbox_photo_complete);
-	        	hasTakenPhoto.setChecked(true);
-	        	validateForm();
-			}
-		});
 		final LinearLayout form_container = (LinearLayout) findViewById(R.id.form_container);
 		final LinearLayout[] layouts = this.renderForm();
 		this.questionsIndex = 0;
@@ -213,7 +202,7 @@ public class Sense extends LocationActivity {
 			/* Question text */
 			TextView question = new TextView(this);
 			question.setText(questions[i].getQuestion());
-			question.setTextColor(Color.BLACK);
+			question.setTextColor(Color.WHITE);//BLACK);
 			question.setGravity(Gravity.CENTER_HORIZONTAL);
 			question.setLayoutParams(new LinearLayout.LayoutParams(
 										LinearLayout.LayoutParams.WRAP_CONTENT, 
@@ -274,7 +263,7 @@ public class Sense extends LocationActivity {
 					}
 					TextView tv = new TextView(this);
 					tv.setText(option);
-					tv.setTextColor(Color.BLACK);
+					tv.setTextColor(Color.WHITE);//BLACK);
 					tv.setLayoutParams(new LinearLayout.LayoutParams(
 							LinearLayout.LayoutParams.FILL_PARENT, 
 							LinearLayout.LayoutParams.WRAP_CONTENT));
