@@ -141,6 +141,8 @@ public abstract class CampaignExplorer extends ListActivity
 			gallery.setVisibility(View.VISIBLE);
 		}
 		else if (v == mapMode) {
+			if (campaigns != null)
+				G.globalCampaigns = campaigns;
 			CitizenSense.openMap();
 		}
 	}//onClick
@@ -194,7 +196,7 @@ public abstract class CampaignExplorer extends ListActivity
 		indicator.removeAllViews();
 		for (int i = 0; i < totalAdds; i++) {
 			temp = new TextView(this);
-			temp.setText("¥  ");
+			temp.setText("ï¿½ ");
 			temp.setGravity(Gravity.CENTER);
 			if (i == position){
 				temp.setTextColor(Color.BLUE);

@@ -23,6 +23,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.citizensense.android.conf.Constants;
 import com.google.android.maps.GeoPoint;
@@ -41,7 +42,7 @@ public class Map extends MapActivity {
 	/** Contains the set of {@link Campaign Campaigns} currently displayed on 
 	 * the map */
 	protected ArrayList<Campaign> campaigns;	
-	  	
+	private List<Overlay> mapOverlays;
 	/** Initialize the map */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class Map extends MapActivity {
         setContentView(R.layout.map);
         G.map = (MapView) findViewById(R.id.mapview);
         G.map.setBuiltInZoomControls(true);
+        mapOverlays = G.map.getOverlays();
     }//onCreate
     
     @Override
@@ -62,19 +64,32 @@ public class Map extends MapActivity {
         
 		PointOverlay pointOverlay = null;
 		CircleOverlay circleOverlay = null;
-		List<Overlay> mapOverlays = G.map.getOverlays();
-        for(Campaign campaign : campaigns){
-        	for(String loc : campaign.getLocations()){
-    			if(getLocType(loc)==Constants.EXACT_LOCATION){
-    				pointOverlay = new PointOverlay(getGeopoint(loc));
-    				mapOverlays.add(pointOverlay);
-    				G.map.getController().animateTo(getGeopoint(loc));
-    			}
-    		    circleOverlay = new CircleOverlay(getGeopoint(loc),getRadius(loc));
-    	        mapOverlays.add(circleOverlay);
-        	}
-        }
-        setZoomLevel();
+		
+		//When we open the map, clear the overlay first
+		mapOverlays.clear();
+		if (campaigns != null) {
+			for (Campaign campaign : campaigns) {
+				for (String loc : campaign.getLocations()) {
+					GeoPoint point = getGeopoint(loc);
+					if (point != null) {
+						if (getLocType(loc) == Constants.EXACT_LOCATION) {
+							pointOverlay = new PointOverlay(getGeopoint(loc));
+							mapOverlays.add(pointOverlay);
+						}
+						circleOverlay = new CircleOverlay(getGeopoint(loc),
+								getRadius(loc));
+						mapOverlays.add(circleOverlay);
+						G.map.getController().animateTo(getGeopoint(loc));
+					} else {
+						Toast.makeText(
+								this,
+								"Geocoder failed, can't show some campaigns, please try later.",
+								Toast.LENGTH_LONG).show();
+					}
+				}
+			}
+			setZoomLevel();
+		}
     }//onResume
 
     /** 

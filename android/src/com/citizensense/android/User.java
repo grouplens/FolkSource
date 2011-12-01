@@ -4,80 +4,192 @@
 
 package com.citizensense.android;
 
-import java.io.InputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 
 import android.os.Parcel;
-import android.util.Xml;
 
-import com.citizensense.android.parsers.IncentiveParser;
+import com.citizensense.android.conf.Constants;
 
 /**
- * This class defines the logged in user. Not sure yet what to do with
- * anonymous users. Login credentials should be received from the server and
- * handled safely, similar to how Cyclopath works - with tokens, etc.
+ * This class defines the logged in user. Not sure yet what to do with anonymous
+ * users. Login credentials should be received from the server and handled
+ * safely, similar to how Cyclopath works - with tokens, etc.
+ * 
  * @author Phil Brown
+ * @author Renji Yu
  */
 public class User implements Item {
-	/** The user's username*/
+	/** The user's username */
 	private String username;
-	/** The token retrieved from the server*/
+	/** The token retrieved from the server */
 	private String token;
-	/** A list of the ids associated with campaigns in which this user is
-	 * participating. */
+	
+	/** Cookie get from server after successfully login or register*/
+	private String cookie;
+	
+	/** The root URL of the server. */
+	private String base_url = "http://192.168.1.2:9080";
+	
+	/** The URL for login post. */
+	private String login_url = base_url+"/Login/login.action";
+	
+	/** The URL for register post. */
+	private String register_url = base_url+"/Login/register.action";
+	
+	/**
+	 * A list of the ids associated with campaigns in which this user is
+	 * participating.
+	 */
 	private ArrayList<String> campaign_ids;
 	/** this user's incentives */
 	private Incentive incentive;
-	/** this user's id*/
+	/** this user's id */
 	public int id;
-	/** This is used with the {@link Incentive#LEADERBOARD leaderboard}.*/
+	/** This is used with the {@link Incentive#LEADERBOARD leaderboard}. */
 	public int score;
-	
-	/** The empty constructor creates a new, empty user and initializes 
-	 * variables.*/
+
+	/**
+	 * The empty constructor creates a new, empty user and initializes
+	 * variables.
+	 */
 	public User() {
-		//username = "";
+		// username = "";
 		token = "";
 		campaign_ids = new ArrayList<String>();
-	}//User
-	
-	/** Login to the App. For now, this simply sets some static variables, but
-	 * should instead interact with the server*/
-	public void login(String username, String password) {
+	}// User
+
+	/**
+	 * Login to the App. For now, this simply sets some static variables, but
+	 * should instead interact with the server
+	 */
+	public int login(String username, String password) {
 		this.username = username;
-        CitizenSense.username.setText(username);
-        //TODO save login across sessions (include Token)
-        //Editor e = G.memory.edit();
-        //e.putString("username", username);
-        //e.commit();
+		CitizenSense.username.setText(username);
+		// TODO save login across sessions (include Token)
+		// Editor e = G.memory.edit();
+		// e.putString("username", username);
+		// e.commit();
 		campaign_ids.add("1");
 		campaign_ids.add("2");
-	}//login
+
+		return loginCheck(username,password);
+
+	}// login
 	
-	/** gets the username*/
+	/**
+	 * Register a new account for the user.
+	 */
+	public int register(String username, String password) {
+		this.username = username;
+		CitizenSense.username.setText(username);
+		campaign_ids.add("1");
+		campaign_ids.add("2");
+
+		return registerCheck(username,password);
+	}// login
+	
+	/** 
+	 * Check the login status
+	 */
+	private int loginCheck(String username, String password) {
+		DefaultHttpClient mHttpClient = new DefaultHttpClient();
+		HttpPost httpPost = new HttpPost(login_url);
+		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+		pairs.add(new BasicNameValuePair("id", null));
+		pairs.add(new BasicNameValuePair("user.name", username));
+		pairs.add(new BasicNameValuePair("user.password", password));
+		try {
+			httpPost.setEntity(new UrlEncodedFormEntity(pairs));
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			HttpResponse response = mHttpClient.execute(httpPost);
+			int res = response.getStatusLine().getStatusCode();
+			if (res == 200) {//HttpServletResponse.SC_OK
+				Header[] headers = response.getAllHeaders();
+				for(Header header : headers ){
+					if(header.getName().contains("Cookie")){
+						this.setCookie(header.getValue());
+					}
+				}
+				 return Constants.LOGIN_SUCCESS;
+			} else if(res == 417){//HttpServletResponse.SC_EXPECTATION_FAILED
+					return Constants.LOGIN_WRONG_PASSWORD;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return Constants.LOGIN_NO_USERNAME;
+	}
+	
+	/**
+	 * Check the register status
+	 */
+	private int registerCheck(String username, String password) {
+		DefaultHttpClient mHttpClient = new DefaultHttpClient();
+		HttpPost httpPost = new HttpPost(register_url);
+		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+		pairs.add(new BasicNameValuePair("id", null));
+		pairs.add(new BasicNameValuePair("user.name", username));
+		pairs.add(new BasicNameValuePair("user.password", password));
+		try {
+			httpPost.setEntity(new UrlEncodedFormEntity(pairs));
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			HttpResponse response = mHttpClient.execute(httpPost);
+			int res = response.getStatusLine().getStatusCode();
+			if (res == 200) {
+				Header[] headers = response.getAllHeaders();
+				for(Header header : headers ){
+					if(header.getName().contains("Cookie")){
+						this.setCookie(header.getValue());
+					}
+				}
+				return Constants.REGISTRATION_SUCCESS;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return Constants.REGISTRATION_FAILURE;
+	}
+
+	/** gets the username */
 	public String getUsername() {
 		return username;
-	}//getUsername
-	
+	}// getUsername
+
 	public void setUsername(String username) {
 		this.username = username;
-	}//setUsername
-	
+	}// setUsername
+
 	public void setScore(int score) {
 		this.score = score;
-	}//setScore
-	
+	}// setScore
+
 	public void setId(int id) {
 		this.id = id;
-	}//setId
-	
-	/** Get the campaign ids for the campaigns this user participates in.*/
+	}// setId
+
+	/** Get the campaign ids for the campaigns this user participates in. */
 	public ArrayList<String> getCampaignIDs() {
 		return campaign_ids;
-	}//getCampaignIDs
+	}// getCampaignIDs
 
 	@Override
 	public int describeContents() {
@@ -88,7 +200,7 @@ public class User implements Item {
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -100,13 +212,12 @@ public class User implements Item {
 	@Override
 	public void createFromXML(Document document) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
 
 	@Override
 	public void createFromXML(String string) {
-		
+
 	}
 
 	@Override
@@ -118,12 +229,20 @@ public class User implements Item {
 	@Override
 	public void createFromJSON(JSONObject object) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public String getItemName() {
 		return "user";
-	}//getItemName
-	
-}//User
+	}// getItemName
+
+	public void setCookie(String cookie) {
+		this.cookie = cookie;
+	}
+
+	public String getCookie() {
+		return cookie;
+	}
+
+}// User

@@ -43,4 +43,13 @@ public interface Constants {
 	 * expiration to -1 will set the alert to never expire. Otherwise, set this
 	 * to a time, in millisecods, for the alert to expire.  */
 	public static final int PROXIMITY_ALERT_EXPIRATION = -1;
+	
+	/* These variables are used to indicate the result of Login*/
+	public static final int LOGIN_SUCCESS = 1;
+	public static final int LOGIN_WRONG_PASSWORD = 2;
+	public static final int LOGIN_NO_USERNAME = 3;
+	
+	/* These variables are used to indicate the result of Registration*/
+	public static final int REGISTRATION_SUCCESS = 1;
+	public static final int REGISTRATION_FAILURE = 2;
 }//Constants
