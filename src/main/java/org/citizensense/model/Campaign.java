@@ -1,20 +1,9 @@
 package org.citizensense.model;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-//@Entity
-//@Table(name="campaigns") //@Inheritance(strategy=SINGLE_TABLE)
 public class Campaign {
 
-	//@Id
 	private Long id;
 	private String title;
 	private String description;
@@ -24,9 +13,6 @@ public class Campaign {
 	private int owner_id;
 	private int task_id;
 
-	//private User owner;
-	
-//	@OneToMany(mappedBy="task")
 	private List<Task> tasks;
 	
 	/**

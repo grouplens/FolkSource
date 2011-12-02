@@ -25,13 +25,13 @@ public class UserService {
 	}
 	
 	private static void getIncentives(User u) {
-		List<User> users;
-		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
-		//Session session = HibernateFactory.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		
-		users = session.createQuery("from IncentivesPh	interesting, I don'").list();
-		session.getTransaction().commit();
+//		List<User> users;
+//		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
+//		//Session session = HibernateFactory.getSessionFactory().getCurrentSession();
+//		session.beginTransaction();
+//		
+//		users = session.createQuery("from Incentives").list();
+//		session.getTransaction().commit();
 		
 	}
 
