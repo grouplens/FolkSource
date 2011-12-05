@@ -88,10 +88,6 @@ public abstract class CampaignExplorer extends ListActivity
 					                View view, 
 					                int position,
 					                long id) {
-				//Intent intent = new Intent(CampaignExplorer.this, CampaignPage.class);
-				//intent.putExtra(CampaignExplorer.this.getString(R.string.campaign_intent), 
-				//		        campaigns.get(current_gallery_position));
-				//CampaignExplorer.this.startActivity(intent);
 				openCampaignPage(campaigns.get(current_gallery_position));
 				lastLayoutView = gallery;
 			}
@@ -118,10 +114,6 @@ public abstract class CampaignExplorer extends ListActivity
 					                long id) {
 				current_list_view = view;
 				current_list_position = position;
-				//Intent intent = new Intent(CampaignExplorer.this, CampaignPage.class);
-				//intent.putExtra(CampaignExplorer.this.getString(R.string.campaign_intent), 
-				//		        campaigns.get(current_list_position));
-				//CampaignExplorer.this.startActivity(intent);
 				openCampaignPage(campaigns.get(current_list_position));
 				lastLayoutView = list;
 			}
@@ -202,7 +194,8 @@ public abstract class CampaignExplorer extends ListActivity
 	
 	public void openCampaignPage(final Campaign campaign) {
 		this.campaign_page.setVisibility(View.VISIBLE);
-		this.campaign_page.scrollTo(0, 0);//resets the scroll to the top of the screen.
+		//resets the scroll to the top of the screen.
+		this.campaign_page.scrollTo(0, 0);
 		list.setVisibility(View.GONE);
 		gallery.setVisibility(View.GONE);
 		SimpleDateFormat dateFormat;
