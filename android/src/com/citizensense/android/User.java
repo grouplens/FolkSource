@@ -41,13 +41,13 @@ public class User implements Item {
 	private String cookie;
 	
 	/** The root URL of the server. */
-	private String base_url = "http://192.168.1.2:9080";
+	private String base_url = "http://134.84.74.107:9080";
 	
 	/** The URL for login post. */
-	private String login_url = base_url+"/Login/login.action";
+	private String login_url = base_url+"/citizensense/login";
 	
 	/** The URL for register post. */
-	private String register_url = base_url+"/Login/register.action";
+	private String register_url = base_url+"/citizensense/user";
 	
 	/**
 	 * A list of the ids associated with campaigns in which this user is
@@ -109,8 +109,8 @@ public class User implements Item {
 		HttpPost httpPost = new HttpPost(login_url);
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		pairs.add(new BasicNameValuePair("id", null));
-		pairs.add(new BasicNameValuePair("user.name", username));
-		pairs.add(new BasicNameValuePair("user.password", password));
+		pairs.add(new BasicNameValuePair("name", username));
+		pairs.add(new BasicNameValuePair("password", password));
 		try {
 			httpPost.setEntity(new UrlEncodedFormEntity(pairs));
 		} catch (UnsupportedEncodingException e1) {
@@ -144,8 +144,8 @@ public class User implements Item {
 		HttpPost httpPost = new HttpPost(register_url);
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		pairs.add(new BasicNameValuePair("id", null));
-		pairs.add(new BasicNameValuePair("user.name", username));
-		pairs.add(new BasicNameValuePair("user.password", password));
+		pairs.add(new BasicNameValuePair("name", username));
+		pairs.add(new BasicNameValuePair("password", password));
 		try {
 			httpPost.setEntity(new UrlEncodedFormEntity(pairs));
 		} catch (UnsupportedEncodingException e1) {

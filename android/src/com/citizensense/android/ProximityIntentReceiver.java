@@ -22,6 +22,7 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		Boolean isShowing = false;
 		/**
 		 * If the value is true, the device is entering the proximity region; if
 		 * false, it is exiting.
@@ -30,8 +31,9 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 				LocationManager.KEY_PROXIMITY_ENTERING, false);
 		String campaignInfo = intent.getStringExtra(context.getString(R.string.proximity_alert_intent));
 		if (campaignInfo != null) {
-			if (entering) {
+			if (entering && isShowing==false) {
 				showNotification(context, campaignInfo);
+				isShowing = true;
 			}
 			else {
 				hideNotification(context, campaignInfo);

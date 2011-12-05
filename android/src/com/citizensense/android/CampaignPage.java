@@ -5,6 +5,7 @@
 package com.citizensense.android;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -128,7 +129,11 @@ public class CampaignPage extends Activity implements OnClickListener {
 				break;
 			}
 			case(R.id.map): {
-				//TODO open map with intent
+				Intent i = new Intent(v.getContext(), Map.class);
+				ArrayList<Campaign> campaigns = new ArrayList<Campaign>();
+				campaigns.add(campaign);
+				G.globalCampaigns = campaigns;
+				v.getContext().startActivity(i);
 				break;
 			}
 			case(R.id.download_or_delete): {
