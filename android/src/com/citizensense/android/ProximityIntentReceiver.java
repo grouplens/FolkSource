@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.net.Uri;
 
 /**
  * Receives location broadcasts and notifies the user if they are in range
@@ -77,6 +78,7 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 		Intent intent = new Intent(context, CitizenSense.class);
 		intent.putExtra(context.getString(R.string.campaign_intent), id);
 		intent.setAction(name);//this fixes strange behavior that occurs when there is not action set.
+		intent.setData((Uri.parse("csense://" + System.currentTimeMillis())));//this fixes a problem with multiple notifications
 		PendingIntent pIntent;
 		pIntent = PendingIntent.getActivity(context, 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
 		notification.setLatestEventInfo(context, contentTitle, contentText, pIntent);
