@@ -7,6 +7,7 @@
 		<generator class="native" />
 	</id>
 	<property name="name" />
+	<property name="password" />
 	<bag name="tasks" lazy="false">
 		<key column="camp_id" not-null="false"/>
 		<!-- <index column="id" base="1" />-->

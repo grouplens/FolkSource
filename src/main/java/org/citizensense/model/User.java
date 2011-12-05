@@ -5,6 +5,7 @@ import java.util.List;
 public class User {
 	private int Id;
 	private String name;
+	private String password;
 	private List<Incentive> tasks;
 	private int points;
 	private String badges;
@@ -28,7 +29,7 @@ public class User {
 		this.name = name;
 	}
 	public int getPoints() {
-		return points;
+		return this.points;
 	}
 	public void setPoints(int points) {
 		this.points = points;
@@ -38,5 +39,11 @@ public class User {
 	}
 	public void setTasks(List<Incentive> tasks) {
 		this.tasks = tasks;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	public String getPassword() {
+		return password;
 	}
 }
