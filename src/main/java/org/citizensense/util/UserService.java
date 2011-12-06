@@ -1,13 +1,19 @@
 package org.citizensense.util;
 
+import java.security.SecureRandom;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.citizensense.model.User;
+import org.grouplens.common.util.HashUtil;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
 public class UserService {
+	
+	// 8 bytes should be a good enough salt for our purposes.
+    private static final int SALT_LENGTH = 8;
 	
 	@SuppressWarnings("unchecked")
 	public static List<User> getUsers() {
@@ -57,21 +63,28 @@ public class UserService {
 
 	
 	public static User getUser(String name) {
-		System.out.println(name);//test
 		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		Query q = session.createQuery("from User where name=:username");
 		q.setParameter("username", name);
 		return (User) q.uniqueResult();
-//		List<User> users = (List<User>) session.createQuery("from User").list();
-//		if(users!=null) return users.get(0);
-//		else return null;
 	}
 	
-	public static boolean isPasswordValid(User u, String password) {
-		// FIXME: implement password hashes
-		return u.getPassword().equals(password);
+	
+	/** User u should be the user stored in db,
+	 *  String password is a pw not hashed yet.*/
+	public static boolean isPasswordValid(User u, String pwWithoutHash) {
+		// get the hashed value for the password
+		String saltedPassword = HashUtil.getSaltedPassword(pwWithoutHash,u.getSalt());
+		return u.getPassword().equals(saltedPassword);
 	}
 	
-
+    public static PasswordHashAndSalt getPasswordHash(String pwWithoutHash, SecureRandom rng) {
+        byte[] saltb = new byte[SALT_LENGTH]; 
+        rng.nextBytes(saltb);
+        
+        String salt = Base64.encodeBase64String(saltb);
+        String passwordHash = HashUtil.getSaltedPassword(pwWithoutHash, salt);
+        return new PasswordHashAndSalt(passwordHash, salt);
+    }
 }

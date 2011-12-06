@@ -2,10 +2,14 @@ package org.citizensense.model;
 
 import java.util.List;
 
+import javax.persistence.Column;
+
 public class User {
 	private int Id;
 	private String name;
 	private String password;
+    /** The base64 encoded salt value used to hash the password*/
+    private String salt;
 	private List<Incentive> tasks;
 	private int points;
 	private String badges;
@@ -45,5 +49,11 @@ public class User {
 	}
 	public String getPassword() {
 		return password;
+	}
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
+	public String getSalt() {
+		return salt;
 	}
 }

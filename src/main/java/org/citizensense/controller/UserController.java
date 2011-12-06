@@ -1,5 +1,6 @@
 package org.citizensense.controller;
 
+import java.security.SecureRandom;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletResponse;
@@ -8,6 +9,7 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.rest.DefaultHttpHeaders;
 import org.apache.struts2.rest.HttpHeaders;
 import org.citizensense.model.User;
+import org.citizensense.util.PasswordHashAndSalt;
 import org.citizensense.util.UserService;
 
 import com.opensymphony.xwork2.ModelDriven;
@@ -15,25 +17,35 @@ import com.opensymphony.xwork2.ModelDriven;
 public class UserController implements ModelDriven<User>{
 	
 	User user = new User();
-	private int id;
+//	private int id;
 	private String name;
 	private String password;
-	private Collection<User> list;
+	private String salt;
+//	private Collection<User> list;
+	
 
 	@Override
 	public User getModel() {
 		return user;
 	}
 	
-	public void setId(String id) {
-		if (id != null)
-			this.user = UserService.findUser(Integer.parseInt(id));
-		if(this.user != null)
-			this.id = Integer.parseInt(id);		
-	}
+//	public void setId(String id) {
+//		if (id != null)
+//			this.user = UserService.findUser(Integer.parseInt(id));
+//		if(this.user != null)
+//			this.id = Integer.parseInt(id);		
+//	}
+//	
+//	public int getId() {
+//		return this.id;
+//	}
 	
-	public int getId() {
-		return this.id;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
 	}
 	
 	public void setPassword(String password) {
@@ -42,6 +54,13 @@ public class UserController implements ModelDriven<User>{
 
 	public String getPassword() {
 		return password;
+	}
+	
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
+	public String getSalt() {
+		return salt;
 	}
 	
 //	public HttpHeaders show() {//get 
@@ -63,6 +82,14 @@ public class UserController implements ModelDriven<User>{
 		HttpServletResponse response = ServletActionContext.getResponse();
 		User u = UserService.getUser(user.getName());
 		if (u == null) {//user name doesn't exist, could register 
+			
+			//hash the password and set Salt
+			String pwWithoutHash = user.getPassword();
+			SecureRandom rng = new SecureRandom();
+			PasswordHashAndSalt pw = UserService.getPasswordHash(pwWithoutHash,rng);
+			user.setPassword(pw.getPasswordHash());
+			user.setSalt(pw.getSalt());
+			
 			UserService.save(user);
 			response.setStatus(HttpServletResponse.SC_OK);
 			return "register_success";
@@ -72,7 +99,5 @@ public class UserController implements ModelDriven<User>{
 			return "register_fail";
 		}
 	}
-
-
 
 }

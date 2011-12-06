@@ -14,6 +14,7 @@ public class LoginController implements ModelDriven<User>{
 	
 	private String name;
 	private String password;
+	private String salt;
 
 	@Override
 	public User getModel() {
@@ -35,6 +36,13 @@ public class LoginController implements ModelDriven<User>{
 		return this.password;
 	}
 	
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
+	public String getSalt() {
+		return salt;
+	}
+	
 	
 	public String create()// deal with login  /Login/user_id
 	{	
@@ -50,7 +58,7 @@ public class LoginController implements ModelDriven<User>{
 //			if (user is already logged in )
 //				return doing nothing
 //			else
-//					store user in session
+//				store user in session
 			response.setStatus(HttpServletResponse.SC_OK);
 			return "login_success";
 		} else {
