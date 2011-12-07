@@ -136,7 +136,6 @@ public class CampaignPage extends Activity implements OnClickListener {
 				campaigns.add(campaign);
 				G.globalCampaigns = campaigns;
 				CitizenSense.openMap();
-				
 				break;
 			}
 			case(R.id.download_or_delete): {
