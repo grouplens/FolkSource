@@ -135,10 +135,7 @@ public class CampaignPage extends Activity implements OnClickListener {
 				ArrayList<Campaign> campaigns = new ArrayList<Campaign>();
 				campaigns.add(campaign);
 				G.globalCampaigns = campaigns;
-				//CitizenSense.openMap(); //can't be called??
-//				Intent in = new Intent();
-//		        setResult(Constants.CallMapInCampaignPage,in);
-//				finish();
+				CitizenSense.openMap();
 				
 				break;
 			}
