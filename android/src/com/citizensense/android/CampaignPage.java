@@ -131,7 +131,6 @@ public class CampaignPage extends Activity implements OnClickListener {
 				break;
 			}
 			case(R.id.map): {
-				
 				ArrayList<Campaign> campaigns = new ArrayList<Campaign>();
 				campaigns.add(campaign);
 				G.globalCampaigns = campaigns;
