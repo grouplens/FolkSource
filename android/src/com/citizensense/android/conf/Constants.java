@@ -52,4 +52,7 @@ public interface Constants {
 	/* These variables are used to indicate the result of Registration*/
 	public static final int REGISTRATION_SUCCESS = 1;
 	public static final int REGISTRATION_FAILURE = 2;
+	
+	/* This variable is used for open the map from CampaignPage*/
+	public static final int CallMapInCampaignPage = 1;
 }//Constants

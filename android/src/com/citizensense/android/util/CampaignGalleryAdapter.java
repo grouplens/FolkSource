@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.citizensense.android.Campaign;
+import com.citizensense.android.CitizenSense;
 import com.citizensense.android.Form;
 import com.citizensense.android.G;
 import com.citizensense.android.Map;
@@ -217,11 +218,10 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 			map_button.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Intent i = new Intent(context, Map.class);
 					ArrayList<Campaign> campaigns = new ArrayList<Campaign>();
 					campaigns.add(campaign);
 					G.globalCampaigns = campaigns;
-					context.startActivity(i);
+					CitizenSense.openMap();
 				}
 			});
 			

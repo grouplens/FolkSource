@@ -4,6 +4,8 @@
 
 package com.citizensense.android;
 
+import java.util.HashMap;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -20,9 +22,9 @@ import android.location.LocationManager;
  */
 public class ProximityIntentReceiver extends BroadcastReceiver {
 
+	HashMap<String,Boolean> notificationShowedMap = new HashMap<String,Boolean>();
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Boolean isShowing = false;
 		/**
 		 * If the value is true, the device is entering the proximity region; if
 		 * false, it is exiting.
@@ -31,9 +33,9 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 				LocationManager.KEY_PROXIMITY_ENTERING, false);
 		String campaignInfo = intent.getStringExtra(context.getString(R.string.proximity_alert_intent));
 		if (campaignInfo != null) {
-			if (entering && isShowing==false) {
+			if (entering && !notificationShowedMap.containsKey(campaignInfo)) {
 				showNotification(context, campaignInfo);
-				isShowing = true;
+				notificationShowedMap.put(campaignInfo, true);
 			}
 			else {
 				hideNotification(context, campaignInfo);

@@ -7,6 +7,8 @@ package com.citizensense.android;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import com.citizensense.android.conf.Constants;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
@@ -129,11 +131,15 @@ public class CampaignPage extends Activity implements OnClickListener {
 				break;
 			}
 			case(R.id.map): {
-				Intent i = new Intent(v.getContext(), Map.class);
+				
 				ArrayList<Campaign> campaigns = new ArrayList<Campaign>();
 				campaigns.add(campaign);
 				G.globalCampaigns = campaigns;
-				v.getContext().startActivity(i);
+				//CitizenSense.openMap(); //can't be called??
+//				Intent in = new Intent();
+//		        setResult(Constants.CallMapInCampaignPage,in);
+//				finish();
+				
 				break;
 			}
 			case(R.id.download_or_delete): {

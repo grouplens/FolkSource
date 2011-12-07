@@ -41,7 +41,7 @@ public class User implements Item {
 	private String cookie;
 	
 	/** The root URL of the server. */
-	private String base_url = "http://134.84.74.107:9080";
+	private String base_url = "http://134.84.50.158:9080";
 	
 	/** The URL for login post. */
 	private String login_url = base_url+"/citizensense/login";
@@ -108,7 +108,6 @@ public class User implements Item {
 		DefaultHttpClient mHttpClient = new DefaultHttpClient();
 		HttpPost httpPost = new HttpPost(login_url);
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-		pairs.add(new BasicNameValuePair("id", null));
 		pairs.add(new BasicNameValuePair("name", username));
 		pairs.add(new BasicNameValuePair("password", password));
 		try {
@@ -143,7 +142,6 @@ public class User implements Item {
 		DefaultHttpClient mHttpClient = new DefaultHttpClient();
 		HttpPost httpPost = new HttpPost(register_url);
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-		pairs.add(new BasicNameValuePair("id", null));
 		pairs.add(new BasicNameValuePair("name", username));
 		pairs.add(new BasicNameValuePair("password", password));
 		try {
