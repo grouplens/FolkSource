@@ -154,5 +154,6 @@ public class CampaignPage extends Activity implements OnClickListener {
 			}
 		}
 		
+		
 	}//onClick
 }//CampaignPage
