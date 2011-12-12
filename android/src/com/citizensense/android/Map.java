@@ -140,7 +140,7 @@ public class Map extends MapActivity {
 			int latitude = (int) (Integer.parseInt(long_lat[1]) * 1E6);
 			return new GeoPoint(latitude, longitude);
 		} else if (getLocType(loc) == Constants.NONEXACT_LOCATION){ 
-			Geocoder  mygeoCoder = new Geocoder(this, Locale.getDefault());
+			Geocoder mygeoCoder = new Geocoder(this, Locale.getDefault());
 			List<Address> lstAddress = null;
 			try {
 				// getFromLocationName() will return a list of Address which 

@@ -11,7 +11,6 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
@@ -57,16 +56,15 @@ public class MyCampaigns extends CampaignExplorer {
 		}
 	}//onResume
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<Campaign> getCampaigns() {
 		ArrayList<Campaign> campaigns = new ArrayList<Campaign>();
 		int j = 1;
 		int index = 1;
 		while (j <= G.db.size()) {
-			ArrayList<Campaign> c = (ArrayList<Campaign>) G.db.getCampaign(Integer.toString(index));
+			ArrayList<Campaign> c = G.db.getCampaign(Integer.toString(index));
 			if (c != null) {
-				campaigns.add(((ArrayList<Campaign>) G.db.getCampaign(Integer.toString(index))).get(0));
+				campaigns.add((G.db.getCampaign(Integer.toString(index))).get(0));
 				j++;
 			}
 			index++;

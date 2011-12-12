@@ -15,8 +15,6 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.citizensense.android.conf.Constants;
-
 /**
  * Main Activity
  * @author Phil Brown

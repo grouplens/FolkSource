@@ -244,7 +244,7 @@ public class CsDbAdapter {
 	
 	/** Get all the campaigns in the database
 	 * FIXME returns null*/
-	public Object getCampaigns() {
+	public ArrayList<Campaign> getCampaigns() {
 		return getCampaign(null);
 	}//getCampaign
 	 

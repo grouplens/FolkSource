@@ -9,6 +9,7 @@
               android:targetSdkVersion="4" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.VIBRATE"/>
     <application android:icon="@drawable/temp_icon" 
                  android:label="@string/app_name"
                  android:debuggable="true"
