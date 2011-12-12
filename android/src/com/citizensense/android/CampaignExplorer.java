@@ -28,6 +28,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.citizensense.android.conf.Constants;
 import com.citizensense.android.util.CampaignGalleryAdapter;
 import com.citizensense.android.util.CampaignListAdapter;
 
@@ -136,6 +137,18 @@ public abstract class CampaignExplorer extends ListActivity
 	public void onResume() {
 		super.onResume();
 		refresh();
+		switch(G.TAB_OPTIONS) {
+			case Constants.DEFAULT_TAB_OPTION : {
+				break;
+			}
+			case Constants.FORCE_GALLERY_MODE : { 
+				gallery.setVisibility(View.VISIBLE);
+				list.setVisibility(View.GONE);
+				campaign_page.setVisibility(View.GONE);
+			}
+		}
+		//reset tab option
+		G.TAB_OPTIONS = Constants.DEFAULT_TAB_OPTION;
 	}//onResume
 	
 	/** Get the campaigns to populate the list or gallery*/

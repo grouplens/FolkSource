@@ -5,11 +5,13 @@
 package com.citizensense.android;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 
+import com.citizensense.android.conf.Constants;
 import com.citizensense.android.db.CsDbAdapter;
 import com.google.android.maps.MapView;
 
@@ -37,4 +39,14 @@ public class G {
 	/** This is used when a user clicks a notification in order to open the correct
 	 * campaign.*/
 	public static String notification_campaign_id;
+	/** Flags used for opening new tabs in {@link CitizenSense}*/
+	public static int TAB_OPTIONS = Constants.DEFAULT_TAB_OPTION;
+	
+	public static List<Integer> notificationIDs;
+	public static boolean isNotificationNew(int id) {
+		if (notificationIDs.contains(id)) {
+			return false;
+		}
+		return true;
+	}//isNotificationNew
 }//G

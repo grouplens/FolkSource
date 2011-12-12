@@ -86,31 +86,12 @@ public class Map extends MapActivity {
 	}//isRouteDisplayed
 	
 	/** 
-	 * Get campaigns from the local database. 
-	 * FIXME get campaigns should unpack the intent. 
-	 */
-	ArrayList<Campaign> getCampaigns() {
-		ArrayList<Campaign> results = new ArrayList<Campaign>();
-		for(String campaignID: G.user.getCampaignIDs()){
-			results.add((Campaign) G.db.getCampaign(campaignID));
-		}
-		return results;
-	}//getCampaigns
-	
-	/** 
 	 * Set zoom level of the map according to the location's type.
 	 * FIXME compute the zoom based on the set of campaigns displayed on the map
 	 */
 	public void setZoomLevel(){
 		G.map.getController().setZoom(11);
 	}//setZoomLevel
-	
-	/** Get locations of the campaign from database by searching the 
-	 * campaign's id.*/
-    public String[] getLocsByCampaignId(String id){
-    	Campaign c = (Campaign) G.db.getCampaign(id);
-    	return c.getLocations();
-    }//getLocsByCampaignId
     
     /** 
      * Get the type of the location. {@link Constants#EXACT_LOCATION

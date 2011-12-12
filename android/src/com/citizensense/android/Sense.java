@@ -346,6 +346,8 @@ public class Sense extends LocationActivity {
 		else {
 			Toast.makeText(this, "Task Complete!", Toast.LENGTH_SHORT).show();
 			//TODO get answers, image, and location written to xml and sent to server.
+			//Task t = this.campaign.getTask();
+			//t.getForm().
 			this.finish();
 		}
 	}//submit

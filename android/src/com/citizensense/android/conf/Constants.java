@@ -43,4 +43,13 @@ public interface Constants {
 	 * expiration to -1 will set the alert to never expire. Otherwise, set this
 	 * to a time, in millisecods, for the alert to expire.  */
 	public static final int PROXIMITY_ALERT_EXPIRATION = -1;
+	/** Flag to be used with 
+	 * {@link com.citizensense.android.G#TAB_OPTIONS G.TAB_OPTIONS} does 
+	 * nothing*/
+	public static final int DEFAULT_TAB_OPTION = 0;
+	/** Flag to be used with 
+	 * {@link com.citizensense.android.G#TAB_OPTIONS G.TAB_OPTIONS} that forces
+	 * the new tab to display in gallery mode. Referenced tab must subclass 
+	 * {@link com.citizensense.android.CampaignExplorer CampaignExplorer}*/
+	public static final int FORCE_GALLERY_MODE = 1;
 }//Constants

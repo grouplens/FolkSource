@@ -11,6 +11,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
@@ -164,6 +165,8 @@ public class MyCampaigns extends CampaignExplorer {
 				Intent intent = new Intent(proximityMapKey);
 				//put Campaign information, so the notification can show the campaign name
 				intent.putExtra(G.app_context.getString(R.string.proximity_alert_intent), proximityMapKey);
+				//intent.setAction("action");
+				//intent.setData(Uri.parse("csense://" + campaign.getName()));
 				PendingIntent proximityIntent = PendingIntent.getBroadcast(
 						G.app_context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 				proximityMap.put(proximityMapKey, proximityIntent);

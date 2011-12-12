@@ -252,7 +252,7 @@ public class CsDbAdapter {
 	 * @param id The campaign's ID. If id is {@code null}, get all campaigns.
 	 * @return The campaign associated with the id, or an arraylist of campaigns
 	 * if id is null*/
-	public Object getCampaign(String id) {
+	public ArrayList<Campaign> getCampaign(String id) {
 		ArrayList<Campaign> retrievedCampaigns = new ArrayList<Campaign>();
 		Cursor cur1;
 		String selection = null;

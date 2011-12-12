@@ -15,6 +15,8 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.citizensense.android.conf.Constants;
+
 /**
  * Main Activity
  * @author Phil Brown
@@ -96,6 +98,7 @@ public class CitizenSense extends TabActivity implements OnClickListener {
     
     /** Open the My Campaigns tab*/
     public static void openMyCampaigns() {
+    	//G.TAB_OPTIONS = Constants.FORCE_GALLERY_MODE;
     	tabHost.setCurrentTab(1);
     }//openMyCampaigns
     
