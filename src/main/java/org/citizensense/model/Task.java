@@ -1,7 +1,6 @@
 package org.citizensense.model;
 
 import java.util.List;
-import java.util.Set;
 
 public class Task {
 	private int id;
@@ -13,12 +12,8 @@ public class Task {
 //	private Location loc;
 
 	private List<Submission> submissions;
-
-	private Campaign camp;
 	
-	private Incentive incentive;
-
-//	public Location getLocation() {
+	//	public Location getLocation() {
 //		return loc;
 //	}
 //

@@ -2,8 +2,6 @@ package org.citizensense.model;
 
 import java.util.List;
 
-import javax.persistence.Column;
-
 public class User {
 	private int Id;
 	private String name;

@@ -4,7 +4,6 @@ import java.security.SecureRandom;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.logging.Log;
 import org.citizensense.model.User;
 import org.grouplens.common.util.HashUtil;
 import org.hibernate.Query;
@@ -30,7 +29,6 @@ public class UserService {
 		return users;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private static void getIncentives(User u) {
 //		List<User> users;
 //		Session session = HibernateFactory.getSessionFactory().getCurrentSession();

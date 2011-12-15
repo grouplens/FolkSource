@@ -1,51 +1,46 @@
 package org.citizensense.util;
 
 import java.util.List;
-
 import org.citizensense.model.*;
 import org.hibernate.Session;
 
 
-public class TaskService {
+public class LeaderboardService {
 
 	
-	public static List<Task> getTasks() {
-		List<Task> tasks;
-
+	public static List<LeaderboardEntry> getLeaderboard() {
+		List<LeaderboardEntry> incentives;
+		
 		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
 		//Session session = HibernateFactory.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
-		tasks = session.createQuery("from Task").list();
-//		for(Task t : tasks) {
-//			submissions = session.createQuery("from Task as t join from ").list();
-//			t.setSubmissions(submissions);
-//		}
+		incentives = session.createQuery("from User").list();
+		
 		session.getTransaction().commit();
 		
-		for(Task t: tasks) {
-			getSubmissions(t);
+		for(LeaderboardEntry l : incentives) {
+			getPoints(l);
 		}
 		
-		return tasks;
-	}
-	
-	public static void getSubmissions(Task t) {
-		List<Submission> submissions;
-		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		
-		submissions = session.createQuery("from Submission where task_id= " + t.getId()).list();
-		
-		t.setSubmissions(submissions);
-		
-		session.getTransaction().commit();
+		return incentives;
 	}
 
-	public static void save(Task t) {
+	private static void getPoints(LeaderboardEntry l) {
 		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
-		session.save(t);
+		Integer tmp;
+		
+		tmp = (Integer)session.createQuery("sum(from Earned_Incentive where user_id = " + l.getId() +  ")").list().get(0);
+		
+		session.getTransaction().commit();
+		l.setPoints(tmp);
+	}
+
+	public static void save(Incentive camp) {
+		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		session.save(camp);
 		session.getTransaction().commit();
 		
 	}

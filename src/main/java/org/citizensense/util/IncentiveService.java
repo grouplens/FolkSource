@@ -2,7 +2,6 @@ package org.citizensense.util;
 
 import java.util.List;
 import org.citizensense.model.*;
-import org.citizensense.util.*;
 import org.hibernate.Session;
 
 

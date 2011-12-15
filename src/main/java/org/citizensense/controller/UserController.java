@@ -1,13 +1,10 @@
 package org.citizensense.controller;
 
 import java.security.SecureRandom;
-import java.util.Collection;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.rest.DefaultHttpHeaders;
-import org.apache.struts2.rest.HttpHeaders;
 import org.citizensense.model.User;
 import org.citizensense.util.PasswordHashAndSalt;
 import org.citizensense.util.UserService;

@@ -9,7 +9,7 @@ public class Campaign {
 	private String description;
 	private Date start_date;
 	private Date end_date;
-	private String times; //figure out if this is actually how we want to represent this
+	//private String times; //figure out if this is actually how we want to represent this
 	private int owner_id;
 	private int task_id;
 

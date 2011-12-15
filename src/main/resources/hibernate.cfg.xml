@@ -42,6 +42,7 @@
         <mapping resource="incentive.hbm.xml" />
         <mapping resource="task.hbm.xml" />
         <mapping resource="submission.hbm.xml" />
+        <mapping resource="leaderboard.hbm.xml" />
         
     </session-factory>
 </hibernate-configuration>
