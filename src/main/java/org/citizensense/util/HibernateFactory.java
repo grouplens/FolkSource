@@ -7,12 +7,12 @@ public class HibernateFactory {
 	public static SessionFactory seshfact = buildSessionFactory();
 
 	static SessionFactory buildSessionFactory() {
-		//try{
+		try{
 			return new Configuration().configure().buildSessionFactory();
-//		}catch (Exception e) {
-//			System.out.print("Error: " + e);
-//			throw new ExceptionInInitializerError(e.getCause());
-//		}
+		}catch (Exception e) {
+			System.out.print("Error: " + e);
+			throw new ExceptionInInitializerError(e.getCause());
+		}
 
 	}
 	
