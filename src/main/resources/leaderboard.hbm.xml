@@ -3,9 +3,9 @@
 
 <hibernate-mapping package="org.citizensense.model">
 <class name="LeaderboardEntry" table="users">
-	<id name="id" column="id">
+	<id name="id" column="users.id">
 		<generator class="native" />
 	</id>
-	<property name="name" />
+	<property name="users.name" />
 </class>
 </hibernate-mapping>
