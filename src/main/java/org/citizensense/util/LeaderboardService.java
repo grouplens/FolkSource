@@ -1,5 +1,6 @@
 package org.citizensense.util;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.citizensense.model.*;
 import org.hibernate.Session;
@@ -9,21 +10,27 @@ public class LeaderboardService {
 
 	
 	public static List<LeaderboardEntry> getLeaderboard() {
-		List<LeaderboardEntry> incentives;
+		List<User> users;
+		List<LeaderboardEntry> leaderboard = new ArrayList<LeaderboardEntry>();
 		
 		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
 		//Session session = HibernateFactory.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		
-		incentives = session.createQuery("from User").list();
+		users = session.createQuery("from User").list();
 		
 		session.getTransaction().commit();
 		
-		for(LeaderboardEntry l : incentives) {
+		for(User u : users) {
+			LeaderboardEntry l = new LeaderboardEntry();
+			l.setId(u.getId());
+			l.setName(u.getName());
 			getPoints(l);
+			leaderboard.add(l);
+			
 		}
 		
-		return incentives;
+		return leaderboard;
 	}
 
 	private static void getPoints(LeaderboardEntry l) {
