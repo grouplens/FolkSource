@@ -25,7 +25,8 @@ public class LeaderboardService {
 			LeaderboardEntry l = new LeaderboardEntry();
 			l.setId(u.getId());
 			l.setName(u.getName());
-			getPoints(l);
+			l.setPoints(u.getPoints());
+//			getPoints(l);
 			leaderboard.add(l);
 			
 		}
