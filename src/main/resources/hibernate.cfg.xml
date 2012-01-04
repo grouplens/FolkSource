@@ -39,9 +39,9 @@
         <!--  <mapping class="org.citizensense.model.Campaign" table="campaigns" />-->
         <mapping resource="campaign.hbm.xml" />
         <mapping resource="user.hbm.xml" />
-        <mapping resource="question.hbm.xml" />
         <mapping resource="task.hbm.xml" />
         <mapping resource="submission.hbm.xml" />
+        <mapping resource="question.hbm.xml" />
 <!--         <mapping resource="leaderboard.hbm.xml" /> -->
         
     </session-factory>
