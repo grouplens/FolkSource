@@ -6,6 +6,6 @@
 	<id name="id" column="users.id">
 		<generator class="native" />
 	</id>
-	<property name="users.name" />
+	<property name="name" />
 </class>
 </hibernate-mapping>
