@@ -13,10 +13,10 @@
 <!-- 			<index column="task_id" /> -->
 			<one-to-many class="Submission" />
 		</bag>
-		<bag name="questions" lazy="false">
-			<key column="id" />
+<!-- 		<bag name="questions" lazy="false"> -->
+<!-- 			<key column="id" /> -->
 <!-- 			<index column="task_id" /> -->
-			<one-to-many class="Question" />
-		</bag>
+<!-- 			<one-to-many class="Question" /> -->
+<!-- 		</bag> -->
 	</class>
 </hibernate-mapping>
