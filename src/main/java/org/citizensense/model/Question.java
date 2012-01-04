@@ -10,11 +10,11 @@ public class Question {
 	private Integer task_id;
 	private Answer answer;
 
-	public String getText() {
+	public String getQuestion() {
 		return question;
 	}
 
-	public void setText(String text) {
+	public void setQuestion(String text) {
 		this.question = text;
 	}
 
