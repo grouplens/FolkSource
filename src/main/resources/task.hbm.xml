@@ -2,19 +2,20 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="org.citizensense.model">
-<class name="Task" table="tasks">
-	<id name="id" column="id">
-		<generator class="native" />
-	</id>
-	<property name="instructions" />
-	<property name="required" />
-	<bag name="submissions" lazy="false">
-		<key column="id" />
+	<class name="Task" table="tasks">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="instructions" />
+		<property name="required" />
+		<list name="submissions" lazy="false">
+			<key column="id" />
+			<index column="task_id" />
 			<one-to-many class="Submission" />
-	</bag>
-<!-- 	<bag name="questions" lazy="false"> -->
-<!-- 		<key column="id" /> -->
-<!-- 		<one-to-many class="Question" /> -->
-<!-- 	</bag> -->
-</class>
+		</list>
+		<!-- <bag name="questions" lazy="false"> -->
+		<!-- <key column="id" /> -->
+		<!-- <one-to-many class="Question" /> -->
+		<!-- </bag> -->
+	</class>
 </hibernate-mapping>
