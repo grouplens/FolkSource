@@ -10,7 +10,7 @@
 <!-- 	<property name="task_id" /> -->
 	<property name="notes" />
 	<property name="gps_location" />
-<!-- 	<bag name="answers" lazy="false"> -->
+	<bag name="answers" lazy="false">
 		<key column="sub_id" not-null="false"/>
 <!-- 		<index column="id" /> -->
 		<one-to-many class="Answer" />
