@@ -13,10 +13,10 @@
 	<property name="required" />
 	<property name="options" />
 	
-	<bag name="answers" lazy="false">
-		<key column="task_id" not-null="false"/>
-		<!-- <index column="id" base="1" />-->
-		<one-to-many class="Answer" />
-	</bag>
+<!-- 	<bag name="answers" lazy="false"> -->
+<!-- 		<key column="task_id" not-null="false"/> -->
+		<!-- <index column="id" base="1" /> -->
+<!-- 		<one-to-many class="Answer" /> -->
+<!-- 	</bag> -->
 </class>
 </hibernate-mapping>
