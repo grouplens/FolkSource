@@ -31,9 +31,9 @@ public class LeaderboardEntry implements Comparable<LeaderboardEntry> {
 
 	@Override
 	public int compareTo(LeaderboardEntry arg0) {
-		if (this.getPoints() < arg0.getPoints())
-			return -1;
 		if (this.getPoints() > arg0.getPoints())
+			return -1;
+		if (this.getPoints() < arg0.getPoints())
 			return 1;
 
 		return 0;
