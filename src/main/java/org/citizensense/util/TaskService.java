@@ -25,6 +25,7 @@ public class TaskService {
 		
 		for(Task t: tasks) {
 			getSubmissions(t);
+			getQuestions(t);
 		}
 		
 		return tasks;
@@ -38,6 +39,18 @@ public class TaskService {
 		submissions = session.createQuery("from Submission where task_id= " + t.getId()).list();
 		
 		t.setSubmissions(submissions);
+		
+		session.getTransaction().commit();
+	}
+	
+	public static void getQuestions(Task t) {
+		List<Question> questions;
+		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		
+		questions = session.createQuery("from Question where task_id= " + t.getId()).list();
+		
+		t.setQuestions(questions);
 		
 		session.getTransaction().commit();
 	}

@@ -2,8 +2,8 @@ package org.citizensense.model;
 
 import java.util.ArrayList;
 
-public class MultiChoiceAnswer implements Answer {
-	private String type = "multiple_choice";
+public class ExclusiveMultiChoiceAnswer implements Answer {
+	private String type = "exclusive_multiple_choice";
 	private ArrayList<String> choices = new ArrayList<String>();
 	private String response;
 	@Override
@@ -35,6 +35,18 @@ public class MultiChoiceAnswer implements Answer {
 
 	public void setChoices(ArrayList<String> choices) {
 		this.choices = choices;
+	}
+
+	@Override
+	public Integer getTaskId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setTaskId(Integer id) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

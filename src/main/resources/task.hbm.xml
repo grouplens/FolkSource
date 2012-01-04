@@ -13,5 +13,10 @@
 		<index column="task_id" />
 		<one-to-many class="Submission"/>
 	</list>
+	<list name="questions" lazy="false">
+		<key column="id" />
+		<index column="task_id" />
+		<one-to-many class="Question"/>
+	</list>
 </class>
 </hibernate-mapping>

@@ -12,6 +12,7 @@ public class Task {
 //	private Location loc;
 
 	private List<Submission> submissions;
+	private List<Question> questions;
 	
 	//	public Location getLocation() {
 //		return loc;
@@ -59,6 +60,14 @@ public class Task {
 
 	public void setRequired(boolean required) {
 		this.required = required;
+	}
+
+	public List<Question> getQuestions() {
+		return questions;
+	}
+
+	public void setQuestions(List<Question> questions) {
+		this.questions = questions;
 	}
 
 //	public String getRequirements() {

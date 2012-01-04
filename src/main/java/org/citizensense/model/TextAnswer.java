@@ -22,5 +22,15 @@ public void setResponse(String res) {
 	this.response = res;
 	
 }
+@Override
+public Integer getTaskId() {
+	// TODO Auto-generated method stub
+	return null;
+}
+@Override
+public void setTaskId(Integer id) {
+	// TODO Auto-generated method stub
+	
+}
 
 }
