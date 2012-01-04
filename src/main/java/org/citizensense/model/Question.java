@@ -1,6 +1,6 @@
 package org.citizensense.model;
 
-public class Question {
+public class Question implements Comparable<Question> {
 	private Integer id;
 
 	private String question;
@@ -45,6 +45,8 @@ public class Question {
 	public String getOptions() {
 		return options;
 	}
+	
+	
 
 	public void setOptions(String options) {
 		this.options = options;
@@ -64,6 +66,17 @@ public class Question {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+
+	@Override
+	public int compareTo(Question o) {
+		if(this.getId() < o.getId())
+			return -1;
+		if(this.getId() > o.getId())
+			return 1;
+		
+		return 0;
 	}
 	
 }

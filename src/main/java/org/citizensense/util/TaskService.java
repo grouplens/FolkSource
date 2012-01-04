@@ -1,5 +1,6 @@
 package org.citizensense.util;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.citizensense.model.*;
@@ -50,6 +51,7 @@ public class TaskService {
 		
 		questions = session.createQuery("from Question where task_id= " + t.getId()).list();
 		
+		Collections.sort(questions);
 		t.setQuestions(questions);
 		
 		session.getTransaction().commit();
