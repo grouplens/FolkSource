@@ -1,6 +1,7 @@
 package org.citizensense.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.citizensense.model.*;
 import org.hibernate.Session;
@@ -30,7 +31,7 @@ public class LeaderboardService {
 			leaderboard.add(l);
 			
 		}
-		
+		Collections.sort(leaderboard);
 		return leaderboard;
 	}
 
