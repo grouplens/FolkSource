@@ -13,9 +13,9 @@
 			<index column="task_id" />
 			<one-to-many class="Submission" />
 		</list>
-		<!-- <bag name="questions" lazy="false"> -->
-		<!-- <key column="id" /> -->
-		<!-- <one-to-many class="Question" /> -->
-		<!-- </bag> -->
+		<bag name="questions" lazy="false">
+		<key column="id" />
+		<one-to-many class="Question" />
+		</bag>
 	</class>
 </hibernate-mapping>

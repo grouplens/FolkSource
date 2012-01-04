@@ -25,7 +25,7 @@ public class TaskService {
 		
 		for(Task t: tasks) {
 			getSubmissions(t);
-//			getQuestions(t);
+			getQuestions(t);
 		}
 		
 		return tasks;
