@@ -1,5 +1,6 @@
 package org.citizensense.util;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import org.citizensense.model.*;
@@ -57,16 +58,19 @@ public class SubmissionService {
 //		session.getTransaction().commit();
 //	}
 
-	public static void save(Submission t) {
+	public static void save(Submission t) throws SQLException {
 		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		session.save(t);
-//		try {
+		try {
 			session.getTransaction().commit();
-//		} catch (HibernateException e) {
+		} catch (HibernateException e) {
 //			session.getTransaction().rollback();
-//			throw e;
-//		}
+			Exception ex1 = (Exception) e.getCause();
+			SQLException ex2 = (SQLException) e.getCause();
+			throw ex2.getNextException();
+			
+		}
 		
 	}
 
