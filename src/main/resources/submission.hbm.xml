@@ -10,10 +10,10 @@
 <!-- 	<property name="task_id" /> -->
 <!-- 	<property name="notes" /> -->
 	<property name="gps_location" />
-	<bag name="answers" lazy="false">
+	<list name="answers" lazy="false">
 		<key column="sub_id" not-null="false"/>
-<!-- 		<index column="id" /> -->
+		<index column="id" />
 		<one-to-many class="Answer" />
-	</bag>
+	</list>
 </class>
 </hibernate-mapping>
