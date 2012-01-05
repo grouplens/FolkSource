@@ -61,12 +61,12 @@ public class SubmissionService {
 		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		session.save(t);
-		try {
+//		try {
 			session.getTransaction().commit();
-		} catch (HibernateException e) {
-			session.getTransaction().rollback();
-			throw e;
-		}
+//		} catch (HibernateException e) {
+//			session.getTransaction().rollback();
+//			throw e;
+//		}
 		
 	}
 
