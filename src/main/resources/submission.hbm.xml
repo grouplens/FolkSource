@@ -11,8 +11,8 @@
 <!-- 	<property name="notes" /> -->
 	<property name="gps_location" />
 	<list name="answers" lazy="false">
-		<key column="sub_id" not-null="false"/>
-		<index column="id" />
+		<key column="id" not-null="false"/>
+		<index column="sub_id" />
 		<one-to-many class="Answer" />
 	</list>
 </class>
