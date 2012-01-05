@@ -11,7 +11,7 @@
 <!-- 	<property name="notes" /> -->
 	<property name="gps_location" />
 	<bag name="answers" lazy="false">
-		<key column="id" not-null="false"/>
+		<key column="sub_id" not-null="false"/>
 <!-- 		<index column="subid" /> -->
 		<one-to-many class="Answer" />
 	</bag>
