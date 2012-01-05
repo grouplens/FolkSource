@@ -7,9 +7,10 @@
 		<generator class="native" />
 	</id>
 <!-- 	<many-to-one name="task" column="task_id" /> -->
-<!-- 	<property name="task_id" /> -->
+	<property name="task_id" />
 <!-- 	<property name="notes" /> -->
 	<property name="gps_location" />
+	<property name=""
 	<bag name="answers" lazy="false">
 		<key column="id" not-null="false"/>
 <!-- 		<index column="subid" /> -->
