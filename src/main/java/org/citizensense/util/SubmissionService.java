@@ -64,7 +64,9 @@ public class SubmissionService {
 		try {
 			session.getTransaction().commit();
 		} catch (HibernateException e) {
-			session.getTransaction().rollback();
+			while(!session.getTransaction().wasCommitted() || !session.getTransaction().wasRolledBack()) {
+				session.getTransaction().rollback();
+			}
 			throw e;
 		}
 		
