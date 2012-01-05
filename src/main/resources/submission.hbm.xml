@@ -8,7 +8,7 @@
 	</id>
 <!-- 	<many-to-one name="task" column="task_id" /> -->
 <!-- 	<property name="task_id" /> -->
-	<property name="notes" />
+<!-- 	<property name="notes" /> -->
 	<property name="gps_location" />
 	<bag name="answers" lazy="false">
 		<key column="sub_id" not-null="false"/>
