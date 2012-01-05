@@ -65,7 +65,7 @@ public class SubmissionService {
 		try {
 			session.getTransaction().commit();
 		} catch (HibernateException e) {
-//			session.getTransaction().rollback();
+			session.getTransaction().rollback();
 			Exception ex1 = (Exception) e.getCause();
 			SQLException ex2 = (SQLException) e.getCause();
 			throw ex2.getNextException();

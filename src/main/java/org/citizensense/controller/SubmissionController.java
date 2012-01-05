@@ -1,6 +1,7 @@
 package org.citizensense.controller;
 
 
+import java.sql.SQLException;
 import java.util.Collection;
 
 import org.citizensense.model.Submission;
@@ -51,7 +52,7 @@ public class SubmissionController implements ModelDriven<Object>{
 		return new DefaultHttpHeaders("index").disableCaching();
 	}
 	
-	public HttpHeaders create()
+	public HttpHeaders create() throws SQLException
 	{
 		SubmissionService.save(task);
 		return new DefaultHttpHeaders("create");
