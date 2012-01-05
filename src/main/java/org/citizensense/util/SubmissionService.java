@@ -1,9 +1,9 @@
 package org.citizensense.util;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.citizensense.model.*;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 
 
@@ -61,7 +61,11 @@ public class SubmissionService {
 		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
 		session.beginTransaction();
 		session.save(t);
-		session.getTransaction().commit();
+		try {
+			session.getTransaction().commit();
+		} catch (HibernateException e) {
+			throw e;
+		}
 		
 	}
 
