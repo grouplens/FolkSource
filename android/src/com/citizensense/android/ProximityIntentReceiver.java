@@ -4,8 +4,6 @@
 
 package com.citizensense.android;
 
-import java.util.HashMap;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -13,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.location.LocationManager;
+import android.net.Uri;
 
 /**
  * Receives location broadcasts and notifies the user if they are in range
@@ -22,7 +21,6 @@ import android.location.LocationManager;
  */
 public class ProximityIntentReceiver extends BroadcastReceiver {
 
-	HashMap<String,Boolean> notificationShowedMap = new HashMap<String,Boolean>();
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		/**
@@ -33,9 +31,8 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 				LocationManager.KEY_PROXIMITY_ENTERING, false);
 		String campaignInfo = intent.getStringExtra(context.getString(R.string.proximity_alert_intent));
 		if (campaignInfo != null) {
-			if (entering && !notificationShowedMap.containsKey(campaignInfo)) {
+			if (entering) {
 				showNotification(context, campaignInfo);
-				notificationShowedMap.put(campaignInfo, true);
 			}
 			else {
 				hideNotification(context, campaignInfo);
@@ -81,6 +78,7 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 		Intent intent = new Intent(context, CitizenSense.class);
 		intent.putExtra(context.getString(R.string.campaign_intent), id);
 		intent.setAction(name);//this fixes strange behavior that occurs when there is not action set.
+		intent.setData((Uri.parse("csense://" + System.currentTimeMillis())));//this fixes a problem with multiple notifications
 		PendingIntent pIntent;
 		pIntent = PendingIntent.getActivity(context, 0, intent, Intent.FLAG_ACTIVITY_NEW_TASK);
 		notification.setLatestEventInfo(context, contentTitle, contentText, pIntent);

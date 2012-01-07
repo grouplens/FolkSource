@@ -11,11 +11,9 @@ import org.w3c.dom.Document;
 
 import android.content.Context;
 import android.os.Parcel;
-import android.util.Log;
 
 import com.citizensense.android.net.AuthenticationResponseHandler;
 import com.citizensense.android.net.PostRequest;
-import com.citizensense.android.net.Request;
 
 /**
  * This class defines the logged in user. Not sure yet what to do with anonymous
