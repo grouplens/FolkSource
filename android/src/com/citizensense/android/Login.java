@@ -4,17 +4,18 @@
 
 package com.citizensense.android;
 
-import com.citizensense.android.conf.Constants;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.citizensense.android.conf.Constants;
 
 /**
  * Login screen
@@ -72,8 +73,6 @@ public class Login extends Activity {
         if(resultCode== Constants.REGISTRATION_SUCCESS){
         	finish();
         }
-        else{
-        }
     }
 	
 	/**
@@ -82,15 +81,7 @@ public class Login extends Activity {
 	 * @param password
 	 */
 	public void login(String username, String password) {
-		//FIXME try logging in to server, handler errors
-		int login_result = G.user.login(username, password);
-		if( login_result == Constants.LOGIN_SUCCESS){
-			finish();
-		}else if(login_result == Constants.LOGIN_WRONG_PASSWORD){
-			Toast.makeText(this, "Wrong password. Please try agaign.", Toast.LENGTH_LONG).show();
-		}else if(login_result == Constants.LOGIN_NO_USERNAME){
-			Toast.makeText(this, "No such user name. Create a new account!", Toast.LENGTH_LONG).show();
-		}
+		G.user.login(this,username, password);
 	}//login
 	
 }//Login

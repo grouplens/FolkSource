@@ -4,24 +4,18 @@
 
 package com.citizensense.android;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.http.Header;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 
+import android.content.Context;
 import android.os.Parcel;
+import android.util.Log;
 
-import com.citizensense.android.conf.Constants;
+import com.citizensense.android.net.AuthenticationResponseHandler;
+import com.citizensense.android.net.PostRequest;
+import com.citizensense.android.net.Request;
 
 /**
  * This class defines the logged in user. Not sure yet what to do with anonymous
@@ -36,19 +30,12 @@ public class User implements Item {
 	private String username;
 	/** The token retrieved from the server */
 	private String token;
-	
-	/** Cookie get from server after successfully login or register*/
+
+	/** Cookie get from server after successfully login or register */
 	private String cookie;
-	
-	/** The root URL of the server. */
-	private String base_url = "http://134.84.50.158:9080";
-	
-	/** The URL for login post. */
-	private String login_url = base_url+"/citizensense/login";
-	
-	/** The URL for register post. */
-	private String register_url = base_url+"/citizensense/user";
-	
+	/** Request Type */
+	private static final int LOGIN = 2, REGISTER = 3;
+
 	/**
 	 * A list of the ids associated with campaigns in which this user is
 	 * participating.
@@ -75,7 +62,7 @@ public class User implements Item {
 	 * Login to the App. For now, this simply sets some static variables, but
 	 * should instead interact with the server
 	 */
-	public int login(String username, String password) {
+	public void login(Context context, String username, String password) {
 		this.username = username;
 		CitizenSense.username.setText(username);
 		// TODO save login across sessions (include Token)
@@ -85,87 +72,26 @@ public class User implements Item {
 		campaign_ids.add("1");
 		campaign_ids.add("2");
 
-		return loginCheck(username,password);
-
+		AuthenticationResponseHandler loginHandler = new AuthenticationResponseHandler(
+				context, LOGIN);
+		new PostRequest(context, null, LOGIN, loginHandler, true).execute(
+				username, password);
 	}// login
-	
+
 	/**
 	 * Register a new account for the user.
 	 */
-	public int register(String username, String password) {
+	public void register(Context context, String username, String password) {
 		this.username = username;
 		CitizenSense.username.setText(username);
 		campaign_ids.add("1");
 		campaign_ids.add("2");
 
-		return registerCheck(username,password);
-	}// login
-	
-	/** 
-	 * Check the login status
-	 */
-	private int loginCheck(String username, String password) {
-		DefaultHttpClient mHttpClient = new DefaultHttpClient();
-		HttpPost httpPost = new HttpPost(login_url);
-		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-		pairs.add(new BasicNameValuePair("name", username));
-		pairs.add(new BasicNameValuePair("password", password));
-		try {
-			httpPost.setEntity(new UrlEncodedFormEntity(pairs));
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			HttpResponse response = mHttpClient.execute(httpPost);
-			int res = response.getStatusLine().getStatusCode();
-			if (res == 200) {//HttpServletResponse.SC_OK
-				Header[] headers = response.getAllHeaders();
-				for(Header header : headers ){
-					if(header.getName().contains("Cookie")){
-						this.setCookie(header.getValue());
-					}
-				}
-				 return Constants.LOGIN_SUCCESS;
-			} else if(res == 417){//HttpServletResponse.SC_EXPECTATION_FAILED
-					return Constants.LOGIN_WRONG_PASSWORD;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return Constants.LOGIN_NO_USERNAME;
-	}
-	
-	/**
-	 * Check the register status
-	 */
-	private int registerCheck(String username, String password) {
-		DefaultHttpClient mHttpClient = new DefaultHttpClient();
-		HttpPost httpPost = new HttpPost(register_url);
-		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-		pairs.add(new BasicNameValuePair("name", username));
-		pairs.add(new BasicNameValuePair("password", password));
-		try {
-			httpPost.setEntity(new UrlEncodedFormEntity(pairs));
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			HttpResponse response = mHttpClient.execute(httpPost);
-			int res = response.getStatusLine().getStatusCode();
-			if (res == 200) {
-				Header[] headers = response.getAllHeaders();
-				for(Header header : headers ){
-					if(header.getName().contains("Cookie")){
-						this.setCookie(header.getValue());
-					}
-				}
-				return Constants.REGISTRATION_SUCCESS;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return Constants.REGISTRATION_FAILURE;
-	}
+		AuthenticationResponseHandler registerHandler = new AuthenticationResponseHandler(
+				context,REGISTER);
+		new PostRequest(context, null, REGISTER, registerHandler, true)
+				.execute(username, password);
+	}// register
 
 	/** gets the username */
 	public String getUsername() {

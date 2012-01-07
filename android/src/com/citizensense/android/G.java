@@ -6,6 +6,8 @@ package com.citizensense.android;
 
 import java.util.ArrayList;
 
+import org.apache.http.HttpResponse;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;

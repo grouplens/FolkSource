@@ -74,14 +74,6 @@ public class Register extends Activity {
 	 * @param password
 	 */
 	public void register(String username, String password) {
-		//FIXME try logging in to server, handler errors
-		int registration_result = G.user.register(username, password);
-		if( registration_result == Constants.REGISTRATION_SUCCESS){
-			Intent in = new Intent();
-		        setResult(Constants.REGISTRATION_SUCCESS,in);
-			finish();
-		}else if(registration_result == Constants.REGISTRATION_FAILURE){
-			Toast.makeText(this, "User name already exist. Please choose another one", Toast.LENGTH_LONG).show();
-		}
+		G.user.register(this,username, password);
 	}//Register
 }//Register
