@@ -63,17 +63,11 @@ public class User implements Item {
 	 * should instead interact with the server
 	 */
 	public void login(Context context, String username, String password) {
-		this.username = username;
-		CitizenSense.username.setText(username);
-		// TODO save login across sessions (include Token)
-		// Editor e = G.memory.edit();
-		// e.putString("username", username);
-		// e.commit();
 		campaign_ids.add("1");
 		campaign_ids.add("2");
 
 		AuthenticationResponseHandler loginHandler = new AuthenticationResponseHandler(
-				context, LOGIN);
+				context, LOGIN,username,password);
 		new PostRequest(context, null, LOGIN, loginHandler, true).execute(
 				username, password);
 	}// login
@@ -82,13 +76,11 @@ public class User implements Item {
 	 * Register a new account for the user.
 	 */
 	public void register(Context context, String username, String password) {
-		this.username = username;
-		CitizenSense.username.setText(username);
 		campaign_ids.add("1");
 		campaign_ids.add("2");
 
 		AuthenticationResponseHandler registerHandler = new AuthenticationResponseHandler(
-				context,REGISTER);
+				context,REGISTER,username,password);
 		new PostRequest(context, null, REGISTER, registerHandler, true)
 				.execute(username, password);
 	}// register

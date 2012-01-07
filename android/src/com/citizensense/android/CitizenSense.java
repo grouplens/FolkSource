@@ -25,7 +25,7 @@ public class CitizenSense extends TabActivity implements OnClickListener {
 	static TabHost tabHost;
 	
 	static TextView username;
-	
+
 	/** Reference to the view inside the tabHost*/
 	View tabView;
 	
@@ -152,5 +152,13 @@ public class CitizenSense extends TabActivity implements OnClickListener {
 		}
 		
 	}//onClick
+	
+	public static TextView getUsername() {
+		return username;
+	}
+
+	public static void setUsername(TextView username) {
+		CitizenSense.username = username;
+	}
 	
 }//CitizenSense

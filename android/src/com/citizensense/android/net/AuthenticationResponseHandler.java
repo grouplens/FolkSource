@@ -11,8 +11,10 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences.Editor;
 import android.widget.Toast;
 
+import com.citizensense.android.CitizenSense;
 import com.citizensense.android.G;
 import com.citizensense.android.conf.Constants;
 
@@ -28,10 +30,14 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 	private int status_code;
 	/** The type of authentication: LOGIN or REGISTER. */
 	private int type;
-	/** Cookie string */
+	/** Cookie string. It contains session-id which can be used for authorization. */
 	private String cookie;
 	/** This is used for creating a dialog. */
 	private Context context;
+	/** Username */
+	private String username;
+	/** Password */
+	private String password;
 
 	/** Authentication type: LOGIN or REGISTER. */
 	public static int LOGIN = 2, REGISTER = 3;
@@ -39,9 +45,11 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 	private static final int LOGIN_SUCCESS = 200, WRONG_PASSWORD = 417,
 			NO_USERNAME = 406, REGISTER_SUCCESS = 200, REGISTER_FAILURE = 406;
 
-	public AuthenticationResponseHandler(Context context, int type) {
+	public AuthenticationResponseHandler(Context context, int type, String username, String password) {
 		this.context = context;
 		this.type = type;
+		this.setUsername(username);
+		this.setPassword(password);
 	}
 
 	/** Handle response for LOGIN or REGISTER. Deal with success or failure.*/
@@ -60,9 +68,7 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 				Toast.makeText(context,
 						"Wrong password. Please try agaign.", Toast.LENGTH_LONG)
 						.show();
-				System.out.println("Wrong password");
 			} else if (status_code == NO_USERNAME) {
-				System.out.println("No username");
 				Toast.makeText(context,
 						"No such user name. Create a new account!",
 						Toast.LENGTH_LONG).show();
@@ -73,6 +79,9 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 						this.setCookie(header.getValue());
 					}
 				}
+				G.user.setUsername(username);
+				CitizenSense.getUsername().setText(username);
+				saveCredentials();
 				((Activity) context).finish();
 			} else {
 				throw new HttpResponseException(statusLine.getStatusCode(),
@@ -90,6 +99,9 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 						this.setCookie(header.getValue());
 					}
 				}
+				G.user.setUsername(username);
+				CitizenSense.getUsername().setText(username);
+				saveCredentials();
 				Intent in = new Intent();
 				((Activity) context).setResult(Constants.REGISTRATION_SUCCESS,
 						in);
@@ -102,6 +114,16 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 		return null;
 	}
 
+	/** Save username, password, cookie into SharedPreference.*/
+	private void saveCredentials(){
+		// TODO save login across sessions (include Token)
+		 Editor e = G.memory.edit();
+		 e.putString("username", this.username);
+		 e.putString("password", this.password);
+		 e.putString("cookie",this.cookie);
+		 e.commit();
+	}
+	
 	public int getStatus_code() {
 		return status_code;
 	}
@@ -124,6 +146,22 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 
 	public String getCookie() {
 		return cookie;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getPassword() {
+		return password;
 	}
 
 }
