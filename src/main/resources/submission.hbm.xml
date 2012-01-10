@@ -8,11 +8,12 @@
 	</id>
 <!-- 	<many-to-one name="task" column="task_id" /> -->
 	<property name="task_id" />
+	<property name="user_id" />
 <!-- 	<property name="notes" /> -->
 	<property name="gps_location" />
-	<bag name="answers" lazy="false">
+	<bag name="answers" lazy="false" inverse="true">
 		<key column="sub_id" not-null="false"/>
-<!-- 		<index column="subid" /> -->
+<!-- 		<index column="id" /> -->
 		<one-to-many class="Answer" />
 	</bag>
 </class>

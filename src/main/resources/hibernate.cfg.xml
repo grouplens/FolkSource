@@ -30,20 +30,21 @@
         <property name="hibernate.cache.provider_class">org.hibernate.cache.NoCacheProvider</property>
 
         <!-- Echo all executed SQL to stdout -->
-        <property name="show_sql">false</property>
+        <property name="show_sql">true</property>
+        <property name="org.hibernate.sql">debug</property>
         <!--  let hibernate manage the DB schema -->
         <!-- <property name="hibernate.hbm2ddl.auto">create</property> -->
 
         <!-- Mapping files -->
-        <!-- Example: <mapping class="full.name" /> -->
-        <!--  <mapping class="org.citizensense.model.Campaign" table="campaigns" />-->
+        <!-- Example: <mapping class="full.name" /> -->	
         <mapping resource="campaign.hbm.xml" />
         <mapping resource="user.hbm.xml" />
         <mapping resource="task.hbm.xml" />
+        <mapping resource="answer.hbm.xml" />
         <mapping resource="submission.hbm.xml" />
         <mapping resource="question.hbm.xml" />
         <mapping resource="leaderboard.hbm.xml" />
-        <mapping resource="answer.hbm.xml" />
+       
         
     </session-factory>
 </hibernate-configuration>

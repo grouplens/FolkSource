@@ -6,6 +6,7 @@ public class Answer {
 	private String type;
 	private int q_id;
 	private int sub_id;
+	private Submission submission;
 	
 	public int getId() {
 		return id;
@@ -36,6 +37,12 @@ public class Answer {
 	}
 	public void setSub_id(int sub_id) {
 		this.sub_id = sub_id;
+	}
+	public Submission getSubmission() {
+		return submission;
+	}
+	public void setSubmission(Submission submission) {
+		this.submission = submission;
 	}
 	
 	

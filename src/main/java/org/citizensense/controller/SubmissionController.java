@@ -1,9 +1,9 @@
 package org.citizensense.controller;
 
 
-import java.sql.SQLException;
 import java.util.Collection;
 
+import org.citizensense.model.Answer;
 import org.citizensense.model.Submission;
 import org.citizensense.util.*;
 
@@ -39,7 +39,11 @@ public class SubmissionController implements ModelDriven<Object>{
 	
 	public void setId(String id) {
 		if (id != null)
-			this.task = SubmissionService.getSubmissions().get(Integer.parseInt(id)-1);
+			for(Submission s : SubmissionService.getSubmissions()) {
+				if(s.getId() == Integer.parseInt(id))
+					this.task = s;
+			}
+//			this.task = SubmissionService.getSubmissions()..get(Integer.parseInt(id)-1);
 		this.id = Integer.parseInt(id);		
 	}
 	
@@ -52,7 +56,7 @@ public class SubmissionController implements ModelDriven<Object>{
 		return new DefaultHttpHeaders("index").disableCaching();
 	}
 	
-	public HttpHeaders create() throws SQLException
+	public HttpHeaders create()
 	{
 		SubmissionService.save(task);
 		return new DefaultHttpHeaders("create");

@@ -7,5 +7,6 @@
 		<generator class="native" />
 	</id>
 	<property name="name" />
+	<property name="points" />
 </class>
 </hibernate-mapping>

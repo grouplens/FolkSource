@@ -10,6 +10,7 @@
 	<property name="type" />
 	<property name="q_id" />
 	<property name="sub_id" />
+<!-- 	<many-to-one name="submission" column="sub_id" class="Submission" cascade="all"/> -->
 <!-- 	<bag name="tasks" lazy="false"> -->
 <!-- 		<key column="camp_id" not-null="false"/> -->
 <!-- 		<index column="id" base="1" /> -->

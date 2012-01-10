@@ -5,6 +5,7 @@ import java.util.List;
 public class Submission {
 	private int id;
 	private int task_id;
+	private int user_id;
 //	private String notes;
 	private String gps_location;
 	private List<Answer> answers;
@@ -38,5 +39,11 @@ public class Submission {
 	}
 	public void setAnswers(List<Answer> answers) {
 		this.answers = answers;
+	}
+	public int getUser_id() {
+		return user_id;
+	}
+	public void setUser_id(int user_id) {
+		this.user_id = user_id;
 	}
 }
