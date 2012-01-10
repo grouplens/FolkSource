@@ -5,10 +5,12 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Fail Page</title>
-<s:head />
+<title>Upload image</title>
 </head>
 <body>
-<h3>Register Fail</h3>
+	You have uploaded the following file.
+	<hr>
+	File Name : ${userImageFileName}
+	<br> Content Type : ${userImageContentType}
 </body>
 </html>

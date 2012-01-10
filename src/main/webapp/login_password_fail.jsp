@@ -5,10 +5,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Success Page</title>
-<s:head />
+<title>Login  Fail Page</title>
 </head>
 <body>
-<h3>Register Success!</h3>
+<h3>Login fail: Wrong Password</h3>
 </body>
 </html>

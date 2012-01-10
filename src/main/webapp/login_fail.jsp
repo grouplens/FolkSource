@@ -5,18 +5,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Registration Page</title>
-<s:head />
-<style type="text/css">
-@import url(css/style.css);
-</style>
+<title>Fail Page</title>
 </head>
 <body>
-<h2>This is register page</h2>
-<form action="user" method="POST">
-		User Name:<input type="text" name="name"/></br>
-		Password:<input type="password" name="password"/></br>
-		<input type="submit" value="Register" />
-</form>
+<h3>Login Fail: No such user</h3>
 </body>
 </html>

@@ -5,20 +5,15 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Login Page</title>
-<s:head />
-<style type="text/css">
-@import url(css/style.css);
-</style>
+<title>Registration Page</title>
 </head>
 <body>
-<h2>This is Login page</h2>
-
-<form action="login" method="POST">
+<h2>This is register page</h2>
+<form action="user" method="POST">
 		User Name:<input type="text" name="name"/></br>
 		Password:<input type="password" name="password"/></br>
-		<input type="submit" value="Login" />
+		Email:<input type="text" name="email"/></br>
+		<input type="submit" value="Register" />
 </form>
-<a href="jsp/register.jsp">New account</a>
 </body>
 </html>

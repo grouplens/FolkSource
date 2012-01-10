@@ -18,6 +18,7 @@ public class UserController implements ModelDriven<User>{
 	private String name;
 	private String password;
 	private String salt;
+	private String email;
 //	private Collection<User> list;
 	
 
@@ -95,6 +96,14 @@ public class UserController implements ModelDriven<User>{
 			response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
 			return "register_fail";
 		}
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getEmail() {
+		return email;
 	}
 
 }

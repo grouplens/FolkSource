@@ -6,9 +6,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Success Page</title>
-<s:head />
 </head>
 <body>
-<h3>Login Success!</h3>
+<h3>Register Success!</h3>
 </body>
 </html>

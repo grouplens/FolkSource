@@ -8,6 +8,7 @@ public class User {
 	private String password;
     /** The base64 encoded salt value used to hash the password*/
     private String salt;
+    private String email;
 	private List<Incentive> tasks;
 	private int points;
 	private String badges;
@@ -53,6 +54,12 @@ public class User {
 	}
 	public String getSalt() {
 		return salt;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	public String getEmail() {
+		return email;
 	}
 
 }

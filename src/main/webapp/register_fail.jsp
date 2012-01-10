@@ -6,9 +6,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <title>Fail Page</title>
-<s:head />
 </head>
 <body>
-<h3>Login Fail: No such user</h3>
+<h3>Register Fail</h3>
 </body>
 </html>
