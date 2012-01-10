@@ -14,13 +14,9 @@ public class LeaderboardService {
 		List<User> users;
 		List<LeaderboardEntry> leaderboard = new ArrayList<LeaderboardEntry>();
 		
-		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
-		//Session session = HibernateFactory.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		Session session = HibernateUtil.getSession(true);
 		
 		users = session.createQuery("from User").list();
-		
-		session.getTransaction().commit();
 		
 		for(User u : users) {
 			LeaderboardEntry l = new LeaderboardEntry();
@@ -35,23 +31,9 @@ public class LeaderboardService {
 		return leaderboard;
 	}
 
-	private static void getPoints(LeaderboardEntry l) {
-		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		Integer tmp;
-		
-		tmp = (Integer)session.createQuery("sum(from Earned_Incentive where user_id = " + l.getId() +  ")").list().get(0);
-		
-		session.getTransaction().commit();
-		l.setPoints(tmp);
-	}
-
 	public static void save(Incentive camp) {
-		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		session.save(camp);
-		session.getTransaction().commit();
-		
+		Session session = HibernateUtil.getSession(true);
+		session.save(camp);	
 	}
 
 }

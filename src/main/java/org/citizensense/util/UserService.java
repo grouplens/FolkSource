@@ -17,11 +17,9 @@ public class UserService {
 	@SuppressWarnings("unchecked")
 	public static List<User> getUsers() {
 		List<User> users;
-		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		Session session = HibernateUtil.getSession(true);
 		
 		users = session.createQuery("from User").list();
-		session.getTransaction().commit();
 		
 		for(User u : users) {
 			getIncentives(u);
@@ -31,12 +29,9 @@ public class UserService {
 	
 	private static void getIncentives(User u) {
 		List<User> users;
-		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
-		//Session session = HibernateFactory.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		Session session = HibernateUtil.getSession(true);
 		
 		users = session.createQuery("from Incentives").list();
-		session.getTransaction().commit();
 		
 	}
 
@@ -52,17 +47,14 @@ public class UserService {
 	}
 	
 	public static void save(User u) {
-		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		Session session = HibernateUtil.getSession(true);
 		session.save(u);
-		session.getTransaction().commit();
 	}
 	
 
 	
 	public static User getUser(String name) {
-		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
+		Session session = HibernateUtil.getSession(true);
 		Query q = session.createQuery("from User where name=:username");
 		q.setParameter("username", name);
 		return (User) q.uniqueResult();

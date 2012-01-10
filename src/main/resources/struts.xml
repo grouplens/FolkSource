@@ -31,8 +31,9 @@
 				/> <interceptor name="exceptionLog" class="org.grouplens.bl.struts.interceptor.ExceptionLoggingInterceptor" 
 				/> <interceptor name="authentication" class="org.grouplens.bl.struts.interceptor.AuthenticationInterceptor" 
 				/> <interceptor name="authorization" class="org.grouplens.bl.struts.interceptor.AuthorizationInterceptor" 
-				/> <interceptor name="hibernate" class="org.grouplens.bl.struts.interceptor.HibernateInterceptor" 
-				/> <interceptor name="resolver" class="org.grouplens.bl.struts.interceptor.ModelResolverInterceptor"> 
+				/> -->
+				<interceptor name="hibernate" class="org.citizensense.struts.HibInterceptor" /> 
+				<!--  <interceptor name="resolver" class="org.grouplens.bl.struts.interceptor.ModelResolverInterceptor"> 
 				<param name="enableOauth">${user.oauth.enable}</param> </interceptor> <interceptor 
 				name="concurrentReplayer" class="org.grouplens.bl.struts.interceptor.ConcurrentReplayInterceptor"/> 
 				<interceptor name="actionConfigSupport" class="org.grouplens.bl.struts.interceptor.ActionConfigCloningInterceptor"/> -->
@@ -43,7 +44,8 @@
 				<!-- Content parsing goes before concurrent replay since we can only 
 					stream input once. -->
 				<!-- <interceptor-ref name="contentParser" /> <interceptor-ref name="concurrentReplayer" 
-					/> <interceptor-ref name="hibernate" /> <interceptor-ref name="exceptionLog" 
+					/> --> 
+					<interceptor-ref name="hibernate" /> <!-- <interceptor-ref name="exceptionLog" 
 					/> <interceptor-ref name="authentication" /> <interceptor-ref name="authorization" 
 					/> <interceptor-ref name="resolver" /> -->
 			</interceptor-stack>
@@ -52,12 +54,11 @@
 		<default-interceptor-ref name="cs" />
 
 		<global-results>
-			<result name="login_success" >/login_success.jsp</result>
-			<result name="login_wrong_password" >/login_password_fail.jsp</result>
-			<result name="login_no_user" >/login_fail.jsp</result>
-			<result name="register_success">/register_success.jsp</result>
-			<result name="register_fail">/register_fail.jsp</result>
-			<result name="image_upload_success">/image_upload_success.jsp</result>
+			<result name="login_success" >jsp/login_success.jsp</result>
+			<result name="login_wrong_password" >jsp/login_password_fail.jsp</result>
+			<result name="login_no_user" >jsp/login_fail.jsp</result>
+			<result name="register_success">jsp/register_success.jsp</result>
+			<result name="register_fail">jsp/register_fail.jsp</result>
 
 			<!-- The following results, excluding 'replay' and 'ambiguous', match 
 				the definitions in the GlobalResult enum. -->
