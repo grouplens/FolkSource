@@ -15,6 +15,6 @@
 		Password:<input type="password" name="password"/></br>
 		<input type="submit" value="Login" />
 </form>
-<a href="/citizensense/register.jsp">New account</a>
+<a href="/csense/register.jsp">New account</a>
 </body>
 </html>
