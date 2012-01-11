@@ -7,16 +7,22 @@ package com.citizensense.android;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.citizensense.android.conf.Constants;
+
 /**
  * Login screen
  * @author Phil Brown
+ * @author Renji Yu
  */
 public class Login extends Activity {
+	/** Request Code for handling user registration. */
+	private int regRequestCode;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -24,8 +30,9 @@ public class Login extends Activity {
 		setContentView(R.layout.login);
 		final EditText uname = (EditText) findViewById(R.id.username_field);
 		final EditText passwd = (EditText) findViewById(R.id.password_field);
-		Button btn = (Button) findViewById(R.id.login_btn);
-		btn.setOnClickListener(new View.OnClickListener() {
+		Button login_btn = (Button) findViewById(R.id.login_btn);
+		Button reg_btn = (Button) findViewById(R.id.to_reg_btn);
+		login_btn.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -48,7 +55,25 @@ public class Login extends Activity {
 				}
 			}
 		});
+		
+		reg_btn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(v.getContext(), Register.class);
+				startActivityForResult(intent, regRequestCode);
+			}
+		});
+		
+		
 	}//onCreate
+	
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == Constants.REGISTRATION_SUCCESS){
+        	finish();
+        }
+    }//onActivityResult
 	
 	/**
 	 * Try to login to the server. This currently just finishes the activity.
@@ -56,8 +81,6 @@ public class Login extends Activity {
 	 * @param password
 	 */
 	public void login(String username, String password) {
-		//FIXME try logging in to server, handler errors
-		G.user.login(username, password);
-		finish();
+		G.user.login(this,username, password);
 	}//login
 }//Login
