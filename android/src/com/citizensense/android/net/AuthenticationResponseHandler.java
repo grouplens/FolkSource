@@ -80,8 +80,10 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 					}
 				}
 				G.user.setUsername(username);
+				G.user.setCookie(cookie);
 				CitizenSense.getUsername().setText(username);
-				saveCredentials();
+				if(G.user.isRemembered())
+					saveCredentials();
 				((Activity) context).finish();
 			} else {
 				throw new HttpResponseException(statusLine.getStatusCode(),
@@ -101,7 +103,8 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 				}
 				G.user.setUsername(username);
 				CitizenSense.getUsername().setText(username);
-				saveCredentials();
+				if(G.user.isRemembered())
+					saveCredentials();
 				Intent in = new Intent();
 				((Activity) context).setResult(Constants.REGISTRATION_SUCCESS,
 						in);
