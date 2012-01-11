@@ -4,30 +4,39 @@
 
 package com.citizensense.android;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 
+import android.content.Context;
 import android.os.Parcel;
-import android.util.Xml;
 
-import com.citizensense.android.parsers.IncentiveParser;
+import com.citizensense.android.net.AuthenticationResponseHandler;
+import com.citizensense.android.net.PostRequest;
 
 /**
  * This class defines the logged in user. Not sure yet what to do with
  * anonymous users. Login credentials should be received from the server and
  * handled safely, similar to how Cyclopath works - with tokens, etc.
  * @author Phil Brown
+ * @author Renji Yu
  */
 public class User implements Item {
 	/** The user's username*/
 	private String username;
 	/** The token retrieved from the server*/
 	private String token;
-	/** A list of the ids associated with campaigns in which this user is
-	 * participating. */
+
+	/** Cookie get from server after successfully login or register */
+	private String cookie;
+	/** Request Type */
+	private static final int LOGIN = 2, REGISTER = 3;
+
+	/**
+	 * A list of the ids associated with campaigns in which this user is
+	 * participating.
+	 */
 	private ArrayList<String> campaign_ids;
 	/** this user's incentives */
 	private Incentive incentive;
@@ -42,22 +51,36 @@ public class User implements Item {
 		//username = "";
 		token = "";
 		campaign_ids = new ArrayList<String>();
-	}//User
-	
-	/** Login to the App. For now, this simply sets some static variables, but
-	 * should instead interact with the server*/
-	public void login(String username, String password) {
-		this.username = username;
-        CitizenSense.username.setText(username);
-        //TODO save login across sessions (include Token)
-        //Editor e = G.memory.edit();
-        //e.putString("username", username);
-        //e.commit();
+	}// User
+
+	/**
+	 * Login to the App. For now, this simply sets some static variables, but
+	 * should instead interact with the server
+	 */
+	public void login(Context context, String username, String password) {
 		campaign_ids.add("1");
 		campaign_ids.add("2");
-	}//login
-	
-	/** gets the username*/
+
+		AuthenticationResponseHandler loginHandler = new AuthenticationResponseHandler(
+				context, LOGIN,username,password);
+		new PostRequest(context, null, LOGIN, loginHandler, true).execute(
+				username, password);
+	}// login
+
+	/**
+	 * Register a new account for the user.
+	 */
+	public void register(Context context, String username, String password) {
+		campaign_ids.add("1");
+		campaign_ids.add("2");
+
+		AuthenticationResponseHandler registerHandler = new AuthenticationResponseHandler(
+				context,REGISTER,username,password);
+		new PostRequest(context, null, REGISTER, registerHandler, true)
+				.execute(username, password);
+	}// register
+
+	/** gets the username */
 	public String getUsername() {
 		return username;
 	}//getUsername
@@ -125,5 +148,13 @@ public class User implements Item {
 	public String getItemName() {
 		return "user";
 	}//getItemName
-	
-}//User
+
+	public void setCookie(String cookie) {
+		this.cookie = cookie;
+	}//setCookie
+
+	public String getCookie() {
+		return cookie;
+	}//getCookie
+
+}// User

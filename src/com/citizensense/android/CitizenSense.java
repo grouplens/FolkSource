@@ -153,4 +153,12 @@ public class CitizenSense extends TabActivity implements OnClickListener {
 		
 	}//onClick
 	
+	public static TextView getUsername() {
+		return username;
+	}
+
+	public static void setUsername(TextView username) {
+		CitizenSense.username = username;
+	}
+	
 }//CitizenSense

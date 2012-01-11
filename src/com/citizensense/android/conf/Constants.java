@@ -43,4 +43,10 @@ public interface Constants {
 	 * expiration to -1 will set the alert to never expire. Otherwise, set this
 	 * to a time, in millisecods, for the alert to expire.  */
 	public static final int PROXIMITY_ALERT_EXPIRATION = -1;
+		
+	/** Used to indicate the result of Registration*/
+	public static final int REGISTRATION_SUCCESS = 1, REGISTRATION_FAILURE = 2;
+	
+	/** This variable is used for open the map from CampaignPage*/
+	public static final int CallMapInCampaignPage = 1;
 }//Constants
