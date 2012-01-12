@@ -1,5 +1,6 @@
 package org.citizensense.model;
 
+import java.util.Date;
 import java.util.List;
 
 public class Submission {
@@ -9,6 +10,7 @@ public class Submission {
 //	private String notes;
 	private String gps_location;
 	private List<Answer> answers;
+	private Date timestamp;
 
 	public int getId() {
 		return id;
@@ -45,5 +47,11 @@ public class Submission {
 	}
 	public void setUser_id(int user_id) {
 		this.user_id = user_id;
+	}
+	public Date getTimestamp() {
+		return timestamp;
+	}
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
 	}
 }

@@ -1,5 +1,8 @@
 package org.citizensense.util;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import org.citizensense.model.*;
 
@@ -19,6 +22,9 @@ public class SubmissionService {
 
 	public static void save(Submission t) {
 		Session session = HibernateUtil.getSession(true);
+//		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		
+		t.setTimestamp(new Date());
 		session.save(t);
 		if (t.getAnswers() != null) {
 			for (Answer a : t.getAnswers()) {

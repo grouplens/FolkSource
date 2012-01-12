@@ -16,5 +16,6 @@
 <!-- 		<index column="id" /> -->
 		<one-to-many class="Answer" />
 	</bag>
+	<property name="timestamp" />
 </class>
 </hibernate-mapping>
