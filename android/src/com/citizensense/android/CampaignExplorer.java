@@ -156,6 +156,8 @@ public abstract class CampaignExplorer extends ListActivity
 			gallery.setVisibility(View.VISIBLE);
 		}
 		else if (v == mapMode) {
+			if (campaigns != null)
+				G.globalCampaigns = campaigns;
 			CitizenSense.openMap();
 		}
 	}//onClick
@@ -223,7 +225,10 @@ public abstract class CampaignExplorer extends ListActivity
 		map_button.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO
+				ArrayList<Campaign> cams = new ArrayList<Campaign>();
+				cams.add(campaign);
+				G.globalCampaigns = cams;
+				CitizenSense.openMap();
 			}
 		});
 		task_button.setOnClickListener(new View.OnClickListener() {
