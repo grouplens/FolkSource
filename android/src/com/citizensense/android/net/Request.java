@@ -5,6 +5,7 @@
 package com.citizensense.android.net;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import android.util.Log;
 
 import com.citizensense.android.Item;
 import com.citizensense.android.conf.Constants;
+import com.citizensense.android.util.Base64;
 
 /**
  * HTTP Request
@@ -73,8 +75,8 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 	public static final int XML = 0, JSON = 1, LOGIN = 2, REGISTER = 3,
 			IMAGE = 4;
 	/** The root URL of the server. */
-	 public static final String BASE_URL = "http://ugly.cs.umn.edu:8080";
-
+	 //public static final String BASE_URL = "http://ugly.cs.umn.edu:8080";
+	public static final String BASE_URL = "http://134.84.44.132:9080";
 	/**
 	 * Create a GET Request
 	 * 
@@ -249,15 +251,21 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 			try {
 				if (inputFormat == IMAGE) { // UPLOAD IMAGE
 					// FIXME: Maybe use multi-part later.
-					int index = params[0].lastIndexOf("//");
-					String file_name = params[0].substring(index+1);
-					System.out.println(file_name);
-					Bitmap bm = BitmapFactory.decodeFile(params[0]);
+					int index = params[1].lastIndexOf(File.separator);
+					String file_name = params[1].substring(index+1);
+					Bitmap bm = BitmapFactory.decodeFile(params[1]);
 					ByteArrayOutputStream bos = new ByteArrayOutputStream();
+					//compress the file
 					bm.compress(CompressFormat.JPEG, 50, bos);
 					byte[] data = bos.toByteArray();
-					ByteArrayEntity bae = new ByteArrayEntity(data);
-					post.setEntity(bae);
+					//image file is encoded into a string
+					String imageString=Base64.encodeBytes(data);
+					List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+					pairs.add(new BasicNameValuePair("userName", params[0]));
+					pairs.add(new BasicNameValuePair("imageFileName", file_name));
+					pairs.add(new BasicNameValuePair("imageString", imageString));
+					post.setEntity(new UrlEncodedFormEntity(pairs));
+					
 				} else if (inputFormat == LOGIN || inputFormat == REGISTER) { // LOGIN,
 					// REGISTER
 					List<NameValuePair> pairs = new ArrayList<NameValuePair>();

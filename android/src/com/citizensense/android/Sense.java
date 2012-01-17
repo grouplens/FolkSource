@@ -10,12 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.apache.http.impl.client.BasicResponseHandler;
-
-import com.citizensense.android.conf.Constants;
-import com.citizensense.android.net.AuthenticationResponseHandler;
-import com.citizensense.android.net.PostRequest;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -37,6 +31,10 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.citizensense.android.conf.Constants;
+import com.citizensense.android.net.ImageResponseHandler;
+import com.citizensense.android.net.PostRequest;
 
 /**
  * Complete a task, or "Sense" data
@@ -108,7 +106,6 @@ public class Sense extends LocationActivity {
 
 			    Uri fileUri = getOutputImageUri(); // create a file to save the image
 			    Sense.this.imageUri = fileUri;
-			    Log.e("ImageUri",fileUri.toString());
 			    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
 
 			    // start the image capture Intent
@@ -186,7 +183,7 @@ public class Sense extends LocationActivity {
 	    // Create a media file name
 	    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 	    File mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-	        "IMG_"+ timeStamp + ".jpg");
+	        campaign.getName()+"_"+timeStamp + ".jpg");
 	    if (Constants.DEBUG) {
 	    	Log.d("Sense", "Image URI set to " + mediaFile.getName());
 	    }
@@ -364,18 +361,16 @@ public class Sense extends LocationActivity {
 	
 	/** Upload the photo to server.*/
 	public void uploadImage(Uri uri){
-		//FIXME: to be implemented later
 		String imagePath = uri.getPath();
 		
-		BasicResponseHandler imageUploadHandler = new BasicResponseHandler(); 
+		ImageResponseHandler imageUploadHandler = new ImageResponseHandler(this); 
 		new PostRequest(this, null, IMAGE, imageUploadHandler, true)
-				.execute(imagePath);
-		
-    	CheckBox hasTakenPhoto = (CheckBox) findViewById(R.id.chkbox_photo_complete);
-    	hasTakenPhoto.setChecked(true);
-    	validateForm();
-    	TextView uploadComplete = (TextView) findViewById(R.id.upload_text);
-    	uploadComplete.setText("Photo updated successfully!");
+				.execute(G.user.getUsername(),imagePath);
+// Add this code will cause problem. I find the way we are prompting the user to change location setting is annoying.
+// Maybe prompt the user when he presses Submit is better?		
+//		if(imageUploadHandler.getResult().equalsIgnoreCase("success")){
+//			validateForm();
+//		}
 	}
 
 	@Override
