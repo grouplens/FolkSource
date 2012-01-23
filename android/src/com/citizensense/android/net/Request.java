@@ -9,8 +9,10 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
@@ -21,6 +23,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.w3c.dom.Document;
 
@@ -229,7 +232,7 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 						entity = new StringEntity(data.buildXML());
 					}
 					if (Constants.DEBUG) {
-						Log.i("Request", entity.toString());
+						Log.i("Request", "***Response***  " + entity.toString());
 					}
 					entity.setContentType("text/xml");
 					post.setHeader("Content-Type",

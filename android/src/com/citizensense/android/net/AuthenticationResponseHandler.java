@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.citizensense.android.CitizenSense;
@@ -63,6 +64,9 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 		}
 		StatusLine statusLine = response.getStatusLine();
 		status_code = statusLine.getStatusCode();
+		if (Constants.DEBUG) {
+			Log.d("Request", "Response Code: " + status_code);
+		}
 		if (type == LOGIN) {
 			if (status_code == WRONG_PASSWORD) {// HttpServletResponse.SC_EXPECTATION_FAILED
 				Toast.makeText(context,

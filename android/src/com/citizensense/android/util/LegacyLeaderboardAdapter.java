@@ -1,6 +1,10 @@
+/* Copyright (c) 2006-2011 Regents of the University of Minnesota.
+   For licensing terms, see the file LICENSE.
+ */
+
 package com.citizensense.android.util;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,18 +13,23 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.citizensense.android.LeaderboardEntry;
 import com.citizensense.android.R;
+import com.citizensense.android.User;
 
-public class LeaderboardAdapter extends ArrayAdapter<LeaderboardEntry> {
+/**
+ * Inflates the leaderboard on the user's profile page
+ * @author Phil Brown
+ *
+ */
+public class LegacyLeaderboardAdapter extends ArrayAdapter<User> {
 
 	/** context in order to allow access to resources and system services */
 	private Context context;
 	
 	/** The leaderboard to inflate */
-	private List<LeaderboardEntry> leaderboard;
+	private ArrayList<User> leaderboard;
 	
-	public LeaderboardAdapter(Context context, List<LeaderboardEntry> leaderboard) {
+	public LegacyLeaderboardAdapter(Context context, ArrayList<User> leaderboard) {
 		super(context, 0, leaderboard);
 		this.context = context;
 		this.leaderboard = leaderboard;
@@ -36,9 +45,10 @@ public class LeaderboardAdapter extends ArrayAdapter<LeaderboardEntry> {
 						Context.LAYOUT_INFLATER_SERVICE);
 			v = vi.inflate(R.layout.leaderboard, null);
 		}
-		LeaderboardEntry entry = leaderboard.get(position);
+		User user = leaderboard.get(position);
 		TextView text = (TextView) v.findViewById(R.id.user_stats);
-		text.setText((position + 1) + ". " + entry.name + " points: " + entry.points);
+		text.setText((position + 1) + ". " + user.getUsername() + " points: " + user.score);
 		return v;
 	}//getView
-}//LeaderboardAdapter
+
+}//LegacyLeaderboardAdapter

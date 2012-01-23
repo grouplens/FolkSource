@@ -108,8 +108,8 @@ public class CampaignBrowser extends CampaignExplorer {
 							public void invoke(ArrayList<Campaign> campaigns) {
 								Log.i("CampaignBrowser", "Retrieved " 
 										       + campaigns.size() + " campaigns.");
-								//TODO remove this line.
-								G.globalCampaigns = campaigns;
+								//TODO remove this line?
+					 			G.globalCampaigns = campaigns;
 								for (Campaign c : campaigns) {
 									handleNewCampaign(c);
 								}

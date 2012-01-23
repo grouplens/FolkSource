@@ -19,6 +19,10 @@ import org.apache.http.util.EntityUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import android.util.Log;
+
+import com.citizensense.android.conf.Constants;
+
 /**
  * Handle an HttpResponse as a XML Object. This code is based, in part, 
  * on BasicResponseHandler.
@@ -60,6 +64,9 @@ public class XMLResponseHandler implements ResponseHandler<Document> {
 	public Document handleResponse(HttpResponse response)
 			throws ClientProtocolException, IOException {
 		StatusLine statusLine = response.getStatusLine();
+		if (Constants.DEBUG) {
+			Log.d("Request", "Response Code: " + statusLine.getStatusCode() + " " + statusLine.getReasonPhrase());
+		}
         if (statusLine.getStatusCode() >= 300) {
             throw new HttpResponseException(statusLine.getStatusCode(),
                     statusLine.getReasonPhrase());

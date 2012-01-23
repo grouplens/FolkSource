@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import com.citizensense.android.conf.Constants;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -33,6 +31,10 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.citizensense.android.conf.Constants;
+import com.citizensense.android.net.PostRequest;
+import com.citizensense.android.net.Request;
 
 /**
  * Complete a task, or "Sense" data
@@ -344,11 +346,51 @@ public class Sense extends LocationActivity {
 			this.requestLocation();
 		}
 		else {
+			new PostRequest(this, new Submission(buildXML()), Request.XML, null, true).execute();
 			Toast.makeText(this, "Task Complete!", Toast.LENGTH_SHORT).show();
-			//TODO get answers, image, and location written to xml and sent to server.
 			this.finish();
 		}
 	}//submit
+	
+	/** Build a submission XML */
+	public String buildXML() {
+		StringBuilder submission = new StringBuilder();
+		submission.append("<org.citizensense.model.Submission>");
+		submission.append("<task_id>" + this.campaign.getId() + "</task_id>");
+		submission.append("<gps_location>" + this.location.getLatitude() + "|" 
+				          + this.location.getLongitude() + "</gps_location>");
+		submission.append("<user_id>" + G.user.id + "</user_id>");
+		submission.append("<answers>");
+		Form f = campaign.getTask().getForm();
+		Question[] questions = f.getQuestions();
+		String[] ans = new String[this.answers.size()];
+		ans = this.answers.keySet().toArray(ans);
+		for (int i = 0; i < ans.length; i++) {
+			submission.append("<org.citizensense.model.Answer>");
+			submission.append("<id>" + i + "</id>");
+			submission.append("<answer>" + this.answers.get(ans[i]) + "</answer>");
+			Question q = null;
+			for (Question question : questions) {
+				if (question.getQuestion().equals(ans[i])) {
+					q = question;
+					break;
+				}
+			}
+			if (q == null) {
+				submission.append("<type>NaN</type>");
+				submission.append("<q_id>NaN</q_id>");
+			}
+			else {
+				submission.append("<type>" + q.getType() + "</type>");
+				submission.append("<q_id>" + this.campaign.getId() + "</q_id>");
+			}
+			submission.append("<sub_id>NaN</sub_id>");
+			submission.append("</org.citizensense.model.Answer>");
+		}
+		submission.append("</answers>");
+		submission.append("</org.citizensense.model.Submission>");
+		return submission.toString();
+	}//buildXML
 
 	@Override
 	public boolean allowsNetworksLocations() {

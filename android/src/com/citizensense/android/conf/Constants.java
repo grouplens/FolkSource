@@ -14,7 +14,7 @@ public interface Constants {
 	public static final boolean DEBUG = true;
 	
 	/** This is used to denote whether or not to use local campaigns for testing*/
-	public static final boolean localCampaignsOnly = true;
+	public static final boolean localCampaignsOnly = false;
 	
 	/** The name of the sharedPreferences file where G.memory is located.*/
 	public static final String MEM_LOC = "citizenSenseMem";
