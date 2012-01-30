@@ -9,10 +9,10 @@
 
 	<properties>
 		<db.username>postgres</db.username>
-		<db.password>yurenji</db.password>
+		<db.password></db.password>
 		<db.schema>public</db.schema>
 		<db.connection.driver.class>org.postgresql.Driver</db.connection.driver.class>
-		<db.url>jdbc:postgresql://localhost/citizensense</db.url>
+		<db.url>jdbc:postgresql://localhost/postgres</db.url>
 		<db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
 		<db.connection.maxcount>40</db.connection.maxcount>
 	</properties>
@@ -101,7 +101,7 @@
 				<configuration>
 					<container>
 						<containerId>tomcat7x</containerId>
-						<home>E:/tomcat7</home>
+						<home>/Users/jts/apache-tomcat-7.0.22</home>
 						<type>installed</type>
 					</container>
 
@@ -222,11 +222,11 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-            <groupId>org.grouplens.common</groupId>
-           <artifactId>common-hash</artifactId>
-           <version>0.4</version>
-           <type>jar</type>
-           <scope>compile</scope>
-    </dependency>
+			<groupId>org.grouplens.common</groupId>
+			<artifactId>common-hash</artifactId>
+			<version>0.4</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
 	</dependencies>
 </project>
