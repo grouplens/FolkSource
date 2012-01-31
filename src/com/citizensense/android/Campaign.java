@@ -48,7 +48,7 @@ public class Campaign implements Item {
 	private Date startDate;
 	/** Date the campaign ends.*/
 	private Date endDate;
-	
+    
 	/** This CREATOR is used to parcel this Object. */
 	public static final Parcelable.Creator<Campaign> CREATOR =
         new Parcelable.Creator<Campaign>() {
@@ -58,7 +58,7 @@ public class Campaign implements Item {
 		public Campaign createFromParcel(Parcel in) {
 			return new Campaign(in);
 		}//createFromParcel
-
+		
 		/**
 		 * Creates a new array of Adds
 		 */

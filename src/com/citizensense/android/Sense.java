@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import com.citizensense.android.conf.Constants;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -34,9 +32,14 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.citizensense.android.conf.Constants;
+import com.citizensense.android.net.ImageResponseHandler;
+import com.citizensense.android.net.PostRequest;
+
 /**
  * Complete a task, or "Sense" data
  * @author Phil Brown
+ * @author Renji Yu
  */
 public class Sense extends LocationActivity {
 
@@ -49,6 +52,9 @@ public class Sense extends LocationActivity {
 	private Uri imageUri;
 	/** Used for receiving Intent back from the camera. */
 	public static final int CAMERA_CAPTURE_REQUEST_CODE = 100;
+	
+	/** Used for image upload post request.*/
+	public static final int IMAGE = 4;
 	/** 
 	 * This contains all of the answers that the user has completed. Using a 
 	 * HashMap will be effective for storage, because 1) it is simple, 2) it
@@ -66,6 +72,7 @@ public class Sense extends LocationActivity {
 	        	hasTakenPhoto.setChecked(true);
 	        	validateForm();
 	        	TextView uploadComplete = (TextView) findViewById(R.id.upload_text);
+	        	uploadImage(this.imageUri);
 	        	uploadComplete.setText("Photo updated successfully!");
 	        } else if (resultCode == RESULT_CANCELED) {
 	            // User canceled the image capture. Do nothing
@@ -349,6 +356,15 @@ public class Sense extends LocationActivity {
 			this.finish();
 		}
 	}//submit
+	
+	/** Upload the photo to server.*/
+	public void uploadImage(Uri uri){
+		String imagePath = uri.getPath();
+		
+		ImageResponseHandler imageUploadHandler = new ImageResponseHandler(this); 
+		new PostRequest(this, null, IMAGE, imageUploadHandler, true)
+				.execute(G.user.getUsername(),imagePath);
+	}
 
 	@Override
 	public boolean allowsNetworksLocations() {

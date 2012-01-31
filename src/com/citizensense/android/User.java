@@ -27,6 +27,8 @@ public class User implements Item {
 	private String username;
 	/** The token retrieved from the server*/
 	private String token;
+	/** Remember the username and password.*/
+	private boolean remembered = false;
 
 	/** Cookie get from server after successfully login or register */
 	private String cookie;
@@ -70,14 +72,14 @@ public class User implements Item {
 	/**
 	 * Register a new account for the user.
 	 */
-	public void register(Context context, String username, String password) {
+	public void register(Context context, String username, String password, String email) {
 		campaign_ids.add("1");
 		campaign_ids.add("2");
 
 		AuthenticationResponseHandler registerHandler = new AuthenticationResponseHandler(
 				context,REGISTER,username,password);
 		new PostRequest(context, null, REGISTER, registerHandler, true)
-				.execute(username, password);
+				.execute(username, password, email);
 	}// register
 
 	/** gets the username */
@@ -156,5 +158,13 @@ public class User implements Item {
 	public String getCookie() {
 		return cookie;
 	}//getCookie
+
+	public void setRemembered(boolean remembered) {
+		this.remembered = remembered;
+	}//setRemembered
+
+	public boolean isRemembered() {
+		return remembered;
+	}//isRemembered
 
 }// User
