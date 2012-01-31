@@ -4,6 +4,7 @@
 
 package com.citizensense.android;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -179,13 +180,13 @@ public class CampaignBrowser extends CampaignExplorer {
 			handler.setCallback(new XMLResponseHandler.StringCallback() {
 				
 				@Override
-				public void invoke(String xml) {
+				public void invoke(final String xml) {
 					try {
 						Xml.parse(xml, new TaskParser(new TaskParser.Callback() {
 	
 							@Override
 							public void invoke(Task t) {
-								handleNewTask(c, t);
+								handleNewTask(c, t, xml);
 							}
 							
 						}));
@@ -203,8 +204,18 @@ public class CampaignBrowser extends CampaignExplorer {
 	 * @param c
 	 * @param t
 	 */
-	public void handleNewTask(final Campaign c, final Task t) {
+	public void handleNewTask(final Campaign c, final Task t, String xml) {
+		if (c == null) {
+			Log.d("DEBUG", "Campaign is null!");
+		}
+		if (c.getTask() == null) {
+			Log.d("DEBUG", "Task is null!");
+		}
+		if (c.getTask().getForm() == null) {
+			Log.d("DEBUG", "Form is null!");
+		}
 		c.setTask(t);
+		server_campaigns.add(c);
 		/*
 		XMLResponseHandler handler = new XMLResponseHandler();
 		handler.setCallback(new XMLResponseHandler.StringCallback() {
@@ -226,9 +237,9 @@ public class CampaignBrowser extends CampaignExplorer {
 			}
 		});
 		new GetRequest(this, Task.class, c.getId(), handler, true).execute();
-		*/
+		
 		try {
-			InputStream stream = getAssets().open("samples/form_1.xml");
+			InputStream stream = new ByteArrayInputStream(xml.getBytes());//getAssets().open("samples/form_1.xml");
 			Xml.parse(stream, Xml.Encoding.UTF_8, new FormParser(new FormParser.Callback() {
 				
 				@Override
@@ -240,7 +251,7 @@ public class CampaignBrowser extends CampaignExplorer {
 			e.printStackTrace();
 		} catch (SAXException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}//handleNewTask
 	
 	/**

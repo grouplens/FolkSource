@@ -36,6 +36,10 @@ public class Question implements Parcelable {
 	/** Available answers for multiple choice questions */
 	private String[] answers;
 	
+	/** The id associated with this question. 
+	 * @deprecated This is not used anywhere other than the parser. */
+	public int id;
+	
 
 	/** This CREATOR is used to parcel this Object. */
 	public static final Parcelable.Creator<Question> CREATOR =
