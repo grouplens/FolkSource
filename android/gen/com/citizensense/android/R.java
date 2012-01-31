@@ -11,47 +11,149 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int grey=0x7f020000;
-        public static final int ic_tab_artists=0x7f020001;
-        public static final int ic_tab_artists_grey=0x7f020002;
-        public static final int ic_tab_artists_white=0x7f020003;
-        public static final int ic_tab_home=0x7f020004;
-        public static final int ic_tab_home_grey=0x7f020005;
-        public static final int ic_tab_home_white=0x7f020006;
-        public static final int icon=0x7f020007;
-        public static final int profile_default=0x7f020008;
+        public static final int ashborer=0x7f020000;
+        public static final int bikerack=0x7f020001;
+        public static final int busrack=0x7f020002;
+        public static final int button=0x7f020003;
+        public static final int grey=0x7f020004;
+        public static final int ic_notification=0x7f020005;
+        public static final int ic_tab_artists=0x7f020006;
+        public static final int ic_tab_artists_grey=0x7f020007;
+        public static final int ic_tab_artists_white=0x7f020008;
+        public static final int ic_tab_home=0x7f020009;
+        public static final int ic_tab_home_grey=0x7f02000a;
+        public static final int ic_tab_home_white=0x7f02000b;
+        public static final int icon=0x7f02000c;
+        public static final int marker=0x7f02000d;
+        public static final int potholes=0x7f02000e;
+        public static final int profile_default=0x7f02000f;
+        public static final int tab_selected=0x7f020010;
+        public static final int tab_selector=0x7f020011;
+        public static final int tab_unselected=0x7f020012;
+        public static final int temp_icon=0x7f020013;
     }
     public static final class id {
-        public static final int campaign_points=0x7f050002;
-        public static final int campaign_stats=0x7f050001;
-        public static final int campaign_title=0x7f050000;
-        public static final int mapview=0x7f05000c;
-        public static final int profile_pic=0x7f05000d;
-        public static final int quick_profile=0x7f050007;
-        public static final int quick_profile_image=0x7f05000a;
-        public static final int quick_profile_menu=0x7f050008;
-        public static final int quick_profile_pts=0x7f05000b;
-        public static final int quick_profile_text=0x7f050009;
-        public static final int total_points=0x7f05000e;
-        public static final int updates_menu=0x7f050003;
-        public static final int updates_menu_image=0x7f050004;
-        public static final int updates_menu_menu=0x7f050006;
-        public static final int updates_menu_text=0x7f050005;
+        public static final int button_container=0x7f06000b;
+        public static final int buttons=0x7f060019;
+        public static final int campaign_description=0x7f060004;
+        public static final int campaign_gallery=0x7f060011;
+        public static final int campaign_image=0x7f060003;
+        public static final int campaign_info=0x7f060005;
+        public static final int campaign_location=0x7f060013;
+        public static final int campaign_page=0x7f060012;
+        public static final int campaign_pic=0x7f06001a;
+        public static final int campaign_points=0x7f06001c;
+        public static final int campaign_start_and_end_dates=0x7f060016;
+        public static final int campaign_stats=0x7f06001b;
+        public static final int campaign_status=0x7f060015;
+        public static final int campaign_timeleft=0x7f060038;
+        public static final int campaign_times=0x7f060014;
+        public static final int campaign_title=0x7f060002;
+        public static final int capture_photo=0x7f06003b;
+        public static final int chkbox_photo_complete=0x7f060039;
+        public static final int delete=0x7f060043;
+        public static final int download=0x7f060042;
+        public static final int download_or_delete=0x7f060008;
+        public static final int form_container=0x7f06003c;
+        public static final int gallery=0x7f06000a;
+        public static final int gallery_index_indicator=0x7f060010;
+        public static final int gallery_layout=0x7f06000f;
+        public static final int image=0x7f060001;
+        public static final int inf=0x7f060009;
+        public static final int info=0x7f060035;
+        public static final int info_layout=0x7f060034;
+        public static final int list_image=0x7f060037;
+        public static final int login_btn=0x7f060021;
+        public static final int map=0x7f060006;
+        public static final int mapview=0x7f06002c;
+        public static final int next_question=0x7f06003d;
+        public static final int password_field=0x7f06001f;
+        public static final int previous_question=0x7f06003e;
+        public static final int profile_pic=0x7f06002d;
+        public static final int quick_profile=0x7f060027;
+        public static final int quick_profile_image=0x7f06002a;
+        public static final int quick_profile_menu=0x7f060028;
+        public static final int quick_profile_pts=0x7f06002b;
+        public static final int quick_profile_text=0x7f060029;
+        public static final int reg_btn=0x7f060032;
+        public static final int reg_password=0x7f060030;
+        public static final int reg_password2=0x7f060031;
+        public static final int reg_username=0x7f06002f;
+        public static final int separator1=0x7f060036;
+        public static final int separator2=0x7f060017;
+        public static final int separator3=0x7f060033;
+        public static final int submit=0x7f06003f;
+        public static final int tab_image=0x7f060040;
+        public static final int tab_text=0x7f060041;
+        public static final int task=0x7f060007;
+        public static final int task_description=0x7f060018;
+        public static final int text=0x7f060000;
+        public static final int title=0x7f060020;
+        public static final int to_reg_btn=0x7f060022;
+        public static final int updates_menu=0x7f060023;
+        public static final int updates_menu_image=0x7f060024;
+        public static final int updates_menu_menu=0x7f060026;
+        public static final int updates_menu_text=0x7f060025;
+        public static final int upload_text=0x7f06003a;
+        public static final int user_stats=0x7f06001d;
+        public static final int username=0x7f06002e;
+        public static final int username_field=0x7f06001e;
+        public static final int view_as_gallery=0x7f06000c;
+        public static final int view_as_list=0x7f06000d;
+        public static final int view_as_map=0x7f06000e;
     }
     public static final class layout {
-        public static final int campaign_list_item=0x7f030000;
-        public static final int home=0x7f030001;
-        public static final int main=0x7f030002;
-        public static final int map=0x7f030003;
-        public static final int profile=0x7f030004;
+        public static final int button=0x7f030000;
+        public static final int campaign=0x7f030001;
+        public static final int campaign_browser=0x7f030002;
+        public static final int campaign_explorer=0x7f030003;
+        public static final int campaign_item=0x7f030004;
+        public static final int campaign_list_item=0x7f030005;
+        public static final int home=0x7f030006;
+        public static final int leaderboard=0x7f030007;
+        public static final int login=0x7f030008;
+        public static final int main=0x7f030009;
+        public static final int map=0x7f03000a;
+        public static final int profile=0x7f03000b;
+        public static final int register=0x7f03000c;
+        public static final int relative_campaign=0x7f03000d;
+        public static final int relative_campaign_gallery_item=0x7f03000e;
+        public static final int relative_campaign_list_item=0x7f03000f;
+        public static final int sense=0x7f030010;
+        public static final int tab=0x7f030011;
+    }
+    public static final class menu {
+        public static final int campaign_browser_context_menu=0x7f050000;
+        public static final int my_campaigns_context_menu=0x7f050001;
     }
     public static final class string {
-        public static final int app_name=0x7f040004;
-        public static final int campaign_id=0x7f040001;
-        public static final int campaign_name=0x7f040000;
-        public static final int campaign_table=0x7f040002;
-        public static final int hello=0x7f040003;
-        public static final int multiple_choice=0x7f040006;
-        public static final int written_response=0x7f040005;
+        public static final int app_name=0x7f040000;
+        public static final int campaign_intent=0x7f040003;
+        public static final int multiple_choice=0x7f040002;
+        public static final int notification_content_text=0x7f040005;
+        public static final int notification_text=0x7f040004;
+        public static final int proximity_alert_intent=0x7f040006;
+        public static final int written_response=0x7f040001;
     }
+    public static final class styleable {
+        /** Attributes that can be used with a CampaignGallery.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #CampaignGallery_android_galleryItemBackground com.citizensense.android:android_galleryItemBackground}</code></td><td></td></tr>
+           </table>
+           @see #CampaignGallery_android_galleryItemBackground
+         */
+        public static final int[] CampaignGallery = {
+            0x0101004c
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.citizensense.android.R.attr#android_galleryItemBackground}
+          attribute's value can be found in the {@link #CampaignGallery} array.
+          @attr name android:android_galleryItemBackground
+        */
+        public static final int CampaignGallery_android_galleryItemBackground = 0;
+    };
 }
