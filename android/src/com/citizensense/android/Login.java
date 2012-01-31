@@ -11,17 +11,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.citizensense.android.conf.Constants;
 
 /**
  * Login screen
  * @author Phil Brown
- * @author Renji Yu
+ * @author Renji
  */
 public class Login extends Activity {
-	/** Request Code for handling user registration. */
 	private int regRequestCode;
 
 	@Override
@@ -30,9 +31,13 @@ public class Login extends Activity {
 		setContentView(R.layout.login);
 		final EditText uname = (EditText) findViewById(R.id.username_field);
 		final EditText passwd = (EditText) findViewById(R.id.password_field);
-		Button login_btn = (Button) findViewById(R.id.login_btn);
+		Button btn = (Button) findViewById(R.id.login_btn);
 		Button reg_btn = (Button) findViewById(R.id.to_reg_btn);
-		login_btn.setOnClickListener(new View.OnClickListener() {
+		Button anonymous_btn = (Button) findViewById(R.id.anonymous_btn);
+		final CheckBox remember_cb = (CheckBox)findViewById(R.id.login_rem_cb);
+		TextView forget_password = (TextView)findViewById(R.id.forget_password);
+		
+		btn.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -59,21 +64,49 @@ public class Login extends Activity {
 		reg_btn.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(v.getContext(), Register.class);
+				Intent intent = new Intent(v.getContext(),Register.class);
 				startActivityForResult(intent, regRequestCode);
 			}
 		});
 		
+		anonymous_btn.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				G.user.setUsername("Anonymous");
+				CitizenSense.getUsername().setText("Anonymous");
+				((Activity)v.getContext()).finish();
+			}
+		});
+		
+		remember_cb.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(remember_cb.isChecked()){
+					G.user.setRemembered(true);
+				}
+			}
+		});
+		
+		forget_password.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(v.getContext(), ForgetPassword.class);
+				startActivity(intent);
+			}
+		});
+		
+		checkRememberMe();
 		
 	}//onCreate
+	
 	
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Constants.REGISTRATION_SUCCESS){
+        if(resultCode== Constants.REGISTRATION_SUCCESS){
         	finish();
         }
-    }//onActivityResult
+    }
 	
 	/**
 	 * Try to login to the server. This currently just finishes the activity.
@@ -83,4 +116,14 @@ public class Login extends Activity {
 	public void login(String username, String password) {
 		G.user.login(this,username, password);
 	}//login
+	
+	/** Automatically login to the server, if set RememberMe last time.*/
+	public void checkRememberMe(){
+		String username = G.memory.getString("username", "");
+		if(!username.equals("")){//the user is remembered, login automatically
+			String password = G.memory.getString("password", "");
+			login(username,password);
+		}
+	}
+	
 }//Login
