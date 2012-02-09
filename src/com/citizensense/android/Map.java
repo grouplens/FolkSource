@@ -12,6 +12,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -23,6 +25,8 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.citizensense.android.conf.Constants;
@@ -338,4 +342,37 @@ public class Map extends MapActivity {
             }
         }//draw
     }//CircleOverlay
+    
+	/* Create menu. */
+	public boolean onCreateOptionsMenu(Menu menu) {
+		//FIXME: add more options later
+		menu.add(0, 0, 0, "Switch User");
+		menu.add(0, 1, 1, "Logout");
+		return true;
+	}
+
+	/* Handle menu options. */
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int item_id = item.getItemId();
+
+		switch (item_id) {
+		case 0: // Switch User
+			String username = G.memory.getString("username", "");
+			if (!username.equals("")) { // remove the current user's data
+				Editor e = G.memory.edit();
+				e.remove("username");
+				e.remove("password");
+				e.remove("cookie");
+				e.commit();
+			}
+			Intent intent = new Intent(this, Login.class);
+			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);  
+			startActivity(intent);
+			break;
+		case 1: // Logout, Quit the app.
+			System.exit(0);
+			break;
+		}
+		return true;
+	}
 }//Map
