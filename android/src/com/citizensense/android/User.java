@@ -16,16 +16,17 @@ import com.citizensense.android.net.AuthenticationResponseHandler;
 import com.citizensense.android.net.PostRequest;
 
 /**
- * This class defines the logged in user. Not sure yet what to do with
- * anonymous users. Login credentials should be received from the server and
- * handled safely, similar to how Cyclopath works - with tokens, etc.
+ * This class defines the logged in user. Not sure yet what to do with anonymous
+ * users. Login credentials should be received from the server and handled
+ * safely, similar to how Cyclopath works - with tokens, etc.
+ * 
  * @author Phil Brown
  * @author Renji Yu
  */
 public class User implements Item {
-	/** The user's username*/
+	/** The user's username */
 	private String username;
-	/** The token retrieved from the server*/
+	/** The token retrieved from the server */
 	private String token;
 	/** Remember the username and password.*/
 	private boolean remembered = false;
@@ -42,15 +43,17 @@ public class User implements Item {
 	private ArrayList<String> campaign_ids;
 	/** this user's incentives */
 	private Incentive incentive;
-	/** this user's id*/
+	/** this user's id */
 	public int id;
-	/** This is used with the {@link Incentive#LEADERBOARD leaderboard}.*/
+	/** This is used with the {@link Incentive#LEADERBOARD leaderboard}. */
 	public int score;
-	
-	/** The empty constructor creates a new, empty user and initializes 
-	 * variables.*/
+
+	/**
+	 * The empty constructor creates a new, empty user and initializes
+	 * variables.
+	 */
 	public User() {
-		//username = "";
+		// username = "";
 		token = "";
 		campaign_ids = new ArrayList<String>();
 	}// User
@@ -85,24 +88,24 @@ public class User implements Item {
 	/** gets the username */
 	public String getUsername() {
 		return username;
-	}//getUsername
-	
+	}// getUsername
+
 	public void setUsername(String username) {
 		this.username = username;
-	}//setUsername
-	
+	}// setUsername
+
 	public void setScore(int score) {
 		this.score = score;
-	}//setScore
-	
+	}// setScore
+
 	public void setId(int id) {
 		this.id = id;
-	}//setId
-	
-	/** Get the campaign ids for the campaigns this user participates in.*/
+	}// setId
+
+	/** Get the campaign ids for the campaigns this user participates in. */
 	public ArrayList<String> getCampaignIDs() {
 		return campaign_ids;
-	}//getCampaignIDs
+	}// getCampaignIDs
 
 	@Override
 	public int describeContents() {

@@ -68,12 +68,14 @@ public class Sense extends LocationActivity {
 	        if (resultCode == RESULT_OK) {
 	        	//this.imageUri = data.getData();
 	        	//uri is already set. Do nothing.
-	        	CheckBox hasTakenPhoto = (CheckBox) findViewById(R.id.chkbox_photo_complete);
-	        	hasTakenPhoto.setChecked(true);
-	        	validateForm();
-	        	TextView uploadComplete = (TextView) findViewById(R.id.upload_text);
-	        	uploadImage(this.imageUri);
-	        	uploadComplete.setText("Photo updated successfully!");
+	        	
+	        	//Upload the image to server
+	        	if(G.user.getUsername().equals("Anonymous")){
+	        		Toast.makeText(this, "Sorry. Image upload is not allowed for anonymous user.", 
+	        			       Toast.LENGTH_LONG).show();
+	        	}else{
+	        		uploadImage(this.imageUri);
+	        	}
 	        } else if (resultCode == RESULT_CANCELED) {
 	            // User canceled the image capture. Do nothing
 	        	this.imageUri = null;
@@ -181,7 +183,7 @@ public class Sense extends LocationActivity {
 	    // Create a media file name
 	    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 	    File mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-	        "IMG_"+ timeStamp + ".jpg");
+	        campaign.getName()+"_"+timeStamp + ".jpg");
 	    if (Constants.DEBUG) {
 	    	Log.d("Sense", "Image URI set to " + mediaFile.getName());
 	    }
@@ -364,6 +366,11 @@ public class Sense extends LocationActivity {
 		ImageResponseHandler imageUploadHandler = new ImageResponseHandler(this); 
 		new PostRequest(this, null, IMAGE, imageUploadHandler, true)
 				.execute(G.user.getUsername(),imagePath);
+// Add this code will cause problem. I find the way we are prompting the user to change location setting is annoying.
+// Maybe prompt the user when he presses Submit is better?		
+//		if(imageUploadHandler.getResult().equalsIgnoreCase("success")){
+//			validateForm();
+//		}
 	}
 
 	@Override

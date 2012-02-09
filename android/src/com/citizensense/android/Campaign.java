@@ -48,7 +48,10 @@ public class Campaign implements Item {
 	private Date startDate;
 	/** Date the campaign ends.*/
 	private Date endDate;
-    
+	
+	/** Task id.*/
+	private String taskId;
+	
 	/** This CREATOR is used to parcel this Object. */
 	public static final Parcelable.Creator<Campaign> CREATOR =
         new Parcelable.Creator<Campaign>() {
@@ -354,5 +357,14 @@ public class Campaign implements Item {
 	public String getItemName() {
 		return "campaign";
 	}//getItemName
+
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
+	}
+
+	public String getTaskId() {
+		return taskId;
+	}
+
 		
 }//Campaign
