@@ -5,12 +5,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Upload image</title>
+<title>Reset password success</title>
 </head>
 <body>
-	You have uploaded the following file.
-	<hr>
-	File Name : ${imageFileName}
-	<br> Content Type : ${imageContentType}
+	<h2>Reset password success!</h2>
 </body>
 </html>

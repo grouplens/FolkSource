@@ -17,5 +17,7 @@
 	</bag>
 	<property name="points" />
 	<property name="badges" />
+	<property name="findpwid" />
+	<property name="findpwtime" />
 </class>
 </hibernate-mapping>

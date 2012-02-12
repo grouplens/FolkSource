@@ -5,12 +5,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Upload image</title>
+<title>Password not match</title>
 </head>
 <body>
-	You have uploaded the following file.
-	<hr>
-	File Name : ${imageFileName}
-	<br> Content Type : ${imageContentType}
+	<h2>Password does not match!</h2>
 </body>
 </html>

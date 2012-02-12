@@ -18,7 +18,6 @@
 	<constant name="struts.convention.package.locators.basePackage"
 		value="org.citizensense" />
 	<constant name="struts.convention.result.path" value="/jsp/" />
-	<!--  constant name="struts.multipart.saveDir " value="d:/" /> for image upload-->
 
 	<package name="citizen-sense" extends="rest-default">
 		<!-- <result-types> <result-type name="exceptionResult" class="org.grouplens.bl.struts.result.ExceptionResult" 
@@ -60,6 +59,15 @@
 			<result name="register_success">/register_success.jsp</result>
 			<result name="register_fail">/register_fail.jsp</result>
 
+			<result name="send_email_success">/send_email_success.jsp</result>
+			<result name="send_email_fail">/send_email_fail.jsp</result>
+			<result name="email_not_exist">/email_not_exist.jsp</result>
+	
+	
+			<result name="password_not_match">/password_not_match.jsp</result>
+			<result name="findpwid_not_exist">/findpwid_not_exist.jsp</result>
+			<result name="findpw_link_expired">/findpw_link_expired.jsp</result>
+			<result name="reset_password_success">/reset_password_success.jsp</result>
 			<!-- The following results, excluding 'replay' and 'ambiguous', match 
 				the definitions in the GlobalResult enum. -->
 			<!-- <result name="ok" type="modelDrivenDto"> <param name="status">200</param> 

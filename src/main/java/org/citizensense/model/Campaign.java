@@ -7,6 +7,7 @@ public class Campaign {
 	private Long id;
 	private String title;
 	private String description;
+	private String location;
 	private Date start_date;
 	private Date end_date;
 	//private String times; //figure out if this is actually how we want to represent this
@@ -78,6 +79,12 @@ public class Campaign {
 	}
 	public void setTitle(String title) {
 		this.title = title;
+	}
+	public void setLocation(String location) {
+		this.location = location;
+	}
+	public String getLocation() {
+		return location;
 	}
 
 }

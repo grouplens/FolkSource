@@ -5,12 +5,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Upload image</title>
+<title>Findpwid link expired</title>
 </head>
 <body>
-	You have uploaded the following file.
-	<hr>
-	File Name : ${imageFileName}
-	<br> Content Type : ${imageContentType}
+	<h2>The link has expired!</h2>
 </body>
 </html>

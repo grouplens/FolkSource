@@ -14,7 +14,7 @@ public class SubmissionController implements ModelDriven<Object> {
 
 	private Collection<Submission> list;
 	private int id;
-	private Submission task = new Submission();
+	private Submission submission = new Submission();
 
 	/**
 	 * @param args
@@ -26,7 +26,7 @@ public class SubmissionController implements ModelDriven<Object> {
 
 	@Override
 	public Object getModel() {
-		return (list != null ? list : task);
+		return (list != null ? list : submission);
 	}
 
 	public HttpHeaders show() {
@@ -37,7 +37,7 @@ public class SubmissionController implements ModelDriven<Object> {
 		if (id != null)
 			for (Submission s : SubmissionService.getSubmissions()) {
 				if (s.getId() == Integer.parseInt(id))
-					this.task = s;
+					this.submission = s;
 			}
 		// SubmissionService.getSubmissions()..get(Integer.parseInt(id)-1);
 		this.id = Integer.parseInt(id);
@@ -53,7 +53,7 @@ public class SubmissionController implements ModelDriven<Object> {
 	}
 
 	public HttpHeaders create() {
-		// if(SubmissionService.save(task))
+//		 if(SubmissionService.save(submission))
 		return new DefaultHttpHeaders("create");
 	}
 

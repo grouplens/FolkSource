@@ -47,7 +47,7 @@ public class LoginController implements ModelDriven<User>{
 	public String create()// deal with login  /Login/user_id
 	{	
 		HttpServletResponse response = ServletActionContext.getResponse();
-		User u = UserService.getUser(user.getName());
+		User u = UserService.getUserByName(user.getName());
 		
 		if (u == null) {//fail
 			response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);

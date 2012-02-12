@@ -12,6 +12,7 @@
 	<property name="description" />
 	<property name="task_id" />
 	<property name="owner_id" />
+	<property name="location" />
 	<bag name="tasks" lazy="false">
 		<key column="camp_id" not-null="false"/>
 		<!-- <index column="id" base="1" />-->

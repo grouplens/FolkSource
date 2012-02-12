@@ -35,7 +35,7 @@ public class UserService {
 		
 	}
 
-	public static User findUser(int id) {
+	public static User getUserById(int id) {
 		List<User> users = getUsers();
 		User u = null;
 		for(User tmp : users) {
@@ -53,13 +53,29 @@ public class UserService {
 	
 
 	
-	public static User getUser(String name) {
+	public static User getUserByName(String name) {
 		Session session = HibernateUtil.getSession(true);
 		Query q = session.createQuery("from User where name=:username");
 		q.setParameter("username", name);
 		return (User) q.uniqueResult();
 	}
 	
+	
+	public static User getUserByEmail(String email) {
+		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		Query q = session.createQuery("from User where email=:email");
+		q.setParameter("email", email);
+		return (User) q.uniqueResult();
+	}
+	
+	public static User getUserByFindpwid(String findpwid) {
+		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
+		session.beginTransaction();
+		Query q = session.createQuery("from User where findpwid=:findpwid");
+		q.setParameter("findpwid", findpwid);
+		return (User) q.uniqueResult();
+	}
 	
 	/** User u should be the user stored in db,
 	 *  String password is a pw not hashed yet.*/

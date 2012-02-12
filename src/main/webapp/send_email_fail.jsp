@@ -5,12 +5,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Upload image</title>
+<title>Send email fail</title>
 </head>
 <body>
-	You have uploaded the following file.
-	<hr>
-	File Name : ${imageFileName}
-	<br> Content Type : ${imageContentType}
+	Failed to send email.
 </body>
 </html>

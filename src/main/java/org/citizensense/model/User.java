@@ -11,7 +11,12 @@ public class User {
     private String email;
 	private List<Incentive> tasks;
 	private int points;
-	private String badges;
+	private String badges;	
+	/** Used to construct the link to find user's password. 
+	 * findpwid is hashed value of a string: Id+findpwtime.*/
+	private String findpwid;
+	/** The time user reports forget password.*/
+	private String findpwtime;
 
 	public int getId() {
 		return Id;
@@ -60,6 +65,18 @@ public class User {
 	}
 	public String getEmail() {
 		return email;
+	}
+	public void setFindpwid(String findpwid) {
+		this.findpwid = findpwid;
+	}
+	public String getFindpwid() {
+		return findpwid;
+	}
+	public void setFindpwtime(String findpwtime) {
+		this.findpwtime = findpwtime;
+	}
+	public String getFindpwtime() {
+		return findpwtime;
 	}
 
 }

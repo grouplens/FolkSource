@@ -5,12 +5,14 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Upload image</title>
+<title>Forget password</title>
 </head>
 <body>
-	You have uploaded the following file.
-	<hr>
-	File Name : ${imageFileName}
-	<br> Content Type : ${imageContentType}
+<h2>Please type your email. We will send a message to find your password.</h2>
+
+<form action="email" method="POST">
+		Email:<input type="text" name="email"/></br>
+		<input type="submit" value="Submit" />
+</form>
 </body>
 </html>
