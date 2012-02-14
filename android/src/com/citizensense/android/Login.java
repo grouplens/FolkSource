@@ -73,7 +73,7 @@ public class Login extends Activity {
 			@Override
 			public void onClick(View v) {
 				G.user.setUsername("Anonymous");
-				CitizenSense.getUsername().setText("Anonymous");
+				CitizenSense.getUserNameText().setText("Anonymous");
 				((Activity)v.getContext()).finish();
 			}
 		});

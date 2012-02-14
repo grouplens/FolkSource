@@ -46,7 +46,7 @@ public class User implements Item {
 	/** this user's id */
 	public int id;
 	/** This is used with the {@link Incentive#LEADERBOARD leaderboard}. */
-	public int score;
+	public int points;
 
 	/**
 	 * The empty constructor creates a new, empty user and initializes
@@ -95,7 +95,7 @@ public class User implements Item {
 	}// setUsername
 
 	public void setScore(int score) {
-		this.score = score;
+		this.points = score;
 	}// setScore
 
 	public void setId(int id) {

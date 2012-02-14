@@ -121,6 +121,8 @@ public class CsDbAdapter {
 		if (Constants.DEBUG) {
 			Log.i(DB.TAG, insert);
 		}
+		
+		System.out.println(insert);
 		long rowId = database.insert(DB.CAMPAIGN_TABLE, null, vals);
 		if (rowId == -1){
 			Log.i(DB.TAG, "INSERT FAILED");

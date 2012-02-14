@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.citizensense.android.CitizenSense;
@@ -38,6 +39,8 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 	private String username;
 	/** Password */
 	private String password;
+	/** Points */
+	private String points;
 
 	/** Authentication type: LOGIN or REGISTER. */
 	public static int LOGIN = 2, REGISTER = 3;
@@ -63,6 +66,9 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 		}
 		StatusLine statusLine = response.getStatusLine();
 		status_code = statusLine.getStatusCode();
+		if (Constants.DEBUG) {
+			Log.d("Request", "Response Code: " + status_code);
+		}
 		if (type == LOGIN) {
 			if (status_code == WRONG_PASSWORD) {// HttpServletResponse.SC_EXPECTATION_FAILED
 				Toast.makeText(context,
@@ -78,12 +84,15 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 					if (header.getName().contains("Cookie")) {
 						this.setCookie(header.getValue());
 					}
+					if(header.getName().equalsIgnoreCase("points")){
+						this.setPoints(header.getValue());
+					}
 				}
 				G.user.setUsername(username);
-				G.user.setCookie(cookie);
-				CitizenSense.getUsername().setText(username);
-				if(G.user.isRemembered())
-					saveCredentials();
+				G.user.setScore(Integer.parseInt(this.getPoints()));
+				CitizenSense.getUserNameText().setText(username);
+				CitizenSense.getUserPointsText().setText(points);
+				saveCredentials();
 				((Activity) context).finish();
 			} else {
 				throw new HttpResponseException(statusLine.getStatusCode(),
@@ -102,9 +111,8 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 					}
 				}
 				G.user.setUsername(username);
-				CitizenSense.getUsername().setText(username);
-				if(G.user.isRemembered())
-					saveCredentials();
+				CitizenSense.getUserNameText().setText(username);
+				saveCredentials();
 				Intent in = new Intent();
 				((Activity) context).setResult(Constants.REGISTRATION_SUCCESS,
 						in);
@@ -165,6 +173,14 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 
 	public String getPassword() {
 		return password;
+	}
+
+	public void setPoints(String points) {
+		this.points = points;
+	}
+
+	public String getPoints() {
+		return points;
 	}
 
 }
