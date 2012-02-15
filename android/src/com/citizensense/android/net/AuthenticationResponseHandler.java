@@ -40,7 +40,7 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 	/** Password */
 	private String password;
 	/** Points */
-	private int points;
+	private String points;
 
 	/** Authentication type: LOGIN or REGISTER. */
 	public static int LOGIN = 2, REGISTER = 3;
@@ -86,12 +86,13 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 						this.setCookie(header.getValue());
 					}
 					if(header.getName().equalsIgnoreCase("points")){
-						System.out.println(header.getValue());
-						this.setPoints(Integer.parseInt(header.getValue()));
+						this.setPoints(header.getValue());
 					}
 				}
 				G.user.setUsername(username);
-				CitizenSense.getUsername().setText(username);
+				G.user.setScore(Integer.parseInt(this.getPoints()));
+				CitizenSense.getUserNameText().setText(username);
+				CitizenSense.getUserPointsText().setText(points);
 				saveCredentials();
 				((Activity) context).finish();
 			} else {
@@ -111,7 +112,7 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 					}
 				}
 				G.user.setUsername(username);
-				CitizenSense.getUsername().setText(username);
+				CitizenSense.getUserNameText().setText(username);
 				saveCredentials();
 				Intent in = new Intent();
 				((Activity) context).setResult(Constants.REGISTRATION_SUCCESS,
@@ -175,11 +176,11 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 		return password;
 	}
 
-	public void setPoints(int points) {
+	public void setPoints(String points) {
 		this.points = points;
 	}
 
-	public int getPoints() {
+	public String getPoints() {
 		return points;
 	}
 

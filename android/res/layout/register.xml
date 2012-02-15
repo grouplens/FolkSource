@@ -1,54 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent" >
-  <EditText 
-    android:id="@+id/reg_username"
-    android:hint="username"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:padding="5dp"
-    android:layout_margin="10dp"
-    android:layout_centerVertical="true" />
-  <EditText 
-    android:id="@+id/reg_password"
-    android:hint="password"
-    android:password="true"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:padding="5dp"
-    android:layout_margin="10dp"
-    android:layout_below="@id/reg_username" />
-    <EditText 
-    android:id="@+id/reg_password2"
-    android:hint="password"
-    android:password="true"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:padding="5dp"
-    android:layout_margin="10dp"
-    android:layout_below="@id/reg_password" />
-  <TextView 
-    android:id="@+id/title"
-    android:text="Create new account"
-    android:textStyle="bold"
-    android:textColor="#FFFFFF"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:padding="5dp"
-    android:layout_margin="10dp"
-    android:layout_above="@id/reg_username" />
-  <Button
-    android:id="@+id/reg_btn"
-    android:text="Register"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:paddingLeft="30dp"
-    android:paddingRight="30dp"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp"
-    android:layout_margin="10dp"
-    android:layout_below="@id/reg_password2"
-    android:layout_alignParentRight="true" />
+    android:layout_height="fill_parent" >
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:padding="5dp"
+        android:text="Create New Account"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/reg_email"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_margin="10dp"
+        android:hint="email"
+        android:padding="5dp" />
+
+    <EditText
+        android:id="@+id/reg_username"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/reg_email"
+        android:layout_margin="10dp"
+        android:hint="username"
+        android:padding="5dp" />
+
+    <EditText
+        android:id="@+id/reg_password"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/reg_username"
+        android:layout_margin="10dp"
+        android:hint="password"
+        android:padding="5dp"
+        android:password="true" />
+
+    <EditText
+        android:id="@+id/reg_password2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/reg_password"
+        android:layout_margin="10dp"
+        android:hint="confirm password"
+        android:padding="5dp"
+        android:password="true" />
+
+    <CheckBox
+        android:id="@+id/reg_rem_cb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/reg_password2"
+        android:layout_margin="10dp"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:text="Remember Me" />
+
+    <Button
+        android:id="@+id/reg_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/reg_password2"
+        android:layout_margin="10dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingTop="5dp"
+        android:text="Register" />
+
 </RelativeLayout>

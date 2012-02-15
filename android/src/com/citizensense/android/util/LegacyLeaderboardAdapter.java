@@ -47,7 +47,7 @@ public class LegacyLeaderboardAdapter extends ArrayAdapter<User> {
 		}
 		User user = leaderboard.get(position);
 		TextView text = (TextView) v.findViewById(R.id.user_stats);
-		text.setText((position + 1) + ". " + user.getUsername() + " points: " + user.score);
+		text.setText((position + 1) + ". " + user.getUsername() + " points: " + user.points);
 		return v;
 	}//getView
 

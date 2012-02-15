@@ -41,6 +41,8 @@
                   android:windowSoftInputMode="adjustPan" />
         <activity android:name=".CampaignPage"
                   android:label="CampaignPage" />
+        <activity android:name=".ForgetPassword"
+                  android:label="ForgetPassword" />
         <uses-library android:name="com.google.android.maps"></uses-library>
     </application>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"></uses-permission>

@@ -24,7 +24,9 @@ public class CitizenSense extends TabActivity implements OnClickListener {
 	/** Reference to the tab controller*/
 	static TabHost tabHost;
 	
-	static TextView username;
+	static TextView userNameText;
+	
+	static TextView userPointsText;
 	
 	/** Reference to the view inside the tabHost*/
 	View tabView;
@@ -34,16 +36,17 @@ public class CitizenSense extends TabActivity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        username = (TextView) findViewById(R.id.quick_profile_text);
+        userNameText = (TextView) findViewById(R.id.quick_profile_text);
+        userPointsText = (TextView) findViewById(R.id.quick_profile_pts);
         ((ImageView) findViewById(R.id.updates_menu_image)).setOnClickListener(this);
         ((ImageView) findViewById(R.id.updates_menu_menu)).setOnClickListener(this);
         ((TextView) findViewById(R.id.updates_menu_text)).setOnClickListener(this);
         ((ImageView) findViewById(R.id.quick_profile_image)).setOnClickListener(this);
         ((ImageView) findViewById(R.id.quick_profile_menu)).setOnClickListener(this);
         if (G.user.getUsername() != null) {
-        	username.setText(G.user.getUsername());
+        	userNameText.setText(G.user.getUsername());
         }
-        username.setOnClickListener(this);
+        userNameText.setOnClickListener(this);
         ((TextView) findViewById(R.id.quick_profile_pts)).setOnClickListener(this);
         
         tabHost = getTabHost();
@@ -154,12 +157,12 @@ public class CitizenSense extends TabActivity implements OnClickListener {
 		
 	}//onClick
 	
-	public static TextView getUsername() {
-		return username;
+	public static TextView getUserNameText() {
+		return userNameText;
 	}
-
-	public static void setUsername(TextView username) {
-		CitizenSense.username = username;
+	
+	public static TextView getUserPointsText() {
+		return userPointsText;
 	}
 	
 }//CitizenSense

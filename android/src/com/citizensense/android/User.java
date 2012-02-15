@@ -16,17 +16,20 @@ import com.citizensense.android.net.AuthenticationResponseHandler;
 import com.citizensense.android.net.PostRequest;
 
 /**
- * This class defines the logged in user. Not sure yet what to do with
- * anonymous users. Login credentials should be received from the server and
- * handled safely, similar to how Cyclopath works - with tokens, etc.
+ * This class defines the logged in user. Not sure yet what to do with anonymous
+ * users. Login credentials should be received from the server and handled
+ * safely, similar to how Cyclopath works - with tokens, etc.
+ * 
  * @author Phil Brown
  * @author Renji Yu
  */
 public class User implements Item {
-	/** The user's username*/
+	/** The user's username */
 	private String username;
-	/** The token retrieved from the server*/
+	/** The token retrieved from the server */
 	private String token;
+	/** Remember the username and password.*/
+	private boolean remembered = false;
 
 	/** Cookie get from server after successfully login or register */
 	private String cookie;
@@ -40,15 +43,17 @@ public class User implements Item {
 	private ArrayList<String> campaign_ids;
 	/** this user's incentives */
 	private Incentive incentive;
-	/** this user's id*/
+	/** this user's id */
 	public int id;
-	/** This is used with the {@link Incentive#LEADERBOARD leaderboard}.*/
-	public int score;
-	
-	/** The empty constructor creates a new, empty user and initializes 
-	 * variables.*/
+	/** This is used with the {@link Incentive#LEADERBOARD leaderboard}. */
+	public int points;
+
+	/**
+	 * The empty constructor creates a new, empty user and initializes
+	 * variables.
+	 */
 	public User() {
-		//username = "";
+		// username = "";
 		token = "";
 		campaign_ids = new ArrayList<String>();
 	}// User
@@ -70,37 +75,37 @@ public class User implements Item {
 	/**
 	 * Register a new account for the user.
 	 */
-	public void register(Context context, String username, String password) {
+	public void register(Context context, String username, String password, String email) {
 		campaign_ids.add("1");
 		campaign_ids.add("2");
 
 		AuthenticationResponseHandler registerHandler = new AuthenticationResponseHandler(
 				context,REGISTER,username,password);
 		new PostRequest(context, null, REGISTER, registerHandler, true)
-				.execute(username, password);
+				.execute(username, password, email);
 	}// register
 
 	/** gets the username */
 	public String getUsername() {
 		return username;
-	}//getUsername
-	
+	}// getUsername
+
 	public void setUsername(String username) {
 		this.username = username;
-	}//setUsername
-	
+	}// setUsername
+
 	public void setScore(int score) {
-		this.score = score;
-	}//setScore
-	
+		this.points = score;
+	}// setScore
+
 	public void setId(int id) {
 		this.id = id;
-	}//setId
-	
-	/** Get the campaign ids for the campaigns this user participates in.*/
+	}// setId
+
+	/** Get the campaign ids for the campaigns this user participates in. */
 	public ArrayList<String> getCampaignIDs() {
 		return campaign_ids;
-	}//getCampaignIDs
+	}// getCampaignIDs
 
 	@Override
 	public int describeContents() {
@@ -111,7 +116,7 @@ public class User implements Item {
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -123,13 +128,12 @@ public class User implements Item {
 	@Override
 	public void createFromXML(Document document) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
 
 	@Override
 	public void createFromXML(String string) {
-		
+
 	}
 
 	@Override
@@ -141,20 +145,28 @@ public class User implements Item {
 	@Override
 	public void createFromJSON(JSONObject object) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public String getItemName() {
 		return "user";
-	}//getItemName
+	}// getItemName
 
 	public void setCookie(String cookie) {
 		this.cookie = cookie;
-	}//setCookie
+	}
 
 	public String getCookie() {
 		return cookie;
-	}//getCookie
+	}
+
+	public void setRemembered(boolean remembered) {
+		this.remembered = remembered;
+	}
+
+	public boolean isRemembered() {
+		return remembered;
+	}
 
 }// User
