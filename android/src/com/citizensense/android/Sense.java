@@ -409,5 +409,4 @@ public class Sense extends LocationActivity {
 	@Override
 	public void onGpsStopped() {}
 	
-	
 }//Sense
