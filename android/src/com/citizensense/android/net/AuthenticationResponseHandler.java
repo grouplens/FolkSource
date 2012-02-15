@@ -39,6 +39,8 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 	private String username;
 	/** Password */
 	private String password;
+	/** Points */
+	private int points;
 
 	/** Authentication type: LOGIN or REGISTER. */
 	public static int LOGIN = 2, REGISTER = 3;
@@ -77,10 +79,15 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 						"No such user name. Create a new account!",
 						Toast.LENGTH_LONG).show();
 			} else if (status_code == LOGIN_SUCCESS) {// HttpServletResponse.SC_OK
+				System.out.println("-------------->test");
 				Header[] headers = response.getAllHeaders();
 				for (Header header : headers) {
 					if (header.getName().contains("Cookie")) {
 						this.setCookie(header.getValue());
+					}
+					if(header.getName().equalsIgnoreCase("points")){
+						System.out.println(header.getValue());
+						this.setPoints(Integer.parseInt(header.getValue()));
 					}
 				}
 				G.user.setUsername(username);
@@ -166,6 +173,14 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 
 	public String getPassword() {
 		return password;
+	}
+
+	public void setPoints(int points) {
+		this.points = points;
+	}
+
+	public int getPoints() {
+		return points;
 	}
 
 }

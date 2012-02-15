@@ -4,6 +4,8 @@
 
 package com.citizensense.android.parsers;
 
+import java.util.List;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -20,6 +22,8 @@ public class FormParser extends XMLParser {
 	private Form form;
 	/** A reusable {@link Question} used during parsing */
 	private Question question;
+	
+	private List<Question> questions;
 	
 	/** Constructs a new FormParser */
 	public FormParser() {
@@ -48,7 +52,7 @@ public class FormParser extends XMLParser {
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
 		super.endElement(uri, localName, qName);
-		if (localName.equalsIgnoreCase("org.citizensense.model.Question")) {
+		if (localName.equalsIgnoreCase("question")) {
 			this.form.addQuestion(this.question);
 			this.question = null;
 		}

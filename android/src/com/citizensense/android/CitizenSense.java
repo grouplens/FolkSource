@@ -71,6 +71,7 @@ public class CitizenSense extends TabActivity implements OnClickListener {
     @Override
     public void onResume() {
     	super.onResume();
+    	G.user.setUsername("test");
     	if (G.user.getUsername() == null) {
     		Intent intent = new Intent(this, Login.class);
     		startActivity(intent);

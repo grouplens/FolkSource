@@ -59,6 +59,7 @@ public class CampaignListAdapter extends ArrayAdapter<Campaign> {
 			
 			TextView locs = (TextView) v.findViewById(R.id.campaign_location);
 			String locString = "";
+			
 			String[] loc = campaign.getLocations();
 			for (int i = 0; i < loc.length; i++) {
 				locString += loc[i];

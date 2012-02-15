@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.citizensense.android.conf.Constants;
 import com.citizensense.android.net.PostRequest;
 import com.citizensense.android.net.Request;
+import com.citizensense.android.net.SubmissionResponseHandler;
 
 /**
  * Complete a task, or "Sense" data
@@ -346,9 +347,8 @@ public class Sense extends LocationActivity {
 			this.requestLocation();
 		}
 		else {
-			new PostRequest(this, new Submission(buildXML()), Request.XML, null, true).execute();
-			Toast.makeText(this, "Task Complete!", Toast.LENGTH_SHORT).show();
-			this.finish();
+			SubmissionResponseHandler submissionHandler = new SubmissionResponseHandler(this);
+			new PostRequest(this, new Submission(buildXML()), Request.XML,submissionHandler , true).execute();
 		}
 	}//submit
 	

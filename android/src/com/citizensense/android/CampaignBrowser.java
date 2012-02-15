@@ -75,21 +75,7 @@ public class CampaignBrowser extends CampaignExplorer {
 						}
 					}//handleNewCampaign
 				}));
-				
-				//The below will also parse the campaigns in campaign_3.xml using the new format.
-				/*
-				stream = getAssets().open("samples/campaign_3.xml");
-				Xml.parse(stream, Xml.Encoding.UTF_8, new CampaignListParser(new CampaignListParser.Callback() {
-					
-					@Override
-					public void invoke(ArrayList<Campaign> campaigns) {
-						Toast.makeText(CampaignBrowser.this, "SUCCESS", Toast.LENGTH_SHORT).show();
-						for (Campaign c : campaigns) {
-							handleNewCampaign(c);
-						}
-					}
-				}));
-				*/
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (SAXException e) {
@@ -176,6 +162,8 @@ public class CampaignBrowser extends CampaignExplorer {
 	 */
 	public void handleNewCampaign(final Campaign c) {
 		if (!server_campaigns.contains(c)) {
+			server_campaigns.add(c);	
+			
 			XMLResponseHandler handler = new XMLResponseHandler();
 			handler.setCallback(new XMLResponseHandler.StringCallback() {
 				
@@ -195,7 +183,8 @@ public class CampaignBrowser extends CampaignExplorer {
 					}
 				}
 			});
-			new GetRequest(this, Task.class, c.getId(), handler, true).execute();
+			//new GetRequest(this, Task.class, c.getTaskId(), handler, true).execute();
+			new GetRequest(this, Task.class, "1", handler, true).execute();
 		}
 	}//handleNewCampaign
 	
@@ -207,51 +196,13 @@ public class CampaignBrowser extends CampaignExplorer {
 	public void handleNewTask(final Campaign c, final Task t, String xml) {
 		if (c == null) {
 			Log.d("DEBUG", "Campaign is null!");
+			return;
 		}
-		if (c.getTask() == null) {
+		else if (t == null) {
 			Log.d("DEBUG", "Task is null!");
-		}
-		if (c.getTask().getForm() == null) {
-			Log.d("DEBUG", "Form is null!");
+			return;
 		}
 		c.setTask(t);
-		server_campaigns.add(c);
-		/*
-		XMLResponseHandler handler = new XMLResponseHandler();
-		handler.setCallback(new XMLResponseHandler.StringCallback() {
-			
-			@Override
-			public void invoke(String xml) {
-				try {
-					Xml.parse(xml, new FormParser(new FormParser.Callback() {
-
-						@Override
-						public void invoke(Form form) {
-							handleNewForm(c, t, form);
-						}
-						
-					}));
-				} catch (SAXException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		new GetRequest(this, Task.class, c.getId(), handler, true).execute();
-		
-		try {
-			InputStream stream = new ByteArrayInputStream(xml.getBytes());//getAssets().open("samples/form_1.xml");
-			Xml.parse(stream, Xml.Encoding.UTF_8, new FormParser(new FormParser.Callback() {
-				
-				@Override
-				public void invoke(Form form) {
-					handleNewForm(c, t, form);
-				}
-			}));
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		}*/
 	}//handleNewTask
 	
 	/**

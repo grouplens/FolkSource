@@ -40,6 +40,8 @@ public class Question implements Parcelable {
 	 * @deprecated This is not used anywhere other than the parser. */
 	public int id;
 	
+	private boolean required;
+	
 
 	/** This CREATOR is used to parcel this Object. */
 	public static final Parcelable.Creator<Question> CREATOR =
@@ -197,5 +199,13 @@ public class Question implements Parcelable {
 	public void setAnswers(String[] answers) {
 		this.answers = answers;
 	}//setAnswer
+
+	public void setRequired(boolean required) {
+		this.required = required;
+	}
+
+	public boolean isRequired() {
+		return required;
+	}
 	
 }//Question

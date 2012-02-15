@@ -101,6 +101,9 @@ public class CsDbAdapter {
 		selection = locations;
 		insert += "\n  " + DB.LOCATIONS + "=" + selection;
 		vals.put(DB.LOCATIONS, selection);
+		//FIXME: we are not getting "times" from server 
+		c.setTimes("07:00-09:30|14:30-16:30".split("\\|"));
+		
 		temp = c.getTimes();
 		String times = "";
 		for (int i = 0; i<temp.length; i++) {
@@ -121,8 +124,11 @@ public class CsDbAdapter {
 		if (Constants.DEBUG) {
 			Log.i(DB.TAG, insert);
 		}
+//		System.out.println(insert);
+		
 		long rowId = database.insert(DB.CAMPAIGN_TABLE, null, vals);
 		if (rowId == -1){
+			System.out.println("--------->campaign table error");
 			Log.i(DB.TAG, "INSERT FAILED");
 			Toast.makeText(context, "You already downloaded this campaign.", Toast.LENGTH_SHORT).show();
 			return rowId;
@@ -133,12 +139,16 @@ public class CsDbAdapter {
 		selection = c.getId();
 		insert += "\n  " + DB.ID + "=" + selection;
 		vals.put(DB.ID, selection);
+		//FIXME: we are not getting task name from server
+		c.getTask().setName("task name for debug");
 		selection = c.getTask().getName();
 		insert += "\n  " + DB.NAME + "=" + selection;
 		vals.put(DB.NAME, selection);
 		selection = c.getTask().getInstructions();
 		insert += "\n  " + DB.INSTRUCTIONS + "=" + selection;
 		vals.put(DB.INSTRUCTIONS, selection);
+		//FIMXE: we are not getting requirements from server
+		c.getTask().setRequirements("gps|location".split("\\|"));
 		temp = c.getTask().getRequirements();
 		String requirements = "";
 		for(int i = 0; i<temp.length; i++) {
@@ -156,6 +166,7 @@ public class CsDbAdapter {
 		//TODO insert qualifications
 		rowId = database.insert(DB.TASK_TABLE, null, vals);
 		if (rowId == -1){
+			System.out.println("--------->task table error");
 			Log.i(DB.TAG, "INSERT FAILED");
 			Toast.makeText(context, "You already downloaded this campaign.", Toast.LENGTH_SHORT).show();
 			return rowId;
@@ -203,6 +214,7 @@ public class CsDbAdapter {
 			}
 			rowId = database.insert(DB.QUESTIONS_TABLE, null, vals);
 			if (rowId == -1) {
+				System.out.println("--------->question table error");
 				Log.i(DB.TAG, "INSERT FAILED");
 				Toast.makeText(context, "You already downloaded this campaign.", Toast.LENGTH_SHORT).show();
 				return rowId;
@@ -299,7 +311,8 @@ public class CsDbAdapter {
 										new String[]{DB.ID,
 													 DB.NAME,
 													 DB.INSTRUCTIONS,
-													 DB.REQUIREMENTS}, 
+													 DB.REQUIREMENTS
+													 }, 
 													 DB.ID + "=\"" + id + "\"", 
 													 null, null, null, null);
 			if (cur == null) {
@@ -318,7 +331,8 @@ public class CsDbAdapter {
 				             new String[]{DB.ID,
 				                          DB.NAME,
 				                          DB.INSTRUCTIONS,
-				                          DB.REQUIREMENTS}, 
+				                          DB.REQUIREMENTS
+				                          }, 
 				                          DB.ID + "=\"" + id + "\"", 
 				                          null, null, null, null);
 			if (cur == null) {
