@@ -61,7 +61,7 @@ public class Campaign implements Item {
 		public Campaign createFromParcel(Parcel in) {
 			return new Campaign(in);
 		}//createFromParcel
-		
+
 		/**
 		 * Creates a new array of Adds
 		 */

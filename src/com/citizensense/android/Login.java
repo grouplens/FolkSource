@@ -73,7 +73,7 @@ public class Login extends Activity {
 			@Override
 			public void onClick(View v) {
 				G.user.setUsername("Anonymous");
-				CitizenSense.getUsername().setText("Anonymous");
+				CitizenSense.getUserNameText().setText("Anonymous");
 				((Activity)v.getContext()).finish();
 			}
 		});
@@ -90,7 +90,7 @@ public class Login extends Activity {
 		forget_password.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(v.getContext(), ForgetPassword.class);
+				Intent intent = new Intent(v.getContext(),ForgetPassword.class);
 				startActivity(intent);
 			}
 		});

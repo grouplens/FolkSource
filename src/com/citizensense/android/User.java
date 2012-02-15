@@ -46,7 +46,7 @@ public class User implements Item {
 	/** this user's id */
 	public int id;
 	/** This is used with the {@link Incentive#LEADERBOARD leaderboard}. */
-	public int score;
+	public int points;
 
 	/**
 	 * The empty constructor creates a new, empty user and initializes
@@ -95,7 +95,7 @@ public class User implements Item {
 	}// setUsername
 
 	public void setScore(int score) {
-		this.score = score;
+		this.points = score;
 	}// setScore
 
 	public void setId(int id) {
@@ -116,7 +116,7 @@ public class User implements Item {
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -128,13 +128,12 @@ public class User implements Item {
 	@Override
 	public void createFromXML(Document document) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
 
 	@Override
 	public void createFromXML(String string) {
-		
+
 	}
 
 	@Override
@@ -146,28 +145,28 @@ public class User implements Item {
 	@Override
 	public void createFromJSON(JSONObject object) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public String getItemName() {
 		return "user";
-	}//getItemName
+	}// getItemName
 
 	public void setCookie(String cookie) {
 		this.cookie = cookie;
-	}//setCookie
+	}
 
 	public String getCookie() {
 		return cookie;
-	}//getCookie
+	}
 
 	public void setRemembered(boolean remembered) {
 		this.remembered = remembered;
-	}//setRemembered
+	}
 
 	public boolean isRemembered() {
 		return remembered;
-	}//isRemembered
+	}
 
 }// User

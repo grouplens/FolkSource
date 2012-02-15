@@ -41,6 +41,7 @@ import com.citizensense.android.util.Base64;
 
 /**
  * HTTP Request
+ * 
  * @author Phil Brown
  * @author Renji Yu
  */
@@ -67,79 +68,101 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 	private boolean showPopup;
 	/** Used for creating a dialog. */
 	private Context context;
-	
-	/** Request Type*/
+
+	/** Request Type */
 	public static final int GET = 0, POST = 1;
 	/** Format Type */
-	public static final int XML = 0, 
-	                        JSON = 1, 
-	                        LOGIN = 2, 
-	                        REGISTER = 3,
-	                        IMAGE = 4;
+	public static final int XML = 0, JSON = 1, LOGIN = 2, REGISTER = 3,
+			IMAGE = 4;
 	/** The root URL of the server. */
-	public static final String BASE_URL = "http://ugly.cs.umn.edu:8080";
-	
+	 //public static final String BASE_URL = "http://ugly.cs.umn.edu:8080";
+	public static final String BASE_URL = "http://192.168.0.162:9080";
 	/**
 	 * Create a GET Request
-	 * @param context used to access the application UI
-	 * @param itemType the type of item to get
-	 * @param id the id of the item to get
-	 * @param handler processes the data after it is received
+	 * 
+	 * @param context
+	 *            used to access the application UI
+	 * @param itemType
+	 *            the type of item to get
+	 * @param id
+	 *            the id of the item to get
+	 * @param handler
+	 *            processes the data after it is received
 	 */
-	private Request(Context context, Class<? extends Item> itemType, String id, 
-			          ResponseHandler<?> handler, boolean showPopup) {
+	private Request(Context context, Class<? extends Item> itemType, String id,
+			ResponseHandler<?> handler, boolean showPopup) {
 		this(context, handler, showPopup);
 		this.requestType = GET;
-		if (!(handler instanceof JSONResponseHandler) 
-		   && !(handler instanceof XMLResponseHandler)) {
-			throw new IllegalArgumentException("Invalid handler." +
-					"Must be JSONResponseHandler or XMLResponseHandler");
+		if (!(handler instanceof JSONResponseHandler)
+				&& !(handler instanceof XMLResponseHandler)) {
+			throw new IllegalArgumentException("Invalid handler."
+					+ "Must be JSONResponseHandler or XMLResponseHandler");
 		}
-		/* This assumes that the URL item string will always be equal to the 
-		 * lowercase Item name. */
+		/*
+		 * This assumes that the URL item string will always be equal to the
+		 * lowercase Item name.
+		 */
 		String[] pkgs = (itemType.getName()).split("\\.");
 		String s = pkgs[pkgs.length - 1].toLowerCase();
 		url += (id == null ? s : s + "/" + id);
-	}//Request
-	
+	}// Request
+
 	/**
 	 * Create a GET Request
-	 * @param context used to access the application UI
-	 * @param itemType the type of item to get
-	 * @param id the id of the item to get
-	 * @param handler processes the data after it is received
+	 * 
+	 * @param context
+	 *            used to access the application UI
+	 * @param itemType
+	 *            the type of item to get
+	 * @param id
+	 *            the id of the item to get
+	 * @param handler
+	 *            processes the data after it is received
 	 */
-	protected Request(Context context, Class<? extends Item> itemType, String id, 
-	          JSONResponseHandler handler, boolean showPopup) {
-		this(context, itemType, id, (ResponseHandler<JSONArray>) handler, showPopup);
+	protected Request(Context context, Class<? extends Item> itemType,
+			String id, JSONResponseHandler handler, boolean showPopup) {
+		this(context, itemType, id, (ResponseHandler<JSONArray>) handler,
+				showPopup);
 		url += ".json";
-	}//Request
-	
+	}// Request
+
 	/**
 	 * Create a GET Request
-	 * @param context used to access the application UI
-	 * @param itemType the type of item to get
-	 * @param id the id of the item to get
-	 * @param handler processes the data after it is received
+	 * 
+	 * @param context
+	 *            used to access the application UI
+	 * @param itemType
+	 *            the type of item to get
+	 * @param id
+	 *            the id of the item to get
+	 * @param handler
+	 *            processes the data after it is received
 	 */
-	protected Request(Context context, Class<? extends Item> itemType, String id, 
-	          XMLResponseHandler handler, boolean showPopup) {
-		this(context, itemType, id, (ResponseHandler<Document>) handler, showPopup);
+	protected Request(Context context, Class<? extends Item> itemType,
+			String id, XMLResponseHandler handler, boolean showPopup) {
+		this(context, itemType, id, (ResponseHandler<Document>) handler,
+				showPopup);
 		url += ".xml";
-	}//Request
-	
+	}// Request
+
 	/**
 	 * Create a POST Request
-	 * @param context used for updating the UI
-	 * @param data the item to post. This must be a valid {@link Item}.
-	 * @param format the format of the item to post. This must be either
-	 * {@link #JSON}, {@link #XML}, or {@code null}. null will be treated 
-	 * as {@link #XML}.
-	 * @param handler where the return String is handled.
-	 * @param showPopup true to display a dialog during HTTP transaction.
+	 * 
+	 * @param context
+	 *            used for updating the UI
+	 * @param data
+	 *            the item to post. This must be a valid {@link Item}.
+	 * @param format
+	 *            the format of the item to post. This must be either
+	 *            {@link #JSON}, {@link #XML}, {@code null}, Login or Register.
+	 *            null will be treated as {@link #XML}.
+	 * @param handler
+	 *            where the return String is handled.
+	 * @param showPopup
+	 *            true to display a dialog during HTTP transaction.
 	 */
-	protected Request(Context context, Item data, int format, 
-			          BasicResponseHandler handler, boolean showPopup) {
+	protected Request(Context context, Item data, int format,
+			BasicResponseHandler handler, boolean showPopup) {
 		this(context, handler, showPopup);
 		this.requestType = POST;
 		this.data = data;
@@ -149,38 +172,37 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 		}
 		if (format == JSON) {
 			url += ".json";
-		}
-		else if (format == XML) {
+		} else if (format == XML) {
 			url += ".xml";
-		} 
-		else if (format == LOGIN) {
+		} else if (format == LOGIN) {
 			url += "login";
-		} 
-		else if (format == REGISTER) {
+		} else if (format == REGISTER) {
 			url += "user";
-		} 
-		else if (format == IMAGE) {
+		} else if (format == IMAGE) {
 			url += "image";
-		} 
-		else {
+		} else {
 			throw new IllegalArgumentException("Invalid format: " + format
-					+ ". Must be JSON, XML, LOGIN, REGISTER, IMAGE or null");
+					+ ". Must be JSON, XML, or null");
 		}
-	}//Request
-	
+	}// Request
+
 	/**
-	 * Generic Constructor for all GET and POST Requests. 
-	 * @param context context used for updating the UI
-	 * @param handler where the return String is handled.
-	 * @param showPopup true to display a dialog during HTTP transaction.
+	 * Generic Constructor for all GET and POST Requests.
+	 * 
+	 * @param context
+	 *            context used for updating the UI
+	 * @param handler
+	 *            where the return String is handled.
+	 * @param showPopup
+	 *            true to display a dialog during HTTP transaction.
 	 */
-	private Request(Context context, ResponseHandler<?> handler, 
-			        boolean showPopup) {
+	private Request(Context context, ResponseHandler<?> handler,
+			boolean showPopup) {
 		this.showPopup = showPopup;
 		this.url = BASE_URL + "/csense/";
 		this.context = context;
 		this.handler = handler;
-	}//Request
+	}// Request
 
 	/** Creates and shows the dialog */
 	@Override
@@ -194,24 +216,21 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 				dialog.setMessage("Retrieving...");
 			} else if (requestType == POST) {
 				if (inputFormat == LOGIN) {
-					dialog.setMessage("Signing In...");
-				} 
-				else if (inputFormat == REGISTER) {
-					dialog.setMessage("Registering...");
+					dialog.setMessage("Logining...");
+				} else if (inputFormat == REGISTER) {
+					dialog.setMessage("Reigstering...");
 
-				} 
-				else if (inputFormat == IMAGE) {
+				} else if (inputFormat == IMAGE) {
 					dialog.setMessage("Uploading...");
-				} 
-				else {
+				} else {
 					dialog.setMessage("Sending...");
 				}
 			}
 			dialog.setCancelable(false);
 			dialog.show();
 		}
-	}//onPreExecute
-	
+	}// onPreExecute
+
 	/** Handles the HTTP GET or POST in a non-UI Thread. */
 	@Override
 	protected HttpResponse doInBackground(String... params) {
@@ -221,14 +240,13 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 			try {
 				return client.execute(get);
 			} catch (ClientProtocolException e) {
-				//Error communicating with the server
+				// Error communicating with the server
 				e.printStackTrace();
 			} catch (IOException e) {
-				//Sending/Receiving error
+				// Sending/Receiving error
 				e.printStackTrace();
 			}
-		}
-		else {//POST
+		} else {// POST
 			HttpPost post = new HttpPost(url);
 			try {
 				if (inputFormat == IMAGE) { // UPLOAD IMAGE
@@ -248,20 +266,15 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 					pairs.add(new BasicNameValuePair("imageString", imageString));
 					post.setEntity(new UrlEncodedFormEntity(pairs));
 					
-				} 
-				else if (inputFormat == LOGIN || inputFormat == REGISTER) {
+				} else if (inputFormat == LOGIN || inputFormat == REGISTER) { // LOGIN,
+					// REGISTER
 					List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-					if (params.length < 2) {
-						return null;
-					}
 					pairs.add(new BasicNameValuePair("name", params[0]));
 					pairs.add(new BasicNameValuePair("password", params[1]));
-					if (inputFormat == REGISTER) {
+					if (inputFormat == REGISTER)
 						pairs.add(new BasicNameValuePair("email", params[2]));
-					}
 					post.setEntity(new UrlEncodedFormEntity(pairs));
-				} 
-				else {
+				} else {
 					StringEntity entity;
 					if (this.inputFormat == JSON) {
 						entity = new StringEntity(data.buildJSON());
@@ -276,21 +289,22 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 							"application/soap+xml;charset=UTF-8");
 					post.setEntity(entity);
 				}
+
 				return client.execute(post);
-			} catch(UnsupportedEncodingException e) {
-				//unable to encode data into a StringEntity.
+			} catch (UnsupportedEncodingException e) {
+				// unable to encode data into a StringEntity.
 				e.printStackTrace();
 			} catch (ClientProtocolException e) {
-				//Error communicating with the server
+				// Error communicating with the server
 				e.printStackTrace();
 			} catch (IOException e) {
-				//Sending/Receiving error
+				// Sending/Receiving error
 				e.printStackTrace();
 			}
 		}
 		return null;
-	}//doInBackground
-	
+	}// doInBackground
+
 	/**
 	 * Returns the HttpResponse to the handler and closes the dialog
 	 */
@@ -302,14 +316,14 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 		try {
 			handler.handleResponse(response);
 		} catch (NullPointerException e) {
-			//response returned null
+			// response returned null
 			e.printStackTrace();
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-	}//onPostExecute
 
-}//Request
+	}// onPostExecute
+
+}// Request
