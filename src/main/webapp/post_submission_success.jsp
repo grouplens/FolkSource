@@ -5,9 +5,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Upload image</title>
+<title>Submission post</title>
 </head>
 <body>
-Image upload success!
+submission post success!
 </body>
 </html>

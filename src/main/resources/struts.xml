@@ -68,6 +68,12 @@
 			<result name="findpwid_not_exist">/findpwid_not_exist.jsp</result>
 			<result name="findpw_link_expired">/findpw_link_expired.jsp</result>
 			<result name="reset_password_success">/reset_password_success.jsp</result>
+			
+			<result name="image_upload_success">/image_upload_success.jsp</result>
+			<result name="image_upload_fail">/image_upload_fail.jsp</result>
+			
+			<result name="post_submission_success">/post_submission_success.jsp</result>
+			<result name="post_submission_fail">/post_submission_fail.jsp</result>
 			<!-- The following results, excluding 'replay' and 'ambiguous', match 
 				the definitions in the GlobalResult enum. -->
 			<!-- <result name="ok" type="modelDrivenDto"> <param name="status">200</param> 

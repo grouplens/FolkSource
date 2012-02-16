@@ -8,6 +8,6 @@
 <title>Upload image</title>
 </head>
 <body>
-Image upload success!
+Image upload fail.
 </body>
 </html>
