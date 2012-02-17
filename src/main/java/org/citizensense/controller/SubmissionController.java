@@ -34,7 +34,7 @@ public class SubmissionController implements ModelDriven<Object> {
 	}
 
 	public void setId(String id) {
-		if (id != null)
+		if (	id != null)
 			for (Submission s : SubmissionService.getSubmissions()) {
 				if (s.getId() == Integer.parseInt(id))
 					this.submission = s;
@@ -53,7 +53,7 @@ public class SubmissionController implements ModelDriven<Object> {
 	}
 
 	public HttpHeaders create() {
-//		 if(SubmissionService.save(submission))
+		SubmissionService.save(submission);
 		return new DefaultHttpHeaders("create");
 	}
 
