@@ -88,6 +88,9 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 					if(header.getName().equalsIgnoreCase("points")){
 						this.setPoints(header.getValue());
 					}
+					if(header.getName().equalsIgnoreCase("uid")) {
+						G.user.setId(Integer.parseInt(header.getValue()));
+					}
 				}
 				G.user.setUsername(username);
 				G.user.setScore(Integer.parseInt(this.getPoints()));
