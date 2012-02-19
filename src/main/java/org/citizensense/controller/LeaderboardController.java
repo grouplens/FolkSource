@@ -3,7 +3,6 @@ package org.citizensense.controller;
 
 import java.util.Collection;
 
-import org.citizensense.model.Incentive;
 import org.citizensense.model.LeaderboardEntry;
 import org.citizensense.util.*;
 
