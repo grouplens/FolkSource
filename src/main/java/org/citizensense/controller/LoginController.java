@@ -60,6 +60,8 @@ public class LoginController implements ModelDriven<User>{
 //			else
 //				store user in session
 			response.setStatus(HttpServletResponse.SC_OK);
+			response.addIntHeader("points", u.getPoints());
+			response.addIntHeader("uid", u.getId());
 			return "login_success";
 		} else {
 			// bad password
