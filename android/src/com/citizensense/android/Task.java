@@ -51,6 +51,7 @@ public class Task implements Item {
 		this.name = in.readString();
 		this.requirements = in.createStringArray();
 		this.form = in.readParcelable(Form.class.getClassLoader());
+		this.id = in.readString();
 	}//Task
 	
 	/**
@@ -83,6 +84,7 @@ public class Task implements Item {
 		out.writeString(this.name);
 		out.writeStringArray(this.requirements);
 		out.writeParcelable(this.form, 0);
+		out.writeString(this.id);
 	}//writeToParcel
 	
 	public String getInstructions() {

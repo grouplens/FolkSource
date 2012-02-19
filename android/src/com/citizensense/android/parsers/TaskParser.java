@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import android.util.Log;
+
 import com.citizensense.android.Form;
 import com.citizensense.android.Question;
 import com.citizensense.android.Task;

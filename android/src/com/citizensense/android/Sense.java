@@ -379,7 +379,7 @@ public class Sense extends LocationActivity {
 	public String buildXML() {
 		StringBuilder submission = new StringBuilder();
 		submission.append("<org.citizensense.model.Submission>");
-		submission.append("<task_id>" + this.campaign.getId() + "</task_id>");
+		submission.append("<task_id>" + this.campaign.getTaskId() + "</task_id>");
 		submission.append("<gps_location>" + this.location.getLatitude() + "|"
 				+ this.location.getLongitude() + "</gps_location>");
 		submission.append("<user_id>" + G.user.id + "</user_id>");
@@ -407,7 +407,7 @@ public class Sense extends LocationActivity {
 				submission.append("<type>" + q.getType() + "</type>");
 				submission.append("<q_id>" + this.campaign.getId() + "</q_id>");
 			}
-			submission.append("<sub_id>NaN</sub_id>");
+			submission.append("<sub_id>-1</sub_id>"); //gets reset on the server depending on the ID of this submission
 			submission.append("</org.citizensense.model.Answer>");
 		}
 		submission.append("</answers>");

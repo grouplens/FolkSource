@@ -229,6 +229,7 @@ public class CampaignBrowser extends CampaignExplorer {
 			Log.d("DEBUG", "Task is null!");
 			return;
 		}
+		t.setId(c.getTaskId());
 		c.setTask(t);
 	}//handleNewTask
 
