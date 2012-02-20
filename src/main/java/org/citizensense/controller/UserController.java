@@ -113,6 +113,9 @@ public class UserController implements ModelDriven<User> {
 
 			UserService.save(user);
 			response.setStatus(HttpServletResponse.SC_OK);
+			response.addIntHeader("points", 0);
+			//may not work
+			response.addIntHeader("uid", user.getId());
 			return "register_success";
 		} else {
 			// user name does exist, couldn't register

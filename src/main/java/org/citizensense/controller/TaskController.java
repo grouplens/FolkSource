@@ -36,9 +36,14 @@ public class TaskController implements ModelDriven<Object>{
 		return new DefaultHttpHeaders("show");
 	}
 	
+//	public void setId(String id) {
+//		if (id != null)
+//			this.task = TaskService.getTasks().get(Integer.parseInt(id)-1);
+//		this.id = Integer.parseInt(id);		
+//	}
 	public void setId(String id) {
 		if (id != null)
-			this.task = TaskService.getTasks().get(Integer.parseInt(id)-1);
+			this.task = TaskService.getTaskById(Integer.parseInt(id));
 		this.id = Integer.parseInt(id);		
 	}
 	

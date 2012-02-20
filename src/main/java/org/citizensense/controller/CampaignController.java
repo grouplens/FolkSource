@@ -14,13 +14,6 @@ public class CampaignController implements ModelDriven<Object>{
 	Campaign camp = new Campaign();
 	private Collection<Campaign> list;
 	private int id;
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	public Object getModel() {
