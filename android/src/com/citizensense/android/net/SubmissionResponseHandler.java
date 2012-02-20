@@ -7,10 +7,13 @@ package com.citizensense.android.net;
 
 import java.io.IOException;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.impl.client.BasicResponseHandler;
+
+import com.citizensense.android.CitizenSense;
 
 import android.content.Context;
 import android.widget.Toast;
@@ -58,6 +61,12 @@ public class SubmissionResponseHandler extends BasicResponseHandler {
 		if (status_code == SUCCESS) {
 			System.out.println("success");
 			Toast.makeText(context, "Task Complete!", Toast.LENGTH_SHORT).show();
+			for (Header header : response.getAllHeaders()) {
+				if (header.getName().equalsIgnoreCase("points")) {
+					CitizenSense.getUserPointsText().setText(
+							(header.getValue()));
+				}
+			}
 		} else if (status_code == FAILURE) {
 			System.out.println("failure");
 		}

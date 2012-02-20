@@ -373,6 +373,7 @@ public class Sense extends LocationActivity {
 					this);
 			new PostRequest(this, new Submission(buildXML()), Request.XML,
 					submissionHandler, true).execute();
+				this.finish(); // ends submission view after being successful
 		}
 	}// submit
 
@@ -398,6 +399,7 @@ public class Sense extends LocationActivity {
 			for (Question question : questions) {
 				if (question.getQuestion().equals(ans[i])) {
 					q = question;
+					q.setId(i);
 					break;
 				}
 			}
@@ -406,7 +408,7 @@ public class Sense extends LocationActivity {
 				submission.append("<q_id>NaN</q_id>");
 			} else {
 				submission.append("<type>" + q.getType() + "</type>");
-				submission.append("<q_id>" + this.campaign.getId() + "</q_id>");
+				submission.append("<q_id>" + (q.getId()+1) + "</q_id>");
 			}
 			submission.append("<sub_id>-1</sub_id>"); //gets reset on the server depending on the ID of this submission
 			submission.append("</org.citizensense.model.Answer>");

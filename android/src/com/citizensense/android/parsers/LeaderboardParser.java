@@ -3,6 +3,8 @@ package com.citizensense.android.parsers;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import com.citizensense.android.CitizenSense;
+import com.citizensense.android.G;
 import com.citizensense.android.Leaderboard;
 import com.citizensense.android.LeaderboardEntry;
 

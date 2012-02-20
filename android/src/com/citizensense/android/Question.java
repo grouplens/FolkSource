@@ -38,7 +38,7 @@ public class Question implements Parcelable {
 	
 	/** The id associated with this question. 
 	 * @deprecated This is not used anywhere other than the parser. */
-	public int id;
+	private int id;
 	
 	private boolean required;
 	
@@ -206,6 +206,14 @@ public class Question implements Parcelable {
 
 	public boolean isRequired() {
 		return required;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 	
 }//Question

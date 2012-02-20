@@ -62,6 +62,9 @@ public class FormParser extends XMLParser {
 			if (localName.equalsIgnoreCase("question")) {
 				question.setQuestion(content);
 			}
+			else if(localName.equalsIgnoreCase("id")) {
+				question.setId(Integer.parseInt(content));
+			}
 			else if (localName.equalsIgnoreCase("type")) {
 				if (content.equals("written_repsonse")) {
 					question.setType(Question.WRITTEN_RESPONSE);
