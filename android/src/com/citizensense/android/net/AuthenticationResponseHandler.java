@@ -79,7 +79,6 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 						"No such user name. Create a new account!",
 						Toast.LENGTH_LONG).show();
 			} else if (status_code == LOGIN_SUCCESS) {// HttpServletResponse.SC_OK
-				System.out.println("-------------->test");
 				Header[] headers = response.getAllHeaders();
 				for (Header header : headers) {
 					if (header.getName().contains("Cookie")) {
@@ -90,6 +89,7 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 					}
 					if(header.getName().equalsIgnoreCase("uid")) {
 						G.user.setId(Integer.parseInt(header.getValue()));
+						System.out.println("User id-------------------->"+header.getValue());
 					}
 				}
 				G.user.setUsername(username);
@@ -112,6 +112,9 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 				for (Header header : headers) {
 					if (header.getName().contains("Cookie")) {
 						this.setCookie(header.getValue());
+					}
+					if(header.getName().equalsIgnoreCase("uid")) {
+						G.user.setId(Integer.parseInt(header.getValue()));
 					}
 				}
 				G.user.setUsername(username);

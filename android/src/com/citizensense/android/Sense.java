@@ -345,13 +345,14 @@ public class Sense extends LocationActivity {
 	public void validateForm() {
 		if (this.answers.size() == campaign.getTask().getForm().getQuestions().length) {
 			if (this.hasLocationFix()) {
-				if (this.imageUri != null) {
-					((Button) findViewById(R.id.submit)).setEnabled(true);
-				} else {
-					if (Constants.DEBUG) {
-						Log.d("Sense", "no image Uri");
-					}
-				}
+				((Button) findViewById(R.id.submit)).setEnabled(true);
+//				if (this.imageUri != null) {
+//					((Button) findViewById(R.id.submit)).setEnabled(true);
+//				} else {
+//					if (Constants.DEBUG) {
+//						Log.d("Sense", "no image Uri");
+//					}
+//				}
 			} else {
 				if (Constants.DEBUG) {
 					Log.d("Sense", "no location fix");
