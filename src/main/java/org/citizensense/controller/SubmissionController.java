@@ -50,6 +50,8 @@ public class SubmissionController implements ModelDriven<Object> {
 	}
 	public HttpHeaders create() {
 		SubmissionService.save(submission);
+		HttpServletResponse res = ServletActionContext.getResponse();
+		res.addIntHeader("points", SubmissionService.getSubUser(submission).getPoints());
 		return new DefaultHttpHeaders("create");
 	}
 	
