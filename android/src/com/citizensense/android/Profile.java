@@ -42,6 +42,16 @@ public class Profile extends ListActivity {
 		getIncentive();
 	}//onCreate
 	
+	@Override
+	public void onResume() {
+		super.onResume();
+		setContentView(R.layout.profile);
+		TextView username = (TextView) findViewById(R.id.username);
+		username.setText(G.user.getUsername());
+		//TODO construct a request to get the leaderboard, providing the current username to the server
+		getIncentive();
+	}
+	
 	/** Get the leaderboard incentive locally */
 	private void getIncentive() { 
 		//TODO get incentive from the server.
