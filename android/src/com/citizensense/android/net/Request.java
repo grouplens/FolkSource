@@ -79,7 +79,7 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 			IMAGE = 4;
 	/** The root URL of the server. */
 	//public static final String BASE_URL = "http://ugly.cs.umn.edu:8080";
-	public static final String BASE_URL = "http://192.168.1.2:9080";
+	public static final String BASE_URL = "http://134.84.51.51:9080";
 
 	/**
 	 * Create a GET Request
@@ -283,7 +283,7 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 					if (this.inputFormat == JSON) {
 						entity = new StringEntity(data.buildJSON());
 					} else {
-						System.out.println(data.buildXML());
+						//System.out.println(data.buildXML());
 						entity = new StringEntity(data.buildXML());
 					}
 					if (Constants.DEBUG) {
