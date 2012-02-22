@@ -212,8 +212,8 @@ public class CampaignBrowser extends CampaignExplorer {
 					}
 				}
 			});
-			//new GetRequest(this, Task.class, c.getTaskId(), handler, true).execute();
-			new GetRequest(this, Task.class, "1", handler, true).execute();
+			new GetRequest(this, Task.class, c.getTaskId(), handler, true).execute();
+//			new GetRequest(this, Task.class, "1", handler, true).execute();
 		}
 	}// handleNewCampaign
 

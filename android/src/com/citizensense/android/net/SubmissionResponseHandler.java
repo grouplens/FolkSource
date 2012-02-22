@@ -15,6 +15,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 
 import com.citizensense.android.CitizenSense;
 
+import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
 
@@ -67,6 +68,7 @@ public class SubmissionResponseHandler extends BasicResponseHandler {
 							(header.getValue()));
 				}
 			}
+			((Activity) context).finish();
 		} else if (status_code == FAILURE) {
 			System.out.println("failure");
 		}

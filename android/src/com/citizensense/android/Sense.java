@@ -373,7 +373,7 @@ public class Sense extends LocationActivity {
 					this);
 			new PostRequest(this, new Submission(buildXML()), Request.XML,
 					submissionHandler, true).execute();
-				this.finish(); // ends submission view after being successful
+//				this.finish(); // ends submission view after being successful
 		}
 	}// submit
 
