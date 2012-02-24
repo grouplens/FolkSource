@@ -4,6 +4,7 @@
 
 package com.citizensense.android;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -189,11 +190,13 @@ public class CampaignBrowser extends CampaignExplorer {
 	 */
 	public void handleNewCampaign(final Campaign c) {
 		if (!server_campaigns.contains(c)) {
+			server_campaigns.add(c);	
+			
 			XMLResponseHandler handler = new XMLResponseHandler();
 			handler.setCallback(new XMLResponseHandler.StringCallback() {
 
 				@Override
-				public void invoke(String xml) {
+				public void invoke(final String xml) {
 					try {
 						Xml.parse(xml, new TaskParser(
 								new TaskParser.Callback() {
@@ -210,8 +213,7 @@ public class CampaignBrowser extends CampaignExplorer {
 				}
 			});
 			
-			new GetRequest(this, Task.class, c.getId(), handler, true)
-					.execute();
+			new GetRequest(this, Task.class, c.getTaskId(), handler, true).execute();
 		}
 	}// handleNewCampaign
 
@@ -221,37 +223,15 @@ public class CampaignBrowser extends CampaignExplorer {
 	 * @param c
 	 * @param t
 	 */
-	public void handleNewTask(final Campaign c, final Task t) {
-		c.setTask(t);
-		/*
-		 * XMLResponseHandler handler = new XMLResponseHandler();
-		 * handler.setCallback(new XMLResponseHandler.StringCallback() {
-		 * 
-		 * @Override public void invoke(String xml) { try { Xml.parse(xml, new
-		 * FormParser(new FormParser.Callback() {
-		 * 
-		 * @Override public void invoke(Form form) { handleNewForm(c, t, form);
-		 * }
-		 * 
-		 * })); } catch (SAXException e) { e.printStackTrace(); } } }); new
-		 * GetRequest(this, Task.class, c.getId(), handler, true).execute();
-		 */
-		try {
-			InputStream stream = getAssets().open("samples/form_1.xml");
-			Xml.parse(stream, Xml.Encoding.UTF_8, new FormParser(
-					new FormParser.Callback() {
 
-						@Override
-						public void invoke(Form form) {
-							handleNewForm(c, t, form);
-						}
-					}));
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
+	public void handleNewTask(final Campaign c, final Task t) {
+		if (t == null) {
+			Log.d("DEBUG", "Task is null!");
+			return;
 		}
-	}// handleNewTask
+		t.setId(c.getTaskId());
+		c.setTask(t);
+	}//handleNewTask
 
 	/**
 	 * Handle parsing a new {@link Form} and store the final {@link Campaign} in

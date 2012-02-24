@@ -33,64 +33,72 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.citizensense.android.conf.Constants;
-import com.citizensense.android.net.ImageResponseHandler;
 import com.citizensense.android.net.PostRequest;
+import com.citizensense.android.net.Request;
+import com.citizensense.android.net.SubmissionResponseHandler;
+
+import com.citizensense.android.net.ImageResponseHandler;
 
 /**
  * Complete a task, or "Sense" data
+ * 
  * @author Phil Brown
  * @author Renji Yu
  */
 public class Sense extends LocationActivity {
 
-	/** Contains the campaign object that the user is completing a task for.*/
+	/** Contains the campaign object that the user is completing a task for. */
 	private Campaign campaign;
 	/** The index of the currently-selected question in the form. */
 	private int questionsIndex;
-	/** The Uri of the image that the user is submitting, or null if none has
-	 * been assigned. */
+	/**
+	 * The Uri of the image that the user is submitting, or null if none has
+	 * been assigned.
+	 */
 	private Uri imageUri;
 	/** Used for receiving Intent back from the camera. */
 	public static final int CAMERA_CAPTURE_REQUEST_CODE = 100;
-	
-	/** Used for image upload post request.*/
+
+	/** Used for image upload post request. */
 	public static final int IMAGE = 4;
-	/** 
-	 * This contains all of the answers that the user has completed. Using a 
-	 * HashMap will be effective for storage, because 1) it is simple, 2) it
-	 * is Serializable (which may be helpful), and 3) It will be easy to
-	 * port answers to XML. */
+	/**
+	 * This contains all of the answers that the user has completed. Using a
+	 * HashMap will be effective for storage, because 1) it is simple, 2) it is
+	 * Serializable (which may be helpful), and 3) It will be easy to port
+	 * answers to XML.
+	 */
 	private HashMap<String, String> answers;
-	
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    if (requestCode == CAMERA_CAPTURE_REQUEST_CODE) {
-	        if (resultCode == RESULT_OK) {
-	        	//this.imageUri = data.getData();
-	        	//uri is already set. Do nothing.
-	        	
-	        	//Upload the image to server
-	        	if(G.user.getUsername().equals("Anonymous")){
-	        		Toast.makeText(this, "Sorry. Image upload is not allowed for anonymous user.", 
-	        			       Toast.LENGTH_LONG).show();
-	        	}else{
-	        		uploadImage(this.imageUri);
-	        	}
-	        } else if (resultCode == RESULT_CANCELED) {
-	            // User canceled the image capture. Do nothing
-	        	this.imageUri = null;
-	        } else {
-	            // Image capture failed
-	        	Toast.makeText(this, "could not use incompatible camera app", 
-	        			       Toast.LENGTH_SHORT).show();
-	        	this.imageUri = null;
-	        }
-	    }
-	    else {
-	    	super.onActivityResult(requestCode, resultCode, data);
-	    }
-	}//onActivityResult
-	
+		if (requestCode == CAMERA_CAPTURE_REQUEST_CODE) {
+			if (resultCode == RESULT_OK) {
+				// this.imageUri = data.getData();
+				// uri is already set. Do nothing.
+
+				// Upload the image to server
+				if (G.user.getUsername().equals("Anonymous")) {
+					Toast.makeText(
+							this,
+							"Sorry. Image upload is not allowed for anonymous user.",
+							Toast.LENGTH_LONG).show();
+				} else {
+					uploadImage(this.imageUri);
+				}
+			} else if (resultCode == RESULT_CANCELED) {
+				// User canceled the image capture. Do nothing
+				this.imageUri = null;
+			} else {
+				// Image capture failed
+				Toast.makeText(this, "could not use incompatible camera app",
+						Toast.LENGTH_SHORT).show();
+				this.imageUri = null;
+			}
+		} else {
+			super.onActivityResult(requestCode, resultCode, data);
+		}
+	}// onActivityResult
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -104,12 +112,15 @@ public class Sense extends LocationActivity {
 			public void onClick(View v) {
 				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-			    Uri fileUri = getOutputImageUri(); // create a file to save the image
-			    Sense.this.imageUri = fileUri;
-			    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
+				Uri fileUri = getOutputImageUri(); // create a file to save the
+													// image
+				Sense.this.imageUri = fileUri;
+				intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the
+																	// image
+																	// file name
 
-			    // start the image capture Intent
-			    startActivityForResult(intent, CAMERA_CAPTURE_REQUEST_CODE);
+				// start the image capture Intent
+				startActivityForResult(intent, CAMERA_CAPTURE_REQUEST_CODE);
 			}
 		});
 		final LinearLayout form_container = (LinearLayout) findViewById(R.id.form_container);
@@ -122,8 +133,7 @@ public class Sense extends LocationActivity {
 			public void onClick(View v) {
 				if (questionsIndex == layouts.length - 1) {
 					questionsIndex = 0;
-				}
-				else {
+				} else {
 					questionsIndex++;
 				}
 				form_container.removeAllViews();
@@ -136,8 +146,7 @@ public class Sense extends LocationActivity {
 			public void onClick(View v) {
 				if (questionsIndex == 0) {
 					questionsIndex = layouts.length - 1;
-				}
-				else {
+				} else {
 					questionsIndex--;
 				}
 				form_container.removeAllViews();
@@ -153,69 +162,72 @@ public class Sense extends LocationActivity {
 		});
 		this.answers = new HashMap<String, String>();
 		this.requestLocation();
-	}//onCreate
-	
+	}// onCreate
+
 	/** Unpacks passed-in campaign from the intent. */
 	public void handleIntent(Intent i) {
 		this.campaign = i.getParcelableExtra("campaign");
-	}//handleIntent
-	
+	}// handleIntent
+
 	/** Returns the index of the currently-selected question. */
 	public int getQuestionsIndex() {
 		return this.questionsIndex;
-	}//getQuestionsIndex
-	
+	}// getQuestionsIndex
+
 	/** Subclasses can set the question index. */
 	protected void setQuestionsIndex(int index) {
 		this.questionsIndex = index;
-	}//setQuestionsIndex
-	
+	}// setQuestionsIndex
+
 	/** Create a File for saving an image */
-	private Uri getOutputImageUri(){
-	    // To be safe, you should check that the SDCard is mounted
-	    File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "CitizenSense");
-	    if (!mediaStorageDir.exists()){
-	        if (!mediaStorageDir.mkdirs()){
-	            Log.e("CitizenSense", "failed to create directory");
-	            return null;
-	        }
-	    }
-	    // Create a media file name
-	    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-	    File mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-	        campaign.getName()+"_"+timeStamp + ".jpg");
-	    if (Constants.DEBUG) {
-	    	Log.d("Sense", "Image URI set to " + mediaFile.getName());
-	    }
-	    return Uri.fromFile(mediaFile);
-	}//getOutputImageUri
-	
+	private Uri getOutputImageUri() {
+		// To be safe, you should check that the SDCard is mounted
+		File mediaStorageDir = new File(
+				Environment.getExternalStorageDirectory(), "CitizenSense");
+		if (!mediaStorageDir.exists()) {
+			if (!mediaStorageDir.mkdirs()) {
+				Log.e("CitizenSense", "failed to create directory");
+				return null;
+			}
+		}
+		// Create a media file name
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+				.format(new Date());
+		File mediaFile = new File(mediaStorageDir.getPath() + File.separator
+				+ campaign.getName() + "_" + timeStamp + ".jpg");
+		if (Constants.DEBUG) {
+			Log.d("Sense", "Image URI set to " + mediaFile.getName());
+		}
+		return Uri.fromFile(mediaFile);
+	}// getOutputImageUri
+
 	/**
 	 * Inflates the form object. This takes attributes from each of the
 	 * questions on the form and find the best layout for them. For example,
-	 * Multiple choice, single response questions use radio buttons.
-	 * Multiple choice, multiple response questions use checkboxes.
-	 * Written response also has a single line/multiline option.
+	 * Multiple choice, single response questions use radio buttons. Multiple
+	 * choice, multiple response questions use checkboxes. Written response also
+	 * has a single line/multiline option.
+	 * 
 	 * @return An array of question layouts associated with this form.
 	 */
 	public LinearLayout[] renderForm() {
 		Form f = campaign.getTask().getForm();
 		Question[] questions = f.getQuestions();
 		LinearLayout[] layouts = new LinearLayout[questions.length];
-		for(int i = 0; i < questions.length; i++) {
+		for (int i = 0; i < questions.length; i++) {
 			layouts[i] = new LinearLayout(this);
 			layouts[i].setOrientation(LinearLayout.VERTICAL);
 			layouts[i].setLayoutParams(new LinearLayout.LayoutParams(
-										LinearLayout.LayoutParams.FILL_PARENT, 
-										LinearLayout.LayoutParams.FILL_PARENT));
+					LinearLayout.LayoutParams.FILL_PARENT,
+					LinearLayout.LayoutParams.FILL_PARENT));
 			/* Question text */
 			TextView question = new TextView(this);
 			question.setText(questions[i].getQuestion());
-			question.setTextColor(Color.WHITE);//BLACK);
+			question.setTextColor(Color.WHITE);// BLACK);
 			question.setGravity(Gravity.CENTER_HORIZONTAL);
 			question.setLayoutParams(new LinearLayout.LayoutParams(
-										LinearLayout.LayoutParams.WRAP_CONTENT, 
-										LinearLayout.LayoutParams.FILL_PARENT));
+					LinearLayout.LayoutParams.WRAP_CONTENT,
+					LinearLayout.LayoutParams.FILL_PARENT));
 			layouts[i].addView(question);
 			/* Responses */
 			if (questions[i].getType() == Question.MULTIPLE_CHOICE) {
@@ -225,15 +237,16 @@ public class Sense extends LocationActivity {
 					LinearLayout ans = new LinearLayout(this);
 					ans.setOrientation(LinearLayout.HORIZONTAL);
 					ans.setLayoutParams(new LinearLayout.LayoutParams(
-							LinearLayout.LayoutParams.WRAP_CONTENT, 
+							LinearLayout.LayoutParams.WRAP_CONTENT,
 							LinearLayout.LayoutParams.FILL_PARENT));
 					if (questions[i].isSingleChoice()) {
 						final RadioButton rb = new RadioButton(this);
 						rb.setLayoutParams(new LinearLayout.LayoutParams(
-								LinearLayout.LayoutParams.FILL_PARENT, 
+								LinearLayout.LayoutParams.FILL_PARENT,
 								LinearLayout.LayoutParams.WRAP_CONTENT));
 						radiogroup.add(rb);
-						final String questionString = questions[i].getQuestion();
+						final String questionString = questions[i]
+								.getQuestion();
 						rb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 							/** If a button is selected, unselect the rest. */
 							@Override
@@ -245,26 +258,28 @@ public class Sense extends LocationActivity {
 											b.setChecked(false);
 										}
 									}
-									Sense.this.answers.put(questionString, option);
+									Sense.this.answers.put(questionString,
+											option);
 								}
 								validateForm();
 							}
 						});
 						ans.addView(rb);
-					}
-					else {
+					} else {
 						CheckBox cb = new CheckBox(this);
 						cb.setLayoutParams(new LinearLayout.LayoutParams(
-								LinearLayout.LayoutParams.FILL_PARENT, 
+								LinearLayout.LayoutParams.FILL_PARENT,
 								LinearLayout.LayoutParams.WRAP_CONTENT));
 						ans.addView(cb);
-						final String questionString = questions[i].getQuestion();
+						final String questionString = questions[i]
+								.getQuestion();
 						cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 							@Override
-							public void onCheckedChanged(CompoundButton buttonView,
-									boolean isChecked) {
+							public void onCheckedChanged(
+									CompoundButton buttonView, boolean isChecked) {
 								if (isChecked) {
-									Sense.this.answers.put(questionString, option);
+									Sense.this.answers.put(questionString,
+											option);
 								}
 								validateForm();
 							}
@@ -272,30 +287,31 @@ public class Sense extends LocationActivity {
 					}
 					TextView tv = new TextView(this);
 					tv.setText(option);
-					tv.setTextColor(Color.WHITE);//BLACK);
+					tv.setTextColor(Color.WHITE);// BLACK);
 					tv.setLayoutParams(new LinearLayout.LayoutParams(
-							LinearLayout.LayoutParams.FILL_PARENT, 
+							LinearLayout.LayoutParams.FILL_PARENT,
 							LinearLayout.LayoutParams.WRAP_CONTENT));
 					ans.addView(tv);
 					layouts[i].addView(ans);
 				}
-			}
-			else if (questions[i].getType() == Question.WRITTEN_RESPONSE) {
+			} else if (questions[i].getType() == Question.WRITTEN_RESPONSE) {
 				EditText et = new EditText(this);
 				final String questionString = questions[i].getQuestion();
 				et.setSingleLine(questions[i].isSingleLine());
 				et.setGravity(Gravity.TOP);
 				et.setLayoutParams(new LinearLayout.LayoutParams(
-						LinearLayout.LayoutParams.FILL_PARENT, 
+						LinearLayout.LayoutParams.FILL_PARENT,
 						LinearLayout.LayoutParams.FILL_PARENT));
 				layouts[i].addView(et);
 				et.addTextChangedListener(new TextWatcher() {
 					@Override
-					public void afterTextChanged(Editable s) {}
+					public void afterTextChanged(Editable s) {
+					}
 
 					@Override
 					public void beforeTextChanged(CharSequence s, int start,
-							int count, int after) {}
+							int count, int after) {
+					}
 
 					@Override
 					public void onTextChanged(CharSequence s, int start,
@@ -303,8 +319,7 @@ public class Sense extends LocationActivity {
 						if (s.length() != 0) {
 							Sense.this.answers.put(questionString, s.toString());
 							validateForm();
-						}
-						else {
+						} else {
 							Sense.this.answers.put(questionString, null);
 							invalidateForm();
 						}
@@ -313,81 +328,130 @@ public class Sense extends LocationActivity {
 			}
 		}
 		return layouts;
-	}//renderForm
-	
-	/** Sets the submit button to disabled. This is used when not all answers,
-	 * or the location, or the image have been added. */
+	}// renderForm
+
+	/**
+	 * Sets the submit button to disabled. This is used when not all answers, or
+	 * the location, or the image have been added.
+	 */
 	public void invalidateForm() {
 		((Button) findViewById(R.id.submit)).setEnabled(false);
-	}//invalidateForm
-	
-	/** If all the answers to the form are answered, validate that a photo and
-	 * location are set and enable the submit button. */
+	}// invalidateForm
+
+	/**
+	 * If all the answers to the form are answered, validate that a photo and
+	 * location are set and enable the submit button.
+	 */
 	public void validateForm() {
 		if (this.answers.size() == campaign.getTask().getForm().getQuestions().length) {
 			if (this.hasLocationFix()) {
-				if (this.imageUri != null) {
-					((Button) findViewById(R.id.submit)).setEnabled(true);
-				}
-				else {
-					if (Constants.DEBUG) {
-						Log.d("Sense", "no image Uri");
-					}
-				}
-			}
-			else {
+				((Button) findViewById(R.id.submit)).setEnabled(true);
+//				if (this.imageUri != null) {
+//					((Button) findViewById(R.id.submit)).setEnabled(true);
+//				} else {
+//					if (Constants.DEBUG) {
+//						Log.d("Sense", "no image Uri");
+//					}
+//				}
+			} else {
 				if (Constants.DEBUG) {
 					Log.d("Sense", "no location fix");
 				}
 			}
-		}
-		else {
+		} else {
 			if (Constants.DEBUG) {
 				Log.d("Sense", "there are unanswered questions");
 			}
 		}
-	}//validateForm
-		
+	}// validateForm
+
 	public void submit() {
 		if (!this.hasLocationFix()) {
 			this.requestLocation();
+		} else {
+			SubmissionResponseHandler submissionHandler = new SubmissionResponseHandler(
+					this);
+			new PostRequest(this, new Submission(buildXML()), Request.XML,
+					submissionHandler, true).execute();
+//				this.finish(); // ends submission view after being successful
 		}
-		else {
-			Toast.makeText(this, "Task Complete!", Toast.LENGTH_SHORT).show();
-			//TODO get answers, image, and location written to xml and sent to server.
-			this.finish();
+	}// submit
+
+	/** Build a submission XML */
+	public String buildXML() {
+		StringBuilder submission = new StringBuilder();
+		submission.append("<org.citizensense.model.Submission>");
+		submission.append("<task_id>" + this.campaign.getTaskId() + "</task_id>");
+		submission.append("<gps_location>" + this.location.getLatitude() + "|"
+				+ this.location.getLongitude() + "</gps_location>");
+		submission.append("<user_id>" + G.user.id + "</user_id>");
+		submission.append("<answers>");
+		Form f = campaign.getTask().getForm();
+		Question[] questions = f.getQuestions();
+		String[] ans = new String[this.answers.size()];
+		ans = this.answers.keySet().toArray(ans);
+		for (int i = 0; i < ans.length; i++) {
+			submission.append("<org.citizensense.model.Answer>");
+			submission.append("<id>" + i + "</id>");
+			submission.append("<answer>" + this.answers.get(ans[i])
+					+ "</answer>");
+			Question q = null;
+			for (Question question : questions) {
+				if (question.getQuestion().equals(ans[i])) {
+					q = question;
+					q.setId(i);
+					break;
+				}
+			}
+			if (q == null) {
+				submission.append("<type>NaN</type>");
+				submission.append("<q_id>NaN</q_id>");
+			} else {
+				submission.append("<type>" + q.getType() + "</type>");
+				submission.append("<q_id>" + (q.getId()+1) + "</q_id>");
+			}
+			submission.append("<sub_id>-1</sub_id>"); //gets reset on the server depending on the ID of this submission
+			submission.append("</org.citizensense.model.Answer>");
 		}
-	}//submit
-	
-	/** Upload the photo to server.*/
-	public void uploadImage(Uri uri){
+		submission.append("</answers>");
+		submission.append("</org.citizensense.model.Submission>");
+		return submission.toString();
+	}// buildXML
+
+	/** Upload the photo to server. */
+	public void uploadImage(Uri uri) {
 		String imagePath = uri.getPath();
-		
-		ImageResponseHandler imageUploadHandler = new ImageResponseHandler(this); 
-		new PostRequest(this, null, IMAGE, imageUploadHandler, true)
-				.execute(G.user.getUsername(),imagePath);
-// Add this code will cause problem. I find the way we are prompting the user to change location setting is annoying.
-// Maybe prompt the user when he presses Submit is better?		
-//		if(imageUploadHandler.getResult().equalsIgnoreCase("success")){
-//			validateForm();
-//		}
+
+		ImageResponseHandler imageUploadHandler = new ImageResponseHandler(this);
+		new PostRequest(this, null, IMAGE, imageUploadHandler, true).execute(
+				G.user.getUsername(), imagePath);
+		// Add this code will cause problem. I find the way we are prompting the
+		// user to change location setting is annoying.
+		// Maybe prompt the user when he presses Submit is better?
+		// if(imageUploadHandler.getResult().equalsIgnoreCase("success")){
+		// validateForm();
+		// }
 	}
 
 	@Override
 	public boolean allowsNetworksLocations() {
 		return true;
-	}//allowsNetworksLocations
+	}// allowsNetworksLocations
 
 	@Override
-	public void onGpsFirstFix() {}
+	public void onGpsFirstFix() {
+	}
 
 	@Override
-	public void onSatelliteEvent(int count) {}
+	public void onSatelliteEvent(int count) {
+	}
 
 	@Override
-	public void onGpsStarted() {}
+	public void onGpsStarted() {
+	}
 
 	@Override
-	public void onGpsStopped() {}
-	
-}//Sense
+	public void onGpsStopped() {
+	}
+
+}// Sense

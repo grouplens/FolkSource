@@ -4,9 +4,12 @@
 
 package com.citizensense.android.net;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +22,6 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -35,6 +37,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.citizensense.android.G;
 import com.citizensense.android.Item;
 import com.citizensense.android.conf.Constants;
 import com.citizensense.android.util.Base64;
@@ -75,8 +78,9 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 	public static final int XML = 0, JSON = 1, LOGIN = 2, REGISTER = 3,
 			IMAGE = 4;
 	/** The root URL of the server. */
-	 //public static final String BASE_URL = "http://ugly.cs.umn.edu:8080";
-	public static final String BASE_URL = "http://192.168.0.162:9080";
+	public static final String BASE_URL = "http://ugly.cs.umn.edu:8080";
+//	public static final String BASE_URL = "http://134.84.51.51:9080";
+
 	/**
 	 * Create a GET Request
 	 * 
@@ -252,20 +256,20 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 				if (inputFormat == IMAGE) { // UPLOAD IMAGE
 					// FIXME: Maybe use multi-part later.
 					int index = params[1].lastIndexOf(File.separator);
-					String file_name = params[1].substring(index+1);
+					String file_name = params[1].substring(index + 1);
 					Bitmap bm = BitmapFactory.decodeFile(params[1]);
 					ByteArrayOutputStream bos = new ByteArrayOutputStream();
-					//compress the file
+					// compress the file
 					bm.compress(CompressFormat.JPEG, 50, bos);
 					byte[] data = bos.toByteArray();
-					//image file is encoded into a string
-					String imageString=Base64.encodeBytes(data);
+					// image file is encoded into a string
+					String imageString = Base64.encodeBytes(data);
 					List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 					pairs.add(new BasicNameValuePair("userName", params[0]));
 					pairs.add(new BasicNameValuePair("imageFileName", file_name));
 					pairs.add(new BasicNameValuePair("imageString", imageString));
 					post.setEntity(new UrlEncodedFormEntity(pairs));
-					
+
 				} else if (inputFormat == LOGIN || inputFormat == REGISTER) { // LOGIN,
 					// REGISTER
 					List<NameValuePair> pairs = new ArrayList<NameValuePair>();
@@ -279,10 +283,11 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 					if (this.inputFormat == JSON) {
 						entity = new StringEntity(data.buildJSON());
 					} else {
+						//System.out.println(data.buildXML());
 						entity = new StringEntity(data.buildXML());
 					}
 					if (Constants.DEBUG) {
-						Log.i("Request", entity.toString());
+						Log.i("Request", "***Response***  " + entity.toString());
 					}
 					entity.setContentType("text/xml");
 					post.setHeader("Content-Type",

@@ -17,6 +17,10 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import android.util.Log;
+
+import com.citizensense.android.conf.Constants;
+
 /**
  * Handle an HttpResponse as a JSON Object. This code is based, in part, 
  * on BasicResponseHandler.
@@ -49,6 +53,9 @@ public class JSONResponseHandler implements ResponseHandler<JSONArray> {
 	public JSONArray handleResponse(HttpResponse response)
 			throws ClientProtocolException, IOException {
 		StatusLine statusLine = response.getStatusLine();
+		if (Constants.DEBUG) {
+			Log.d("Request", "Response Code: " + statusLine.getStatusCode() + " " + statusLine.getReasonPhrase());
+		}
         if (statusLine.getStatusCode() >= 300) {
             throw new HttpResponseException(statusLine.getStatusCode(),
                     statusLine.getReasonPhrase());

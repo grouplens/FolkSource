@@ -96,6 +96,9 @@ public class CampaignParser extends XMLParser {
 				//FIXME this will work for now
 				this.campaign.setOwner(content);
 			}
+			else if (localName.equalsIgnoreCase("task__id")) {
+				this.campaign.setTaskId(content);
+			}
 		}
 	}//endElement
 	

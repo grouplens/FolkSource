@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.citizensense.android.Campaign;
 import com.citizensense.android.CitizenSense;
@@ -161,7 +162,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 				          campaign.getStartDate().getYear());
 			Time now = new Time();
 			now.setToNow();
-			String isOpen = (now.after(startDate) && endDate.before(now)) ? 
+			String isOpen = (now.after(startDate) && now.before(endDate)) ? 
 					        "Open" : "Closed";
 			TextView status = (TextView) v.findViewById(R.id.campaign_status);
 			status.setText("Status: " + isOpen);
@@ -189,6 +190,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 			//TODO unpack full campaign
 			//String more = "More Details available";
 			Task t = campaign.getTask();
+			
 			if (t != null) {
 				String tname = t.getName();
 				String tdesc = t.getInstructions();
@@ -209,9 +211,14 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 			task_button.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Intent i = new Intent(context, Sense.class);
-					i.putExtra("campaign", campaign);
-					context.startActivity(i);
+					if(campaign.getTask()==null){
+						Toast.makeText(v.getContext(), "No task defined for this campaign.", Toast.LENGTH_LONG).show();
+					}
+					else{
+						Intent i = new Intent(context, Sense.class);
+						i.putExtra("campaign", campaign);
+						context.startActivity(i);
+					}
 				}
 			});
 			
@@ -231,8 +238,10 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 				public void onClick(View v) {
 					Button d = (Button) v;
 					if (d.getText().equals("Download")) {
-						G.db.addCampaign(campaign);
-						d.setText("Delete");
+						if(campaign!=null){
+							G.db.addCampaign(campaign);
+							d.setText("Delete");
+						}
 					}
 					else {
 						G.db.deleteCampaign(campaign);

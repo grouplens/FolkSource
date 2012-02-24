@@ -14,7 +14,7 @@ public interface Constants {
 	public static final boolean DEBUG = true;
 	
 	/** This is used to denote whether or not to use local campaigns for testing*/
-	public static final boolean localCampaignsOnly = true;
+	public static final boolean localCampaignsOnly = false;
 	
 	/** The name of the sharedPreferences file where G.memory is located.*/
 	public static final String MEM_LOC = "citizenSenseMem";
@@ -22,7 +22,7 @@ public interface Constants {
 	/** Reference to a sharedPreferences item in MEM_LOC*/
 	public static final String DB_SIZE = "db_size";
 	
-	public static final String DB_DATE_FORMAT = "MM/dd/yyyy";
+	public static final String DB_DATE_FORMAT = "MM/dd/yyyy hh:mm:ss";
 	
 	/** Minimum time between updates for the network location listener in the
 	 * main activity. */
