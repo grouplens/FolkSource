@@ -61,6 +61,11 @@ public class Form implements Parcelable {
 		questions.add(q);
 	}//addQuestion
 	
+	/** set this form's questions*/
+	public void setQuestions(ArrayList<Question> questions) {
+		this.questions = questions;
+	}
+	
 	/** get this form's questions*/
 	public Question[] getQuestions() {
 		Log.i("CAMPAIGN", "Number of Questions: " + questions.size());

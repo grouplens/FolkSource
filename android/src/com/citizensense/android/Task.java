@@ -24,6 +24,9 @@ public class Task implements Item {
 	/** The form associated with this task*/
 	private Form form;
 	
+	private String id;
+	private boolean required;
+	
 	/** This CREATOR is used to parcel this Object. */
 	public static final Parcelable.Creator<Task> CREATOR =
         new Parcelable.Creator<Task>() {
@@ -48,6 +51,7 @@ public class Task implements Item {
 		this.name = in.readString();
 		this.requirements = in.createStringArray();
 		this.form = in.readParcelable(Form.class.getClassLoader());
+		this.id = in.readString();
 	}//Task
 	
 	/**
@@ -80,6 +84,7 @@ public class Task implements Item {
 		out.writeString(this.name);
 		out.writeStringArray(this.requirements);
 		out.writeParcelable(this.form, 0);
+		out.writeString(this.id);
 	}//writeToParcel
 	
 	public String getInstructions() {
@@ -151,5 +156,21 @@ public class Task implements Item {
 	public String getItemName() {
 		return "task";
 	}//getItemName
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setRequired(Boolean required) {
+		this.required = required;
+	}
+
+	public Boolean getRequired() {
+		return required;
+	}
 	
 }//Task

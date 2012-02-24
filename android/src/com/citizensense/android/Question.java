@@ -36,6 +36,12 @@ public class Question implements Parcelable {
 	/** Available answers for multiple choice questions */
 	private String[] answers;
 	
+	/** The id associated with this question. 
+	 * @deprecated This is not used anywhere other than the parser. */
+	private int id;
+	
+	private boolean required;
+	
 
 	/** This CREATOR is used to parcel this Object. */
 	public static final Parcelable.Creator<Question> CREATOR =
@@ -193,5 +199,21 @@ public class Question implements Parcelable {
 	public void setAnswers(String[] answers) {
 		this.answers = answers;
 	}//setAnswer
+
+	public void setRequired(boolean required) {
+		this.required = required;
+	}
+
+	public boolean isRequired() {
+		return required;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 	
 }//Question

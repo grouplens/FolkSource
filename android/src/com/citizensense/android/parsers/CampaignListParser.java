@@ -9,6 +9,7 @@ import org.xml.sax.SAXException;
 import android.util.Log;
 
 import com.citizensense.android.Campaign;
+import com.citizensense.android.Task;
 
 /**
  * Parses a list of Campaigns
@@ -68,7 +69,7 @@ public class CampaignListParser extends XMLParser {
 			if (localName.equalsIgnoreCase("id")) {
 				this.campaign.setId(content);
 			}
-			else if (localName.equalsIgnoreCase("name")) {
+			else if (localName.equalsIgnoreCase("title")) {
 				this.campaign.setName(content);
 			}
 			else if (localName.equalsIgnoreCase("description")) {
@@ -76,6 +77,7 @@ public class CampaignListParser extends XMLParser {
 			}
 			else if (localName.equalsIgnoreCase("start__date")) {
 				try {
+					//FIXME: should change the time (server side) to timestamp with timezone
 					campaign.setStartDate(this.dateFormat.parse(content));
 				} catch (ParseException e) {
 					Log.e("TAG", "Invalid Date Format: start_date=" 
@@ -99,6 +101,12 @@ public class CampaignListParser extends XMLParser {
 			else if (localName.equalsIgnoreCase("owner__id")) {
 				//FIXME this will work for now
 				this.campaign.setOwner(content);
+			}
+			else if (localName.equalsIgnoreCase("task__id")) {
+				this.campaign.setTaskId(content);
+			}
+			else if (localName.equalsIgnoreCase("location")) {
+				this.campaign.setLocations(content.split("\\|"));
 			}
 		}
 	}//endElement

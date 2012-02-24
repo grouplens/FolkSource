@@ -36,8 +36,7 @@ public class CitizenSense extends TabActivity implements OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        userNameText = (TextView) findViewById(R.id.quick_profile_text);
-        userPointsText = (TextView) findViewById(R.id.quick_profile_pts);
+        
         ((ImageView) findViewById(R.id.updates_menu_image)).setOnClickListener(this);
         ((ImageView) findViewById(R.id.updates_menu_menu)).setOnClickListener(this);
         ((TextView) findViewById(R.id.updates_menu_text)).setOnClickListener(this);
@@ -46,8 +45,7 @@ public class CitizenSense extends TabActivity implements OnClickListener {
         if (G.user.getUsername() != null) {
         	userNameText.setText(G.user.getUsername());
         }
-        userNameText.setOnClickListener(this);
-        ((TextView) findViewById(R.id.quick_profile_pts)).setOnClickListener(this);
+        setUserAndPoints();
         
         tabHost = getTabHost();
         Intent intent;
@@ -70,10 +68,19 @@ public class CitizenSense extends TabActivity implements OnClickListener {
         tabHost.setCurrentTab(0);
         
     }//onCreate
+
+	private void setUserAndPoints() {
+		userNameText = (TextView) findViewById(R.id.quick_profile_text);
+        userPointsText = (TextView) findViewById(R.id.quick_profile_pts);
+        
+        userNameText.setOnClickListener(this);
+        ((TextView) findViewById(R.id.quick_profile_pts)).setOnClickListener(this);
+	}
     
     @Override
     public void onResume() {
     	super.onResume();
+//    	G.user.setUsername("test");
     	if (G.user.getUsername() == null) {
     		Intent intent = new Intent(this, Login.class);
     		startActivity(intent);
@@ -90,6 +97,7 @@ public class CitizenSense extends TabActivity implements OnClickListener {
 		else {
 			G.notification_campaign_id = null;
 		}
+//		((TextView) findViewById(R.id.quick_profile_pts)).setText(G.user.points);
     }//onResume
     
     /** Open the map tab*/

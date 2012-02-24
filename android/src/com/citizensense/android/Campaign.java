@@ -17,6 +17,7 @@ import android.os.Parcelable;
 import android.util.Xml;
 
 import com.citizensense.android.parsers.CampaignParser;
+import com.citizensense.android.parsers.FinalCampaignParser;
 
 /** 
  * Campaign Object
@@ -48,8 +49,7 @@ public class Campaign implements Item {
 	private Date startDate;
 	/** Date the campaign ends.*/
 	private Date endDate;
-	
-	/** Task id.*/
+	/** Id of task*/
 	private String taskId;
 	
 	/** This CREATOR is used to parcel this Object. */
@@ -83,6 +83,7 @@ public class Campaign implements Item {
 		this.isComplete = in.readByte() == 1;
 		this.startDate = new Date(in.readLong());
 		this.endDate = new Date(in.readLong());
+		this.taskId = task.getId();
 	}//Campaign
 	
 	/** An empty constructor is used by the XML Parser and by the Database.*/
@@ -252,7 +253,7 @@ public class Campaign implements Item {
 		campaign.append("<owner__id></owner__id>");
 		//Task ID is the same as the campaign ID.
 		//FIXME Why do we need any of the below attributes?
-		campaign.append("<task__id>" + this.getId() + "</task__id>");
+		campaign.append("<task__id>" + this.getTask().getId()/*getId()*/ + "</task__id>");
 		campaign.append("<tasks class=\"org.hibernate.collection.PersistentBag\">");
 		campaign.append("<bag/>");
 		campaign.append("<initialized>true</initialized>");
@@ -284,6 +285,8 @@ public class Campaign implements Item {
 					Campaign.this.setDescription(campaign.getDescription());
 					Campaign.this.setStartDate(campaign.getStartDate());
 					Campaign.this.setEndDate(campaign.getEndDate());
+					//ADDED by jts
+					Campaign.this.setTaskId(campaign.getTask().getId());
 					//FIXME Campaign.this.setImage()
 					Campaign.this.setLocations(campaign.getLocations());
 					Campaign.this.setOwner(campaign.getOwner());
@@ -313,7 +316,7 @@ public class Campaign implements Item {
 		campaign.append("\"date\":" + this.getEndDate().getDate() + "},");
 		campaign.append("\"description\":\"" + this.getDescription() + "\",");
 		campaign.append("\"owner_id\":" + 0 + ",");//TODO implement owner id
-		campaign.append("\"task_id\":" + this.getId() + ",");
+		campaign.append("\"task_id\":" + this.getTask().getId()/*getId()*/ + ",");
 		campaign.append("\"tasks\":[");
 		if (this.getTask() == null) {
 			campaign.append("],");
@@ -365,6 +368,5 @@ public class Campaign implements Item {
 	public String getTaskId() {
 		return taskId;
 	}
-
 		
 }//Campaign

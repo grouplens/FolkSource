@@ -87,6 +87,10 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 					if(header.getName().equalsIgnoreCase("points")){
 						this.setPoints(header.getValue());
 					}
+					if(header.getName().equalsIgnoreCase("uid")) {
+						G.user.setId(Integer.parseInt(header.getValue()));
+						System.out.println("User id-------------------->"+header.getValue());
+					}
 				}
 				G.user.setUsername(username);
 				G.user.setScore(Integer.parseInt(this.getPoints()));
@@ -108,6 +112,9 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 				for (Header header : headers) {
 					if (header.getName().contains("Cookie")) {
 						this.setCookie(header.getValue());
+					}
+					if(header.getName().equalsIgnoreCase("uid")) {
+						G.user.setId(Integer.parseInt(header.getValue()));
 					}
 				}
 				G.user.setUsername(username);

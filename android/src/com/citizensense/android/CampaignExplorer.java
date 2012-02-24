@@ -261,7 +261,6 @@ public abstract class CampaignExplorer extends ListActivity
 		image.setImageResource(campaign.getImage());
 		title.setText(campaign.getName());
 		
-		
 		Time endDate = new Time();
 		endDate.set(campaign.getEndDate().getDay(), 
 				    campaign.getEndDate().getMonth(), 
@@ -271,8 +270,8 @@ public abstract class CampaignExplorer extends ListActivity
 			          campaign.getStartDate().getMonth(), 
 			          campaign.getStartDate().getYear());
 		Time now = new Time();
-		now.setToNow();
-		String isOpen = (now.after(startDate) && endDate.before(now)) ? 
+		now.setToNow(); 
+		String isOpen = (now.after(startDate) && now.before(endDate)) ? 
 				        "Open" : "Closed";
 		status.setText("Status: " + isOpen);
 		if (isOpen.equals("Open")) {
@@ -340,7 +339,7 @@ public abstract class CampaignExplorer extends ListActivity
 		indicator.removeAllViews();
 		for (int i = 0; i < totalAdds; i++) {
 			temp = new TextView(this);
-			temp.setText("? ");
+			temp.setText("� ");
 			temp.setGravity(Gravity.CENTER);
 			if (i == position){
 				temp.setTextColor(Color.BLUE);
