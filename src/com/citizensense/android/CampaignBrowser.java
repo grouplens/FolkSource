@@ -209,6 +209,7 @@ public class CampaignBrowser extends CampaignExplorer {
 					}
 				}
 			});
+			
 			new GetRequest(this, Task.class, c.getId(), handler, true)
 					.execute();
 		}
