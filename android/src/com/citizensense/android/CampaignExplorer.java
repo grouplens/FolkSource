@@ -4,6 +4,7 @@
 
 package com.citizensense.android;
 
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
@@ -13,6 +14,7 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -216,24 +218,28 @@ public abstract class CampaignExplorer extends ListActivity
 		TextView times = (TextView) campaign_page.findViewById(R.id.campaign_times);
 		TextView startEndDates = (TextView) campaign_page.findViewById(R.id.campaign_start_and_end_dates);
 		TextView task_description = (TextView) campaign_page.findViewById(R.id.task_description);
-		Button map_button = (Button) campaign_page.findViewById(R.id.map);
+//		Button map_button = (Button) campaign_page.findViewById(R.id.map);
 		Button task_button = (Button) campaign_page.findViewById(R.id.task);
-		Button d_or_d = (Button) campaign_page.findViewById(R.id.download_or_delete);
+		Button s_or_s = (Button) campaign_page.findViewById(R.id.download_or_delete);
+		
+		task_button.setBackgroundColor(Color.parseColor("#FFA500"));
 		if (G.db.getCampaign(campaign.getId()) == null) {
-			d_or_d.setText("Download");
+			s_or_s.setBackgroundColor(Color.GREEN);
+			s_or_s.setText("Start");
 		}
 		else {
-			d_or_d.setText("Delete");
+			s_or_s.setBackgroundColor(Color.RED);
+			s_or_s.setText("Stop");
 		}
-		map_button.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				ArrayList<Campaign> cams = new ArrayList<Campaign>();
-				cams.add(campaign);
-				G.globalCampaigns = cams;
-				CitizenSense.openMap();
-			}
-		});
+//		map_button.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				ArrayList<Campaign> cams = new ArrayList<Campaign>();
+//				cams.add(campaign);
+//				G.globalCampaigns = cams;
+//				CitizenSense.openMap();
+//			}
+//		});
 		task_button.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -242,17 +248,19 @@ public abstract class CampaignExplorer extends ListActivity
 				startActivity(i);
 			}
 		});
-		d_or_d.setOnClickListener(new View.OnClickListener() {
+		s_or_s.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Button d = (Button) v;
-				if (d.getText().equals("Download")) {
+				if (d.getText().equals("Start")) {
 					G.db.addCampaign(campaign);
-					d.setText("Delete");
+					d.setBackgroundColor(Color.RED);
+					d.setText("Stop");
 				}
 				else {
 					G.db.deleteCampaign(campaign);
-					d.setText("Download");
+					d.setBackgroundColor(Color.GREEN);
+					d.setText("Start");
 				}
 			}
 		});
@@ -274,11 +282,18 @@ public abstract class CampaignExplorer extends ListActivity
 		String isOpen = (now.after(startDate) && now.before(endDate)) ? 
 				        "Open" : "Closed";
 		status.setText("Status: " + isOpen);
+		Log.d("CAMP_EXP", "start: " + dateFormat.format(startDate) + " end: " + dateFormat.format(endDate));
 		if (isOpen.equals("Open")) {
+			s_or_s.setEnabled(true);
+			task_button.setEnabled(true);
 			status.setTextColor(Color.GREEN);
 		}
 		else {
 			status.setTextColor(Color.RED);
+			task_button.setEnabled(false);
+			s_or_s.setEnabled(false);
+			task_button.setBackgroundColor(Color.DKGRAY);
+			s_or_s.setBackgroundColor(Color.DKGRAY);
 		}
 		String locs = "";
 		String[] locations = campaign.getLocations();

@@ -181,12 +181,12 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="SENSE" />
-      <Button 
-        android:id="@+id/map"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="MAP" />
+<!--       <Button  -->
+<!--         android:id="@+id/map" -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:layout_weight="1" -->
+<!--         android:text="MAP" /> -->
       <Button 
         android:id="@+id/download_or_delete"
         android:layout_width="fill_parent"

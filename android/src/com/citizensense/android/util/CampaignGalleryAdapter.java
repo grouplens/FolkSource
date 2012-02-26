@@ -110,17 +110,20 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 		TextView descr = (TextView) v.findViewById(R.id.campaign_description);
 		//TextView info = (TextView) v.findViewById(R.id.campaign_info);
 		ImageView image = (ImageView) v.findViewById(R.id.campaign_image);
-		Button map_button = (Button) v.findViewById(R.id.map);
+//		Button map_button = (Button) v.findViewById(R.id.map);
 		Button task_button = (Button) v.findViewById(R.id.task);
-		Button d_or_d = (Button) v.findViewById(R.id.download_or_delete);
+		Button s_or_s = (Button) v.findViewById(R.id.download_or_delete);
 		
 		final Campaign campaign = campaigns.get(position);
 		
+		task_button.setBackgroundColor(Color.parseColor("#FFA500"));
 		if (G.db.getCampaign(campaign.getId()) == null) {
-			d_or_d.setText("Download");
+			s_or_s.setBackgroundColor(Color.GREEN);
+			s_or_s.setText("Start");
 		}
 		else {
-			d_or_d.setText("Delete");
+			s_or_s.setBackgroundColor(Color.RED);
+			s_or_s.setText("Stop");
 		}
 		//Button more = (Button) v.findViewById(R.id.more);
 		//FIXME
@@ -164,12 +167,19 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 			now.setToNow();
 			String isOpen = (now.after(startDate) && now.before(endDate)) ? 
 					        "Open" : "Closed";
+			Log.d("GAL_ADAPT", "start: " + startDate + " end: " + endDate);
 			TextView status = (TextView) v.findViewById(R.id.campaign_status);
 			status.setText("Status: " + isOpen);
 			if (isOpen.equals("Open")) {
 				status.setTextColor(Color.GREEN);
+				s_or_s.setEnabled(true);
+				task_button.setEnabled(true);
 			}
 			else {
+				task_button.setEnabled(false);
+				s_or_s.setEnabled(false);
+				task_button.setBackgroundColor(Color.DKGRAY);
+				s_or_s.setBackgroundColor(Color.DKGRAY);
 				status.setTextColor(Color.RED);
 			}
 			
@@ -221,31 +231,33 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 					}
 				}
 			});
+//			
+//			map_button.setOnClickListener(new OnClickListener() {
+//				@Override
+//				public void onClick(View v) {
+//					ArrayList<Campaign> campaigns = new ArrayList<Campaign>();
+//					campaigns.add(campaign);
+//					G.globalCampaigns = campaigns;
+//					CitizenSense.openMap();
+//				}
+//			});
 			
-			map_button.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					ArrayList<Campaign> campaigns = new ArrayList<Campaign>();
-					campaigns.add(campaign);
-					G.globalCampaigns = campaigns;
-					CitizenSense.openMap();
-				}
-			});
-			
-			d_or_d.setOnClickListener(new OnClickListener() {
+			s_or_s.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
 					Button d = (Button) v;
-					if (d.getText().equals("Download")) {
+					if (d.getText().equals("Start")) {
 						if(campaign!=null){
+							d.setBackgroundColor(Color.RED);
 							G.db.addCampaign(campaign);
-							d.setText("Delete");
+							d.setText("Stop");
 						}
 					}
 					else {
 						G.db.deleteCampaign(campaign);
-						d.setText("Download");
+						d.setBackgroundColor(Color.GREEN);
+						d.setText("Start");
 					}
 					
 				}

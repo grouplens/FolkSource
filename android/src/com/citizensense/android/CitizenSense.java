@@ -53,8 +53,8 @@ public class CitizenSense extends TabActivity implements OnClickListener {
         intent = new Intent().setClass(this, CampaignBrowser.class);
         includeTab(intent, "home", null, android.R.drawable.ic_menu_search);
         
-        intent = new Intent().setClass(this, MyCampaigns.class);
-        includeTab(intent, "My Campaigns", null, android.R.drawable.ic_menu_gallery);
+//        intent = new Intent().setClass(this, MyCampaigns.class);
+//        includeTab(intent, "My Campaigns", null, android.R.drawable.ic_menu_gallery);
 
         intent = new Intent().setClass(this, Map.class);
         includeTab(intent, "map", null, android.R.drawable.ic_menu_mapmode);
@@ -91,7 +91,7 @@ public class CitizenSense extends TabActivity implements OnClickListener {
 			String c_id = intent.getStringExtra(getString(R.string.campaign_intent));
 			G.notification_campaign_id = c_id;
 			if (c_id != null) {
-				openMyCampaigns();
+				openHome();
 			}
 		}
 		else {
@@ -102,13 +102,13 @@ public class CitizenSense extends TabActivity implements OnClickListener {
     
     /** Open the map tab*/
     public static void openMap() {
-    	tabHost.setCurrentTab(2);
+    	tabHost.setCurrentTab(1);
     }//openMap
     
-    /** Open the My Campaigns tab*/
-    public static void openMyCampaigns() {
-    	tabHost.setCurrentTab(1);
-    }//openMyCampaigns
+//    /** Open the My Campaigns tab*/
+//    public static void openMyCampaigns() {
+//    	tabHost.setCurrentTab(1);
+//    }//openMyCampaigns
     
     /** Open the Home tab*/
     public static void openHome() {
@@ -117,7 +117,7 @@ public class CitizenSense extends TabActivity implements OnClickListener {
     
     /** Open the Profile tab*/
     public static void openProfile() {
-    	tabHost.setCurrentTab(3);
+    	tabHost.setCurrentTab(2);
     }//openProfile
     
     /**
