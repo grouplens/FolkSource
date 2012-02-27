@@ -33,7 +33,7 @@
     android:layout_alignTop="@id/chkbox_photo_complete"
     android:padding="5dp"
     android:layout_alignParentRight="true"
-    android:text="You have not uploaded a photo yet!" />
+    android:text="You have not taken a photo yet!" />
   <Button 
     android:id="@+id/capture_photo"
     android:layout_width="wrap_content"

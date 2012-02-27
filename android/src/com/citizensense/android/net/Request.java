@@ -78,8 +78,8 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 	public static final int XML = 0, JSON = 1, LOGIN = 2, REGISTER = 3,
 			IMAGE = 4;
 	/** The root URL of the server. */
-//	public static final String BASE_URL = "http://ugly.cs.umn.edu:8080";
-	public static final String BASE_URL = "http://192.168.1.2:9080";
+	public static final String BASE_URL = "http://ugly.cs.umn.edu:8080";
+//	public static final String BASE_URL = "http://134.84.51.6:9080";
 
 	/**
 	 * Create a GET Request

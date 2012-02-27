@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -67,6 +68,10 @@ public class Sense extends LocationActivity {
 	 * answers to XML.
 	 */
 	private HashMap<String, String> answers;
+	/** Check box indicates the status of image taken*/
+  	private CheckBox hasTakenPhoto;
+  	/** Text to show the status about image taken and upload*/
+	private TextView photoText;
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -74,16 +79,8 @@ public class Sense extends LocationActivity {
 			if (resultCode == RESULT_OK) {
 				// this.imageUri = data.getData();
 				// uri is already set. Do nothing.
-
-				// Upload the image to server
-				if (G.user.getUsername().equals("Anonymous")) {
-					Toast.makeText(
-							this,
-							"Sorry. Image upload is not allowed for anonymous user.",
-							Toast.LENGTH_LONG).show();
-				} else {
-					uploadImage(this.imageUri);
-				}
+				hasTakenPhoto.setChecked(true);
+				photoText.setText("Photo is stored for upload later.");
 			} else if (resultCode == RESULT_CANCELED) {
 				// User canceled the image capture. Do nothing
 				this.imageUri = null;
@@ -106,6 +103,11 @@ public class Sense extends LocationActivity {
 		TextView title = (TextView) findViewById(R.id.campaign_title);
 		title.setText(campaign.getName());
 		Button capture = (Button) findViewById(R.id.capture_photo);
+		
+		hasTakenPhoto = (CheckBox) findViewById(R.id.chkbox_photo_complete);
+    	photoText = (TextView) findViewById(R.id.upload_text);
+		
+		
 		capture.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -345,13 +347,13 @@ public class Sense extends LocationActivity {
 		if (this.answers.size() == campaign.getTask().getForm().getQuestions().length) {
 			if (this.hasLocationFix()) {
 				((Button) findViewById(R.id.submit)).setEnabled(true);
-//				if (this.imageUri != null) {
-//					((Button) findViewById(R.id.submit)).setEnabled(true);
-//				} else {
-//					if (Constants.DEBUG) {
-//						Log.d("Sense", "no image Uri");
-//					}
-//				}
+				if (this.imageUri != null) {
+					((Button) findViewById(R.id.submit)).setEnabled(true);
+				} else {
+					if (Constants.DEBUG) {
+						Log.d("Sense", "no image Uri");
+					}
+				}
 			} else {
 				if (Constants.DEBUG) {
 					Log.d("Sense", "no location fix");
@@ -368,11 +370,17 @@ public class Sense extends LocationActivity {
 		if (!this.hasLocationFix()) {
 			this.requestLocation();
 		} else {
-			SubmissionResponseHandler submissionHandler = new SubmissionResponseHandler(
-					this);
-			new PostRequest(this, new Submission(buildXML()), Request.XML,
-					submissionHandler, true).execute();
-//				this.finish(); // ends submission view after being successful
+			
+			// Upload the image to server
+			if (G.user.getUsername().equals("Anonymous")) {
+				Toast.makeText(
+						this,
+						"Sorry. Submission is not allowed for anonymous user.",
+						Toast.LENGTH_LONG).show();
+			} else {
+				//to resolve UI conflict, move submission post request into ImageResponseHandler
+				uploadImageAndForm(this.imageUri,new Submission(buildXML()));
+			}
 		}
 	}// submit
 
@@ -418,10 +426,9 @@ public class Sense extends LocationActivity {
 	}// buildXML
 
 	/** Upload the photo to server. */
-	public void uploadImage(Uri uri) {
+	public void uploadImageAndForm(Uri uri, Submission submission) {
 		String imagePath = uri.getPath();
-
-		ImageResponseHandler imageUploadHandler = new ImageResponseHandler(this);
+		ImageResponseHandler imageUploadHandler = new ImageResponseHandler(this,submission);
 		new PostRequest(this, null, IMAGE, imageUploadHandler, true).execute(
 				G.user.getUsername(), imagePath);
 		// Add this code will cause problem. I find the way we are prompting the

@@ -59,7 +59,7 @@
       android:padding="3dp"
       android:layout_gravity="center_vertical" />
     <TextView
-      android:text="User"
+      android:text="Anonymous"
       android:id="@+id/quick_profile_text"
       android:textColor="#FFFFFF"
       android:textSize="18sp"
