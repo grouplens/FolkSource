@@ -194,9 +194,8 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 				task_button.setEnabled(true);
 			}
 			else {
-				//FIXME: uncomment this 
-//				task_button.setEnabled(false);
-//				s_or_s.setEnabled(false);
+				task_button.setEnabled(false);
+				s_or_s.setEnabled(false);
 				status.setTextColor(Color.RED);
 			}
 			

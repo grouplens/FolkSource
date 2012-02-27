@@ -135,47 +135,47 @@ public class CampaignBrowser extends CampaignExplorer {
 		return server_campaigns;
 	}// getCampaigns
 
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		MenuInflater inflater = getMenuInflater();
-		switch (v.getId()) {
-		case (R.id.campaign_gallery): {
-			menu.setHeaderTitle((campaigns.get(this.current_gallery_position))
-					.getName());
-			list_clicked = false;
-			break;
-		}
-		case (android.R.id.list): {
-			menu.setHeaderTitle((campaigns.get(this.current_list_position))
-					.getName());
-			list_clicked = true;
-			break;
-		}
-		default: {
-			menu.setHeaderTitle("Campaign");
-			list_clicked = false;
-			break;
-		}
-		}
-		inflater.inflate(R.menu.campaign_browser_context_menu, menu);
-	}// onCreateContextMenu
-
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		/* Add the campaign to the local database */
-		case R.id.download:
-			if (this.list_clicked) {
-				G.db.addCampaign(campaigns.get(this.current_list_position));
-			} else {
-				G.db.addCampaign(campaigns.get(this.current_gallery_position));
-			}
-			return true;
-		}
-		return super.onContextItemSelected(item);
-	}// onContextItemSelected
+//	@Override
+//	public void onCreateContextMenu(ContextMenu menu, View v,
+//			ContextMenuInfo menuInfo) {
+//		super.onCreateContextMenu(menu, v, menuInfo);
+//		MenuInflater inflater = getMenuInflater();
+//		switch (v.getId()) {
+//		case (R.id.campaign_gallery): {
+//			menu.setHeaderTitle((campaigns.get(this.current_gallery_position))
+//					.getName());
+//			list_clicked = false;
+//			break;
+//		}
+//		case (android.R.id.list): {
+//			menu.setHeaderTitle((campaigns.get(this.current_list_position))
+//					.getName());
+//			list_clicked = true;
+//			break;
+//		}
+//		default: {
+//			menu.setHeaderTitle("Campaign");
+//			list_clicked = false;
+//			break;
+//		}
+//		}
+//		inflater.inflate(R.menu.campaign_browser_context_menu, menu);
+//	}// onCreateContextMenu
+//
+//	@Override
+//	public boolean onContextItemSelected(MenuItem item) {
+//		switch (item.getItemId()) {
+//		/* Add the campaign to the local database */
+//		case R.id.download:
+//			if (this.list_clicked) {
+//				G.db.addCampaign(campaigns.get(this.current_list_position));
+//			} else {
+//				G.db.addCampaign(campaigns.get(this.current_gallery_position));
+//			}
+//			return true;
+//		}
+//		return super.onContextItemSelected(item);
+//	}// onContextItemSelected
 
 	/**
 	 * Handle parsing a new {@link Campaign}
