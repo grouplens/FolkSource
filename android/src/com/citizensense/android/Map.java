@@ -174,8 +174,8 @@ public class Map extends MapActivity {
 		if (getLocType(loc) == Constants.EXACT_LOCATION) {
 	    	loc = loc.replaceAll(" ", "");
 	    	String[] long_lat = loc.split(",");
-			int longitude = (int) (Integer.parseInt(long_lat[0]) * 1E6);
-			int latitude = (int) (Integer.parseInt(long_lat[1]) * 1E6);
+			int longitude = (int) (Double.parseDouble(long_lat[0]) * 1E6);
+			int latitude = (int) (Double.parseDouble(long_lat[1]) * 1E6);
 			return new GeoPoint(latitude, longitude);
 		} else if (getLocType(loc) == Constants.NONEXACT_LOCATION){ 
 			Geocoder  mygeoCoder = new Geocoder(this, Locale.getDefault());
