@@ -102,16 +102,16 @@ public abstract class CampaignExplorer extends ListActivity
 		});
 		
 		//add this function to fix the bug: wrong campaign download when long click in list mode
-		list.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				current_list_view = view;
-				current_list_position = position;
-				return false;
-			}
-		});
+//		list.setOnItemLongClickListener(new OnItemLongClickListener() {
+//
+//			@Override
+//			public boolean onItemLongClick(AdapterView<?> parent, View view,
+//					int position, long id) {
+//				current_list_view = view;
+//				current_list_position = position;
+//				return false;
+//			}
+//		});
 		//FIXME: this listener is not used? remove this ?
 		list.setOnItemSelectedListener(new OnItemSelectedListener() {
 
