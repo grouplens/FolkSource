@@ -41,6 +41,12 @@ import com.citizensense.android.conf.Constants;
  * @author Phil Brown
  */
 public class CampaignGalleryAdapter extends BaseAdapter {
+	
+	public TextView title;
+	public TextView descr;
+	public ImageView image;
+	public Button task_button;
+	public Button s_or_s;
 
 	/** Context used to access resources and system services*/
 	private Context context;
@@ -107,23 +113,25 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 	        		                          Context.LAYOUT_INFLATER_SERVICE);
 	         v = vi.inflate(R.layout.relative_campaign_gallery_item, null);
 		}
-		TextView title = (TextView) v.findViewById(R.id.campaign_title);
-		TextView descr = (TextView) v.findViewById(R.id.campaign_description);
+		title = (TextView) v.findViewById(R.id.campaign_title);
+		descr = (TextView) v.findViewById(R.id.campaign_description);
 		//TextView info = (TextView) v.findViewById(R.id.campaign_info);
-		ImageView image = (ImageView) v.findViewById(R.id.campaign_image);
+		image = (ImageView) v.findViewById(R.id.campaign_image);
 //		Button map_button = (Button) v.findViewById(R.id.map);
-		Button task_button = (Button) v.findViewById(R.id.task);
-		Button s_or_s = (Button) v.findViewById(R.id.download_or_delete);
+		task_button = (Button) v.findViewById(R.id.task);
+		s_or_s = (Button) v.findViewById(R.id.download_or_delete);
 		
 		final Campaign campaign = campaigns.get(position);
 		
-		task_button.setBackgroundColor(Color.parseColor("#FFA500"));
+//		task_button.setBackgroundColor(Color.parseColor("#FFA500"));
+//		task_button.setTextColor(Color.parseColor("#FFA500"));
 		if (G.db.getCampaign(campaign.getId()) == null) {
-			s_or_s.setBackgroundColor(Color.GREEN);
+//			s_or_s.setTextColor(Color.GREEN);
 			s_or_s.setText("Start");
 		}
 		else {
-			s_or_s.setBackgroundColor(Color.RED);
+			title.setTextColor(Color.GREEN);
+//			s_or_s.setTextColor(Color.RED);
 			s_or_s.setText("Stop");
 		}
 		//Button more = (Button) v.findViewById(R.id.more);
@@ -141,6 +149,13 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 		*/
 		//unpack campaign and display (for now) FIXME improve it!
 		if (campaign != null) {
+			
+			//set global campaigns for map
+			ArrayList<Campaign> campaigns = new ArrayList<Campaign>();
+			campaigns.add(campaign);
+			G.globalCampaigns = campaigns;
+			
+			
 			title.setText(campaign.getName());
 			//title.setText(name);
 			String start = "Start Date: " + campaign.getStartDate().toString();
@@ -179,10 +194,9 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 				task_button.setEnabled(true);
 			}
 			else {
-				task_button.setEnabled(false);
-				s_or_s.setEnabled(false);
-				task_button.setBackgroundColor(Color.DKGRAY);
-				s_or_s.setBackgroundColor(Color.DKGRAY);
+				//FIXME: uncomment this 
+//				task_button.setEnabled(false);
+//				s_or_s.setEnabled(false);
 				status.setTextColor(Color.RED);
 			}
 			
@@ -249,18 +263,39 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 
 				@Override
 				public void onClick(View v) {
+					if(campaign==null)	return;
 					Button d = (Button) v;
 					if (d.getText().equals("Start")) {
-						if(campaign!=null){
-							d.setBackgroundColor(Color.RED);
-							G.db.addCampaign(campaign);
-							d.setText("Stop");
-						}
+						G.db.addCampaign(campaign);
+						campaign.started = true;
+//						d.setTextColor(Color.RED);
+						title.setTextColor(Color.GREEN);
+						d.setText("Stop");
+						//add this to have the UI updated 
+						notifyDataSetChanged();
+//						if(G.db.addCampaign(campaign) != -1){//db insert success
+//							campaign.started = true;
+//							title.setTextColor(Color.GREEN);
+//							d.setText("Stop");
+//						}else{
+//							Toast.makeText(v.getContext(), "Can't store campaign locally.", Toast.LENGTH_LONG).show();
+//						}
+
 					}
 					else {
 						G.db.deleteCampaign(campaign);
-						d.setBackgroundColor(Color.GREEN);
+						campaign.started = false;
+						title.setTextColor(Color.WHITE);
 						d.setText("Start");
+						notifyDataSetChanged();
+//						if(G.db.deleteCampaign(campaign)){//db delete success
+//							campaign.started = false;
+//							title.setTextColor(Color.WHITE);
+//							d.setText("Start");
+//						}else{
+//							Toast.makeText(v.getContext(), "Can't delete campaign.", Toast.LENGTH_LONG).show();
+//						}
+
 					}
 					
 				}

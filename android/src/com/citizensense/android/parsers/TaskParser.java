@@ -102,35 +102,6 @@ public class TaskParser extends XMLParser {
 		// else {
 		// this.question.id = Integer.parseInt(content);
 		// }
-		// }
-		// else if (localName.equalsIgnoreCase("instructions")) {
-		// this.task.setInstructions(content);
-		// }
-		// else if (localName.equalsIgnoreCase("required")) {
-		// //TODO handle required/not required questions or tasks
-		// }
-		// else if (localName.equalsIgnoreCase("question")) {
-		// this.question.setQuestion(content);
-		// }
-		// else if (localName.equalsIgnoreCase("type")) {
-		// if (content.equalsIgnoreCase("exclusive_multiple_choice")) {
-		// this.question.setSingle_choice(true);
-		// this.question.setType(Question.MULTIPLE_CHOICE);
-		// }
-		// else if (content.equalsIgnoreCase("multiple_choice")) {//TODO is this
-		// the correct term used? Ask Jake.
-		// this.question.setSingle_choice(false);
-		// this.question.setType(Question.MULTIPLE_CHOICE);
-		// }
-		// else if (content.equalsIgnoreCase("text")) {
-		// this.question.setType(Question.WRITTEN_RESPONSE);
-		// this.question.setSingle_choice(true);
-		// this.question.setSingle_line(true);//unless otherwise specified...
-		// }
-		// }
-		// else if (localName.equalsIgnoreCase("options")) {
-		// this.question.setAnswers(content.split("\\|"));
-		// }
 
 		if (localName.equalsIgnoreCase("id")) {
 			if (this.task.getId() == null)

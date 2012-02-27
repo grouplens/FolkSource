@@ -33,11 +33,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.citizensense.android.conf.Constants;
+import com.citizensense.android.net.ImageResponseHandler;
 import com.citizensense.android.net.PostRequest;
 import com.citizensense.android.net.Request;
 import com.citizensense.android.net.SubmissionResponseHandler;
-
-import com.citizensense.android.net.ImageResponseHandler;
 
 /**
  * Complete a task, or "Sense" data

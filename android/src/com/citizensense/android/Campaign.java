@@ -17,7 +17,6 @@ import android.os.Parcelable;
 import android.util.Xml;
 
 import com.citizensense.android.parsers.CampaignParser;
-import com.citizensense.android.parsers.FinalCampaignParser;
 
 /** 
  * Campaign Object
@@ -51,6 +50,8 @@ public class Campaign implements Item {
 	private Date endDate;
 	/** Id of task*/
 	private String taskId;
+	/** Started or not*/
+	public boolean started = false;
 	
 	/** This CREATOR is used to parcel this Object. */
 	public static final Parcelable.Creator<Campaign> CREATOR =

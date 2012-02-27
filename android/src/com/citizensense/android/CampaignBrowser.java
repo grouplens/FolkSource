@@ -4,22 +4,17 @@
 
 package com.citizensense.android;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.xml.sax.SAXException;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Xml;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,7 +23,6 @@ import com.citizensense.android.conf.Constants;
 import com.citizensense.android.net.GetRequest;
 import com.citizensense.android.net.XMLResponseHandler;
 import com.citizensense.android.parsers.CampaignListParser;
-import com.citizensense.android.parsers.FormParser;
 import com.citizensense.android.parsers.LegacyCampaignParser;
 import com.citizensense.android.parsers.TaskParser;
 
@@ -213,7 +207,6 @@ public class CampaignBrowser extends CampaignExplorer {
 				}
 			});
 			new GetRequest(this, Task.class, c.getTaskId(), handler, true).execute();
-//			new GetRequest(this, Task.class, "1", handler, true).execute();
 		}
 	}// handleNewCampaign
 
@@ -241,10 +234,10 @@ public class CampaignBrowser extends CampaignExplorer {
 	 * @param t
 	 * @param f
 	 */
-	public void handleNewForm(Campaign c, Task t, Form f) {
-		t.setForm(f);
-		server_campaigns.add(c);
-	}// handleNewForm
+//	public void handleNewForm(Campaign c, Task t, Form f) {
+//		t.setForm(f);
+//		server_campaigns.add(c);
+//	}// handleNewForm
 
 	/**
 	 * In order to avoid the campaign browser to add multiples, this line is
@@ -255,5 +248,4 @@ public class CampaignBrowser extends CampaignExplorer {
 		this.server_campaigns = new ArrayList<Campaign>();
 		super.onResume();
 	}// onResume
-
 }// CampaignBrowser

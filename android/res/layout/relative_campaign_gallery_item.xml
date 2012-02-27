@@ -14,6 +14,7 @@
     android:id="@+id/buttons"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:orientation="horizontal"
     android:padding="5dp"
     android:layout_margin="5dp"
     android:layout_above="@id/separator3" >
@@ -23,12 +24,7 @@
       android:layout_height="wrap_content"
       android:layout_weight="1"
       android:text="SENSE" />
-<!--     <Button  -->
-<!--       android:id="@+id/map" -->
-<!--       android:layout_width="fill_parent" -->
-<!--       android:layout_height="wrap_content" -->
-<!--       android:layout_weight="1" -->
-<!--       android:text="MAP" /> -->
+
     <Button 
       android:id="@+id/download_or_delete"
       android:layout_width="fill_parent"
