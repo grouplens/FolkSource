@@ -4,9 +4,9 @@
 
 package com.citizensense.android;
 
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -277,12 +277,14 @@ public abstract class CampaignExplorer extends ListActivity
 		startDate.set(campaign.getStartDate().getDay(), 
 			          campaign.getStartDate().getMonth(), 
 			          campaign.getStartDate().getYear());
-		Time now = new Time();
-		now.setToNow(); 
-		String isOpen = (now.after(startDate) && now.before(endDate)) ? 
-				        "Open" : "Closed";
+//		Time now = new Time();
+		Date now = new Date();
+//		now.setToNow(); 
+//		String isOpen = (now.after(startDate) && now.before(endDate)) ? 
+//				        "Open" : "Closed";
+		String isOpen = (now.after(campaign.getStartDate()) && now.before(campaign.getEndDate())) ? "Open" : "Closed";
 		status.setText("Status: " + isOpen);
-		Log.d("CAMP_EXP", "start: " + dateFormat.format(startDate) + " end: " + dateFormat.format(endDate));
+		Log.d("CAMP_EXP", "start: " + startDate + " end: " + endDate + " now: " + now);
 		if (isOpen.equals("Open")) {
 			s_or_s.setEnabled(true);
 			task_button.setEnabled(true);

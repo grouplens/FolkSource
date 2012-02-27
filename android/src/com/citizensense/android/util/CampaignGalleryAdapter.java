@@ -5,6 +5,7 @@
 package com.citizensense.android.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.content.Context;
 import android.content.Intent;
@@ -163,10 +164,12 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 			startDate.set(campaign.getStartDate().getDay(), 
 				          campaign.getStartDate().getMonth(), 
 				          campaign.getStartDate().getYear());
-			Time now = new Time();
-			now.setToNow();
-			String isOpen = (now.after(startDate) && now.before(endDate)) ? 
-					        "Open" : "Closed";
+//			Time now = new Time();
+			Date now = new Date();
+//			now.setToNow(); 
+//			String isOpen = (now.after(startDate) && now.before(endDate)) ? 
+//					        "Open" : "Closed";
+			String isOpen = (now.after(campaign.getStartDate()) && now.before(campaign.getEndDate())) ? "Open" : "Closed";
 			Log.d("GAL_ADAPT", "start: " + startDate + " end: " + endDate);
 			TextView status = (TextView) v.findViewById(R.id.campaign_status);
 			status.setText("Status: " + isOpen);
