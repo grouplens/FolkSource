@@ -93,6 +93,7 @@ public class Sense extends LocationActivity {
 		} else {
 			super.onActivityResult(requestCode, resultCode, data);
 		}
+		validateForm();
 	}// onActivityResult
 
 	@Override
@@ -346,7 +347,7 @@ public class Sense extends LocationActivity {
 	public void validateForm() {
 		if (this.answers.size() == campaign.getTask().getForm().getQuestions().length) {
 			if (this.hasLocationFix()) {
-				((Button) findViewById(R.id.submit)).setEnabled(true);
+//				((Button) findViewById(R.id.submit)).setEnabled(true);
 				if (this.imageUri != null) {
 					((Button) findViewById(R.id.submit)).setEnabled(true);
 				} else {
