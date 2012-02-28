@@ -7,6 +7,7 @@ package com.citizensense.android.util;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,12 @@ public class CampaignListAdapter extends ArrayAdapter<Campaign> {
 			img.setImageResource(campaign.getImage());
 			//TextView points = (TextView) v.findViewById(R.id.campaign_points);
 			title.setText(campaign.getName());
+			if (G.db.getCampaign(campaign.getId()) != null) {
+				title.setTextColor(Color.GREEN);
+			}
+			else {
+				title.setTextColor(Color.WHITE);
+			}
 			
 			TextView locs = (TextView) v.findViewById(R.id.campaign_location);
 			String locString = "";

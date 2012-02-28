@@ -13,11 +13,13 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpResponseException;
 import org.apache.http.impl.client.BasicResponseHandler;
 
-import com.citizensense.android.CitizenSense;
-
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.widget.Toast;
+
+import com.citizensense.android.CitizenSense;
 
 /**
  * @ClassName: SubmissionResponseHandler
@@ -60,19 +62,18 @@ public class SubmissionResponseHandler extends BasicResponseHandler {
 		status_code = statusLine.getStatusCode();
 
 		if (status_code == SUCCESS) {
-			System.out.println("success");
-			Toast.makeText(context, "Task Complete!", Toast.LENGTH_SHORT).show();
 			for (Header header : response.getAllHeaders()) {
 				if (header.getName().equalsIgnoreCase("points")) {
 					CitizenSense.getUserPointsText().setText(
 							(header.getValue()));
 				}
 			}
-			((Activity) context).finish();
+			//Instead of using toast, we should use dialog
+			//Toast.makeText(context, "Congraturations,Task Complete! You've got one point!", Toast.LENGTH_LONG).show();
+			showDialog(context,"Congraturations,task complete!Check your points!");
+			//((Activity) context).finish();
 		} else if (status_code == FAILURE) {
-			System.out.println("failure");
 		}
-		System.out.println("------------------------->"+status_code);
 		return null;
 	}
 
@@ -82,5 +83,15 @@ public class SubmissionResponseHandler extends BasicResponseHandler {
 
 	public String getResult() {
 		return result;
+	}
+	
+	public void showDialog(final Context context,String message){
+		new AlertDialog.Builder(context).setTitle("CitizenSense")
+        .setMessage(message)
+        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+            	((Activity) context).finish();
+            }
+        }).show();
 	}
 }

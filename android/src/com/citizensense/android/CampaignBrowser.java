@@ -4,31 +4,21 @@
 
 package com.citizensense.android;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.xml.sax.SAXException;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Xml;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.citizensense.android.conf.Constants;
 import com.citizensense.android.net.GetRequest;
 import com.citizensense.android.net.XMLResponseHandler;
 import com.citizensense.android.parsers.CampaignListParser;
-import com.citizensense.android.parsers.FormParser;
 import com.citizensense.android.parsers.LegacyCampaignParser;
 import com.citizensense.android.parsers.TaskParser;
 
@@ -141,47 +131,47 @@ public class CampaignBrowser extends CampaignExplorer {
 		return server_campaigns;
 	}// getCampaigns
 
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
-		super.onCreateContextMenu(menu, v, menuInfo);
-		MenuInflater inflater = getMenuInflater();
-		switch (v.getId()) {
-		case (R.id.campaign_gallery): {
-			menu.setHeaderTitle((campaigns.get(this.current_gallery_position))
-					.getName());
-			list_clicked = false;
-			break;
-		}
-		case (android.R.id.list): {
-			menu.setHeaderTitle((campaigns.get(this.current_list_position))
-					.getName());
-			list_clicked = true;
-			break;
-		}
-		default: {
-			menu.setHeaderTitle("Campaign");
-			list_clicked = false;
-			break;
-		}
-		}
-		inflater.inflate(R.menu.campaign_browser_context_menu, menu);
-	}// onCreateContextMenu
-
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		/* Add the campaign to the local database */
-		case R.id.download:
-			if (this.list_clicked) {
-				G.db.addCampaign(campaigns.get(this.current_list_position));
-			} else {
-				G.db.addCampaign(campaigns.get(this.current_gallery_position));
-			}
-			return true;
-		}
-		return super.onContextItemSelected(item);
-	}// onContextItemSelected
+//	@Override
+//	public void onCreateContextMenu(ContextMenu menu, View v,
+//			ContextMenuInfo menuInfo) {
+//		super.onCreateContextMenu(menu, v, menuInfo);
+//		MenuInflater inflater = getMenuInflater();
+//		switch (v.getId()) {
+//		case (R.id.campaign_gallery): {
+//			menu.setHeaderTitle((campaigns.get(this.current_gallery_position))
+//					.getName());
+//			list_clicked = false;
+//			break;
+//		}
+//		case (android.R.id.list): {
+//			menu.setHeaderTitle((campaigns.get(this.current_list_position))
+//					.getName());
+//			list_clicked = true;
+//			break;
+//		}
+//		default: {
+//			menu.setHeaderTitle("Campaign");
+//			list_clicked = false;
+//			break;
+//		}
+//		}
+//		inflater.inflate(R.menu.campaign_browser_context_menu, menu);
+//	}// onCreateContextMenu
+//
+//	@Override
+//	public boolean onContextItemSelected(MenuItem item) {
+//		switch (item.getItemId()) {
+//		/* Add the campaign to the local database */
+//		case R.id.download:
+//			if (this.list_clicked) {
+//				G.db.addCampaign(campaigns.get(this.current_list_position));
+//			} else {
+//				G.db.addCampaign(campaigns.get(this.current_gallery_position));
+//			}
+//			return true;
+//		}
+//		return super.onContextItemSelected(item);
+//	}// onContextItemSelected
 
 	/**
 	 * Handle parsing a new {@link Campaign}
@@ -241,10 +231,10 @@ public class CampaignBrowser extends CampaignExplorer {
 	 * @param t
 	 * @param f
 	 */
-	public void handleNewForm(Campaign c, Task t, Form f) {
-		t.setForm(f);
-		server_campaigns.add(c);
-	}// handleNewForm
+//	public void handleNewForm(Campaign c, Task t, Form f) {
+//		t.setForm(f);
+//		server_campaigns.add(c);
+//	}// handleNewForm
 
 	/**
 	 * In order to avoid the campaign browser to add multiples, this line is
@@ -255,5 +245,4 @@ public class CampaignBrowser extends CampaignExplorer {
 		this.server_campaigns = new ArrayList<Campaign>();
 		super.onResume();
 	}// onResume
-
 }// CampaignBrowser

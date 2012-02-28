@@ -6,6 +6,7 @@ package com.citizensense.android;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -37,6 +39,7 @@ import com.citizensense.android.util.CampaignListAdapter;
 /**
  * Abstract activity for displaying campaigns to the user
  * @author Phil Brown
+ * @ahthor Renji Yu
  */
 public abstract class CampaignExplorer extends ListActivity 
 									   implements OnClickListener,
@@ -83,6 +86,7 @@ public abstract class CampaignExplorer extends ListActivity
 		campaign_page = (ScrollView) findViewById(R.id.campaign_page);
 		registerForContextMenu(gallery);
 		registerForContextMenu(list);
+		
 		gallery.setOnItemSelectedListener(this);
 		gallery.setOnItemClickListener(new OnItemClickListener() {
 
@@ -91,10 +95,23 @@ public abstract class CampaignExplorer extends ListActivity
 					                View view, 
 					                int position,
 					                long id) {
-				openCampaignPage(campaigns.get(current_gallery_position));
-				lastLayoutView = gallery;
+//				openCampaignPage(campaigns.get(current_gallery_position));
+//				lastLayoutView = gallery;
 			}
 		});
+		
+		//add this function to fix the bug: wrong campaign download when long click in list mode
+//		list.setOnItemLongClickListener(new OnItemLongClickListener() {
+//
+//			@Override
+//			public boolean onItemLongClick(AdapterView<?> parent, View view,
+//					int position, long id) {
+//				current_list_view = view;
+//				current_list_position = position;
+//				return false;
+//			}
+//		});
+		//FIXME: this listener is not used? remove this ?
 		list.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
@@ -104,6 +121,11 @@ public abstract class CampaignExplorer extends ListActivity
 					                  long id) {
 				current_list_view = view;
 				current_list_position = position;
+				current_gallery_view = view;
+				current_gallery_position = position;
+//				gallery.setSelection(position);
+//				list.setVisibility(View.GONE);
+//				gallery.setVisibility(View.VISIBLE);
 			}
 
 			@Override
@@ -117,8 +139,11 @@ public abstract class CampaignExplorer extends ListActivity
 					                long id) {
 				current_list_view = view;
 				current_list_position = position;
-				openCampaignPage(campaigns.get(current_list_position));
-				lastLayoutView = list;
+				current_gallery_view = view;
+				current_gallery_position = position;
+				gallery.setSelection(position);
+				list.setVisibility(View.GONE);
+				gallery.setVisibility(View.VISIBLE);
 			}
 		});
 		list.setVisibility(View.GONE);
@@ -133,6 +158,10 @@ public abstract class CampaignExplorer extends ListActivity
 		mapMode.setOnClickListener(this);
 		//registerForContextMenu(G.map);
 		
+		//FIXME: instead of set visibility, we should remove the code of these buttons
+		listMode.setVisibility(View.GONE);
+		galleryMode.setVisibility(View.GONE);
+		mapMode.setVisibility(View.GONE);
 	}//onCreate
 	
 	@Override
@@ -171,7 +200,7 @@ public abstract class CampaignExplorer extends ListActivity
     		 				   int position, 
     		 				   long id) {
     	current_gallery_view = view;
-    	current_gallery_position = position;
+    	current_gallery_position = position;    	
     	updateIndicator(position);
     }//onItemSelected
 	
@@ -216,24 +245,29 @@ public abstract class CampaignExplorer extends ListActivity
 		TextView times = (TextView) campaign_page.findViewById(R.id.campaign_times);
 		TextView startEndDates = (TextView) campaign_page.findViewById(R.id.campaign_start_and_end_dates);
 		TextView task_description = (TextView) campaign_page.findViewById(R.id.task_description);
-		Button map_button = (Button) campaign_page.findViewById(R.id.map);
+//		Button map_button = (Button) campaign_page.findViewById(R.id.map);
 		Button task_button = (Button) campaign_page.findViewById(R.id.task);
-		Button d_or_d = (Button) campaign_page.findViewById(R.id.download_or_delete);
+		Button s_or_s = (Button) campaign_page.findViewById(R.id.download_or_delete);
+		
+//		task_button.setBackgroundColor(Color.parseColor("#FFA500"));
+		task_button.setTextColor(Color.parseColor("#FFA500"));
 		if (G.db.getCampaign(campaign.getId()) == null) {
-			d_or_d.setText("Download");
+			s_or_s.setTextColor(Color.GREEN);
+			s_or_s.setText("Start");
 		}
 		else {
-			d_or_d.setText("Delete");
+			s_or_s.setTextColor(Color.RED);
+			s_or_s.setText("Stop");
 		}
-		map_button.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				ArrayList<Campaign> cams = new ArrayList<Campaign>();
-				cams.add(campaign);
-				G.globalCampaigns = cams;
-				CitizenSense.openMap();
-			}
-		});
+//		map_button.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				ArrayList<Campaign> cams = new ArrayList<Campaign>();
+//				cams.add(campaign);
+//				G.globalCampaigns = cams;
+//				CitizenSense.openMap();
+//			}
+//		});
 		task_button.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -242,17 +276,19 @@ public abstract class CampaignExplorer extends ListActivity
 				startActivity(i);
 			}
 		});
-		d_or_d.setOnClickListener(new View.OnClickListener() {
+		s_or_s.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Button d = (Button) v;
-				if (d.getText().equals("Download")) {
+				if (d.getText().equals("Start")) {
 					G.db.addCampaign(campaign);
-					d.setText("Delete");
+					d.setTextColor(Color.RED);
+					d.setText("Stop");
 				}
 				else {
 					G.db.deleteCampaign(campaign);
-					d.setText("Download");
+					d.setTextColor(Color.GREEN);
+					d.setText("Start");
 				}
 			}
 		});
@@ -269,16 +305,24 @@ public abstract class CampaignExplorer extends ListActivity
 		startDate.set(campaign.getStartDate().getDay(), 
 			          campaign.getStartDate().getMonth(), 
 			          campaign.getStartDate().getYear());
-		Time now = new Time();
-		now.setToNow(); 
-		String isOpen = (now.after(startDate) && now.before(endDate)) ? 
-				        "Open" : "Closed";
+
+//		Time now = new Time();
+		Date now = new Date();
+//		now.setToNow(); 
+//		String isOpen = (now.after(startDate) && now.before(endDate)) ? 
+//				        "Open" : "Closed";
+		String isOpen = (now.after(campaign.getStartDate()) && now.before(campaign.getEndDate())) ? "Open" : "Closed";
 		status.setText("Status: " + isOpen);
+		Log.d("CAMP_EXP", "start: " + startDate + " end: " + endDate + " now: " + now);
 		if (isOpen.equals("Open")) {
+			s_or_s.setEnabled(true);
+			task_button.setEnabled(true);
 			status.setTextColor(Color.GREEN);
 		}
 		else {
 			status.setTextColor(Color.RED);
+			task_button.setEnabled(false);
+			s_or_s.setEnabled(false);
 		}
 		String locs = "";
 		String[] locations = campaign.getLocations();
@@ -356,6 +400,7 @@ public abstract class CampaignExplorer extends ListActivity
 		//FIXME: add more options later
 		menu.add(0, 0, 0, "Switch User");
 		menu.add(0, 1, 1, "Logout");
+		menu.add(0, 2, 2, "List View");
 		return true;
 	}
 
@@ -379,6 +424,13 @@ public abstract class CampaignExplorer extends ListActivity
 			break;
 		case 1: // Logout, Quit the app.
 			System.exit(0);
+			break;
+		
+		case 2:// 
+			gallery.setVisibility(View.GONE);
+			list.setVisibility(View.VISIBLE);
+			G.globalCampaigns = campaigns;
+			refreshView();
 			break;
 		}
 		return true;
