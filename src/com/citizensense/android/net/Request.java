@@ -4,12 +4,9 @@
 
 package com.citizensense.android.net;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +34,6 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.citizensense.android.G;
 import com.citizensense.android.Item;
 import com.citizensense.android.conf.Constants;
 import com.citizensense.android.util.Base64;
@@ -79,7 +75,7 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 			IMAGE = 4;
 	/** The root URL of the server. */
 	public static final String BASE_URL = "http://ugly.cs.umn.edu:8080";
-//	public static final String BASE_URL = "http://134.84.51.51:9080";
+//	public static final String BASE_URL = "http://134.84.51.6:9080";
 
 	/**
 	 * Create a GET Request

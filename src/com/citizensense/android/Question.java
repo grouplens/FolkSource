@@ -127,10 +127,12 @@ public class Question implements Parcelable {
 		else {
 			q += "\n";
 		}
-		Log.i("QUESTION", "Number of answers: " + this.answers.length);
-		for (int i = 0; i < this.answers.length; i++) {
-			Log.i("QUESTION", "index=" + i + ", q=" + q);
-			q += "  " + (i+1) + ") " + answers[i] + "\n";
+		if(this.answers != null) {
+			Log.i("QUESTION", "Number of answers: " + this.answers.length);
+			for (int i = 0; i < this.answers.length; i++) {
+				Log.i("QUESTION", "index=" + i + ", q=" + q);
+				q += "  " + (i+1) + ") " + answers[i] + "\n";
+			}
 		}
 		return q;
 	}//toString

@@ -5,4 +5,3 @@
 
 package com.citizensense.android.parsers;
 
-import com.citizensense.android.Item;

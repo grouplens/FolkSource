@@ -9,7 +9,6 @@ import org.xml.sax.SAXException;
 import android.util.Log;
 
 import com.citizensense.android.Campaign;
-import com.citizensense.android.Task;
 
 /**
  * Parses a list of Campaigns
