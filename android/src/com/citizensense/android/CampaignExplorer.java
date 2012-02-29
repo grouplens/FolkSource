@@ -67,10 +67,6 @@ public abstract class CampaignExplorer extends ListActivity
 	 * {@link #campaign_page} was brought to the front. */
 	protected View lastLayoutView;
 	
-	/** Button indicating the way that the on-screen campaigns should be
-	 * displayed. */
-	protected Button listMode, galleryMode, mapMode;
-	
 	/** The current View within the set*/
 	protected View current_gallery_view, current_list_view;
 	/** The current position of the set*/
@@ -144,29 +140,22 @@ public abstract class CampaignExplorer extends ListActivity
 				gallery.setSelection(position);
 				list.setVisibility(View.GONE);
 				gallery.setVisibility(View.VISIBLE);
+				lastLayoutView = gallery;
 			}
 		});
-		list.setVisibility(View.GONE);
 		campaign_page.setVisibility(View.GONE);
-		lastLayoutView = list;
-		
-		listMode = (Button) findViewById(R.id.view_as_list);
-		listMode.setOnClickListener(this);
-		galleryMode = (Button) findViewById(R.id.view_as_gallery);
-		galleryMode.setOnClickListener(this);
-		mapMode = (Button) findViewById(R.id.view_as_map);
-		mapMode.setOnClickListener(this);
-		//registerForContextMenu(G.map);
-		
-		//FIXME: instead of set visibility, we should remove the code of these buttons
-		listMode.setVisibility(View.GONE);
-		galleryMode.setVisibility(View.GONE);
-		mapMode.setVisibility(View.GONE);
 	}//onCreate
 	
 	@Override
 	public void onResume() {
 		super.onResume();
+		if(lastLayoutView == list){
+			gallery.setVisibility(View.GONE);
+			list.setVisibility(View.VISIBLE);
+		}else{
+			gallery.setVisibility(View.VISIBLE);
+			list.setVisibility(View.GONE);
+		}
 		refresh();
 	}//onResume
 	
@@ -178,19 +167,6 @@ public abstract class CampaignExplorer extends ListActivity
 	public void onClick(View v) {
 		if (this.campaign_page.getVisibility() == View.VISIBLE) {
 			this.campaign_page.setVisibility(View.GONE);
-		}
-		if (v == listMode) {
-			gallery.setVisibility(View.GONE);
-			list.setVisibility(View.VISIBLE);
-		}
-		else if (v == galleryMode) {
-			list.setVisibility(View.GONE);
-			gallery.setVisibility(View.VISIBLE);
-		}
-		else if (v == mapMode) {
-			if (campaigns != null)
-				G.globalCampaigns = campaigns;
-			CitizenSense.openMap();
 		}
 	}//onClick
 	
@@ -426,9 +402,10 @@ public abstract class CampaignExplorer extends ListActivity
 			System.exit(0);
 			break;
 		
-		case 2:// 
+		case 2:// list view
 			gallery.setVisibility(View.GONE);
 			list.setVisibility(View.VISIBLE);
+			lastLayoutView = list;
 			G.globalCampaigns = campaigns;
 			refreshView();
 			break;

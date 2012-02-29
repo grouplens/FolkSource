@@ -77,18 +77,6 @@ public class CampaignBrowser extends CampaignExplorer {
 							}// handleNewCampaign
 						}));
 
-				// The below will also parse the campaigns in campaign_3.xml
-				// using the new format.
-				/*
-				 * stream = getAssets().open("samples/campaign_3.xml");
-				 * Xml.parse(stream, Xml.Encoding.UTF_8, new
-				 * CampaignListParser(new CampaignListParser.Callback() {
-				 * 
-				 * @Override public void invoke(ArrayList<Campaign> campaigns) {
-				 * Toast.makeText(CampaignBrowser.this, "SUCCESS",
-				 * Toast.LENGTH_SHORT).show(); for (Campaign c : campaigns) {
-				 * handleNewCampaign(c); } } }));
-				 */
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (SAXException e) {
