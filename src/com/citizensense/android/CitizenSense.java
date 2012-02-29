@@ -77,6 +77,12 @@ public class CitizenSense extends TabActivity implements OnClickListener {
         ((TextView) findViewById(R.id.quick_profile_pts)).setOnClickListener(this);
 	}
     
+	@Override 
+	public void onDestroy() {
+		super.onDestroy();
+		G.user.setUsername(null);
+	};
+	
     @Override
     public void onResume() {
     	super.onResume();
