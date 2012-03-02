@@ -140,7 +140,7 @@ public abstract class CampaignExplorer extends ListActivity
 				gallery.setSelection(position);
 				list.setVisibility(View.GONE);
 				gallery.setVisibility(View.VISIBLE);
-				lastLayoutView = gallery;
+				lastLayoutView = list;
 			}
 		});
 		campaign_page.setVisibility(View.GONE);
@@ -149,12 +149,12 @@ public abstract class CampaignExplorer extends ListActivity
 	@Override
 	public void onResume() {
 		super.onResume();
-		if(lastLayoutView == list){
-			gallery.setVisibility(View.GONE);
-			list.setVisibility(View.VISIBLE);
-		}else{
+		if(lastLayoutView == gallery){
 			gallery.setVisibility(View.VISIBLE);
 			list.setVisibility(View.GONE);
+		}else{
+			gallery.setVisibility(View.GONE);
+			list.setVisibility(View.VISIBLE);
 		}
 		refresh();
 	}//onResume
@@ -376,7 +376,7 @@ public abstract class CampaignExplorer extends ListActivity
 		//FIXME: add more options later
 		menu.add(0, 0, 0, "Switch User");
 		menu.add(0, 1, 1, "Logout");
-		menu.add(0, 2, 2, "List View");
+		menu.add(0, 2, 2, "Gallery View");
 		return true;
 	}
 
@@ -402,10 +402,10 @@ public abstract class CampaignExplorer extends ListActivity
 			System.exit(0);
 			break;
 		
-		case 2:// list view
-			gallery.setVisibility(View.GONE);
-			list.setVisibility(View.VISIBLE);
-			lastLayoutView = list;
+		case 2:// gallery view
+			gallery.setVisibility(View.VISIBLE);
+			list.setVisibility(View.GONE);
+			lastLayoutView = gallery;
 			G.globalCampaigns = campaigns;
 			refreshView();
 			break;
