@@ -57,6 +57,7 @@ public class Map extends MapActivity {
         mapOverlays = G.map.getOverlays();
     }//onCreate
     
+    
     @Override
     public void onResume() {
     	super.onResume();
@@ -81,7 +82,8 @@ public class Map extends MapActivity {
 							mapOverlays.add(pointOverlay);
 						}
 						circleOverlay = new CircleOverlay(getGeopoint(loc),
-								getRadius(loc));
+								getRadius(loc), campaign);
+						
 						mapOverlays.add(circleOverlay);
 						G.map.getController().animateTo(getGeopoint(loc));
 					} else {
@@ -308,10 +310,12 @@ public class Map extends MapActivity {
     	private GeoPoint center;
     	/** The radius of the circle.*/
     	private float radius; 
+    	private Campaign campaign;
 
-    	public  CircleOverlay(GeoPoint center,float radius){
+    	public  CircleOverlay(GeoPoint center,float radius, Campaign campaign){
     		this.center = center;
     		this.radius = radius; //radius received should be in meters
+    		this.campaign = campaign;
     	}//CircleOverlay
     	
         @Override
@@ -341,6 +345,27 @@ public class Map extends MapActivity {
                 		          circlePaint);
             }
         }//draw
+        
+        @Override
+        public boolean onTap(GeoPoint p, MapView view) {
+        	Point tapPt = new Point();
+        	Point cPt = new Point();
+        	view.getProjection().toPixels(p, tapPt);
+        	view.getProjection().toPixels(center, cPt);
+        	float radiusInPixels = getPixelsFromMeters(radius, view, 
+                    center.getLatitudeE6()/1000000);
+        	
+        	if(tapPt.x >= (cPt.x - radiusInPixels) && tapPt.x <= (cPt.x + radiusInPixels))
+        		if(tapPt.y >= (cPt.y - radiusInPixels) && tapPt.y <= (cPt.y + radiusInPixels)) {
+        			Log.d("TAP", "tap returned true");
+        			Intent i = new Intent(view.getContext(), Sense.class);
+					i.putExtra("campaign", campaign);
+					view.getContext().startActivity(i);
+        			return true;
+        		}
+        	
+        	return false;
+        }
     }//CircleOverlay
     
 	/* Create menu. */
