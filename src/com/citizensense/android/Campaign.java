@@ -22,7 +22,7 @@ import com.citizensense.android.parsers.CampaignParser;
  * Campaign Object
  * @author Phil Brown
  */
-public class Campaign implements Item {
+public class Campaign implements Item, Comparable<Campaign> {
 
 	ArrayList<String> user_tokens;
 	/*The tokens associated with participating users.
@@ -368,6 +368,20 @@ public class Campaign implements Item {
 
 	public String getTaskId() {
 		return taskId;
+	}
+
+	@Override
+	public int compareTo(Campaign another) {
+		Date now = new Date();
+		String other = now.after(another.getStartDate()) && now.before(another.getEndDate()) ? "Open" : "Closed";
+		String us = now.after(this.getStartDate()) && now.before(this.getEndDate()) ? "Open" : "Closed";
+		
+		if(us.equals("Open") && other.equals("Closed"))
+			return -1;
+		if(us.equals("Closed") && other.equals("Open"))
+			return 1;
+		
+		return 0;
 	}
 		
 }//Campaign

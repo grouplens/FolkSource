@@ -5,6 +5,7 @@
 package com.citizensense.android.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 import android.content.Context;
@@ -21,6 +22,7 @@ import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.Gallery;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,7 @@ import android.widget.Toast;
 import com.citizensense.android.Campaign;
 import com.citizensense.android.Form;
 import com.citizensense.android.G;
+import com.citizensense.android.Map;
 import com.citizensense.android.Question;
 import com.citizensense.android.R;
 import com.citizensense.android.Sense;
@@ -43,7 +46,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 	public TextView title;
 	public TextView descr;
 	public ImageView image;
-	public Button task_button;
+	public ImageButton map_button;
 	public Button s_or_s;
 
 	/** Context used to access resources and system services*/
@@ -55,6 +58,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 	public CampaignGalleryAdapter(Context c, ArrayList<Campaign> campaigns) {
 		context = c;
 		this.campaigns = campaigns;
+		Collections.sort(campaigns);
         TypedArray attr = 
         	context.obtainStyledAttributes(R.styleable.CampaignGallery);
         attr.recycle();        
@@ -114,17 +118,17 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 		title = (TextView) v.findViewById(R.id.campaign_title);
 		descr = (TextView) v.findViewById(R.id.campaign_description);
 		image = (ImageView) v.findViewById(R.id.campaign_image);
-		task_button = (Button) v.findViewById(R.id.task);
+		map_button = (ImageButton) v.findViewById(R.id.camp_map);
 		s_or_s = (Button) v.findViewById(R.id.download_or_delete);
 		
 		final Campaign campaign = campaigns.get(position);
 		
 		if (G.db.getCampaign(campaign.getId()) == null) {
-			s_or_s.setText("Start");
+			s_or_s.setText("Watch this Campaign");
 		}
 		else {
 			title.setTextColor(Color.GREEN);
-			s_or_s.setText("Stop");
+			s_or_s.setText("Stop Watching this Campaign");
 		}
 		if (campaign != null) {
 			//set global campaigns for map
@@ -167,10 +171,10 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 			if (isOpen.equals("Open")) {
 				status.setTextColor(Color.GREEN);
 				s_or_s.setEnabled(true);
-				task_button.setEnabled(true);
+				map_button.setEnabled(true);
 			}
 			else {
-				task_button.setEnabled(false);
+				map_button.setEnabled(false);
 				s_or_s.setEnabled(false);
 				status.setTextColor(Color.RED);
 			}
@@ -185,8 +189,8 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 					}
 				}
 			}
-			TextView where = (TextView) v.findViewById(R.id.campaign_location);
-			where.setText(locs);
+//			TextView where = (TextView) v.findViewById(R.id.campaign_location);
+//			where.setText(locs);
 			//info.setText(information);
 			descr.setText(campaign.getDescription());
 			//TODO unpack full campaign
@@ -210,7 +214,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 				image.setImageResource(campaign.getImage());
 			}
 			//DO something with the buttons
-			task_button.setOnClickListener(new OnClickListener() {
+			map_button.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 
@@ -218,7 +222,8 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 						Toast.makeText(v.getContext(), "No task defined for this campaign.", Toast.LENGTH_LONG).show();
 					}
 					else{
-						Intent i = new Intent(context, Sense.class);
+						Intent i = new Intent(context, Map.class);
+//						Intent i = new Intent(context, Sense.class);
 						i.putExtra("campaign", campaign);
 						context.startActivity(i);
 					}
@@ -231,12 +236,12 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 				public void onClick(View v) {
 					if(campaign==null)	return;
 					Button d = (Button) v;
-					if (d.getText().equals("Start")) {
+					if (d.getText().equals("Watch this Campaign")) {
 						notifyDataSetChanged();
 						if(G.db.addCampaign(campaign) != -1){//db insert success
 							campaign.started = true;
 							title.setTextColor(Color.GREEN);
-							d.setText("Stop");
+							d.setText("Stop Watching this Campaign");
 							//add this to have the UI updated
 							notifyDataSetChanged();
 						}else{
@@ -248,7 +253,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 						if(G.db.deleteCampaign(campaign)){//db delete success
 							campaign.started = false;
 							title.setTextColor(Color.WHITE);
-							d.setText("Start");
+							d.setText("Watch this Campaign");
 							notifyDataSetChanged();
 						}else{
 							Toast.makeText(v.getContext(), "Can't delete campaign.", Toast.LENGTH_LONG).show();
