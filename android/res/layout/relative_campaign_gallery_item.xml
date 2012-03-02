@@ -17,12 +17,6 @@
     android:padding="5dp"
     android:layout_margin="5dp"
     android:layout_above="@id/separator3" >
-    <Button 
-      android:id="@+id/task"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:text="SENSE" />
 
     <Button 
       android:id="@+id/download_or_delete"
@@ -73,27 +67,25 @@
           android:textColor="#FFFFFF"
           android:padding="5dp"
           android:layout_margin="5dp" />
+
         <TextView
-          android:id="@+id/campaign_location"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:gravity="center_horizontal"
-          android:text="Location"
-          android:textSize="14sp"
-          android:textColor="#FFFFFF"
-          android:padding="5dp"
-          android:layout_marginLeft="5dp"
-          android:layout_marginRight="5dp" />
-        <TextView
-          android:id="@+id/campaign_status"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:gravity="center_horizontal"
-          android:text="Campaign Status"
-          android:textSize="14sp"
-          android:textColor="#FFFFFF"
-          android:padding="5dp"
-          android:layout_margin="5dp" />
+            android:id="@+id/campaign_status"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:gravity="center_horizontal"
+            android:padding="5dp"
+            android:text="Campaign Status"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+
+        <ImageButton
+            android:id="@+id/camp_map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@android:drawable/ic_menu_mapmode" />
+
       </LinearLayout>
     </LinearLayout>
     <View

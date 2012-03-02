@@ -73,19 +73,34 @@ public class Map extends MapActivity {
 		//When we open the map, clear the overlay first
 		mapOverlays.clear();
 		if (campaigns != null) {
+			int lowLat = Integer.MAX_VALUE;
+			int highLat = Integer.MIN_VALUE;
+			int lowLong = Integer.MAX_VALUE;
+			int highLong = Integer.MIN_VALUE;
+			
 			for (Campaign campaign : campaigns) {
 				for (String loc : campaign.getLocations()) {
 					GeoPoint point = getGeopoint(loc);
 					if (point != null) {
 						if (getLocType(loc) == Constants.EXACT_LOCATION) {
-							pointOverlay = new PointOverlay(getGeopoint(loc));
+							pointOverlay = new PointOverlay(point);
 							mapOverlays.add(pointOverlay);
 						}
-						circleOverlay = new CircleOverlay(getGeopoint(loc),
+						circleOverlay = new CircleOverlay(point,
 								getRadius(loc), campaign);
 						
+						if(point.getLatitudeE6() < lowLat)
+							lowLat = point.getLatitudeE6();
+						if(point.getLatitudeE6() > highLat)
+							highLat = point.getLatitudeE6();
+						if(point.getLongitudeE6() < lowLong)
+							lowLong = point.getLongitudeE6();
+						if(point.getLongitudeE6() > highLong)
+							highLong = point.getLongitudeE6();
+						
 						mapOverlays.add(circleOverlay);
-						G.map.getController().animateTo(getGeopoint(loc));
+						G.map.getController().zoomToSpan(Math.abs(highLong - lowLong), Math.abs(highLat - lowLat));
+//						G.map.getController().animateTo(getGeopoint(loc));
 					} else {
 						Toast.makeText(
 								this,
@@ -94,7 +109,6 @@ public class Map extends MapActivity {
 					}
 				}
 			}
-			setZoomLevel();
 		}
     }//onResume
 
@@ -117,14 +131,6 @@ public class Map extends MapActivity {
 		}
 		return results;
 	}//getCampaigns
-	
-	/** 
-	 * Set zoom level of the map according to the location's type.
-	 * FIXME compute the zoom based on the set of campaigns displayed on the map
-	 */
-	public void setZoomLevel(){
-		G.map.getController().setZoom(11);
-	}//setZoomLevel
 	
 	/** Get locations of the campaign from database by searching the 
 	 * campaign's id.*/
@@ -311,6 +317,8 @@ public class Map extends MapActivity {
     	/** The radius of the circle.*/
     	private float radius; 
     	private Campaign campaign;
+    	private float farLeft;
+    	private float farRight;
 
     	public  CircleOverlay(GeoPoint center,float radius, Campaign campaign){
     		this.center = center;
@@ -325,8 +333,12 @@ public class Map extends MapActivity {
                 Point pt = new Point();
                 projection.toPixels(center,pt);
                 
+                
                 float radiusInPixels = getPixelsFromMeters(radius, mapV, 
                 		                       center.getLatitudeE6()/1000000);
+                this.farLeft = pt.x - radiusInPixels;
+                this.farRight = pt.x + radiusInPixels;
+                Log.d("WIDTH", "set: "+this.farLeft + ":" + this.farRight);
                 Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
                 //set color and style for the inner part of the circle
                 int color = Color.argb(127,255,0,255); //set color
@@ -355,7 +367,7 @@ public class Map extends MapActivity {
         	float radiusInPixels = getPixelsFromMeters(radius, view, 
                     center.getLatitudeE6()/1000000);
         	
-        	if(tapPt.x >= (cPt.x - radiusInPixels) && tapPt.x <= (cPt.x + radiusInPixels))
+        	if(tapPt.x >= (this.farLeft) && tapPt.x <= (this.farRight))
         		if(tapPt.y >= (cPt.y - radiusInPixels) && tapPt.y <= (cPt.y + radiusInPixels)) {
         			Log.d("TAP", "tap returned true");
         			Intent i = new Intent(view.getContext(), Sense.class);
