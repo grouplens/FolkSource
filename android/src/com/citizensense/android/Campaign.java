@@ -373,6 +373,7 @@ public class Campaign implements Item, Comparable<Campaign> {
 	@Override
 	public int compareTo(Campaign another) {
 		Date now = new Date();
+		
 		String other = now.after(another.getStartDate()) && now.before(another.getEndDate()) ? "Open" : "Closed";
 		String us = now.after(this.getStartDate()) && now.before(this.getEndDate()) ? "Open" : "Closed";
 		
@@ -380,7 +381,6 @@ public class Campaign implements Item, Comparable<Campaign> {
 			return -1;
 		if(us.equals("Closed") && other.equals("Open"))
 			return 1;
-		
 		return 0;
 	}
 		

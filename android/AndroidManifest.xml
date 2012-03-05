@@ -25,6 +25,8 @@
                   android:label="CampaignBrowser" />
         <activity android:name=".MyCampaigns"
                   android:label="MyCampaigns" />
+                <activity android:name=".CampaignGallery"
+                  android:label="GalleryCampaign" />
         <activity android:name=".Home"
                   android:label="Home" />
         <activity android:name=".Map"

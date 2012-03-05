@@ -49,7 +49,7 @@ public class MyCampaigns extends CampaignExplorer {
 			for (int i = 0; i < campaigns.size(); i++) {
 				Campaign c = campaigns.get(i);
 				if (c.getId().equals(c_id)) {
-					this.gallery.setSelection(i);//, true);
+//					this.gallery.setSelection(i);//, true);
 					break;
 				}
 			}
@@ -87,12 +87,12 @@ public class MyCampaigns extends CampaignExplorer {
 		MenuInflater inflater = getMenuInflater();
 		switch(v.getId()) {
 			case (R.id.campaign_gallery) : {
-				menu.setHeaderTitle((campaigns.get(this.current_gallery_position)).getName());
+//				menu.setHeaderTitle((campaigns.get(this.current_gallery_position)).getName());
 				list_clicked = false;
 				break;
 			}
 			case (android.R.id.list) : {
-				menu.setHeaderTitle((campaigns.get(this.current_list_position)).getName());
+//				menu.setHeaderTitle((campaigns.get(this.current_list_position)).getName());
 				list_clicked = true;
 				break;
 			}
@@ -114,7 +114,7 @@ public class MyCampaigns extends CampaignExplorer {
 				G.db.deleteCampaign((campaigns.get(this.current_list_position)));
 			} 
 			else {
-				G.db.deleteCampaign((campaigns.get(this.current_gallery_position)));
+//				G.db.deleteCampaign((campaigns.get(this.current_gallery_position)));
 			}
 			refresh();
 			return true;

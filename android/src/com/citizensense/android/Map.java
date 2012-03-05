@@ -65,8 +65,9 @@ public class Map extends MapActivity {
         //Currently, simply use a global variable.
         //Its value is set in CampaginBrowser by getCampaigns();
     	//FIXME remove the global variable and unpack the campaigns from intent.
-        campaigns = G.globalCampaigns;
-        
+        //campaigns = G.globalCampaigns;
+    	campaigns = getIntent().getParcelableArrayListExtra("mapCampaigns");
+    	
 		PointOverlay pointOverlay = null;
 		CircleOverlay circleOverlay = null;
 		

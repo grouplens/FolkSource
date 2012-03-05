@@ -20,7 +20,7 @@ import com.citizensense.android.conf.Constants;
 /**
  * Login screen
  * @author Phil Brown
- * @author Renji
+ * @author Renji Yu
  */
 public class Login extends Activity {
 	private int regRequestCode;

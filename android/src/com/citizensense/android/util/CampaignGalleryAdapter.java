@@ -58,7 +58,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 	public CampaignGalleryAdapter(Context c, ArrayList<Campaign> campaigns) {
 		context = c;
 		this.campaigns = campaigns;
-		Collections.sort(campaigns);
+//		Collections.sort(campaigns);
         TypedArray attr = 
         	context.obtainStyledAttributes(R.styleable.CampaignGallery);
         attr.recycle();        
@@ -131,12 +131,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 			s_or_s.setText("Stop Watching this Campaign");
 		}
 		if (campaign != null) {
-			//set global campaigns for map
-			ArrayList<Campaign> campaigns = new ArrayList<Campaign>();
-			campaigns.add(campaign);
-			G.globalCampaigns = campaigns;
-			
-			
+
 			title.setText(campaign.getName());
 			String start = "Start Date: " + campaign.getStartDate().toString();
 			String end = "End Date: " + campaign.getEndDate().toString();
@@ -223,8 +218,9 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 					}
 					else{
 						Intent i = new Intent(context, Map.class);
-//						Intent i = new Intent(context, Sense.class);
-						i.putExtra("campaign", campaign);
+						ArrayList<Campaign> mapCampaigns =  new ArrayList<Campaign>();
+						mapCampaigns.add(campaign);
+						i.putExtra("mapCampaigns", mapCampaigns);
 						context.startActivity(i);
 					}
 				}

@@ -7,6 +7,7 @@ package com.citizensense.android;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import org.xml.sax.SAXException;
 
@@ -30,8 +31,8 @@ import com.citizensense.android.parsers.TaskParser;
  */
 public class CampaignBrowser extends CampaignExplorer {
 
-	/** The campaigns retrieved from the server */
-	public ArrayList<Campaign> server_campaigns;
+//	/** The campaigns retrieved from the server */
+//	public ArrayList<Campaign> this.campaigns;
 
 	/**
 	 * Referenced in {@link #onContextItemSelected(MenuItem)} to know which item
@@ -41,7 +42,7 @@ public class CampaignBrowser extends CampaignExplorer {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		server_campaigns = new ArrayList<Campaign>();
+		this.campaigns = new ArrayList<Campaign>();
 		super.onCreate(savedInstanceState);
 	}// onCreate
 
@@ -59,8 +60,8 @@ public class CampaignBrowser extends CampaignExplorer {
 
 							@Override
 							public void handleNewCampaign(Campaign c) {
-								if (!server_campaigns.contains(c)) {
-									server_campaigns.add(c);
+								if (!campaigns.contains(c)) {
+									campaigns.add(c);
 								}
 							}// handleNewCampaign
 						}));
@@ -71,8 +72,8 @@ public class CampaignBrowser extends CampaignExplorer {
 
 							@Override
 							public void handleNewCampaign(Campaign c) {
-								if (!server_campaigns.contains(c)) {
-									server_campaigns.add(c);
+								if (!campaigns.contains(c)) {
+									campaigns.add(c);
 								}
 							}// handleNewCampaign
 						}));
@@ -115,51 +116,11 @@ public class CampaignBrowser extends CampaignExplorer {
 			});
 			new GetRequest(this, Campaign.class, null, handler, true).execute();
 		}
-		G.globalCampaigns = server_campaigns;
-		return server_campaigns;
+		Collections.sort(this.campaigns);
+		G.globalCampaigns = this.campaigns;
+		return this.campaigns;
 	}// getCampaigns
 
-//	@Override
-//	public void onCreateContextMenu(ContextMenu menu, View v,
-//			ContextMenuInfo menuInfo) {
-//		super.onCreateContextMenu(menu, v, menuInfo);
-//		MenuInflater inflater = getMenuInflater();
-//		switch (v.getId()) {
-//		case (R.id.campaign_gallery): {
-//			menu.setHeaderTitle((campaigns.get(this.current_gallery_position))
-//					.getName());
-//			list_clicked = false;
-//			break;
-//		}
-//		case (android.R.id.list): {
-//			menu.setHeaderTitle((campaigns.get(this.current_list_position))
-//					.getName());
-//			list_clicked = true;
-//			break;
-//		}
-//		default: {
-//			menu.setHeaderTitle("Campaign");
-//			list_clicked = false;
-//			break;
-//		}
-//		}
-//		inflater.inflate(R.menu.campaign_browser_context_menu, menu);
-//	}// onCreateContextMenu
-//
-//	@Override
-//	public boolean onContextItemSelected(MenuItem item) {
-//		switch (item.getItemId()) {
-//		/* Add the campaign to the local database */
-//		case R.id.download:
-//			if (this.list_clicked) {
-//				G.db.addCampaign(campaigns.get(this.current_list_position));
-//			} else {
-//				G.db.addCampaign(campaigns.get(this.current_gallery_position));
-//			}
-//			return true;
-//		}
-//		return super.onContextItemSelected(item);
-//	}// onContextItemSelected
 
 	/**
 	 * Handle parsing a new {@link Campaign}
@@ -167,8 +128,8 @@ public class CampaignBrowser extends CampaignExplorer {
 	 * @param c
 	 */
 	public void handleNewCampaign(final Campaign c) {
-		if (!server_campaigns.contains(c)) {
-			server_campaigns.add(c);	
+		if (!this.campaigns.contains(c)) {
+			this.campaigns.add(c);	
 			
 			XMLResponseHandler handler = new XMLResponseHandler();
 			handler.setCallback(new XMLResponseHandler.StringCallback() {
@@ -213,7 +174,7 @@ public class CampaignBrowser extends CampaignExplorer {
 
 	/**
 	 * Handle parsing a new {@link Form} and store the final {@link Campaign} in
-	 * {@link #server_campaigns}.
+	 * {@link #this.campaigns}.
 	 * 
 	 * @param c
 	 * @param t
@@ -221,16 +182,16 @@ public class CampaignBrowser extends CampaignExplorer {
 	 */
 //	public void handleNewForm(Campaign c, Task t, Form f) {
 //		t.setForm(f);
-//		server_campaigns.add(c);
+//		this.campaigns.add(c);
 //	}// handleNewForm
 
 	/**
 	 * In order to avoid the campaign browser to add multiples, this line is
 	 * needed on onResume.
 	 */
-	@Override
-	public void onResume() {
-		this.server_campaigns = new ArrayList<Campaign>();
-		super.onResume();
-	}// onResume
+//	@Override
+//	public void onResume() {
+//		this.campaigns = new ArrayList<Campaign>();
+//		super.onResume();
+//	}// onResume
 }// CampaignBrowser

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2006-2011 Regents of the University of Minnesota.
+   For licensing terms, see the file LICENSE. -->
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="@drawable/tab_selected">
+  <RelativeLayout
+    android:id="@+id/gallery_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="#000000"
+    android:layout_margin="5dp" >
+    <LinearLayout
+      android:id="@+id/gallery_index_indicator"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:orientation="horizontal"
+      android:gravity="center_horizontal"
+      android:layout_alignParentBottom="true" />
+    <Gallery 
+      android:id="@+id/campaign_gallery"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:spacing="5dp"
+      android:layout_above="@id/gallery_index_indicator"
+      android:background="#000000"
+      android:layout_margin="5dp" />
+  </RelativeLayout>
+</RelativeLayout>
