@@ -15,7 +15,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.format.Time;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,15 +24,12 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
-import android.widget.Gallery;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.citizensense.android.util.CampaignGalleryAdapter;
 import com.citizensense.android.util.CampaignListAdapter;
 
 /**
@@ -42,11 +38,9 @@ import com.citizensense.android.util.CampaignListAdapter;
  * @ahthor Renji Yu
  */
 public abstract class CampaignExplorer extends ListActivity 
-									   implements OnClickListener,
-									              OnItemSelectedListener {
-
-	/** Adapter for adding campaigns to the gallery*/
-	protected CampaignGalleryAdapter galleryAdapter;
+									   implements OnClickListener{								               
+//	/** Adapter for adding campaigns to the gallery*/
+//	protected CampaignGalleryAdapter galleryAdapter;
 	
 	/** Adapter for adding campaigns to the list*/
 	protected CampaignListAdapter listAdapter;
@@ -54,8 +48,8 @@ public abstract class CampaignExplorer extends ListActivity
 	/** List of campaigns inflated by the view*/
 	protected ArrayList<Campaign> campaigns;
 	
-	/** The gallery where the campaigns are stored in gallery mode*/
-	protected Gallery gallery;
+//	/** The gallery where the campaigns are stored in gallery mode*/
+//	protected Gallery gallery;
 	
 	/** The list where the campaigns are stored in list mode*/
 	protected ListView list;
@@ -68,45 +62,20 @@ public abstract class CampaignExplorer extends ListActivity
 	protected View lastLayoutView;
 	
 	/** The current View within the set*/
-	protected View current_gallery_view, current_list_view;
+	protected View current_list_view;
 	/** The current position of the set*/
-	protected int current_gallery_position, current_list_position;
+	protected int current_list_position;
 		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.campaign_explorer);
-		//show list or gallery (and hide the other one)
+		//show gallery (and hide the other one)
 		list = (ListView) findViewById(android.R.id.list);
-		gallery = (Gallery) findViewById(R.id.campaign_gallery);
 		campaign_page = (ScrollView) findViewById(R.id.campaign_page);
-		registerForContextMenu(gallery);
 		registerForContextMenu(list);
 		
-		gallery.setOnItemSelectedListener(this);
-		gallery.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, 
-					                View view, 
-					                int position,
-					                long id) {
-//				openCampaignPage(campaigns.get(current_gallery_position));
-//				lastLayoutView = gallery;
-			}
-		});
 		
-		//add this function to fix the bug: wrong campaign download when long click in list mode
-//		list.setOnItemLongClickListener(new OnItemLongClickListener() {
-//
-//			@Override
-//			public boolean onItemLongClick(AdapterView<?> parent, View view,
-//					int position, long id) {
-//				current_list_view = view;
-//				current_list_position = position;
-//				return false;
-//			}
-//		});
 		//FIXME: this listener is not used? remove this ?
 		list.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -117,8 +86,8 @@ public abstract class CampaignExplorer extends ListActivity
 					                  long id) {
 				current_list_view = view;
 				current_list_position = position;
-				current_gallery_view = view;
-				current_gallery_position = position;
+//				current_gallery_view = view;
+//				current_gallery_position = position;
 //				gallery.setSelection(position);
 //				list.setVisibility(View.GONE);
 //				gallery.setVisibility(View.VISIBLE);
@@ -133,30 +102,28 @@ public abstract class CampaignExplorer extends ListActivity
 					                View view, 
 					                int position,
 					                long id) {
-				current_list_view = view;
-				current_list_position = position;
-				current_gallery_view = view;
-				current_gallery_position = position;
-				gallery.setSelection(position);
-				list.setVisibility(View.GONE);
-				gallery.setVisibility(View.VISIBLE);
-				lastLayoutView = list;
+				Intent i = new Intent(view.getContext(),CampaignGallery.class);
+				i.putExtra("position", position);
+				System.out.println("position------------>"+position);
+				view.getContext().startActivity(i);
+//				current_list_view = view;
+//				current_list_position = position;
+//				current_gallery_view = view;
+//				current_gallery_position = position;
+//				gallery.setSelection(position);
+//				list.setVisibility(View.GONE);
+//				gallery.setVisibility(View.VISIBLE);
+//				lastLayoutView = list;
+				
 			}
 		});
 		campaign_page.setVisibility(View.GONE);
+		refresh();
 	}//onCreate
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		if(lastLayoutView == gallery){
-			gallery.setVisibility(View.VISIBLE);
-			list.setVisibility(View.GONE);
-		}else{
-			gallery.setVisibility(View.GONE);
-			list.setVisibility(View.VISIBLE);
-		}
-		refresh();
 	}//onResume
 	
 	/** Get the campaigns to populate the list or gallery*/
@@ -170,24 +137,24 @@ public abstract class CampaignExplorer extends ListActivity
 		}
 	}//onClick
 	
-	@Override
-    public void onItemSelected(AdapterView<?> parent, 
-    		 				   View view,
-    		 				   int position, 
-    		 				   long id) {
-    	current_gallery_view = view;
-    	current_gallery_position = position;    	
-    	updateIndicator(position);
-    }//onItemSelected
+//	@Override
+//    public void onItemSelected(AdapterView<?> parent, 
+//    		 				   View view,
+//    		 				   int position, 
+//    		 				   long id) {
+//    	current_gallery_view = view;
+//    	current_gallery_position = position;    	
+//    	updateIndicator(position);
+//    }//onItemSelected
 	
-	@Override
-	public void onNothingSelected(AdapterView<?> arg0) {}//onNothingSelected
+//	@Override
+//	public void onNothingSelected(AdapterView<?> arg0) {}//onNothingSelected
 	
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if (this.gallery.getVisibility() == View.VISIBLE) {
-				this.gallery.setVisibility(View.GONE);
+			if (this.campaign_page.getVisibility() == View.VISIBLE) {
+				this.campaign_page.setVisibility(View.GONE);
 				this.lastLayoutView.setVisibility(View.VISIBLE);
 				return true;
 			}
@@ -198,7 +165,8 @@ public abstract class CampaignExplorer extends ListActivity
 	/** Refresh the view and update the gallery index indicator */
 	public void refresh() {
 		//re-retrieve the campaigns. TODO move to non-UI thread
-		campaigns = getCampaigns();
+		this.campaigns = getCampaigns();
+		G.globalCampaigns = this.campaigns;
 		this.refreshView();
 	}//refresh
 	
@@ -207,7 +175,7 @@ public abstract class CampaignExplorer extends ListActivity
 		//resets the scroll to the top of the screen.
 		this.campaign_page.scrollTo(0, 0);
 		list.setVisibility(View.GONE);
-		gallery.setVisibility(View.GONE);
+//		gallery.setVisibility(View.GONE);
 		SimpleDateFormat dateFormat;
 		if (campaign == null) {
 			Toast.makeText(this, "No Campaign found", Toast.LENGTH_SHORT).show();
@@ -221,11 +189,9 @@ public abstract class CampaignExplorer extends ListActivity
 		TextView times = (TextView) campaign_page.findViewById(R.id.campaign_times);
 		TextView startEndDates = (TextView) campaign_page.findViewById(R.id.campaign_start_and_end_dates);
 		TextView task_description = (TextView) campaign_page.findViewById(R.id.task_description);
-//		Button map_button = (Button) campaign_page.findViewById(R.id.map);
 		Button task_button = (Button) campaign_page.findViewById(R.id.task);
 		Button s_or_s = (Button) campaign_page.findViewById(R.id.download_or_delete);
 		
-//		task_button.setBackgroundColor(Color.parseColor("#FFA500"));
 		task_button.setTextColor(Color.parseColor("#FFA500"));
 		if (G.db.getCampaign(campaign.getId()) == null) {
 			s_or_s.setTextColor(Color.GREEN);
@@ -235,15 +201,7 @@ public abstract class CampaignExplorer extends ListActivity
 			s_or_s.setTextColor(Color.RED);
 			s_or_s.setText("Stop");
 		}
-//		map_button.setOnClickListener(new View.OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//				ArrayList<Campaign> cams = new ArrayList<Campaign>();
-//				cams.add(campaign);
-//				G.globalCampaigns = cams;
-//				CitizenSense.openMap();
-//			}
-//		});
+
 		task_button.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -345,38 +303,16 @@ public abstract class CampaignExplorer extends ListActivity
 		if (campaigns != null) {
 			listAdapter = new CampaignListAdapter(this, campaigns);
 			setListAdapter(listAdapter);
-			galleryAdapter = new CampaignGalleryAdapter(this, campaigns);
-			gallery.setAdapter(galleryAdapter);
 		}
 	}//refreshView
 	
-	/** Update the index indicator at the bottom of the campaign view. 
-	 * @param position the current gallery position */
-	public void updateIndicator(int position) {
-		int totalAdds = gallery.getCount();
-		TextView temp;
-		LinearLayout indicator = (LinearLayout) findViewById(R.id.gallery_index_indicator);
-		indicator.removeAllViews();
-		for (int i = 0; i < totalAdds; i++) {
-			temp = new TextView(this);
-			temp.setText("� ");
-			temp.setGravity(Gravity.CENTER);
-			if (i == position){
-				temp.setTextColor(Color.BLUE);
-			}
-			else {
-				temp.setTextColor(Color.LTGRAY);
-			}
-			indicator.addView(temp, i);
-		}
-	}//updateIndicator
 	
 	/* Create menu. */
 	public boolean onCreateOptionsMenu(Menu menu) {
 		//FIXME: add more options later
 		menu.add(0, 0, 0, "Switch User");
 		menu.add(0, 1, 1, "Logout");
-		menu.add(0, 2, 2, "Gallery View");
+		menu.add(0, 2, 2, "Refresh");
 		return true;
 	}
 
@@ -402,12 +338,8 @@ public abstract class CampaignExplorer extends ListActivity
 			System.exit(0);
 			break;
 		
-		case 2:// gallery view
-			gallery.setVisibility(View.VISIBLE);
-			list.setVisibility(View.GONE);
-			lastLayoutView = gallery;
-			G.globalCampaigns = campaigns;
-			refreshView();
+		case 2:// Refresh view
+			refresh();
 			break;
 		}
 		return true;
