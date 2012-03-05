@@ -83,7 +83,7 @@ public class Map extends MapActivity {
 					GeoPoint point = getGeopoint(loc);
 					if (point != null) {
 						if (getLocType(loc) == Constants.EXACT_LOCATION) {
-							pointOverlay = new PointOverlay(point);
+							pointOverlay = new PointOverlay(point,campaign);
 							mapOverlays.add(pointOverlay);
 						}
 						circleOverlay = new CircleOverlay(point,
@@ -273,14 +273,17 @@ public class Map extends MapActivity {
     	
     	/** The GeoPoint to be displayed.*/
     	private GeoPoint geoPoint;
+    	/** The campaign associated with the point*/
+    	private Campaign campaign;
 
     	/**
     	 * Constructs a new {@link #PointOverlay PointOverlay} Object and 
     	 * initializes the {@link #geoPoint geoPoint}.
     	 * @param geoPoint
     	 */
-    	public PointOverlay(GeoPoint geoPoint){
+    	public PointOverlay(GeoPoint geoPoint,Campaign campaign){
     		this.geoPoint = geoPoint;
+    		this.campaign = campaign;
     	}//PointOverlay
 
         @Override
@@ -302,6 +305,29 @@ public class Map extends MapActivity {
             }
             //TODO else statement...
         }//draw
+
+		@Override
+		public boolean onTap(GeoPoint p, MapView view) {
+        	Point tapPt = new Point();
+        	Point markerPt = new Point();
+        	view.getProjection().toPixels(p, tapPt);
+        	view.getProjection().toPixels(this.geoPoint, markerPt);
+            Bitmap marker = BitmapFactory
+            .decodeResource(getApplicationContext()
+            .getResources(), R.drawable.marker);
+        	if(tapPt.x >= (markerPt.x-marker.getWidth()/2) && tapPt.x <= (markerPt.x+marker.getWidth()/2))
+        		if(tapPt.y >= (markerPt.y - marker.getHeight()) && tapPt.y <= (markerPt.y )) {
+        			Log.d("TAP", "tap returned true");
+        			Intent i = new Intent(view.getContext(), Sense.class);
+					i.putExtra("campaign", campaign);
+					view.getContext().startActivity(i);
+        			return true;
+        		}
+        	
+        	return false;
+		}
+        
+        
     }//PointOverlay
     
     /** 
