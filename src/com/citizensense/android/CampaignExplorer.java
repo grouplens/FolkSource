@@ -186,8 +186,8 @@ public abstract class CampaignExplorer extends ListActivity
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			if (this.campaign_page.getVisibility() == View.VISIBLE) {
-				this.campaign_page.setVisibility(View.GONE);
+			if (this.gallery.getVisibility() == View.VISIBLE) {
+				this.gallery.setVisibility(View.GONE);
 				this.lastLayoutView.setVisibility(View.VISIBLE);
 				return true;
 			}
