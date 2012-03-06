@@ -33,6 +33,7 @@ import com.citizensense.android.conf.Constants;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.Projection;
 
@@ -71,8 +72,13 @@ public class Map extends MapActivity {
 		PointOverlay pointOverlay = null;
 		CircleOverlay circleOverlay = null;
 		
+		//setup MyLocationOverlay
+		MyLocationOverlay myLocation = new MyLocationOverlay(this, G.map);
+		myLocation.enableMyLocation();
+		
 		//When we open the map, clear the overlay first
 		mapOverlays.clear();
+		mapOverlays.add(myLocation);
 		if (campaigns != null) {
 			int lowLat = Integer.MAX_VALUE;
 			int highLat = Integer.MIN_VALUE;
@@ -311,18 +317,37 @@ public class Map extends MapActivity {
 		public boolean onTap(GeoPoint p, MapView view) {
         	Point tapPt = new Point();
         	Point markerPt = new Point();
+        	Point locPt = new Point();
+        	boolean inside = false;
         	view.getProjection().toPixels(p, tapPt);
         	view.getProjection().toPixels(this.geoPoint, markerPt);
+        	view.getProjection().toPixels(((MyLocationOverlay)mapOverlays.get(0)).getMyLocation(), locPt);
             Bitmap marker = BitmapFactory
             .decodeResource(getApplicationContext()
             .getResources(), R.drawable.marker);
+            
+            if(locPt.x >= (markerPt.x-marker.getWidth()/2) && locPt.x <= (markerPt.x+marker.getWidth()/2))
+        		if(locPt.y >= (markerPt.y - marker.getHeight()) && locPt.y <= (markerPt.y ))
+        			inside = true;
+            
         	if(tapPt.x >= (markerPt.x-marker.getWidth()/2) && tapPt.x <= (markerPt.x+marker.getWidth()/2))
         		if(tapPt.y >= (markerPt.y - marker.getHeight()) && tapPt.y <= (markerPt.y )) {
-        			Log.d("TAP", "tap returned true");
-        			Intent i = new Intent(view.getContext(), Sense.class);
-					i.putExtra("campaign", campaign);
-					view.getContext().startActivity(i);
-        			return true;
+					if (inside) {
+						Log.d("TAP", "tap returned true");
+						Intent i = new Intent(view.getContext(), Sense.class);
+						i.putExtra("campaign", campaign);
+						view.getContext().startActivity(i);
+						return true;
+					}
+					else {
+						Log.d("TAP", "sending tap as location");
+						int[] a = {p.getLatitudeE6(), p.getLongitudeE6()};
+						Intent i = new Intent(view.getContext(), Sense.class);
+						i.putExtra("campaign", campaign);
+						i.putExtra("locVal", a);
+						view.getContext().startActivity(i);
+						return true;
+					}
         		}
         	
         	return false;
@@ -389,19 +414,37 @@ public class Map extends MapActivity {
         public boolean onTap(GeoPoint p, MapView view) {
         	Point tapPt = new Point();
         	Point cPt = new Point();
+        	Point locPt = new Point();
+        	boolean inside = false;
         	view.getProjection().toPixels(p, tapPt);
         	view.getProjection().toPixels(center, cPt);
+        	view.getProjection().toPixels(((MyLocationOverlay)mapOverlays.get(0)).getMyLocation(), locPt);
         	float radiusInPixels = getPixelsFromMeters(radius, view, 
                     center.getLatitudeE6()/1000000);
         	
+        	if(locPt.x >= (this.farLeft) && locPt.x <= (this.farRight))
+        		if(locPt.y >= (cPt.y - radiusInPixels) && locPt.y <= (cPt.y + radiusInPixels))
+        			inside = true;
+        	
         	if(tapPt.x >= (this.farLeft) && tapPt.x <= (this.farRight))
         		if(tapPt.y >= (cPt.y - radiusInPixels) && tapPt.y <= (cPt.y + radiusInPixels)) {
-        			Log.d("TAP", "tap returned true");
-        			Intent i = new Intent(view.getContext(), Sense.class);
-					i.putExtra("campaign", campaign);
-					view.getContext().startActivity(i);
-        			return true;
+					if (inside) {
+						Log.d("TAP", "tap returned true");
+						Intent i = new Intent(view.getContext(), Sense.class);
+						i.putExtra("campaign", campaign);
+						view.getContext().startActivity(i);
+						return true;
+					} else {
+						Log.d("TAP", "sending tap as locatin");
+						int[] a = { p.getLatitudeE6(), p.getLongitudeE6() };
+						Intent i = new Intent(view.getContext(), Sense.class);
+						i.putExtra("campaign", campaign);
+						i.putExtra("locVal", a);
+						view.getContext().startActivity(i);
+						return true;
+					}
         		}
+
         	
         	return false;
         }

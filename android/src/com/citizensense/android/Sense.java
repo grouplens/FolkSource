@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -35,6 +36,7 @@ import android.widget.Toast;
 import com.citizensense.android.conf.Constants;
 import com.citizensense.android.net.ImageResponseHandler;
 import com.citizensense.android.net.PostRequest;
+import com.google.android.maps.GeoPoint;
 
 /**
  * Complete a task, or "Sense" data
@@ -69,6 +71,8 @@ public class Sense extends LocationActivity {
   	private CheckBox hasTakenPhoto;
   	/** Text to show the status about image taken and upload*/
 	private TextView photoText;
+	//tapPoint, if passed in
+	private GeoPoint myLoc;
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -160,12 +164,22 @@ public class Sense extends LocationActivity {
 			}
 		});
 		this.answers = new HashMap<String, String>();
-		this.requestLocation();
+		if(myLoc != null) {
+			this.location = new Location("tapped");
+			this.location.setLatitude(myLoc.getLatitudeE6());
+			this.location.setLongitude(myLoc.getLongitudeE6());
+		} else
+			this.requestLocation();
 	}// onCreate
 
 	/** Unpacks passed-in campaign from the intent. */
 	public void handleIntent(Intent i) {
 		this.campaign = i.getParcelableExtra("campaign");
+		int[] a = i.getIntArrayExtra("locVal");
+		if(a != null) {
+			Log.d("TAP", "setting myLoc");
+			this.myLoc = new GeoPoint(a[0], a[1]);
+		}
 	}// handleIntent
 
 	/** Returns the index of the currently-selected question. */
@@ -365,7 +379,8 @@ public class Sense extends LocationActivity {
 
 	public void submit() {
 		if (!this.hasLocationFix()) {
-			this.requestLocation();
+			if(this.myLoc == null)
+				this.requestLocation();
 		} else {
 			
 			// Upload the image to server
