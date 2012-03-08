@@ -33,6 +33,7 @@ import com.citizensense.android.conf.Constants;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.Projection;
 
@@ -69,9 +70,13 @@ public class Map extends MapActivity {
         
 		PointOverlay pointOverlay = null;
 		CircleOverlay circleOverlay = null;
+		MyLocationOverlay myLoc = new MyLocationOverlay(this, G.map);
+		myLoc.enableMyLocation();
+		
 		
 		//When we open the map, clear the overlay first
 		mapOverlays.clear();
+		mapOverlays.add(myLoc);
 		if (campaigns != null) {
 			int lowLat = Integer.MAX_VALUE;
 			int highLat = Integer.MIN_VALUE;

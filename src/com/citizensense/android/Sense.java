@@ -65,9 +65,9 @@ public class Sense extends LocationActivity {
 	 * answers to XML.
 	 */
 	private HashMap<String, String> answers;
-	/** Check box indicates the status of image taken*/
-  	private CheckBox hasTakenPhoto;
-  	/** Text to show the status about image taken and upload*/
+	/** Check box indicates the status of image taken */
+	private CheckBox hasTakenPhoto;
+	/** Text to show the status about image taken and upload */
 	private TextView photoText;
 
 	@Override
@@ -101,11 +101,10 @@ public class Sense extends LocationActivity {
 		TextView title = (TextView) findViewById(R.id.campaign_title);
 		title.setText(campaign.getName());
 		Button capture = (Button) findViewById(R.id.capture_photo);
-		
+
 		hasTakenPhoto = (CheckBox) findViewById(R.id.chkbox_photo_complete);
-    	photoText = (TextView) findViewById(R.id.upload_text);
-		
-		
+		photoText = (TextView) findViewById(R.id.upload_text);
+
 		capture.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -152,6 +151,12 @@ public class Sense extends LocationActivity {
 				form_container.addView(layouts[questionsIndex]);
 			}
 		});
+
+		// remove the Next and Previous buttons if we don't have anywhere to go
+		if (layouts.length <= 1) {
+			next.setVisibility(View.GONE);
+			previous.setVisibility(View.GONE);
+		}
 		Button submit = (Button) findViewById(R.id.submit);
 		submit.setOnClickListener(new OnClickListener() {
 			@Override
@@ -367,16 +372,16 @@ public class Sense extends LocationActivity {
 		if (!this.hasLocationFix()) {
 			this.requestLocation();
 		} else {
-			
+
 			// Upload the image to server
 			if (G.user.getUsername().equals("Anonymous")) {
-				Toast.makeText(
-						this,
+				Toast.makeText(this,
 						"Sorry. Submission is not allowed for anonymous user.",
 						Toast.LENGTH_LONG).show();
 			} else {
-				//to resolve UI conflict, move submission post request into ImageResponseHandler
-				uploadImageAndForm(this.imageUri,new Submission(buildXML()));
+				// to resolve UI conflict, move submission post request into
+				// ImageResponseHandler
+				uploadImageAndForm(this.imageUri, new Submission(buildXML()));
 			}
 		}
 	}// submit
@@ -385,7 +390,8 @@ public class Sense extends LocationActivity {
 	public String buildXML() {
 		StringBuilder submission = new StringBuilder();
 		submission.append("<org.citizensense.model.Submission>");
-		submission.append("<task_id>" + this.campaign.getTaskId() + "</task_id>");
+		submission.append("<task_id>" + this.campaign.getTaskId()
+				+ "</task_id>");
 		submission.append("<gps_location>" + this.location.getLatitude() + "|"
 				+ this.location.getLongitude() + "</gps_location>");
 		submission.append("<user_id>" + G.user.id + "</user_id>");
@@ -412,9 +418,12 @@ public class Sense extends LocationActivity {
 				submission.append("<q_id>NaN</q_id>");
 			} else {
 				submission.append("<type>" + q.getType() + "</type>");
-				submission.append("<q_id>" + (q.getId()+1) + "</q_id>");
+				submission.append("<q_id>" + (q.getId() + 1) + "</q_id>");
 			}
-			submission.append("<sub_id>-1</sub_id>"); //gets reset on the server depending on the ID of this submission
+			submission.append("<sub_id>-1</sub_id>"); // gets reset on the
+														// server depending on
+														// the ID of this
+														// submission
 			submission.append("</org.citizensense.model.Answer>");
 		}
 		submission.append("</answers>");
@@ -425,7 +434,8 @@ public class Sense extends LocationActivity {
 	/** Upload the photo to server. */
 	public void uploadImageAndForm(Uri uri, Submission submission) {
 		String imagePath = uri.getPath();
-		ImageResponseHandler imageUploadHandler = new ImageResponseHandler(this,submission);
+		ImageResponseHandler imageUploadHandler = new ImageResponseHandler(
+				this, submission);
 		new PostRequest(this, null, IMAGE, imageUploadHandler, true).execute(
 				G.user.getUsername(), imagePath);
 		// Add this code will cause problem. I find the way we are prompting the

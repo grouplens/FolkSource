@@ -405,7 +405,7 @@ public abstract class CampaignExplorer extends ListActivity
 		case 2:// gallery view
 			gallery.setVisibility(View.VISIBLE);
 			list.setVisibility(View.GONE);
-			lastLayoutView = gallery;
+			lastLayoutView = list;
 			G.globalCampaigns = campaigns;
 			refreshView();
 			break;
