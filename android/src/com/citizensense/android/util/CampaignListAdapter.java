@@ -5,6 +5,7 @@
 package com.citizensense.android.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -40,6 +41,7 @@ public class CampaignListAdapter extends ArrayAdapter<Campaign> {
 	/** Inflate the Campaign List Item view for each campaign in the list.*/
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		Collections.sort(campaigns);
 		View v = convertView;
 		if (v == null) {
 			LayoutInflater vi = 

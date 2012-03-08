@@ -6,6 +6,7 @@ package com.citizensense.android;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 import android.app.ListActivity;
@@ -167,6 +168,7 @@ public abstract class CampaignExplorer extends ListActivity
 		//re-retrieve the campaigns. TODO move to non-UI thread
 		this.campaigns = getCampaigns();
 		G.globalCampaigns = this.campaigns;
+		Collections.sort(G.globalCampaigns);
 		this.refreshView();
 	}//refresh
 	
@@ -254,6 +256,7 @@ public abstract class CampaignExplorer extends ListActivity
 			status.setTextColor(Color.GREEN);
 		}
 		else {
+			Log.d("STAT", "setting STATUS to " + isOpen);
 			status.setTextColor(Color.RED);
 			task_button.setEnabled(false);
 			s_or_s.setEnabled(false);

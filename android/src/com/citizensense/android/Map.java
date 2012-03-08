@@ -66,7 +66,7 @@ public class Map extends MapActivity {
         //Currently, simply use a global variable.
         //Its value is set in CampaginBrowser by getCampaigns();
     	//FIXME remove the global variable and unpack the campaigns from intent.
-        //campaigns = G.globalCampaigns;
+//        campaigns = G.globalCampaigns;
     	campaigns = getIntent().getParcelableArrayListExtra("mapCampaigns");
     	
 		PointOverlay pointOverlay = null;
@@ -341,7 +341,7 @@ public class Map extends MapActivity {
 					}
 					else {
 						Log.d("TAP", "sending tap as location");
-						int[] a = {p.getLatitudeE6(), p.getLongitudeE6()};
+						double[] a = {geoPoint.getLatitudeE6(), geoPoint.getLongitudeE6()};
 						Intent i = new Intent(view.getContext(), Sense.class);
 						i.putExtra("campaign", campaign);
 						i.putExtra("locVal", a);
@@ -390,7 +390,7 @@ public class Map extends MapActivity {
                 		                       center.getLatitudeE6()/1000000);
                 this.farLeft = pt.x - radiusInPixels;
                 this.farRight = pt.x + radiusInPixels;
-                Log.d("WIDTH", "set: "+this.farLeft + ":" + this.farRight);
+//                Log.d("WIDTH", "set: "+this.farLeft + ":" + this.farRight);
                 Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
                 //set color and style for the inner part of the circle
                 int color = Color.argb(127,255,0,255); //set color
@@ -436,7 +436,7 @@ public class Map extends MapActivity {
 						return true;
 					} else {
 						Log.d("TAP", "sending tap as locatin");
-						int[] a = { p.getLatitudeE6(), p.getLongitudeE6() };
+						double[] a = { (center.getLatitudeE6()), center.getLongitudeE6() };
 						Intent i = new Intent(view.getContext(), Sense.class);
 						i.putExtra("campaign", campaign);
 						i.putExtra("locVal", a);

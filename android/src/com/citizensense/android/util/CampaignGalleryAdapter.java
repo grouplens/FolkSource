@@ -58,7 +58,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 	public CampaignGalleryAdapter(Context c, ArrayList<Campaign> campaigns) {
 		context = c;
 		this.campaigns = campaigns;
-//		Collections.sort(campaigns);
+		Collections.sort(campaigns);
         TypedArray attr = 
         	context.obtainStyledAttributes(R.styleable.CampaignGallery);
         attr.recycle();        
@@ -169,6 +169,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 				map_button.setEnabled(true);
 			}
 			else {
+				Log.d("STAT", "setting status to " + isOpen);
 				map_button.setEnabled(false);
 				s_or_s.setEnabled(false);
 				status.setTextColor(Color.RED);
