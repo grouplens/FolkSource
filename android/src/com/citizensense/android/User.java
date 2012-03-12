@@ -11,6 +11,7 @@ import org.w3c.dom.Document;
 
 import android.content.Context;
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.citizensense.android.net.AuthenticationResponseHandler;
 import com.citizensense.android.net.PostRequest;
@@ -23,7 +24,7 @@ import com.citizensense.android.net.PostRequest;
  * @author Phil Brown
  * @author Renji Yu
  */
-public class User implements Item {
+public class User implements Item, Parcelable {
 	/** The user's username */
 	private String username;
 	/** The token retrieved from the server */
@@ -115,10 +116,9 @@ public class User implements Item {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		// TODO Auto-generated method stub
-
+		//nothing
 	}
-
+	
 	@Override
 	public String buildXML() {
 		// TODO Auto-generated method stub

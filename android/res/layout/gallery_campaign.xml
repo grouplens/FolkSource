@@ -12,7 +12,7 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:background="#000000"
-    android:layout_margin="5dp" >
+    android:layout_margin="0dp" >
     <LinearLayout
       android:id="@+id/gallery_index_indicator"
       android:layout_width="fill_parent"
@@ -23,10 +23,10 @@
     <Gallery 
       android:id="@+id/campaign_gallery"
       android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
-      android:spacing="5dp"
+      android:layout_height="wrap_content"
+      android:spacing="0dp"
       android:layout_above="@id/gallery_index_indicator"
       android:background="#000000"
-      android:layout_margin="5dp" />
+      android:layout_margin="0dp" />
   </RelativeLayout>
 </RelativeLayout>

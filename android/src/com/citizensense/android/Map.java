@@ -390,6 +390,7 @@ public class Map extends MapActivity {
                 		                       center.getLatitudeE6()/1000000);
                 this.farLeft = pt.x - radiusInPixels;
                 this.farRight = pt.x + radiusInPixels;
+
 //                Log.d("WIDTH", "set: "+this.farLeft + ":" + this.farRight);
                 Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
                 //set color and style for the inner part of the circle
