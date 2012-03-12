@@ -138,7 +138,7 @@ public class Register extends Activity {
 
 	/** Check the format of email. Return true if email is valid.*/
 	public boolean checkEmail(String email) {
-		String expression = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+		String expression = "^[_A-Za-z0-9-]+([\\.\\+][_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 		Pattern pattern = Pattern.compile(expression);
 		Matcher matcher = pattern.matcher(email);
 		return matcher.matches();

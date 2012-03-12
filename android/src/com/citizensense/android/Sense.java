@@ -12,7 +12,6 @@ import java.util.HashMap;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -36,7 +35,6 @@ import android.widget.Toast;
 import com.citizensense.android.conf.Constants;
 import com.citizensense.android.net.ImageResponseHandler;
 import com.citizensense.android.net.PostRequest;
-import com.google.android.maps.GeoPoint;
 
 /**
  * Complete a task, or "Sense" data
@@ -71,10 +69,6 @@ public class Sense extends LocationActivity {
 	private CheckBox hasTakenPhoto;
 	/** Text to show the status about image taken and upload */
 	private TextView photoText;
-	// tapPoint, if passed in
-	private GeoPoint myLoc;
-	// if we got a tapped point
-	private boolean tapped = false;
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -157,6 +151,12 @@ public class Sense extends LocationActivity {
 				form_container.addView(layouts[questionsIndex]);
 			}
 		});
+
+		// remove the Next and Previous buttons if we don't have anywhere to go
+		if (layouts.length <= 1) {
+			next.setVisibility(View.GONE);
+			previous.setVisibility(View.GONE);
+		}
 		Button submit = (Button) findViewById(R.id.submit);
 		submit.setOnClickListener(new OnClickListener() {
 			@Override
@@ -165,23 +165,12 @@ public class Sense extends LocationActivity {
 			}
 		});
 		this.answers = new HashMap<String, String>();
-		if (myLoc != null) {
-			this.location = new Location("tapped");
-			this.location.setLatitude(myLoc.getLatitudeE6());
-			this.location.setLongitude(myLoc.getLongitudeE6());
-		} else
-			this.requestLocation();
+		this.requestLocation();
 	}// onCreate
 
 	/** Unpacks passed-in campaign from the intent. */
 	public void handleIntent(Intent i) {
 		this.campaign = i.getParcelableExtra("campaign");
-		double[] a = i.getDoubleArrayExtra("locVal");
-		if (a != null) {
-			Log.d("TAP", "setting myLoc");
-			this.tapped = true;
-			this.myLoc = new GeoPoint((int)a[0], (int)a[1]);
-		}
 	}// handleIntent
 
 	/** Returns the index of the currently-selected question. */
@@ -247,7 +236,6 @@ public class Sense extends LocationActivity {
 			/* Responses */
 			if (questions[i].getType() == Question.MULTIPLE_CHOICE) {
 				String[] answers = questions[i].getAnswers();
-				Log.d("SENSE", ""+(answers == null));
 				final ArrayList<RadioButton> radiogroup = new ArrayList<RadioButton>();
 				for (final String option : answers) {
 					LinearLayout ans = new LinearLayout(this);
@@ -381,25 +369,21 @@ public class Sense extends LocationActivity {
 	}// validateForm
 
 	public void submit() {
-		if (!tapped) {
-			if (!this.hasLocationFix())
-				this.requestLocation();
+		if (!this.hasLocationFix()) {
+			this.requestLocation();
 		} else {
-			this.location.setLatitude(this.myLoc.getLatitudeE6());
-			this.location.setLongitude(this.myLoc.getLongitudeE6());
-		}
-		
-		// Upload the image to server
-		if (G.user.getUsername().equals("Anonymous")) {
-			Toast.makeText(this,
-					"Sorry. Submission is not allowed for anonymous user.",
-					Toast.LENGTH_LONG).show();
-		} else {
-			// to resolve UI conflict, move submission post request into
-			// ImageResponseHandler
-			uploadImageAndForm(this.imageUri, new Submission(buildXML()));
-		}
 
+			// Upload the image to server
+			if (G.user.getUsername().equals("Anonymous")) {
+				Toast.makeText(this,
+						"Sorry. Submission is not allowed for anonymous user.",
+						Toast.LENGTH_LONG).show();
+			} else {
+				// to resolve UI conflict, move submission post request into
+				// ImageResponseHandler
+				uploadImageAndForm(this.imageUri, new Submission(buildXML()));
+			}
+		}
 	}// submit
 
 	/** Build a submission XML */
