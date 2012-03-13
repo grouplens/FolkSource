@@ -341,7 +341,7 @@ public class Map extends MapActivity {
 					}
 					else {
 						Log.d("TAP", "sending tap as location");
-						double[] a = {geoPoint.getLatitudeE6(), geoPoint.getLongitudeE6()};
+						int[] a = {geoPoint.getLatitudeE6(), geoPoint.getLongitudeE6()};
 						Intent i = new Intent(view.getContext(), Sense.class);
 						i.putExtra("campaign", campaign);
 						i.putExtra("locVal", a);
@@ -419,7 +419,8 @@ public class Map extends MapActivity {
         	boolean inside = false;
         	view.getProjection().toPixels(p, tapPt);
         	view.getProjection().toPixels(center, cPt);
-        	view.getProjection().toPixels(((MyLocationOverlay)mapOverlays.get(0)).getMyLocation(), locPt);
+        	if(mapOverlays != null)
+        		view.getProjection().toPixels(((MyLocationOverlay)mapOverlays.get(0)).getMyLocation(), locPt);
         	float radiusInPixels = getPixelsFromMeters(radius, view, 
                     center.getLatitudeE6()/1000000);
         	
@@ -437,9 +438,10 @@ public class Map extends MapActivity {
 						return true;
 					} else {
 						Log.d("TAP", "sending tap as locatin");
-						double[] a = { (center.getLatitudeE6()), center.getLongitudeE6() };
+						int[] a = { (center.getLatitudeE6()), center.getLongitudeE6() };
 						Intent i = new Intent(view.getContext(), Sense.class);
 						i.putExtra("campaign", campaign);
+//						i.putIntegerArrayListExtra("locVal", a);
 						i.putExtra("locVal", a);
 						view.getContext().startActivity(i);
 						return true;

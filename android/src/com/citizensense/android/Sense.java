@@ -35,6 +35,7 @@ import android.widget.Toast;
 import com.citizensense.android.conf.Constants;
 import com.citizensense.android.net.ImageResponseHandler;
 import com.citizensense.android.net.PostRequest;
+import com.google.android.maps.GeoPoint;
 
 /**
  * Complete a task, or "Sense" data
@@ -69,6 +70,8 @@ public class Sense extends LocationActivity {
 	private CheckBox hasTakenPhoto;
 	/** Text to show the status about image taken and upload */
 	private TextView photoText;
+	
+	private GeoPoint pt;
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -165,12 +168,24 @@ public class Sense extends LocationActivity {
 			}
 		});
 		this.answers = new HashMap<String, String>();
-		this.requestLocation();
+		if(pt == null) {
+			this.requestLocation();
+			Log.d("TAP", "onCreate requesting location");
+		}
+//		else {
+//			this.location.setLatitude(pt.getLatitudeE6());
+//			this.location.setLongitude(pt.getLongitudeE6());
+//		}
 	}// onCreate
 
 	/** Unpacks passed-in campaign from the intent. */
 	public void handleIntent(Intent i) {
 		this.campaign = i.getParcelableExtra("campaign");
+		int[] t = i.getIntArrayExtra("locVal");
+		if(t != null) {
+			Log.d("TAP", "t isn't null");
+			pt = new GeoPoint(t[0], t[1]);
+		}
 	}// handleIntent
 
 	/** Returns the index of the currently-selected question. */
@@ -348,7 +363,7 @@ public class Sense extends LocationActivity {
 	 */
 	public void validateForm() {
 		if (this.answers.size() == campaign.getTask().getForm().getQuestions().length) {
-			if (this.hasLocationFix()) {
+			if (this.hasLocationFix() || this.pt != null) { //exclusive or
 				if (this.imageUri != null) {
 					((Button) findViewById(R.id.submit)).setEnabled(true);
 				} else {
@@ -370,7 +385,10 @@ public class Sense extends LocationActivity {
 
 	public void submit() {
 		if (!this.hasLocationFix()) {
-			this.requestLocation();
+			if(this.pt == null) {
+				this.requestLocation();
+				Log.d("TAP", "submit requesting location");
+			}
 		} else {
 
 			// Upload the image to server
@@ -392,9 +410,14 @@ public class Sense extends LocationActivity {
 		submission.append("<org.citizensense.model.Submission>");
 		submission.append("<task_id>" + this.campaign.getTaskId()
 				+ "</task_id>");
-		submission.append("<gps_location>" + this.location.getLatitude() + "|"
+		if(this.pt == null)
+			submission.append("<gps_location>" + this.location.getLatitude() + "|"
 				+ this.location.getLongitude() + "</gps_location>");
-		submission.append("<user_id>" + G.user.id + "</user_id>");
+		else
+			//TODO fix this later
+			submission.append("<gps_location>" + (double)this.pt.getLongitudeE6()/1E6 + "|"
+					+ (double)this.pt.getLatitudeE6()/1E6 + "</gps_location>"); // these are switched because of the
+		submission.append("<user_id>" + G.user.id + "</user_id>");				// things are in the server
 		submission.append("<answers>");
 		Form f = campaign.getTask().getForm();
 		Question[] questions = f.getQuestions();
