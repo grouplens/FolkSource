@@ -117,6 +117,7 @@ public class Map extends MapActivity {
 				}
 			}
 		}
+		Toast.makeText(this, "Tap on the location that you want to make a submission from.", Toast.LENGTH_LONG).show();
     }//onResume
 
     /** 
@@ -333,14 +334,12 @@ public class Map extends MapActivity {
         	if(tapPt.x >= (markerPt.x-marker.getWidth()/2) && tapPt.x <= (markerPt.x+marker.getWidth()/2))
         		if(tapPt.y >= (markerPt.y - marker.getHeight()) && tapPt.y <= (markerPt.y )) {
 					if (inside) {
-						Log.d("TAP", "tap returned true");
 						Intent i = new Intent(view.getContext(), Sense.class);
 						i.putExtra("campaign", campaign);
 						view.getContext().startActivity(i);
 						return true;
 					}
 					else {
-						Log.d("TAP", "sending tap as location");
 						int[] a = {geoPoint.getLatitudeE6(), geoPoint.getLongitudeE6()};
 						Intent i = new Intent(view.getContext(), Sense.class);
 						i.putExtra("campaign", campaign);
@@ -431,13 +430,11 @@ public class Map extends MapActivity {
         	if(tapPt.x >= (this.farLeft) && tapPt.x <= (this.farRight))
         		if(tapPt.y >= (cPt.y - radiusInPixels) && tapPt.y <= (cPt.y + radiusInPixels)) {
 					if (inside) {
-						Log.d("TAP", "tap returned true");
 						Intent i = new Intent(view.getContext(), Sense.class);
 						i.putExtra("campaign", campaign);
 						view.getContext().startActivity(i);
 						return true;
 					} else {
-						Log.d("TAP", "sending tap as locatin");
 						int[] a = { (center.getLatitudeE6()), center.getLongitudeE6() };
 						Intent i = new Intent(view.getContext(), Sense.class);
 						i.putExtra("campaign", campaign);

@@ -241,6 +241,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 							d.setText("Stop Watching this Campaign");
 							//add this to have the UI updated
 							notifyDataSetChanged();
+							Toast.makeText(v.getContext(), "You will receive notifiations about this campaign when you are in the range defined on the map.", Toast.LENGTH_LONG).show();
 						}else{
 							Toast.makeText(v.getContext(), "Can't store campaign locally.", Toast.LENGTH_LONG).show();
 						}
@@ -252,6 +253,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 							title.setTextColor(Color.WHITE);
 							d.setText("Watch this Campaign");
 							notifyDataSetChanged();
+							Toast.makeText(v.getContext(), "You will no longer receive notifications about this campaign.", Toast.LENGTH_LONG).show();
 						}else{
 							Toast.makeText(v.getContext(), "Can't delete campaign.", Toast.LENGTH_LONG).show();
 						}
