@@ -17,12 +17,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.widget.Toast;
 
 import com.citizensense.android.CitizenSense;
-import com.citizensense.android.Leaderboard;
-import com.citizensense.android.Profile;
 
 /**
  * @ClassName: SubmissionResponseHandler
