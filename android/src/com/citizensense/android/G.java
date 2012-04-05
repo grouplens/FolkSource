@@ -37,4 +37,5 @@ public class G {
 	/** This is used when a user clicks a notification in order to open the correct
 	 * campaign.*/
 	public static String notification_campaign_id;
+	protected static ArrayList<Submission> globalSubmissions;
 }//G

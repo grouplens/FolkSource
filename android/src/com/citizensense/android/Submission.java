@@ -1,5 +1,7 @@
 package com.citizensense.android;
 
+import java.util.Date;
+
 import org.json.JSONObject;
 import org.w3c.dom.Document;
 
@@ -8,9 +10,25 @@ import android.os.Parcel;
 public class Submission implements Item {
 	
 	public String xml;
+	//This submissions unique id
+	private int id;
+	//The ID of the associated task
+	private int task_id;
+	//THe ID of the owning user
+	private int user_id;
+	//The timestamp the submission was made on
+	private Date timestamp;
+	//The GPS coordinates the submission was made at
+	private String[] coords;
+	//The Answers associated with the submission
+	private Answer[] answers;
 	
 	public Submission(String xml) {
 		this.xml = xml;
+	}
+	
+	public Submission() {
+		//there's nothing here
 	}
 
 	@Override
@@ -57,6 +75,54 @@ public class Submission implements Item {
 	@Override
 	public String getItemName() {
 		return "submission";
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getTask_id() {
+		return task_id;
+	}
+
+	public void setTask_id(int task_id) {
+		this.task_id = task_id;
+	}
+
+	public int getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(int user_id) {
+		this.user_id = user_id;
+	}
+
+	public Date getTimestamp() {
+		return timestamp;
+	}
+
+	public void setTimestamp(Date timestamp) {
+		this.timestamp = timestamp;
+	}
+
+	public String[] getCoords() {
+		return coords;
+	}
+
+	public void setCoords(String[] coords) {
+		this.coords = coords;
+	}
+
+	public Answer[] getAnswers() {
+		return answers;
+	}
+
+	public void setAnswers(Answer[] answers) {
+		this.answers = answers;
 	}
 
 }

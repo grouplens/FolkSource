@@ -168,6 +168,7 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 		this.data = data;
 		this.inputFormat = format;
 		if (data != null) {// parse null as data for LOGIN or REGISTER
+			Log.d("type", data.getItemName());
 			url += data.getItemName();
 		}
 		if (format == JSON) {
@@ -324,7 +325,6 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}// onPostExecute
 
 }// Request
