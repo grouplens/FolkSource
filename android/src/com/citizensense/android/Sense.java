@@ -416,8 +416,9 @@ public class Sense extends LocationActivity {
 		else
 			//TODO fix this later
 			submission.append("<gps_location>" + (double)this.pt.getLongitudeE6()/1E6 + "|"
-					+ (double)this.pt.getLatitudeE6()/1E6 + "</gps_location>"); // these are switched because of the
-		submission.append("<user_id>" + G.user.id + "</user_id>");				// things are in the server
+						+ (double)this.pt.getLatitudeE6()/1E6 +";"+ this.location.getLatitude() + "|"
+						+ this.location.getLongitude() + "</gps_location>");
+		submission.append("<user_id>" + G.user.id + "</user_id>");				
 		submission.append("<answers>");
 		Form f = campaign.getTask().getForm();
 		Question[] questions = f.getQuestions();
