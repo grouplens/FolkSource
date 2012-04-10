@@ -70,7 +70,7 @@ public class Sense extends LocationActivity {
 	private CheckBox hasTakenPhoto;
 	/** Text to show the status about image taken and upload */
 	private TextView photoText;
-	
+	/** The user's location */
 	private GeoPoint pt;
 
 	@Override
@@ -181,7 +181,7 @@ public class Sense extends LocationActivity {
 	/** Unpacks passed-in campaign from the intent. */
 	public void handleIntent(Intent i) {
 		this.campaign = i.getParcelableExtra("campaign");
-		int[] t = i.getIntArrayExtra("locVal");
+		int[] t = i.getIntArrayExtra("taskLocation");
 		if(t != null) {
 			Log.d("TAP", "t isn't null");
 			pt = new GeoPoint(t[0], t[1]);
@@ -410,7 +410,7 @@ public class Sense extends LocationActivity {
 		submission.append("<org.citizensense.model.Submission>");
 		submission.append("<task_id>" + this.campaign.getTaskId()
 				+ "</task_id>");
-		if(this.pt == null)
+		if(this.pt == null)//user's location is not provided
 			submission.append("<gps_location>" + this.location.getLatitude() + "|"
 				+ this.location.getLongitude() + "</gps_location>");
 		else

@@ -19,6 +19,7 @@ import org.apache.http.util.EntityUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.citizensense.android.conf.Constants;
@@ -103,6 +104,7 @@ public class XMLResponseHandler implements ResponseHandler<Document> {
 		}
 	}//handleResponse
 	
+
 	/** Callback for this {@link XMLResponseHandler} */
 	public interface Callback<T extends Object> {
 		/** Invoke the callback, passing in the parsed XML as a {@link T} */

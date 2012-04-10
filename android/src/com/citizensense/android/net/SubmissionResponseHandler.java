@@ -53,10 +53,6 @@ public class SubmissionResponseHandler extends BasicResponseHandler {
 					Toast.LENGTH_LONG).show();
 			return null;
 		}
-		// CheckBox hasTakenPhoto = (CheckBox)
-		// ((Activity)context).findViewById(R.id.chkbox_photo_complete);
-		// TextView uploadComplete = (TextView)
-		// ((Activity)context).findViewById(R.id.upload_text);
 
 		StatusLine statusLine = response.getStatusLine();
 		status_code = statusLine.getStatusCode();

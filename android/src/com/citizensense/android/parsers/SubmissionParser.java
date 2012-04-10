@@ -78,7 +78,15 @@ public class SubmissionParser extends XMLParser {
 			} else if (localName.equalsIgnoreCase("user__id")) {
 				this.submission.setUser_id(Integer.parseInt(content));
 			} else if (localName.equalsIgnoreCase("gps__location")) {
-				this.submission.setCoords(content.split("\\|"));
+				//this.submission.setCoords(content.split("\\|"));
+				int index = content.indexOf(";");
+				if(index == -1){
+					this.submission.setCoords(content.split("\\|"));
+				}else{
+					this.submission.setCoords(content.substring(0,index).split("\\|"));
+					this.submission.setMyCoords(content.substring(index+1).split("\\|"));
+				}
+				
 			} else if (localName.equalsIgnoreCase("timestamp")) {
 				try {
 					submission.setTimestamp(this.dateFormat.parse(content));

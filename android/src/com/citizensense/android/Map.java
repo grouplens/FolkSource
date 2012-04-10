@@ -59,8 +59,13 @@ public class Map extends MapActivity {
 	 * Contains the set of {@link Campaign Campaigns} currently displayed on the
 	 * map
 	 */
+	
+	/** Since we are displaying for one campaign, we probably don't need ArrayList anymore.*/
 	protected ArrayList<Campaign> campaigns;
 	private List<Overlay> mapOverlays;
+	
+	/** Now submissions are actually global submissions. It's more reasonable to
+	 * make it submissions for the current campaign. */
 	private ArrayList<Submission> submissions;
 
 	/** Initialize the map */
@@ -85,8 +90,28 @@ public class Map extends MapActivity {
 		campaigns = getIntent().getParcelableArrayListExtra("mapCampaigns");
 
 		if (campaigns != null) {
-			this.setSubmissions(getSubmissions());
-			// drawOverlays();
+			XMLResponseHandler handl = new XMLResponseHandler();
+			handl.setCallback(new XMLResponseHandler.StringCallback() {
+				@Override
+				public void invoke(String xml) {
+					try {
+						Xml.parse(xml, new SubmissionParser(
+								new SubmissionParser.Callback() {
+									@Override
+									public void invoke(
+											ArrayList<Submission> submissions) {
+										Log.d("COORD", "size: " + submissions.size());
+										G.globalSubmissions = submissions;
+										drawOverlays();
+									}
+								}));
+					} catch (SAXException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			this.setSubmissions(Submission.getAllSubmissions(this,handl));
+			
 		}
 		Toast.makeText(this,
 				"Tap on the location that you want to make a submission from.",
@@ -114,17 +139,17 @@ public class Map extends MapActivity {
 			for (String loc : campaign.getLocations()) {
 				overlay = 0;
 				String[] locCoords = loc.split("\\,");
-				if (submissions != null) {
-					for (Submission sub : submissions) {
+				//match submission with campaign
+				for (Submission sub : Submission.getSubmissionsByCampaign(campaign)) {
 						String[] subCoords = sub.getCoords();
 						if(subCoords[0].equals(locCoords[0]) && subCoords[1].equals(locCoords[1])) {
-							if(G.user.id == sub.getUser_id()) {
-								overlay = 1; //I've made a submission here
-							} else if (overlay != 1){
-								overlay = 2; //others have made a submission here
-							}
+								if(G.user.id == sub.getUser_id()) {
+									overlay = 1; //I've made a submission here
+								} else if (overlay != 1){
+									overlay = 2; //others have made a submission here
+								}
 						}
-					}
+						
 				}
 				
 				GeoPoint point = getGeopoint(loc);
@@ -161,37 +186,6 @@ public class Map extends MapActivity {
 		}
 	}
 
-	private ArrayList<Submission> getSubmissions() {
-		XMLResponseHandler handl = new XMLResponseHandler();
-		handl.setCallback(new XMLResponseHandler.StringCallback() {
-			@Override
-			public void invoke(String xml) {
-				try {
-					Xml.parse(xml, new SubmissionParser(
-							new SubmissionParser.Callback() {
-
-								@Override
-								public void invoke(
-										ArrayList<Submission> submissions) {
-									Log.d("COORD",
-											"size: " + submissions.size());
-									G.globalSubmissions = submissions;
-									Map.this.setSubmissions(submissions);
-									Map.this.drawOverlays();
-								}
-							}));
-					// Log.d("COORD", "after XML.parse");
-				} catch (SAXException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
-
-		new GetRequest(this, Submission.class, null, handl, false).execute();
-		// G.globalSubmissions = this.submissions;
-		return this.submissions;
-	}
 
 	protected void setSubmissions(ArrayList<Submission> submissions) {
 		this.submissions = submissions;
@@ -431,20 +425,23 @@ public class Map extends MapActivity {
 					&& tapPt.x <= (markerPt.x + marker.getWidth() / 2))
 				if (tapPt.y >= (markerPt.y - marker.getHeight())
 						&& tapPt.y <= (markerPt.y)) {
-					if (inside) {
-						Intent i = new Intent(view.getContext(), Sense.class);
-						i.putExtra("campaign", campaign);
-						view.getContext().startActivity(i);
-						return true;
-					} else {
-						int[] a = { geoPoint.getLatitudeE6(),
-								geoPoint.getLongitudeE6() };
-						Intent i = new Intent(view.getContext(), Sense.class);
-						i.putExtra("campaign", campaign);
-						i.putExtra("locVal", a);
-						view.getContext().startActivity(i);
-						return true;
-					}
+					Intent i = new Intent(view.getContext(), SubmissionHistory.class);
+					i.putExtra("campaign", campaign);
+					
+					
+					int[] taskLocation = { geoPoint.getLatitudeE6(),
+							geoPoint.getLongitudeE6() };
+					i.putExtra("taskLocation", taskLocation);
+					
+//					i.putParcelableArrayListExtra("submissions", getSubmissionsAt(taskLocation, campaign));
+					
+					GeoPoint myPoint = (GeoPoint) ((MyLocationOverlay) mapOverlays.get(0)).getMyLocation();
+					//make sure the order is correct ??
+					int[] myLocation = {myPoint.getLatitudeE6(),myPoint.getLongitudeE6()};
+					i.putExtra("myLocation", myLocation);
+					i.putExtra("inside", inside);
+					view.getContext().startActivity(i);
+					return true;
 				}
 
 			return false;
@@ -527,21 +524,18 @@ public class Map extends MapActivity {
 			if (tapPt.x >= (this.farLeft) && tapPt.x <= (this.farRight))
 				if (tapPt.y >= (cPt.y - radiusInPixels)
 						&& tapPt.y <= (cPt.y + radiusInPixels)) {
-					if (inside) {
-						Intent i = new Intent(view.getContext(), Sense.class);
-						i.putExtra("campaign", campaign);
-						view.getContext().startActivity(i);
-						return true;
-					} else {
-						int[] a = { (center.getLatitudeE6()),
-								center.getLongitudeE6() };
-						Intent i = new Intent(view.getContext(), Sense.class);
-						i.putExtra("campaign", campaign);
-						// i.putIntegerArrayListExtra("locVal", a);
-						i.putExtra("locVal", a);
-						view.getContext().startActivity(i);
-						return true;
-					}
+					Intent i = new Intent(view.getContext(), SubmissionHistory.class);
+					i.putExtra("campaign", campaign);
+					int[] taskLocation = { center.getLatitudeE6(),
+							center.getLongitudeE6() };
+					i.putExtra("taskLocation", taskLocation);
+					
+					GeoPoint myPoint = (GeoPoint) ((MyLocationOverlay) mapOverlays.get(0)).getMyLocation();
+					int[] myLocation = {myPoint.getLatitudeE6(),myPoint.getLongitudeE6()};
+					i.putExtra("myLocation", myLocation);
+					i.putExtra("inside", inside);
+					view.getContext().startActivity(i);
+					return true;
 				}
 
 			return false;
@@ -580,4 +574,6 @@ public class Map extends MapActivity {
 		}
 		return true;
 	}
+	
+
 }// Map

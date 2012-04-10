@@ -5,8 +5,8 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/user_stats"
+        android:id="@+id/allSubItem"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp" />
+        android:layout_height="wrap_content" />
+
 </LinearLayout>

@@ -1,26 +1,38 @@
 package com.citizensense.android;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.json.JSONObject;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
+import android.content.Context;
 import android.os.Parcel;
+import android.os.Parcelable;
+import android.util.Log;
+import android.util.Xml;
+
+import com.citizensense.android.net.GetRequest;
+import com.citizensense.android.net.XMLResponseHandler;
+import com.citizensense.android.parsers.SubmissionParser;
 
 public class Submission implements Item {
 	
 	public String xml;
-	//This submissions unique id
+	/**This submissions unique id*/
 	private int id;
-	//The ID of the associated task
+	/**The ID of the associated task*/
 	private int task_id;
-	//THe ID of the owning user
+	/**THe ID of the owning user*/
 	private int user_id;
-	//The timestamp the submission was made on
+	/**The timestamp the submission was made on*/
 	private Date timestamp;
-	//The GPS coordinates the submission was made at
+	/**The GPS coordinates the submission was made at*/
 	private String[] coords;
-	//The Answers associated with the submission
+	/**The user's gps coordinates*/
+	private String[] myCoords;
+	/**The Answers associated with the submission*/
 	private Answer[] answers;
 	
 	public Submission(String xml) {
@@ -31,17 +43,6 @@ public class Submission implements Item {
 		//there's nothing here
 	}
 
-	@Override
-	public int describeContents() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void writeToParcel(Parcel dest, int flags) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public String buildXML() {
@@ -123,6 +124,111 @@ public class Submission implements Item {
 
 	public void setAnswers(Answer[] answers) {
 		this.answers = answers;
+	}
+
+	public void setMyCoords(String[] myCoords) {
+		this.myCoords = myCoords;
+	}
+
+	public String[] getMyCoords() {
+		return myCoords;
+	}
+	
+	/** This CREATOR is used to parcel this Object. */
+	public static final Parcelable.Creator<Submission> CREATOR =
+        new Parcelable.Creator<Submission>() {
+     
+		/** Construct and return an Ad from a Parcel*/
+		@Override
+		public Submission createFromParcel(Parcel in) {
+			return new Submission(in);
+		}//createFromParcel
+
+		/**
+		 * Creates a new array of Adds
+		 */
+		@Override
+		public Submission[] newArray(int size) {
+			return new Submission[size];
+		}//newArray
+	};
+	
+	/** Create a new Submission from the given Parcel. */
+	public Submission(Parcel in) {
+//		this.xml = in.readString();
+		this.id = in.readInt();
+		this.task_id = in.readInt();
+		this.user_id = in.readInt();
+		this.timestamp = new Date(in.readLong());
+		this.coords = in.createStringArray();
+		this.myCoords = in.createStringArray();
+//		this.answers = (Answer[]) in.readParcelableArray(Answer.class.getClassLoader());
+	}//Submission
+	
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+//		out.writeString(this.xml);
+		out.writeInt(this.id);
+		out.writeInt(this.task_id);
+		out.writeInt(this.user_id);
+		out.writeLong(this.timestamp.getTime());
+		out.writeStringArray(this.coords);
+		out.writeStringArray(this.myCoords);
+//		out.writeParcelableArray(this.answers, 0);
+	}
+	
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+	
+	public static ArrayList<Submission> getAllSubmissions(Context context, XMLResponseHandler handl) {
+		new GetRequest(context, Submission.class, null, handl, false).execute();
+		return G.globalSubmissions;
+	}
+	
+	/**Get all submission for a campaign. Before calling this function, make sure G.globalSubmissions is updated.*/
+	public static ArrayList<Submission> getSubmissionsByCampaign(Campaign campaign){
+		ArrayList<Submission> submissionsForCampaign = new ArrayList<Submission>();
+		if(G.globalSubmissions!=null){
+			for(Submission s : G.globalSubmissions){
+				//make sure the submission match the campaign
+				if(s.getTask_id() == Integer.parseInt(campaign.getTaskId())){
+					submissionsForCampaign.add(s);
+				}
+			}
+		}
+		return submissionsForCampaign;
+	}
+	
+	
+	/** Get all submissions at a location of campaign*/
+	public static ArrayList<Submission> getSubmissionsAt(int[] coords, Campaign campaign){
+		ArrayList<Submission> submissionsAt = new ArrayList<Submission>();
+			for(Submission s : getSubmissionsByCampaign(campaign)){
+				String[] subCoords = s.getCoords();
+				double lat = (double)coords[0]/1000000;
+				double lon = (double)coords[1]/1000000;
+				if(lat==Double.parseDouble(subCoords[1]) && lon == Double.parseDouble(subCoords[0])){
+					submissionsAt.add(s);
+				}
+			}
+		return submissionsAt;
+	}
+	
+	/** Get all my submissions at a location.*/
+	public static ArrayList<Submission> getMySubmissionsAt(int[] coords, Campaign campaign){
+		ArrayList<Submission> mySubmissionsAt = new ArrayList<Submission>();
+		for(Submission s : getSubmissionsByCampaign(campaign)){
+			String[] subCoords = s.getCoords();
+			double lat = (double)coords[0]/1000000;
+			double lon = (double)coords[1]/1000000;
+			if(lat==Double.parseDouble(subCoords[1]) && lon == Double.parseDouble(subCoords[0])
+					&& s.getUser_id() == G.user.id){
+				mySubmissionsAt.add(s);
+			}
+		}
+		return mySubmissionsAt;
 	}
 
 }
