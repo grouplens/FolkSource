@@ -20,6 +20,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.citizensense.android.net.XMLResponseHandler;
 import com.citizensense.android.parsers.SubmissionParser;
@@ -144,6 +145,20 @@ public class SubmissionHistory extends Activity{
 	}
 	
 	public void updateUI(){
+		
+		
+		//we need to add header and footer to get the scoll bar work for list view
+		TextView mySubsHeader = new TextView(this);
+		mySubsHeader.setText("My Submission History");
+		TextView mySubsFooter = new TextView(this);
+		mySubsList.addHeaderView(mySubsHeader);
+		mySubsList.addFooterView(mySubsFooter);
+		TextView allSubsHeader = new TextView(this);
+		allSubsHeader.setText("All Submission History");
+		TextView allSubsFooter = new TextView(this);
+		allSubsList.addHeaderView(allSubsHeader);
+		allSubsList.addFooterView(allSubsFooter);
+		
 		mySubsList.setAdapter(new MySubmissionsAdapter(this, mySubmissions));
 		allSubsList.setAdapter(new AllSubmissionsAdapter(this, submissions));
 	}

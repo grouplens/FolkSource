@@ -64,6 +64,12 @@ public class Map extends MapActivity {
 	protected ArrayList<Campaign> campaigns;
 	private List<Overlay> mapOverlays;
 	
+	/** Overlay for the user's location*/
+	private MyLocationOverlay myLocation;
+	
+	/** GeoPoint for the user's location*/
+	private GeoPoint myPoint;
+	
 	/** Now submissions are actually global submissions. It's more reasonable to
 	 * make it submissions for the current campaign. */
 	private ArrayList<Submission> submissions;
@@ -81,6 +87,11 @@ public class Map extends MapActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
+		
+		// setup MyLocationOverlay
+		myLocation = new MyLocationOverlay(this, G.map);
+		myLocation.enableMyLocation();
+		myPoint = myLocation.getMyLocation();
 
 		// Currently, simply use a global variable.
 		// Its value is set in CampaginBrowser by getCampaigns();
@@ -127,10 +138,6 @@ public class Map extends MapActivity {
 		int highLong = Integer.MIN_VALUE;
 		int overlay = 0; //0 no submissions, 1 my submission, 2 other submissions
 		
-		// setup MyLocationOverlay
-		MyLocationOverlay myLocation = new MyLocationOverlay(this, G.map);
-		myLocation.enableMyLocation();
-
 		// When we open the map, clear the overlay first
 		mapOverlays.clear();
 		mapOverlays.add(myLocation);
@@ -407,11 +414,13 @@ public class Map extends MapActivity {
 			Point markerPt = new Point();
 			Point locPt = new Point();
 			boolean inside = false;
+			
 			view.getProjection().toPixels(p, tapPt);
 			view.getProjection().toPixels(this.geoPoint, markerPt);
-			view.getProjection().toPixels(
-					((MyLocationOverlay) mapOverlays.get(0)).getMyLocation(),
-					locPt);
+			if(myPoint!=null){
+				view.getProjection().toPixels( myPoint,locPt);
+				System.out.println("current location available---------------!!");
+			}
 			Bitmap marker = BitmapFactory.decodeResource(
 					getApplicationContext().getResources(), R.drawable.marker);
 
@@ -427,18 +436,14 @@ public class Map extends MapActivity {
 						&& tapPt.y <= (markerPt.y)) {
 					Intent i = new Intent(view.getContext(), SubmissionHistory.class);
 					i.putExtra("campaign", campaign);
-					
-					
 					int[] taskLocation = { geoPoint.getLatitudeE6(),
 							geoPoint.getLongitudeE6() };
 					i.putExtra("taskLocation", taskLocation);
-					
-//					i.putParcelableArrayListExtra("submissions", getSubmissionsAt(taskLocation, campaign));
-					
-					GeoPoint myPoint = (GeoPoint) ((MyLocationOverlay) mapOverlays.get(0)).getMyLocation();
 					//make sure the order is correct ??
-					int[] myLocation = {myPoint.getLatitudeE6(),myPoint.getLongitudeE6()};
-					i.putExtra("myLocation", myLocation);
+					if(myPoint!=null){
+						int[] myLocation = {myPoint.getLatitudeE6(),myPoint.getLongitudeE6()};
+						i.putExtra("myLocation", myLocation);
+					}
 					i.putExtra("inside", inside);
 					view.getContext().startActivity(i);
 					return true;
@@ -499,47 +504,47 @@ public class Map extends MapActivity {
 			}
 		}// draw
 
-		@Override
-		public boolean onTap(GeoPoint p, MapView view) {
-			Point tapPt = new Point();
-			Point cPt = new Point();
-			Point locPt = new Point();
-			boolean inside = false;
-			view.getProjection().toPixels(p, tapPt);
-			view.getProjection().toPixels(center, cPt);
-			if (mapOverlays != null)
-				view.getProjection()
-						.toPixels(
-								((MyLocationOverlay) mapOverlays.get(0))
-										.getMyLocation(),
-								locPt);
-			float radiusInPixels = getPixelsFromMeters(radius, view,
-					center.getLatitudeE6() / 1000000);
-
-			if (locPt.x >= (this.farLeft) && locPt.x <= (this.farRight))
-				if (locPt.y >= (cPt.y - radiusInPixels)
-						&& locPt.y <= (cPt.y + radiusInPixels))
-					inside = true;
-
-			if (tapPt.x >= (this.farLeft) && tapPt.x <= (this.farRight))
-				if (tapPt.y >= (cPt.y - radiusInPixels)
-						&& tapPt.y <= (cPt.y + radiusInPixels)) {
-					Intent i = new Intent(view.getContext(), SubmissionHistory.class);
-					i.putExtra("campaign", campaign);
-					int[] taskLocation = { center.getLatitudeE6(),
-							center.getLongitudeE6() };
-					i.putExtra("taskLocation", taskLocation);
-					
-					GeoPoint myPoint = (GeoPoint) ((MyLocationOverlay) mapOverlays.get(0)).getMyLocation();
-					int[] myLocation = {myPoint.getLatitudeE6(),myPoint.getLongitudeE6()};
-					i.putExtra("myLocation", myLocation);
-					i.putExtra("inside", inside);
-					view.getContext().startActivity(i);
-					return true;
-				}
-
-			return false;
-		}
+//		@Override
+//		public boolean onTap(GeoPoint p, MapView view) {
+//			Point tapPt = new Point();
+//			Point cPt = new Point();
+//			Point locPt = new Point();
+//			boolean inside = false;
+//			view.getProjection().toPixels(p, tapPt);
+//			view.getProjection().toPixels(center, cPt);
+//			if (mapOverlays != null)
+//				view.getProjection()
+//						.toPixels(
+//								((MyLocationOverlay) mapOverlays.get(0))
+//										.getMyLocation(),
+//								locPt);
+//			float radiusInPixels = getPixelsFromMeters(radius, view,
+//					center.getLatitudeE6() / 1000000);
+//
+//			if (locPt.x >= (this.farLeft) && locPt.x <= (this.farRight))
+//				if (locPt.y >= (cPt.y - radiusInPixels)
+//						&& locPt.y <= (cPt.y + radiusInPixels))
+//					inside = true;
+//
+//			if (tapPt.x >= (this.farLeft) && tapPt.x <= (this.farRight))
+//				if (tapPt.y >= (cPt.y - radiusInPixels)
+//						&& tapPt.y <= (cPt.y + radiusInPixels)) {
+//					Intent i = new Intent(view.getContext(), SubmissionHistory.class);
+//					i.putExtra("campaign", campaign);
+//					int[] taskLocation = { center.getLatitudeE6(),
+//							center.getLongitudeE6() };
+//					i.putExtra("taskLocation", taskLocation);
+//					
+//					GeoPoint myPoint = (GeoPoint) ((MyLocationOverlay) mapOverlays.get(0)).getMyLocation();
+//					int[] myLocation = {myPoint.getLatitudeE6(),myPoint.getLongitudeE6()};
+//					i.putExtra("myLocation", myLocation);
+//					i.putExtra("inside", inside);
+//					view.getContext().startActivity(i);
+//					return true;
+//				}
+//
+//			return false;
+//		}
 	}// CircleOverlay
 
 	/* Create menu. */
