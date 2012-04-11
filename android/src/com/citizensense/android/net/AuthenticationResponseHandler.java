@@ -72,7 +72,7 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 		if (type == LOGIN) {
 			if (status_code == WRONG_PASSWORD) {// HttpServletResponse.SC_EXPECTATION_FAILED
 				Toast.makeText(context,
-						"Wrong password. Please try agaign.", Toast.LENGTH_LONG)
+						"Wrong password. Please try again.", Toast.LENGTH_LONG)
 						.show();
 			} else if (status_code == NO_USERNAME) {
 				Toast.makeText(context,

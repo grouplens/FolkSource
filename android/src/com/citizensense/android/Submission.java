@@ -17,7 +17,7 @@ import com.citizensense.android.net.GetRequest;
 import com.citizensense.android.net.XMLResponseHandler;
 import com.citizensense.android.parsers.SubmissionParser;
 
-public class Submission implements Item {
+public class Submission implements Item, Comparable<Submission> {
 	
 	public String xml;
 	/**This submissions unique id*/
@@ -229,6 +229,15 @@ public class Submission implements Item {
 			}
 		}
 		return mySubmissionsAt;
+	}
+
+	@Override
+	public int compareTo(Submission arg0) {
+		if(this.getTimestamp().after(arg0.getTimestamp()))
+			return -1;
+		if(this.getTimestamp().before(arg0.getTimestamp()))
+				return 1;
+		return 0;
 	}
 
 }
