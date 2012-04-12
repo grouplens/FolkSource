@@ -34,6 +34,9 @@ public class Submission implements Item, Comparable<Submission> {
 	private String[] myCoords;
 	/**The Answers associated with the submission*/
 	private Answer[] answers;
+	/** The points earned for submission*/
+	//FIXME: set this to 1 point now, should get from server
+	private int points = 1;
 	
 	public Submission(String xml) {
 		this.xml = xml;
@@ -238,6 +241,14 @@ public class Submission implements Item, Comparable<Submission> {
 		if(this.getTimestamp().before(arg0.getTimestamp()))
 				return 1;
 		return 0;
+	}
+
+	public void setPoints(int points) {
+		this.points = points;
+	}
+
+	public int getPoints() {
+		return points;
 	}
 
 }

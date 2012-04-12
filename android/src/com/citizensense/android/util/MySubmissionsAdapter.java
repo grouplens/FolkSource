@@ -6,7 +6,9 @@
  */
 package com.citizensense.android.util;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.citizensense.android.G;
 import com.citizensense.android.R;
 import com.citizensense.android.Submission;
 
@@ -46,7 +47,9 @@ public class MySubmissionsAdapter extends ArrayAdapter<Submission> {
 		TextView textView = (TextView) rowView.findViewById(R.id.mySubItem);
 		if(mySubmissions!=null){
 			Submission sub = mySubmissions.get(position);
-			textView.setText(G.user.getUsername() + " " + sub.getTimestamp());
+			SimpleDateFormat dateformat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+			String time = dateformat.format(sub.getTimestamp());
+			textView.setText(time+"               "+sub.getPoints());
 		}
 		return rowView;
 	}// getView

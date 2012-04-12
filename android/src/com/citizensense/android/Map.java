@@ -504,47 +504,44 @@ public class Map extends MapActivity {
 			}
 		}// draw
 
-//		@Override
-//		public boolean onTap(GeoPoint p, MapView view) {
-//			Point tapPt = new Point();
-//			Point cPt = new Point();
-//			Point locPt = new Point();
-//			boolean inside = false;
-//			view.getProjection().toPixels(p, tapPt);
-//			view.getProjection().toPixels(center, cPt);
-//			if (mapOverlays != null)
-//				view.getProjection()
-//						.toPixels(
-//								((MyLocationOverlay) mapOverlays.get(0))
-//										.getMyLocation(),
-//								locPt);
-//			float radiusInPixels = getPixelsFromMeters(radius, view,
-//					center.getLatitudeE6() / 1000000);
-//
-//			if (locPt.x >= (this.farLeft) && locPt.x <= (this.farRight))
-//				if (locPt.y >= (cPt.y - radiusInPixels)
-//						&& locPt.y <= (cPt.y + radiusInPixels))
-//					inside = true;
-//
-//			if (tapPt.x >= (this.farLeft) && tapPt.x <= (this.farRight))
-//				if (tapPt.y >= (cPt.y - radiusInPixels)
-//						&& tapPt.y <= (cPt.y + radiusInPixels)) {
-//					Intent i = new Intent(view.getContext(), SubmissionHistory.class);
-//					i.putExtra("campaign", campaign);
-//					int[] taskLocation = { center.getLatitudeE6(),
-//							center.getLongitudeE6() };
-//					i.putExtra("taskLocation", taskLocation);
-//					
-//					GeoPoint myPoint = (GeoPoint) ((MyLocationOverlay) mapOverlays.get(0)).getMyLocation();
-//					int[] myLocation = {myPoint.getLatitudeE6(),myPoint.getLongitudeE6()};
-//					i.putExtra("myLocation", myLocation);
-//					i.putExtra("inside", inside);
-//					view.getContext().startActivity(i);
-//					return true;
-//				}
-//
-//			return false;
-//		}
+		@Override
+		public boolean onTap(GeoPoint p, MapView view) {
+			Point tapPt = new Point();
+			Point cPt = new Point();
+			Point locPt = new Point();
+			boolean inside = false;
+			view.getProjection().toPixels(p, tapPt);
+			view.getProjection().toPixels(center, cPt);
+			if(myPoint!=null)
+				view.getProjection().toPixels(myPoint,locPt);
+			float radiusInPixels = getPixelsFromMeters(radius, view,
+					center.getLatitudeE6() / 1000000);
+
+			if (locPt.x >= (this.farLeft) && locPt.x <= (this.farRight))
+				if (locPt.y >= (cPt.y - radiusInPixels)
+						&& locPt.y <= (cPt.y + radiusInPixels))
+					inside = true;
+
+			if (tapPt.x >= (this.farLeft) && tapPt.x <= (this.farRight))
+				if (tapPt.y >= (cPt.y - radiusInPixels)
+						&& tapPt.y <= (cPt.y + radiusInPixels)) {
+					Intent i = new Intent(view.getContext(), SubmissionHistory.class);
+					i.putExtra("campaign", campaign);
+					int[] taskLocation = { center.getLatitudeE6(),
+							center.getLongitudeE6() };
+					i.putExtra("taskLocation", taskLocation);
+					
+					if(myPoint!=null){
+						int[] myLocation = {myPoint.getLatitudeE6(),myPoint.getLongitudeE6()};
+						i.putExtra("myLocation", myLocation);
+					}
+					i.putExtra("inside", inside);
+					view.getContext().startActivity(i);
+					return true;
+				}
+
+			return false;
+		}
 	}// CircleOverlay
 
 	/* Create menu. */

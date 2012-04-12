@@ -13,12 +13,11 @@ import org.xml.sax.SAXException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Xml;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,10 +40,10 @@ public class SubmissionHistory extends Activity {
 
 	/** Button go to Sense page */
 	private Button senseBtn;
-	
+
 	/** Button to go back to the Map */
 	private Button cancelBtn;
-	
+
 	/** List view for my submissions */
 	private ListView mySubsList;
 
@@ -55,10 +54,10 @@ public class SubmissionHistory extends Activity {
 	private Campaign campaign;
 
 	/** Submissions at this location */
-	private ArrayList<Submission> submissions;
+	private ArrayList<Submission> submissions = new ArrayList<Submission>();
 
 	/** My submissions at this location */
-	private ArrayList<Submission> mySubmissions;
+	private ArrayList<Submission> mySubmissions = new ArrayList<Submission>();
 
 	/** The task's location */
 	private int[] taskLocation;
@@ -72,13 +71,7 @@ public class SubmissionHistory extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// full screen
-//		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		this.setTitle("Sense Dialog");
-		
-		//this isn't needed because we make a dialog out of this Activity
-//		this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//				WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.submission_history);
 
 		senseBtn = (Button) findViewById(R.id.sense_btn);
@@ -94,9 +87,8 @@ public class SubmissionHistory extends Activity {
 	public void onResume() {
 		super.onResume();
 		// We need to update submissions, because after the user made a
-		// submission, the page
-		// will go back to SubmissionHistory and we should be able to update the
-		// page.
+		// submission, the page will go back to SubmissionHistory and
+		// we should be able to update the page.
 		updateSubmissions();
 
 	}
@@ -115,7 +107,7 @@ public class SubmissionHistory extends Activity {
 							new SubmissionParser.Callback() {
 								@Override
 								public void invoke(ArrayList<Submission> subs) {
-									Log.d("COORD", "size: " + subs.size());
+
 									G.globalSubmissions = subs;
 									submissions = Submission.getSubmissionsAt(
 											taskLocation, campaign);
@@ -123,6 +115,10 @@ public class SubmissionHistory extends Activity {
 									mySubmissions = Submission
 											.getMySubmissionsAt(taskLocation,
 													campaign);
+									Log.d("COORD",
+											"all subs: " + subs.size()
+													+ "my subs: "
+													+ mySubmissions.size());
 									Collections.sort(mySubmissions);
 									updateUI();
 								}
@@ -133,7 +129,6 @@ public class SubmissionHistory extends Activity {
 			}
 		});
 		Submission.getAllSubmissions(this, handl);
-		System.out.println("test");
 	}
 
 	/** Unpacks passed-in campaign from the intent. */
@@ -158,45 +153,45 @@ public class SubmissionHistory extends Activity {
 				v.getContext().startActivity(i);
 			}
 		});
-		
+
 		cancelBtn.setOnClickListener(new View.OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
 				finish();
-//				Intent i = new Intent(v.getContext(), Map.class);
-//				i.putExtra ("campaign", campaign);
-//				v.getContext().startActivity(i);
 			}
 		});
 	}
 
+
 	public void updateUI() {
-
-		// we need to add header and footer to get the scoll bar work for list
-		// view
 		
-		if (!mySubmissions.isEmpty()) {
-			TextView mySubsHeader = new TextView(this);
-			mySubsHeader.setText("My Submission History");
-			TextView mySubsFooter = new TextView(this);
-			mySubsList.addHeaderView(mySubsHeader);
-			mySubsList.addFooterView(mySubsFooter);
-			mySubsList
-					.setAdapter(new MySubmissionsAdapter(this, mySubmissions));
-		} else
-			mySubsList = null;
+		// add header and footer to get the scollbar work for list view
+		TextView mySubsHeader = new TextView(this);
+		TextView mySubsFooter = new TextView(this);
+		TextView allSubsHeader = new TextView(this);
+		TextView allSubsFooter = new TextView(this);
+		
+		mySubsHeader.setText("My History");
+		mySubsHeader.setTypeface(null, Typeface.BOLD);
+		mySubsList.addHeaderView(mySubsHeader);
+		mySubsList.addFooterView(mySubsFooter);
+		MySubmissionsAdapter mySubsAdapter = new MySubmissionsAdapter(this, mySubmissions);
+		mySubsList.setAdapter(mySubsAdapter);
+		mySubsAdapter.notifyDataSetChanged();
+		
+		if(mySubmissions.isEmpty())
+			mySubsFooter.setText("Make your first observation!");
+		
+		allSubsHeader.setText("All History");
+		allSubsHeader.setTypeface(null, Typeface.BOLD);
+		allSubsList.addHeaderView(allSubsHeader);
+		allSubsList.addFooterView(allSubsFooter);
+		AllSubmissionsAdapter allSubsAdapter = new AllSubmissionsAdapter(this, submissions);
+		allSubsList.setAdapter(allSubsAdapter);
+		allSubsAdapter.notifyDataSetChanged();
 
-		if (!submissions.isEmpty()) {
-			TextView allSubsHeader = new TextView(this);
-			allSubsHeader.setText("All Submission History");
-			TextView allSubsFooter = new TextView(this);
-			allSubsList.addHeaderView(allSubsHeader);
-			allSubsList.addFooterView(allSubsFooter);
-			allSubsList
-					.setAdapter(new AllSubmissionsAdapter(this, submissions));
-		} else
-			allSubsList = null;
+		if(submissions.isEmpty())
+			allSubsFooter.setText("There is no history here. Be the first one and earn more points!");
 	}
 
 }
