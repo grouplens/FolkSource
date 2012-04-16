@@ -12,6 +12,7 @@ import org.xml.sax.SAXException;
 
 import android.util.Log;
 
+import com.citizensense.android.Answer;
 import com.citizensense.android.Campaign;
 import com.citizensense.android.Submission;
 
@@ -25,6 +26,13 @@ public class SubmissionParser extends XMLParser {
 	/** The {@link Campaign} to parse */
 	private ArrayList<Submission> subs;
 	private Submission submission;
+	
+	private ArrayList<Answer> answers;
+	private Answer answer;
+	
+	/** There are 'id' in both submission and answer, we need to 
+	 * distinguish them*/
+	private boolean isParsingAnswer = false;
 
 	/** Construct a new TaskParser */
 	public SubmissionParser() {
@@ -67,18 +75,30 @@ public class SubmissionParser extends XMLParser {
 		if (localName.equalsIgnoreCase("org.citizensense.model.Submission")) {
 //			Log.d("COORD", "adding a submission to subs");
 			this.subs.add(submission);
+			if(submission!=null && answers!=null)
+				this.submission.setAnswers(answers.toArray(new Answer[answers.size()]));
 			this.submission = null;
-		} else {
+			this.answers = null;
+		} 
+
+		else {
 			this.isBuffering = false;
 			String content = this.buffer.toString();
-			if (localName.equalsIgnoreCase("id")) {
-				this.submission.setId(Integer.parseInt(content));
+			
+			if(localName.equalsIgnoreCase("org.citizensense.model.Answer")){
+				isParsingAnswer = false;
+				answer = null;
+			}
+			else if (localName.equalsIgnoreCase("id")) {
+				if(isParsingAnswer == false)
+					this.submission.setId(Integer.parseInt(content));
+				else
+					this.answer.setId(Integer.parseInt(content));
 			} else if (localName.equalsIgnoreCase("task__id")) {
 				this.submission.setTask_id(Integer.parseInt(content));
 			} else if (localName.equalsIgnoreCase("user__id")) {
 				this.submission.setUser_id(Integer.parseInt(content));
 			} else if (localName.equalsIgnoreCase("gps__location")) {
-				//this.submission.setCoords(content.split("\\|"));
 				int index = content.indexOf(";");
 				if(index == -1){
 					this.submission.setCoords(content.split("\\|"));
@@ -98,24 +118,25 @@ public class SubmissionParser extends XMLParser {
 					e.printStackTrace();
 				}
 			}
-			// else if (localName.equalsIgnoreCase("end__date")) {
-			// try {
-			// submission.setEndDate(this.dateFormat.parse(content));
-			// } catch (ParseException e) {
-			// Log.e("TAG", "Invalid Date Format: start_date="
-			// + content
-			// + ". Should use format"
-			// + dateFormat.toLocalizedPattern());
-			// e.printStackTrace();
-			// }
-			// }
-			// else if (localName.equalsIgnoreCase("owner__id")) {
-			// //FIXME this will work for now
-			// this.submission.setOwner(content);
-			// }
-			// else if (localName.equalsIgnoreCase("task__id")) {
-			// this.submission.setTaskId(content);
-			// }
+			//parse answer
+			else if(localName.equalsIgnoreCase("answer")){
+				answer.setAnswer(content);
+			}
+			else if(localName.equalsIgnoreCase("type")){
+				answer.setType(content);
+			}
+			else if(localName.equalsIgnoreCase("q__id")){
+				answer.setQ_id(Integer.parseInt(content));
+			}
+			else if(localName.equalsIgnoreCase("sub__id")){
+				answer.setSub_id(Integer.parseInt(content));
+				// In the XML, there is "<org.citizensense.model.Answer reference="../../bag/org.citizensense.model.Answer"/>"
+				// thus we should't add answer when when see this start element "org.citizensense.model.Answer"
+				// add the answer object when we see the end element "sub_id"
+				if(answers!=null) answers.add(answer);
+			}
+			
+			
 		}
 	}// endElement
 
@@ -125,12 +146,15 @@ public class SubmissionParser extends XMLParser {
 		super.startElement(uri, localName, qName, atts);
 		if (localName.equalsIgnoreCase("org.citizensense.model.Submission")) {
 			this.submission = new Submission();
-		} else {
-			if (!localName.equalsIgnoreCase("list")) {
+			answers = new ArrayList<Answer>();
+		} else if(localName.equalsIgnoreCase("org.citizensense.model.Answer")){
+			isParsingAnswer = true;
+			answer = new Answer();
+		}
+		else if (!localName.equalsIgnoreCase("list")) {
 				this.buffer = new StringBuffer("");
 				this.isBuffering = true;
 			}
-		}
 	}// startElement
 
 	/**

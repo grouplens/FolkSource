@@ -7,6 +7,7 @@
 package com.citizensense.android;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.xml.sax.SAXException;
@@ -18,9 +19,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Xml;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.citizensense.android.net.XMLResponseHandler;
 import com.citizensense.android.parsers.SubmissionParser;
@@ -53,11 +57,27 @@ public class SubmissionHistory extends Activity {
 	/** Campaign object get from Map */
 	private Campaign campaign;
 
-	/** Submissions at this location */
-	private ArrayList<Submission> submissions = new ArrayList<Submission>();
+	/** All submissions at this location */
+	private ArrayList<Submission> allSubmissions = new ArrayList<Submission>();
 
 	/** My submissions at this location */
 	private ArrayList<Submission> mySubmissions = new ArrayList<Submission>();
+
+	/** Adapter for my submissions' list view */
+	private MySubmissionsAdapter mySubsAdapter;
+
+	/** Adapter for all submissions' list view */
+	private AllSubmissionsAdapter allSubsAdapter;
+
+	// add header and footer to get the scollbar work for list view
+	/** Header for my submissions' list view */
+	TextView mySubsHeader;
+	/** Footer for my submissions' list view */
+	TextView mySubsFooter;
+	/** Header for all submissions' list view */
+	TextView allSubsHeader;
+	/** Footer for all submissions' list view */
+	TextView allSubsFooter;
 
 	/** The task's location */
 	private int[] taskLocation;
@@ -81,6 +101,7 @@ public class SubmissionHistory extends Activity {
 
 		handleIntent(this.getIntent());
 		setListener();
+		initiateUI();
 	}
 
 	@Override
@@ -109,9 +130,10 @@ public class SubmissionHistory extends Activity {
 								public void invoke(ArrayList<Submission> subs) {
 
 									G.globalSubmissions = subs;
-									submissions = Submission.getSubmissionsAt(
-											taskLocation, campaign);
-									Collections.sort(submissions);
+									allSubmissions = Submission
+											.getSubmissionsAt(taskLocation,
+													campaign);
+									Collections.sort(allSubmissions);
 									mySubmissions = Submission
 											.getMySubmissionsAt(taskLocation,
 													campaign);
@@ -160,38 +182,79 @@ public class SubmissionHistory extends Activity {
 				finish();
 			}
 		});
+
+		mySubsList.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// know the difference between id and postition
+				if (id >= 0 && id < mySubmissions.size()) {
+					Intent intent = new Intent(view.getContext(),
+							SubmissionBrowser.class);
+					intent.putExtra("submission", mySubmissions.get((int) id));
+					
+					//I tried to parse answers as part of submission, but always got problem
+					//We may want to change this later.
+					Answer[] answers = mySubmissions.get((int) id).getAnswers();
+					ArrayList<Answer> answerList = new ArrayList<Answer>(Arrays.asList(answers));
+					intent.putParcelableArrayListExtra("answers", answerList);
+					startActivity(intent);
+				}
+			}
+		});
+
+		allSubsList.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				if (id >= 0 && id < allSubmissions.size()) {
+					Intent intent = new Intent(view.getContext(),
+							SubmissionBrowser.class);
+					intent.putExtra("submission", allSubmissions.get((int) id));
+					Answer[] answers = allSubmissions.get((int) id).getAnswers();
+					ArrayList<Answer> answerList = new ArrayList<Answer>(Arrays.asList(answers));
+					intent.putParcelableArrayListExtra("answers", answerList);
+					startActivity(intent);
+				}
+			}
+		});
 	}
 
-
-	public void updateUI() {
-		
-		// add header and footer to get the scollbar work for list view
-		TextView mySubsHeader = new TextView(this);
-		TextView mySubsFooter = new TextView(this);
-		TextView allSubsHeader = new TextView(this);
-		TextView allSubsFooter = new TextView(this);
-		
+	public void initiateUI() {
+		mySubsHeader = new TextView(this);
+		mySubsFooter = new TextView(this);
+		allSubsHeader = new TextView(this);
+		allSubsFooter = new TextView(this);
 		mySubsHeader.setText("My History");
 		mySubsHeader.setTypeface(null, Typeface.BOLD);
-		mySubsList.addHeaderView(mySubsHeader);
-		mySubsList.addFooterView(mySubsFooter);
-		MySubmissionsAdapter mySubsAdapter = new MySubmissionsAdapter(this, mySubmissions);
-		mySubsList.setAdapter(mySubsAdapter);
-		mySubsAdapter.notifyDataSetChanged();
-		
-		if(mySubmissions.isEmpty())
-			mySubsFooter.setText("Make your first observation!");
-		
 		allSubsHeader.setText("All History");
 		allSubsHeader.setTypeface(null, Typeface.BOLD);
-		allSubsList.addHeaderView(allSubsHeader);
-		allSubsList.addFooterView(allSubsFooter);
-		AllSubmissionsAdapter allSubsAdapter = new AllSubmissionsAdapter(this, submissions);
-		allSubsList.setAdapter(allSubsAdapter);
-		allSubsAdapter.notifyDataSetChanged();
+	}
 
-		if(submissions.isEmpty())
+	public void updateUI() {
+		if (mySubsAdapter == null) {
+			mySubsAdapter = new MySubmissionsAdapter(this, mySubmissions);
+			mySubsList.addHeaderView(mySubsHeader);
+			mySubsList.addFooterView(mySubsFooter);
+			mySubsList.setAdapter(mySubsAdapter);
+
+		} else
+			mySubsAdapter.notifyDataSetChanged();
+		if (mySubmissions.isEmpty())
+			mySubsFooter.setText("Make your first observation!");
+
+		if (allSubsAdapter == null) {
+
+			allSubsAdapter = new AllSubmissionsAdapter(this, allSubmissions);
+			allSubsList.addHeaderView(allSubsHeader);
+			allSubsList.addFooterView(allSubsFooter);
+			allSubsList.setAdapter(allSubsAdapter);
+
+		} else
+			allSubsAdapter.notifyDataSetChanged();
+		if (allSubmissions.isEmpty())
 			allSubsFooter.setText("There is no history here. Be the first one and earn more points!");
+
 	}
 
 }

@@ -37,5 +37,10 @@ public class G {
 	/** This is used when a user clicks a notification in order to open the correct
 	 * campaign.*/
 	public static String notification_campaign_id;
-	protected static ArrayList<Submission> globalSubmissions;
+	/** All submissions for the current campaign(??)*/
+	public static ArrayList<Submission> globalSubmissions;
+	
+	/** Learderboard*/
+	public static Leaderboard leaderboard;
+	
 }//G

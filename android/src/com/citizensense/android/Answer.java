@@ -19,7 +19,9 @@ public class Answer implements Item {
 	//The ID of the submission associated with this answer
 	private int sub_id;
 
-
+	public Answer(){
+		
+	}
 
 	@Override
 	public String buildXML() {

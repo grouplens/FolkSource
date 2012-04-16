@@ -52,7 +52,7 @@ public class Profile extends ListActivity {
 		getIncentive();
 	}
 	
-	/** Get the leaderboard incentive locally */
+	/** Get the leaderboard incentive */
 	private void getIncentive() { 
 		//TODO get incentive from the server.
 		if (Constants.localCampaignsOnly) {
@@ -83,6 +83,7 @@ public class Profile extends ListActivity {
 							
 							@Override
 							public void invoke(Leaderboard leaderboard) {
+								G.leaderboard = leaderboard;
 								setListAdapter(new LeaderboardAdapter(Profile.this, 
 										                              leaderboard.entries));
 							}

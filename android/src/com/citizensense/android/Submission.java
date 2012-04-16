@@ -141,43 +141,56 @@ public class Submission implements Item, Comparable<Submission> {
 	public static final Parcelable.Creator<Submission> CREATOR =
         new Parcelable.Creator<Submission>() {
      
-		/** Construct and return an Ad from a Parcel*/
 		@Override
 		public Submission createFromParcel(Parcel in) {
 			return new Submission(in);
 		}//createFromParcel
 
-		/**
-		 * Creates a new array of Adds
-		 */
 		@Override
 		public Submission[] newArray(int size) {
 			return new Submission[size];
 		}//newArray
 	};
 	
-	/** Create a new Submission from the given Parcel. */
+	/**
+	 * Constructor to use when re-constructing object
+	 * from a parcel
+	 * @param in a parcel from which to read this object
+	 */
 	public Submission(Parcel in) {
-//		this.xml = in.readString();
+		readFromParcel(in);
+	}//Submission
+	
+	
+	/**
+	 * Called from the constructor to create this
+	 * object from a parcel.
+	 *
+	 * @param in parcel from which to re-create object
+	 */
+	private void readFromParcel(Parcel in) {
+		this.xml = in.readString();
 		this.id = in.readInt();
 		this.task_id = in.readInt();
 		this.user_id = in.readInt();
 		this.timestamp = new Date(in.readLong());
 		this.coords = in.createStringArray();
 		this.myCoords = in.createStringArray();
-//		this.answers = (Answer[]) in.readParcelableArray(Answer.class.getClassLoader());
-	}//Submission
+//		in.readTypedArray(this.answers,Answer.CREATOR);
+		this.points = in.readInt();
+	}
 	
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
-//		out.writeString(this.xml);
+		out.writeString(this.xml);
 		out.writeInt(this.id);
 		out.writeInt(this.task_id);
 		out.writeInt(this.user_id);
 		out.writeLong(this.timestamp.getTime());
 		out.writeStringArray(this.coords);
 		out.writeStringArray(this.myCoords);
-//		out.writeParcelableArray(this.answers, 0);
+//		out.writeTypedArray(this.answers,flags);
+		out.writeInt(this.points);
 	}
 	
 	@Override
