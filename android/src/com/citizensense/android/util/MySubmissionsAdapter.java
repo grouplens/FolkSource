@@ -44,12 +44,15 @@ public class MySubmissionsAdapter extends ArrayAdapter<Submission> {
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.my_sub_item, parent, false);
-		TextView textView = (TextView) rowView.findViewById(R.id.mySubItem);
+		TextView dateView = (TextView) rowView.findViewById(R.id.mySubItemDate);
+		TextView pointsView = (TextView) rowView.findViewById(R.id.mySubItemPoints);
 		if(mySubmissions!=null){
 			Submission sub = mySubmissions.get(position);
 			SimpleDateFormat dateformat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 			String time = dateformat.format(sub.getTimestamp());
-			textView.setText(time+"               "+sub.getPoints());
+			dateView.setText(time);
+			pointsView.setText(sub.getPoints() + ""); //toString
+//			textView.setText(time+"               "+sub.getPoints());
 		}
 		return rowView;
 	}// getView

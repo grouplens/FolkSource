@@ -44,12 +44,18 @@ public class AllSubmissionsAdapter extends ArrayAdapter<Submission> {
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.all_sub_item, parent, false);
-		TextView textView = (TextView) rowView.findViewById(R.id.allSubItem);
+		TextView idView = (TextView) rowView.findViewById(R.id.allSubItemID);
+		TextView dateView = (TextView) rowView.findViewById(R.id.allSubItemDate);
+		TextView pointView = (TextView) rowView.findViewById(R.id.allSubItemPoints);
 		if(allSubmissions!=null){
 			Submission sub = allSubmissions.get(position);
 			SimpleDateFormat dateformat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 			String time = dateformat.format(sub.getTimestamp());
-			textView.setText(sub.getUser_id() + "         "+time+"         "+sub.getPoints());
+			idView.setText(sub.getUser_id() + ""); // toString
+			dateView.setText(time);
+			pointView.setText(sub.getPoints() + ""); //toString
+			
+//			textView.setText(sub.getUser_id() + "         "+time+"         "+sub.getPoints());
 		}
 		return rowView;
 	}// getView

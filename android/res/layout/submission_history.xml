@@ -49,6 +49,7 @@
         <ListView
             android:id="@+id/allSubmissions"
             android:layout_width="fill_parent"
+            android:layout_gravity="fill_horizontal"
             android:layout_height="wrap_content" >
         </ListView>
     </LinearLayout>

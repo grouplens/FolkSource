@@ -2,11 +2,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:orientation="horizontal"
+    android:clickable="false" >
+	
+<!--     <LinearLayout  -->
+<!--         android:layout_width="fill_parent" -->
+<!--         android:layout_height="fill_parent" -->
+<!--         android:orientation="horizontal"> -->
+        
+        <TextView
+            android:id="@+id/allSubItemID"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="false" />
 
-    <TextView
-        android:id="@+id/allSubItem"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/allSubItemDate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="false" />
+
+        <TextView
+            android:id="@+id/allSubItemPoints"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:clickable="false" />
+<!--     </LinearLayout> -->
+    
 
 </LinearLayout>
