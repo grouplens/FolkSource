@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.citizensense.android.Answer;
+import com.citizensense.android.Question;
 import com.citizensense.android.R;
 
 /** 
@@ -28,12 +29,15 @@ public class SubmissionContentAdapter extends ArrayAdapter<Answer> {
 	private Context context;
 	/** The answers to inflate */
 	private ArrayList<Answer> answers;
+	/** The questions to inflate*/
+	private ArrayList<Question> questions;
 
 	public SubmissionContentAdapter(Context context,
-			ArrayList<Answer> answers) {
+			ArrayList<Answer> answers,ArrayList<Question> questions) {
 		super(context, 0, answers);
 		this.context = context;
 		this.answers = answers;
+		this.questions = questions;
 	}
 
 	/** Inflate submission content */
@@ -45,14 +49,17 @@ public class SubmissionContentAdapter extends ArrayAdapter<Answer> {
 		View rowView = inflater.inflate(R.layout.sub_content_item, parent, false);
 		TextView questionView = (TextView) rowView.findViewById(R.id.question);
 		//FIXME: add question content later
-		questionView.setText("Q"+index+": ");
+		String questionText = "Q"+index+": ";
+		if(questions!=null) questionText += questions.get(position).getQuestion();
+		questionView.setText(questionText);
 		
+		//FIXME: think about how to display the answer when we have different answer types
 		TextView answerView = (TextView) rowView.findViewById(R.id.answer);
+		String answerText = "A"+index+": ";
 		if(answers!=null){
-			//FIXME: think about how to display the answer when we have different answer types
-			
-			answerView.setText("A"+index+": "+answers.get(position).getAnswer());
+			answerText += answers.get(position).getAnswer();
 		}
+		answerView.setText(answerText);
 		return rowView;
 	}// getView
 }

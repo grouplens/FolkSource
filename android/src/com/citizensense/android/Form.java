@@ -75,6 +75,10 @@ public class Form implements Parcelable {
 		}
 		return q;
 	}//getQuestions
+	
+	public ArrayList<Question> getQuestionsList(){
+		return this.questions;
+	}
 
 	@Override
 	public int describeContents() {

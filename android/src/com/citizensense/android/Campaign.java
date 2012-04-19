@@ -231,10 +231,10 @@ public class Campaign implements Item, Comparable<Campaign> {
 	 * FIXME */
 	public int getImage() {
 		if (this.getId().equals("1")) {
-			return R.drawable.potholes;
+			return R.drawable.bikerack;
 		}
 		else if (this.getId().equals("2")) {
-			return R.drawable.busrack;
+			return R.drawable.potholes;
 		}
 		else {
 			return R.drawable.profile_default;

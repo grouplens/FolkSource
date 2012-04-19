@@ -36,15 +36,21 @@ public class SubmissionBrowser extends Activity {
 	private TextView time;
 	/** Points get for the submission */
 	private TextView points;
-	
-	/** Answers of the submission*/
+
+	/** Answers of the submission */
 	private ArrayList<Answer> answers;
+
+	/** Campaign object for the submission, we need this to get questions */
+	private Campaign campaign;
 
 	/** List View for submission's content: questions, answers and image */
 	private ListView submissionContentList;
-	
+
 	private TextView header;
-	private ImageView footer;
+	private TextView footer;
+	
+	/** ImageView for the submission's image.*/
+	private ImageView image;
 
 	/***/
 	private SubmissionContentAdapter subContentAdapter;
@@ -57,31 +63,39 @@ public class SubmissionBrowser extends Activity {
 		time = (TextView) findViewById(R.id.time);
 		points = (TextView) findViewById(R.id.points);
 		submissionContentList = (ListView) findViewById(R.id.subContentList);
+		image = (ImageView)findViewById(R.id.subImage);
 		handleIntent(this.getIntent());
 		initiateUI();
+		updateUI();
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		updateUI();
 	}
 
 	public void handleIntent(Intent i) {
 		this.submission = i.getParcelableExtra("submission");
 		this.answers = i.getParcelableArrayListExtra("answers");
+		this.campaign = i.getParcelableExtra("campaign");
 	}
 
-	
 	public void initiateUI() {
 		header = new TextView(this);
-		footer = new ImageView(this);
+		footer = new TextView(this);
 		header.setText("Submission Content");
 		header.setTypeface(null, Typeface.BOLD);
-		//FIXME: get image from server
-		footer.setImageResource(R.drawable.potholes);
-		
+		image.setImageResource(R.drawable.bikerack);
+		// FIXME: get image from server
+//		footer.setImageResource(R.drawable.bikerack);
+		// footer.setScaleType(ScaleType.CENTER_CROP);
+//		 footer.setLayoutParams(new LayoutParams(
+//		 LinearLayout.LayoutParams.WRAP_CONTENT,
+//		 LinearLayout.LayoutParams.WRAP_CONTENT));
+
+		// footer.set
 	}
+
 	public void updateUI() {
 		if (submission == null) {
 			Log.e("SubmissionBrowser", "submission  is null");
@@ -94,15 +108,21 @@ public class SubmissionBrowser extends Activity {
 		time.setText(df.format(submission.getTimestamp()));
 		points.setText("" + submission.getPoints());
 		// update UI for list view
-		if (subContentAdapter == null && answers != null) {
+		if (subContentAdapter == null && answers != null && campaign != null) {
 			submissionContentList.addHeaderView(header);
 			submissionContentList.addFooterView(footer);
-			subContentAdapter = new SubmissionContentAdapter(this,answers);
+			ArrayList<Question> questions = null;
+			if (campaign.getTask() != null
+					&& campaign.getTask().getForm() != null)
+				questions = campaign.getTask().getForm().getQuestionsList();
+			subContentAdapter = new SubmissionContentAdapter(this, answers,
+					questions);
 			submissionContentList.setAdapter(subContentAdapter);
 		}
-		
-		//FIXME: if the campaign does not require verification, hide the verification part
-		
+
+		// FIXME: if the campaign does not require verification, hide the
+		// verification part
+
 	}
 
 }

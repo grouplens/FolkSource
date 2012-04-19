@@ -56,8 +56,11 @@
             android:name=".Sense" />
         <activity
             android:label="SubmissionHistory"
-            android:theme="@android:style/Theme.Dialog"
-            android:name=".SubmissionHistory" />
+            android:name=".SubmissionHistory"
+            android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:label="SubmissionBrowser"
+            android:name=".SubmissionBrowser" />
         <activity
             android:label="Login"
             android:name=".Login"

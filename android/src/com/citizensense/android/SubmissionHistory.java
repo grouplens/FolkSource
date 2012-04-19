@@ -198,6 +198,7 @@ public class SubmissionHistory extends Activity {
 					Answer[] answers = mySubmissions.get((int) id).getAnswers();
 					ArrayList<Answer> answerList = new ArrayList<Answer>(Arrays.asList(answers));
 					intent.putParcelableArrayListExtra("answers", answerList);
+					intent.putExtra("campaign",campaign);
 					startActivity(intent);
 				}
 			}
@@ -214,6 +215,7 @@ public class SubmissionHistory extends Activity {
 					Answer[] answers = allSubmissions.get((int) id).getAnswers();
 					ArrayList<Answer> answerList = new ArrayList<Answer>(Arrays.asList(answers));
 					intent.putParcelableArrayListExtra("answers", answerList);
+					intent.putExtra("campaign",campaign);
 					startActivity(intent);
 				}
 			}

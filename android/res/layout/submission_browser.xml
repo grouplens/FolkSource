@@ -83,9 +83,9 @@
 
         <LinearLayout
             android:id="@+id/verifyLayout"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_width="fill_parent"
             android:orientation="vertical" >
 
             <TextView
@@ -94,8 +94,8 @@
                 android:text="Please select one option to evaluate the submission:" />
 
             <LinearLayout
-                android:layout_height="wrap_content"
                 android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
                 <Button
@@ -114,11 +114,20 @@
             </LinearLayout>
         </LinearLayout>
 
+        <ImageView
+            android:id="@+id/subImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/verifyLayout"
+            android:adjustViewBounds="true" >
+        </ImageView>
+
         <ListView
             android:id="@+id/subContentList"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_above="@id/verifyLayout" >
+            android:layout_above="@id/subImage" >
         </ListView>
     </RelativeLayout>
+
 </LinearLayout>
