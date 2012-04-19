@@ -37,6 +37,9 @@ public class Submission implements Item, Comparable<Submission> {
 	/** The points earned for submission*/
 	//FIXME: set this to 1 point now, should get from server
 	private int points = 1;
+	/** The path of the image on the server*/
+	//FIXME: get this from server
+	private String imageUrl = "http://www-users.cs.umn.edu/~ryu/CitizenSense/bikerack.jpg";
 	
 	public Submission(String xml) {
 		this.xml = xml;
@@ -262,6 +265,14 @@ public class Submission implements Item, Comparable<Submission> {
 
 	public int getPoints() {
 		return points;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
 	}
 
 }

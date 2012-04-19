@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.citizensense.android.net.GetImageRequest;
 import com.citizensense.android.util.SubmissionContentAdapter;
 
 /**
@@ -85,16 +86,19 @@ public class SubmissionBrowser extends Activity {
 		footer = new TextView(this);
 		header.setText("Submission Content");
 		header.setTypeface(null, Typeface.BOLD);
-		image.setImageResource(R.drawable.bikerack);
+//		image.setImageResource(R.drawable.bikerack);
+		updateImageView();
 		// FIXME: get image from server
-//		footer.setImageResource(R.drawable.bikerack);
-		// footer.setScaleType(ScaleType.CENTER_CROP);
-//		 footer.setLayoutParams(new LayoutParams(
-//		 LinearLayout.LayoutParams.WRAP_CONTENT,
-//		 LinearLayout.LayoutParams.WRAP_CONTENT));
-
-		// footer.set
 	}
+	
+	public void updateImageView(){
+		//FIXME: Get the url from server
+		GetImageRequest request = new GetImageRequest(this,image,true);
+		if(submission.getImageUrl()!=null)
+			request.execute(submission.getImageUrl());
+		
+	}
+	
 
 	public void updateUI() {
 		if (submission == null) {
