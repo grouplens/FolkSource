@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.citizensense.android.G;
+import com.citizensense.android.LeaderboardEntry;
 import com.citizensense.android.R;
 import com.citizensense.android.Submission;
 
@@ -44,18 +45,22 @@ public class AllSubmissionsAdapter extends ArrayAdapter<Submission> {
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View rowView = inflater.inflate(R.layout.all_sub_item, parent, false);
-		TextView idView = (TextView) rowView.findViewById(R.id.allSubItemID);
+		TextView nameView = (TextView) rowView.findViewById(R.id.allSubItemID);
 		TextView dateView = (TextView) rowView.findViewById(R.id.allSubItemDate);
 		TextView pointView = (TextView) rowView.findViewById(R.id.allSubItemPoints);
 		if(allSubmissions!=null){
 			Submission sub = allSubmissions.get(position);
 			SimpleDateFormat dateformat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 			String time = dateformat.format(sub.getTimestamp());
-			idView.setText(sub.getUser_id() + ""); // toString
+			String userName = "";
+			if(G.leaderboardMap!=null) {
+				LeaderboardEntry entry = G.leaderboardMap.get(sub.getUser_id());
+				if(entry!=null) userName = entry.name;
+			}
+			
+			nameView.setText(userName + ""); // toString
 			dateView.setText(time);
 			pointView.setText(sub.getPoints() + ""); //toString
-			
-//			textView.setText(sub.getUser_id() + "         "+time+"         "+sub.getPoints());
 		}
 		return rowView;
 	}// getView

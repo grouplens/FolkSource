@@ -5,6 +5,7 @@
 package com.citizensense.android;
 
 import java.io.InputStream;
+import java.util.HashMap;
 
 import org.xml.sax.SAXException;
 
@@ -83,7 +84,13 @@ public class Profile extends ListActivity {
 							
 							@Override
 							public void invoke(Leaderboard leaderboard) {
-								G.leaderboard = leaderboard;
+								//Set the LeaderboardMap 
+								if(leaderboard!=null && leaderboard.entries!=null){
+									G.leaderboardMap = new HashMap<Integer,LeaderboardEntry>();
+									for(LeaderboardEntry entry : leaderboard.entries){
+										G.leaderboardMap.put(entry.id,entry);
+									}
+								}
 								setListAdapter(new LeaderboardAdapter(Profile.this, 
 										                              leaderboard.entries));
 							}

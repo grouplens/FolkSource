@@ -5,9 +5,9 @@
     android:orientation="vertical" >
 
     <LinearLayout
-        android:layout_gravity="bottom"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:orientation="horizontal" >
 
         <Button
@@ -28,8 +28,8 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:layout_margin="5dp"
+        android:layout_weight="1"
         android:orientation="vertical" >
 
         <ListView
@@ -42,16 +42,38 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:layout_margin="5dp"
+        android:layout_weight="1"
         android:orientation="vertical" >
 
         <ListView
             android:id="@+id/allSubmissions"
             android:layout_width="fill_parent"
-            android:layout_gravity="fill_horizontal"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal" >
         </ListView>
     </LinearLayout>
+
+    <!--
+    RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp" >
+
+        <ListView
+            android:id="@+id/mySubmissions"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+        </ListView>
+
+        <ListView
+            android:id="@+id/allSubmissions"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:layout_below="@id/mySubmissions" >
+        </ListView>
+    </RelativeLayout
+    -->
 
 </LinearLayout>

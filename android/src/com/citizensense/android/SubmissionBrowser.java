@@ -63,10 +63,11 @@ public class SubmissionBrowser extends Activity {
 		name = (TextView) findViewById(R.id.name);
 		time = (TextView) findViewById(R.id.time);
 		points = (TextView) findViewById(R.id.points);
+		//FIXME: Probably we shouldn't use list view here
+		// The narrow list view doesn't look good.
 		submissionContentList = (ListView) findViewById(R.id.subContentList);
 		image = (ImageView)findViewById(R.id.subImage);
 		handleIntent(this.getIntent());
-		initiateUI();
 		updateUI();
 	}
 
@@ -80,34 +81,33 @@ public class SubmissionBrowser extends Activity {
 		this.answers = i.getParcelableArrayListExtra("answers");
 		this.campaign = i.getParcelableExtra("campaign");
 	}
+	
+	public void updateImageView(){
+		//FIXME: We should allow the user to rotate/zoom in/zoom out
+		GetImageRequest request = new GetImageRequest(this,image,true);
+		if(submission.getImageUrl()!=null)
+			request.execute(submission.getImageUrl());
+	}
 
-	public void initiateUI() {
+	public void updateUI() {
 		header = new TextView(this);
 		footer = new TextView(this);
 		header.setText("Submission Content");
 		header.setTypeface(null, Typeface.BOLD);
-//		image.setImageResource(R.drawable.bikerack);
 		updateImageView();
-		// FIXME: get image from server
-	}
-	
-	public void updateImageView(){
-		//FIXME: Get the url from server
-		GetImageRequest request = new GetImageRequest(this,image,true);
-		if(submission.getImageUrl()!=null)
-			request.execute(submission.getImageUrl());
 		
-	}
-	
-
-	public void updateUI() {
 		if (submission == null) {
 			Log.e("SubmissionBrowser", "submission  is null");
 			return;
 		}
 		// set user name, time and points
 		// FIXME: change this to user name
-		name.setText("" + submission.getUser_id());
+		String userName = "";
+		if(G.leaderboardMap!=null) {
+			LeaderboardEntry entry = G.leaderboardMap.get(submission.getUser_id());
+			if(entry!=null) userName = entry.name;
+		}
+		name.setText(userName);
 		SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		time.setText(df.format(submission.getTimestamp()));
 		points.setText("" + submission.getPoints());

@@ -9,6 +9,7 @@ package com.citizensense.android;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 
 import org.xml.sax.SAXException;
 
@@ -26,9 +27,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.citizensense.android.net.GetRequest;
 import com.citizensense.android.net.XMLResponseHandler;
+import com.citizensense.android.parsers.LeaderboardParser;
 import com.citizensense.android.parsers.SubmissionParser;
 import com.citizensense.android.util.AllSubmissionsAdapter;
+import com.citizensense.android.util.LeaderboardAdapter;
 import com.citizensense.android.util.MySubmissionsAdapter;
 
 /**
@@ -142,7 +146,7 @@ public class SubmissionHistory extends Activity {
 													+ "my subs: "
 													+ mySubmissions.size());
 									Collections.sort(mySubmissions);
-									updateUI();
+									updateLeaderboard();
 								}
 							}));
 				} catch (SAXException e) {
@@ -151,6 +155,35 @@ public class SubmissionHistory extends Activity {
 			}
 		});
 		Submission.getAllSubmissions(this, handl);
+	}
+	
+	/** Update leaderboard so that we can get the user name from their id*/
+	public void updateLeaderboard(){
+		XMLResponseHandler handler = new XMLResponseHandler();
+		handler.setCallback(new XMLResponseHandler.StringCallback() {
+			@Override
+			public void invoke(String xml) {
+				try {
+					Xml.parse(xml, new LeaderboardParser(new LeaderboardParser.Callback() {
+						@Override
+						public void invoke(Leaderboard leaderboard) {
+							//Set the LeaderboardMap 
+							if(leaderboard!=null && leaderboard.entries!=null){
+								G.leaderboardMap = new HashMap<Integer,LeaderboardEntry>();
+								for(LeaderboardEntry entry : leaderboard.entries){
+									G.leaderboardMap.put(entry.id,entry);
+								}
+							}
+							updateUI();
+						}
+					}));
+				} catch (SAXException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		new GetRequest(this, Leaderboard.class, null, handler, false).execute();
+		
 	}
 
 	/** Unpacks passed-in campaign from the intent. */
