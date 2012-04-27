@@ -31,8 +31,8 @@ import com.citizensense.android.parsers.TaskParser;
  */
 public class CampaignBrowser extends CampaignExplorer {
 
-//	/** The campaigns retrieved from the server */
-//	public ArrayList<Campaign> this.campaigns;
+	// /** The campaigns retrieved from the server */
+	// public ArrayList<Campaign> this.campaigns;
 
 	/**
 	 * Referenced in {@link #onContextItemSelected(MenuItem)} to know which item
@@ -51,76 +51,40 @@ public class CampaignBrowser extends CampaignExplorer {
 
 		// FIXME retrieve campaigns from the gallery.
 		// The following code should do it:
-		if (Constants.localCampaignsOnly) {
-			try {
-				InputStream stream = getAssets().open("samples/campaign_1.xml");
-				Xml.parse(stream, Xml.Encoding.UTF_8, new LegacyCampaignParser(
-						this,
-						new LegacyCampaignParser.CampaignParserCallback() {
 
-							@Override
-							public void handleNewCampaign(Campaign c) {
-								if (!campaigns.contains(c)) {
-									campaigns.add(c);
-								}
-							}// handleNewCampaign
-						}));
-				stream = getAssets().open("samples/campaign_2.xml");
-				Xml.parse(stream, Xml.Encoding.UTF_8, new LegacyCampaignParser(
-						this,
-						new LegacyCampaignParser.CampaignParserCallback() {
+		XMLResponseHandler handler = new XMLResponseHandler();
+		handler.setCallback(new XMLResponseHandler.StringCallback() {
 
-							@Override
-							public void handleNewCampaign(Campaign c) {
-								if (!campaigns.contains(c)) {
-									campaigns.add(c);
-								}
-							}// handleNewCampaign
-						}));
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (SAXException e) {
-				e.printStackTrace();
-			}
-		} else {
-			XMLResponseHandler handler = new XMLResponseHandler();
-			handler.setCallback(new XMLResponseHandler.StringCallback() {
-
-				@Override
-				public void invoke(String xml) {
-					try {
-						Xml.parse(xml, new CampaignListParser(
-								new CampaignListParser.Callback() {
-
-									@Override
-									public void invoke(
-											ArrayList<Campaign> campaigns) {
-										Log.i("CampaignBrowser", "Retrieved "
-												+ campaigns.size()
-												+ " campaigns.");
-										// TODO remove this line.
-										G.globalCampaigns = campaigns;
-										for (Campaign c : campaigns) {
-											handleNewCampaign(c);
-										}
-										CampaignBrowser.this
-												.setCampaigns(campaigns);
+			@Override
+			public void invoke(String xml) {
+				try {
+					Xml.parse(xml, new CampaignListParser(
+							new CampaignListParser.Callback() {
+								@Override
+								public void invoke(ArrayList<Campaign> campaigns) {
+									Log.i("CampaignBrowser", "Retrieved "
+											+ campaigns.size() + " campaigns.");
+									// TODO remove this line.
+									G.globalCampaigns = campaigns;
+									for (Campaign c : campaigns) {
+										handleNewCampaign(c);
 									}
+									CampaignBrowser.this
+											.setCampaigns(campaigns);
+								}
 
-								}));
-					} catch (SAXException e) {
-						e.printStackTrace();
-					}
+							}));
+				} catch (SAXException e) {
+					e.printStackTrace();
 				}
-			});
-			new GetRequest(this, Campaign.class, null, handler, true).execute();
-		}
+			}
+		});
+		new GetRequest(this, Campaign.class, null, handler, true).execute();
+
 		Collections.sort(this.campaigns);
 		G.globalCampaigns = this.campaigns;
 		return this.campaigns;
 	}// getCampaigns
-
 
 	/**
 	 * Handle parsing a new {@link Campaign}
@@ -129,17 +93,14 @@ public class CampaignBrowser extends CampaignExplorer {
 	 */
 	public void handleNewCampaign(final Campaign c) {
 		if (!this.campaigns.contains(c)) {
-			this.campaigns.add(c);	
-			
+			this.campaigns.add(c);
 			XMLResponseHandler handler = new XMLResponseHandler();
 			handler.setCallback(new XMLResponseHandler.StringCallback() {
-
 				@Override
 				public void invoke(final String xml) {
 					try {
 						Xml.parse(xml, new TaskParser(
 								new TaskParser.Callback() {
-
 									@Override
 									public void invoke(Task t) {
 										handleNewTask(c, t);
@@ -151,8 +112,9 @@ public class CampaignBrowser extends CampaignExplorer {
 					}
 				}
 			});
-			
-			new GetRequest(this, Task.class, c.getTaskId(), handler, false).execute();
+
+			new GetRequest(this, Task.class, c.getTaskId(), handler, false)
+					.execute();
 		}
 	}// handleNewCampaign
 
@@ -170,7 +132,7 @@ public class CampaignBrowser extends CampaignExplorer {
 		}
 		t.setId(c.getTaskId());
 		c.setTask(t);
-	}//handleNewTask
+	}// handleNewTask
 
 	/**
 	 * Handle parsing a new {@link Form} and store the final {@link Campaign} in
@@ -180,18 +142,18 @@ public class CampaignBrowser extends CampaignExplorer {
 	 * @param t
 	 * @param f
 	 */
-//	public void handleNewForm(Campaign c, Task t, Form f) {
-//		t.setForm(f);
-//		this.campaigns.add(c);
-//	}// handleNewForm
+	// public void handleNewForm(Campaign c, Task t, Form f) {
+	// t.setForm(f);
+	// this.campaigns.add(c);
+	// }// handleNewForm
 
 	/**
 	 * In order to avoid the campaign browser to add multiples, this line is
 	 * needed on onResume.
 	 */
-//	@Override
-//	public void onResume() {
-//		this.campaigns = new ArrayList<Campaign>();
-//		super.onResume();
-//	}// onResume
+	// @Override
+	// public void onResume() {
+	// this.campaigns = new ArrayList<Campaign>();
+	// super.onResume();
+	// }// onResume
 }// CampaignBrowser

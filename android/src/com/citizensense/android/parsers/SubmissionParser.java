@@ -33,6 +33,7 @@ public class SubmissionParser extends XMLParser {
 	/** There are 'id' in both submission and answer, we need to 
 	 * distinguish them*/
 	private boolean isParsingAnswer = false;
+	
 
 	/** Construct a new TaskParser */
 	public SubmissionParser() {
@@ -73,7 +74,6 @@ public class SubmissionParser extends XMLParser {
 			throws SAXException {
 		super.endElement(uri, localName, qName);
 		if (localName.equalsIgnoreCase("org.citizensense.model.Submission")) {
-//			Log.d("COORD", "adding a submission to subs");
 			this.subs.add(submission);
 			if(submission!=null && answers!=null)
 				this.submission.setAnswers(answers.toArray(new Answer[answers.size()]));
@@ -145,7 +145,7 @@ public class SubmissionParser extends XMLParser {
 			Attributes atts) throws SAXException {
 		super.startElement(uri, localName, qName, atts);
 		if (localName.equalsIgnoreCase("org.citizensense.model.Submission")) {
-			this.submission = new Submission();
+			submission = new Submission();
 			answers = new ArrayList<Answer>();
 		} else if(localName.equalsIgnoreCase("org.citizensense.model.Answer")){
 			isParsingAnswer = true;

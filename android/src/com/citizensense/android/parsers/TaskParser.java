@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import com.citizensense.android.Answer;
 import com.citizensense.android.Form;
 import com.citizensense.android.Question;
 import com.citizensense.android.Task;
@@ -32,6 +33,12 @@ public class TaskParser extends XMLParser {
 	 */
 	private boolean isParsingSubmission = false;
 
+	/**
+	 * Keeps track of whether or not the parser is currently reading the
+	 * Question values.
+	 */
+	private boolean isParsingQuestion = false;
+
 	private ArrayList<Question> questions;
 
 	/** Construct a new TaskParser */
@@ -46,7 +53,7 @@ public class TaskParser extends XMLParser {
 	 */
 	public TaskParser(Callback callback) {
 		super(callback);
-		this.isParsingSubmission = false;
+		isParsingSubmission = false;
 	}// TaskParser
 
 	@Override
@@ -56,13 +63,13 @@ public class TaskParser extends XMLParser {
 
 	@Override
 	public Object getParsedObject() {
-		// this.task.setForm(this.form);
-		return this.task;
+		// task.setForm(form);
+		return task;
 	}// getParsedObject
 
 	@Override
 	public void endDocument() throws SAXException {
-		this.task.setForm(this.form);
+		task.setForm(form);
 		super.endDocument();
 	}// endDocument
 
@@ -70,8 +77,8 @@ public class TaskParser extends XMLParser {
 	public void characters(char[] ch, int start, int length)
 			throws SAXException {
 		super.characters(ch, start, length);
-		if (this.isBuffering) {
-			this.buffer.append(ch, start, length);
+		if (isBuffering) {
+			buffer.append(ch, start, length);
 		}
 	}// characters
 
@@ -79,63 +86,51 @@ public class TaskParser extends XMLParser {
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
 		super.endElement(uri, localName, qName);
-		this.isBuffering = false;
-		String content = this.buffer.toString();
-		 if (localName.equalsIgnoreCase("submissions")) {
-		 this.isParsingSubmission = false;
-		 }
-		 else if (this.isParsingSubmission) {
-			 return;
-		 }
-		// else if
-		// (localName.equalsIgnoreCase("org.citizensense.model.Question")) {
-		// this.form.addQuestion(this.question);
-		// this.question = null;
-		// }
-		// else if (localName.equalsIgnoreCase("id")) {
-		// //a name is not really needed, but used throughout the app.
-		// if (this.question == null) {
-		// this.task.setName("");
-		// }
-		// else {
-		// this.question.id = Integer.parseInt(content);
-		// }
+		isBuffering = false;
+		String content = buffer.toString();
+		if (localName.equalsIgnoreCase("submissions")) 
+			isParsingSubmission = false;
+		//we are not parsing Submissions in Task
+		if (isParsingSubmission) return;
 
 		if (localName.equalsIgnoreCase("id")) {
-			if (this.task.getId() == null)
-				this.task.setId(content);
-		} 
-		else if (localName.equalsIgnoreCase("instructions")) {
-			this.task.setInstructions(content);
-		} 
-//		else if (localName.equalsIgnoreCase("required")) {//for task or question
-//			if(this.task.getRequired() == null)
-//				this.task.setRequired(content.equalsIgnoreCase("true"));
-//			//else this.question.setRequired(content.equalsIgnoreCase("true"));
-//		} 
-		else if (localName.equalsIgnoreCase("org.citizensense.model.Question")) {
-			this.questions.add(this.question);
-		} 
-		else if (localName.equalsIgnoreCase("question")) {
-			this.question.setQuestion(content);
-		} 
-		else if (localName.equalsIgnoreCase("type")) {
-			if (content.equalsIgnoreCase("exclusive_multiple_choice")) {
-				this.question.setSingle_choice(true);
-				this.question.setType(Question.MULTIPLE_CHOICE);
-			} 
-			else if (content.equalsIgnoreCase("multiple_choice")) {//???ask Jake
-				this.question.setSingle_choice(false);
-				this.question.setType(Question.MULTIPLE_CHOICE);
-			} 
-			else if (content.equalsIgnoreCase("text")) {
-				this.question.setType(Question.WRITTEN_RESPONSE);
-				this.question.setSingle_choice(true);
-				this.question.setSingle_line(true);// unless otherwise
+			if (isParsingQuestion)
+				question.setId(Integer.parseInt(content));
+			else if (isParsingSubmission) {
+			} else
+				task.setId(content);
+		} else if (localName.equalsIgnoreCase("instructions")) {
+			task.setInstructions(content);
+		} else if (localName.equalsIgnoreCase("required")) {
+			if (isParsingQuestion){
+				question.setRequired(content.equalsIgnoreCase("true"));
+				questions.add(question);
 			}
-		} 
-		else if (localName.equalsIgnoreCase("options")) {
-			this.question.setAnswers(content.split("\\|"));
+			else
+				task.setRequired(content.equalsIgnoreCase("true"));
+		} else if (localName.equalsIgnoreCase("org.citizensense.model.Question")) {
+			isParsingQuestion = false;
+			// In the XML, there is "<org.citizensense.model.Question reference="../../bag/org.citizensense.model.Question"/>"
+			// thus we should't add question when when see this end element "org.citizensense.model.Question"
+			// add the question object when we see the end element "required" when isParsingQuestion is true
+			//questions.add(question); don't put it here
+		} else if (localName.equalsIgnoreCase("question")) {
+			question.setQuestion(content);
+		} else if (localName.equalsIgnoreCase("type")) {
+			if (content.equalsIgnoreCase("exclusive_multiple_choice")) {
+				question.setSingle_choice(true);
+				question.setType(Question.MULTIPLE_CHOICE);
+			} else if (content.equalsIgnoreCase("multiple_choice")) {// ???ask
+																		// Jake
+				question.setSingle_choice(false);
+				question.setType(Question.MULTIPLE_CHOICE);
+			} else if (content.equalsIgnoreCase("text")) {
+				question.setType(Question.WRITTEN_RESPONSE);
+				question.setSingle_choice(true);
+				question.setSingle_line(true);// unless otherwise
+			}
+		} else if (localName.equalsIgnoreCase("options")) {
+			question.setAnswers(content.split("\\|"));
 		}
 
 	}// endElement
@@ -145,24 +140,21 @@ public class TaskParser extends XMLParser {
 			Attributes atts) throws SAXException {
 		super.startElement(uri, localName, qName, atts);
 		if (localName.equalsIgnoreCase("org.citizensense.model.Task")) {
-			this.task = new Task();
-		} 
-		else if (localName.contains("submissions")) {
-			 this.isParsingSubmission = true;
-		} 
-		else if (localName.equalsIgnoreCase("questions")) {
-			this.form = new Form();
-			this.questions = new ArrayList<Question>();
-			this.form.setQuestions(this.questions);
-			this.task.setForm(this.form);
-		}
-		else if (localName.equalsIgnoreCase("org.citizensense.model.Question")) {
-			this.question = new Question();
-		} 
-		else{
-			if(!this.isParsingSubmission){
-				this.buffer = new StringBuffer("");
-				this.isBuffering = true;
+			task = new Task();
+			form = new Form();
+			task.setForm(form);
+			questions = new ArrayList<Question>();
+			form.setQuestions(questions);
+		} else if (localName.equalsIgnoreCase("submissions")) {
+			isParsingSubmission = true;
+		} else if (localName
+				.equalsIgnoreCase("org.citizensense.model.Question")) {
+			question = new Question();
+			isParsingQuestion = true;
+		} else {
+			if (!isParsingSubmission) {
+				buffer = new StringBuffer("");
+				isBuffering = true;
 			}
 		}
 

@@ -46,12 +46,14 @@
             android:label="Home"
             android:name=".Home" />
         <activity
+            android:configChanges="orientation|keyboardHidden"
             android:label="Map"
             android:name=".Map" />
         <activity
             android:label="Profile"
             android:name=".Profile" />
         <activity
+            android:configChanges="orientation|keyboardHidden"
             android:label="Sense"
             android:name=".Sense" />
         <activity

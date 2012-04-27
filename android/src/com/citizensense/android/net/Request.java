@@ -75,7 +75,8 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 			IMAGE = 4;
 	/** The root URL of the server. */
 	public static final String BASE_URL = "http://ugly.cs.umn.edu:8080";
-//	public static final String BASE_URL = "http://134.84.51.6:9080";
+
+	// public static final String BASE_URL = "http://134.84.51.6:9080";
 
 	/**
 	 * Create a GET Request
@@ -229,12 +230,15 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 			}
 			dialog.setCancelable(false);
 			dialog.show();
+			Log.d("REQUEST", "onPreExecute");
 		}
 	}// onPreExecute
 
 	/** Handles the HTTP GET or POST in a non-UI Thread. */
 	@Override
 	protected HttpResponse doInBackground(String... params) {
+		Log.d("REQUEST", "doInBackground");
+
 		HttpClient client = new DefaultHttpClient();
 		if (requestType == GET) {
 			HttpGet get = new HttpGet(url);
@@ -266,6 +270,13 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 					pairs.add(new BasicNameValuePair("imageFileName", file_name));
 					pairs.add(new BasicNameValuePair("imageString", imageString));
 					post.setEntity(new UrlEncodedFormEntity(pairs));
+					
+					//recycle the bitmap, otherwise it may cause "exceed" VM budget
+					bm.recycle();
+					bm=null;
+					data = null;
+					imageString = null;
+					pairs = null;
 
 				} else if (inputFormat == LOGIN || inputFormat == REGISTER) { // LOGIN,
 					// REGISTER
@@ -280,7 +291,7 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 					if (this.inputFormat == JSON) {
 						entity = new StringEntity(data.buildJSON());
 					} else {
-						//System.out.println(data.buildXML());
+						// System.out.println(data.buildXML());
 						entity = new StringEntity(data.buildXML());
 					}
 					if (Constants.DEBUG) {
@@ -312,6 +323,7 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 	 */
 	@Override
 	protected void onPostExecute(HttpResponse response) {
+		Log.d("REQUEST", "onPostExecute");
 		if (showPopup) {
 			dialog.dismiss();
 		}

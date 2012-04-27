@@ -18,6 +18,7 @@ import org.xml.sax.SAXException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -576,6 +577,13 @@ public class Map extends MapActivity {
 		}
 		return true;
 	}
+	
+	@Override
+	//This is called when the user rotate the screen
+    public void onConfigurationChanged(Configuration newConfig) 
+    {
+		super.onConfigurationChanged(newConfig);
+    }
 	
 
 }// Map

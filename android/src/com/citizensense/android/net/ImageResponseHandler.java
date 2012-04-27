@@ -12,6 +12,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,7 @@ public class ImageResponseHandler extends BasicResponseHandler{
 	@Override
 	public String handleResponse(HttpResponse response)
 			throws HttpResponseException, IOException {
+		Log.d("ImageResponseHandler","handleResponse");
 		if (response == null) {
 			Toast.makeText(context, "Network error. Please try later.",
 					Toast.LENGTH_LONG).show();
@@ -60,12 +62,14 @@ public class ImageResponseHandler extends BasicResponseHandler{
 			setResult("success");
 	    	photoText.setText("Photo updated successfully!");
 	    	//After image uploaded successfully, send the post request for submission(forms)
-			SubmissionResponseHandler submissionHandler = new SubmissionResponseHandler(
+			Log.d("IMAGE UPLOAD", "image upload success");
+	    	SubmissionResponseHandler submissionHandler = new SubmissionResponseHandler(
 					context);
 			new PostRequest(context, submission, Request.XML,
 					submissionHandler, true).execute();
 			
 		}else if(status_code == FAILURE){
+			Log.d("IMAGE UPLOAD", "image upload fail");
 			setResult("fail");
 	    	photoText.setText("Photo updated failed. Please try later.");
 		}

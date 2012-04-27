@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -47,6 +48,9 @@ public class Sense extends LocationActivity {
 
 	/** Contains the campaign object that the user is completing a task for. */
 	private Campaign campaign;
+	
+	/** Questions defined in the campaign*/
+	private Question[] questions;
 	/** The index of the currently-selected question in the form. */
 	private int questionsIndex;
 	/**
@@ -70,15 +74,143 @@ public class Sense extends LocationActivity {
 	private CheckBox hasTakenPhoto;
 	/** Text to show the status about image taken and upload */
 	private TextView photoText;
+	/** Button to take a picture */
+	private Button capture;
+	/** Button to show next question */
+	private Button next;
+	/** Button to show previous question */
+	private Button previous;
+	/** Button to submit form and image*/
+	private Button submit;
+	
+	private LinearLayout form_container;
+	private LinearLayout[] layouts;
+	
+	/** TextView for campaign title */
+	private TextView title;
+	
 	/** The user's location */
 	private GeoPoint pt;
+
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.sense);
+		title = (TextView) findViewById(R.id.campaign_title);
+		capture = (Button) findViewById(R.id.capture_photo);
+		hasTakenPhoto = (CheckBox) findViewById(R.id.chkbox_photo_complete);
+		photoText = (TextView) findViewById(R.id.upload_text);
+		next = (Button) findViewById(R.id.next_question);
+		previous = (Button) findViewById(R.id.previous_question);
+		submit = (Button) findViewById(R.id.submit);
+		form_container = (LinearLayout) findViewById(R.id.form_container);
+		questionsIndex = 0;
+		handleIntent(this.getIntent());
+		initiateUI();
+	}// onCreate
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+	}
+	
+	/** Unpacks passed-in campaign from the intent. */
+	public void handleIntent(Intent i) {
+		campaign = i.getParcelableExtra("campaign");
+		int[] t = i.getIntArrayExtra("taskLocation");
+		if(t != null) {
+			pt = new GeoPoint(t[0], t[1]);
+		}
+		if(t == null)
+			Log.e("SENSE", "usr's location is null");
+		if(campaign == null){
+			Log.e("SENSE","campaign is null");
+		}else if(campaign.getTask()== null){
+			Log.e("SENSE","campaign.getTask() is null");
+		}else if(campaign.getTask().getForm()==null){
+			Log.e("SENSE","campaign.getTask().getForm() is null");
+		}else{
+			questions = campaign.getTask().getForm().getQuestions();
+		}
+	}// handleIntent
+	
+	public void initiateUI(){
+		layouts = getFormLayout(questions);
+		setListeners();
+		if(campaign!=null && campaign.getName()!=null)
+			title.setText(campaign.getName());
+		answers = new HashMap<String, String>();
+		if(form_container==null || layouts==null) return;
+		form_container.addView(layouts[questionsIndex]);
+		if (layouts.length <= 1) {
+			next.setVisibility(View.GONE);
+			previous.setVisibility(View.GONE);
+		}
+		if(pt == null) {
+			this.requestLocation();
+		}
+	}
+	
+	/** set listeners for UI components */
+	public void setListeners(){
+		//set listner for capture button
+		capture.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				Uri fileUri = getOutputImageUri(); // create a file to save the image
+				Sense.this.imageUri = fileUri;
+				if(fileUri!=null)
+					intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); 
+				startActivityForResult(intent, CAMERA_CAPTURE_REQUEST_CODE);
+			}
+		});
+		//set listener for next button
+		next.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(layouts == null) return;
+				
+				if (questionsIndex == layouts.length - 1) {
+					questionsIndex = 0;
+				} else {
+					questionsIndex++;
+				}
+				form_container.removeAllViews();
+				form_container.addView(layouts[questionsIndex]);
+			}
+		});
+		//set listener for previous button
+		previous.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(layouts == null) return;
+				
+				if (questionsIndex == 0) {
+					questionsIndex = layouts.length - 1;
+				} else {
+					questionsIndex--;
+				}
+				form_container.removeAllViews();
+				form_container.addView(layouts[questionsIndex]);
+			}
+		});
+		//set listener for submit button
+		submit.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				submit();
+			}
+		});
+	}
+
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == CAMERA_CAPTURE_REQUEST_CODE) {
 			if (resultCode == RESULT_OK) {
-				// this.imageUri = data.getData();
-				// uri is already set. Do nothing.
+
 				hasTakenPhoto.setChecked(true);
 				photoText.setText("Photo is stored for upload later.");
 			} else if (resultCode == RESULT_CANCELED) {
@@ -95,99 +227,7 @@ public class Sense extends LocationActivity {
 		}
 		validateForm();
 	}// onActivityResult
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		handleIntent(this.getIntent());
-		setContentView(R.layout.sense);
-		TextView title = (TextView) findViewById(R.id.campaign_title);
-		title.setText(campaign.getName());
-		Button capture = (Button) findViewById(R.id.capture_photo);
-
-		hasTakenPhoto = (CheckBox) findViewById(R.id.chkbox_photo_complete);
-		photoText = (TextView) findViewById(R.id.upload_text);
-
-		capture.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-				Uri fileUri = getOutputImageUri(); // create a file to save the
-													// image
-				Sense.this.imageUri = fileUri;
-				intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the
-																	// image
-																	// file name
-
-				// start the image capture Intent
-				startActivityForResult(intent, CAMERA_CAPTURE_REQUEST_CODE);
-			}
-		});
-		final LinearLayout form_container = (LinearLayout) findViewById(R.id.form_container);
-		final LinearLayout[] layouts = this.renderForm();
-		this.questionsIndex = 0;
-		form_container.addView(layouts[questionsIndex]);
-		Button next = (Button) findViewById(R.id.next_question);
-		next.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (questionsIndex == layouts.length - 1) {
-					questionsIndex = 0;
-				} else {
-					questionsIndex++;
-				}
-				form_container.removeAllViews();
-				form_container.addView(layouts[questionsIndex]);
-			}
-		});
-		Button previous = (Button) findViewById(R.id.previous_question);
-		previous.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (questionsIndex == 0) {
-					questionsIndex = layouts.length - 1;
-				} else {
-					questionsIndex--;
-				}
-				form_container.removeAllViews();
-				form_container.addView(layouts[questionsIndex]);
-			}
-		});
-
-		// remove the Next and Previous buttons if we don't have anywhere to go
-		if (layouts.length <= 1) {
-			next.setVisibility(View.GONE);
-			previous.setVisibility(View.GONE);
-		}
-		Button submit = (Button) findViewById(R.id.submit);
-		submit.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				submit();
-			}
-		});
-		this.answers = new HashMap<String, String>();
-		if(pt == null) {
-			this.requestLocation();
-			Log.d("TAP", "onCreate requesting location");
-		}
-//		else {
-//			this.location.setLatitude(pt.getLatitudeE6());
-//			this.location.setLongitude(pt.getLongitudeE6());
-//		}
-	}// onCreate
-
-	/** Unpacks passed-in campaign from the intent. */
-	public void handleIntent(Intent i) {
-		this.campaign = i.getParcelableExtra("campaign");
-		int[] t = i.getIntArrayExtra("taskLocation");
-		if(t != null) {
-			Log.d("TAP", "t isn't null");
-			pt = new GeoPoint(t[0], t[1]);
-		}
-	}// handleIntent
-
+	
 	/** Returns the index of the currently-selected question. */
 	public int getQuestionsIndex() {
 		return this.questionsIndex;
@@ -220,6 +260,122 @@ public class Sense extends LocationActivity {
 		return Uri.fromFile(mediaFile);
 	}// getOutputImageUri
 
+	
+	/** Create view for question text and add it to layout */
+	public void addQuestionView(LinearLayout layout, Question question){
+		if(question == null || layout==null) return;
+		TextView questionText = new TextView(this);
+		questionText.setText(question.getQuestion());
+		questionText.setTextColor(Color.WHITE);// BLACK);
+		questionText.setGravity(Gravity.CENTER_HORIZONTAL);
+		questionText.setLayoutParams(new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.WRAP_CONTENT,
+				LinearLayout.LayoutParams.FILL_PARENT));
+		layout.addView(questionText);
+	}
+	
+	/** Create view for the answer based on question's type and add it to layout*/
+	public void addAnswerView(LinearLayout layout, Question question){
+		if(question==null || layout==null) return;
+		
+		if (question.getType() == Question.MULTIPLE_CHOICE) {
+			String[] answers = question.getAnswers();
+			final ArrayList<RadioButton> radiogroup = new ArrayList<RadioButton>();
+			for (final String option : answers) {
+				LinearLayout ans = new LinearLayout(this);
+				ans.setOrientation(LinearLayout.HORIZONTAL);
+				ans.setLayoutParams(new LinearLayout.LayoutParams(
+						LinearLayout.LayoutParams.WRAP_CONTENT,
+						LinearLayout.LayoutParams.FILL_PARENT));
+				if (question.isSingleChoice()) {
+					final RadioButton rb = new RadioButton(this);
+					rb.setLayoutParams(new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.FILL_PARENT,
+							LinearLayout.LayoutParams.WRAP_CONTENT));
+					radiogroup.add(rb);
+					final String questionString = question
+							.getQuestion();
+					rb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+						/** If a button is selected, unselect the rest. */
+						@Override
+						public void onCheckedChanged(CompoundButton btn,
+								boolean isChecked) {
+							if (isChecked) {
+								for (RadioButton b : radiogroup) {
+									if (b != btn) {
+										b.setChecked(false);
+									}
+								}
+								Sense.this.answers.put(questionString,
+										option);
+							}
+							validateForm();
+						}
+					});
+					ans.addView(rb);
+				} else {
+					CheckBox cb = new CheckBox(this);
+					cb.setLayoutParams(new LinearLayout.LayoutParams(
+							LinearLayout.LayoutParams.FILL_PARENT,
+							LinearLayout.LayoutParams.WRAP_CONTENT));
+					ans.addView(cb);
+					final String questionString = question.getQuestion();
+					cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+						@Override
+						public void onCheckedChanged(
+								CompoundButton buttonView, boolean isChecked) {
+							if (isChecked) {
+								Sense.this.answers.put(questionString,
+										option);
+							}
+							validateForm();
+						}
+					});
+				}
+				TextView tv = new TextView(this);
+				tv.setText(option);
+				tv.setTextColor(Color.WHITE);// BLACK);
+				tv.setLayoutParams(new LinearLayout.LayoutParams(
+						LinearLayout.LayoutParams.FILL_PARENT,
+						LinearLayout.LayoutParams.WRAP_CONTENT));
+				ans.addView(tv);
+				layout.addView(ans);
+			}
+		} else if (question.getType() == Question.WRITTEN_RESPONSE) {
+			EditText et = new EditText(this);
+			final String questionString = question.getQuestion();
+			et.setSingleLine(question.isSingleLine());
+			et.setGravity(Gravity.TOP);
+			et.setLayoutParams(new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.FILL_PARENT,
+					LinearLayout.LayoutParams.FILL_PARENT));
+			layout.addView(et);
+			et.addTextChangedListener(new TextWatcher() {
+				@Override
+				public void afterTextChanged(Editable s) {
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence s, int start,
+						int count, int after) {
+				}
+
+				@Override
+				public void onTextChanged(CharSequence s, int start,
+						int before, int count) {
+					if (s.length() != 0) {
+						Sense.this.answers.put(questionString, s.toString());
+						validateForm();
+					} else {
+						Sense.this.answers.put(questionString, null);
+						invalidateForm();
+					}
+				}
+			});
+		}
+		
+	}
+	
 	/**
 	 * Inflates the form object. This takes attributes from each of the
 	 * questions on the form and find the best layout for them. For example,
@@ -229,122 +385,20 @@ public class Sense extends LocationActivity {
 	 * 
 	 * @return An array of question layouts associated with this form.
 	 */
-	public LinearLayout[] renderForm() {
-		Form f = campaign.getTask().getForm();
-		Question[] questions = f.getQuestions();
-		LinearLayout[] layouts = new LinearLayout[questions.length];
+	public LinearLayout[] getFormLayout(Question[] questions) {
+		if(questions == null){
+			Log.e("SENSE","questions is null");
+			return null;
+		}
+		layouts = new LinearLayout[questions.length];
 		for (int i = 0; i < questions.length; i++) {
 			layouts[i] = new LinearLayout(this);
 			layouts[i].setOrientation(LinearLayout.VERTICAL);
 			layouts[i].setLayoutParams(new LinearLayout.LayoutParams(
 					LinearLayout.LayoutParams.FILL_PARENT,
 					LinearLayout.LayoutParams.FILL_PARENT));
-			/* Question text */
-			TextView question = new TextView(this);
-			question.setText(questions[i].getQuestion());
-			question.setTextColor(Color.WHITE);// BLACK);
-			question.setGravity(Gravity.CENTER_HORIZONTAL);
-			question.setLayoutParams(new LinearLayout.LayoutParams(
-					LinearLayout.LayoutParams.WRAP_CONTENT,
-					LinearLayout.LayoutParams.FILL_PARENT));
-			layouts[i].addView(question);
-			/* Responses */
-			if (questions[i].getType() == Question.MULTIPLE_CHOICE) {
-				String[] answers = questions[i].getAnswers();
-				final ArrayList<RadioButton> radiogroup = new ArrayList<RadioButton>();
-				for (final String option : answers) {
-					LinearLayout ans = new LinearLayout(this);
-					ans.setOrientation(LinearLayout.HORIZONTAL);
-					ans.setLayoutParams(new LinearLayout.LayoutParams(
-							LinearLayout.LayoutParams.WRAP_CONTENT,
-							LinearLayout.LayoutParams.FILL_PARENT));
-					if (questions[i].isSingleChoice()) {
-						final RadioButton rb = new RadioButton(this);
-						rb.setLayoutParams(new LinearLayout.LayoutParams(
-								LinearLayout.LayoutParams.FILL_PARENT,
-								LinearLayout.LayoutParams.WRAP_CONTENT));
-						radiogroup.add(rb);
-						final String questionString = questions[i]
-								.getQuestion();
-						rb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-							/** If a button is selected, unselect the rest. */
-							@Override
-							public void onCheckedChanged(CompoundButton btn,
-									boolean isChecked) {
-								if (isChecked) {
-									for (RadioButton b : radiogroup) {
-										if (b != btn) {
-											b.setChecked(false);
-										}
-									}
-									Sense.this.answers.put(questionString,
-											option);
-								}
-								validateForm();
-							}
-						});
-						ans.addView(rb);
-					} else {
-						CheckBox cb = new CheckBox(this);
-						cb.setLayoutParams(new LinearLayout.LayoutParams(
-								LinearLayout.LayoutParams.FILL_PARENT,
-								LinearLayout.LayoutParams.WRAP_CONTENT));
-						ans.addView(cb);
-						final String questionString = questions[i]
-								.getQuestion();
-						cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-							@Override
-							public void onCheckedChanged(
-									CompoundButton buttonView, boolean isChecked) {
-								if (isChecked) {
-									Sense.this.answers.put(questionString,
-											option);
-								}
-								validateForm();
-							}
-						});
-					}
-					TextView tv = new TextView(this);
-					tv.setText(option);
-					tv.setTextColor(Color.WHITE);// BLACK);
-					tv.setLayoutParams(new LinearLayout.LayoutParams(
-							LinearLayout.LayoutParams.FILL_PARENT,
-							LinearLayout.LayoutParams.WRAP_CONTENT));
-					ans.addView(tv);
-					layouts[i].addView(ans);
-				}
-			} else if (questions[i].getType() == Question.WRITTEN_RESPONSE) {
-				EditText et = new EditText(this);
-				final String questionString = questions[i].getQuestion();
-				et.setSingleLine(questions[i].isSingleLine());
-				et.setGravity(Gravity.TOP);
-				et.setLayoutParams(new LinearLayout.LayoutParams(
-						LinearLayout.LayoutParams.FILL_PARENT,
-						LinearLayout.LayoutParams.FILL_PARENT));
-				layouts[i].addView(et);
-				et.addTextChangedListener(new TextWatcher() {
-					@Override
-					public void afterTextChanged(Editable s) {
-					}
-
-					@Override
-					public void beforeTextChanged(CharSequence s, int start,
-							int count, int after) {
-					}
-
-					@Override
-					public void onTextChanged(CharSequence s, int start,
-							int before, int count) {
-						if (s.length() != 0) {
-							Sense.this.answers.put(questionString, s.toString());
-							validateForm();
-						} else {
-							Sense.this.answers.put(questionString, null);
-							invalidateForm();
-						}
-					}
-				});
-			}
+			addQuestionView(layouts[i],questions[i]);
+			addAnswerView(layouts[i],questions[i]);
 		}
 		return layouts;
 	}// renderForm
@@ -405,6 +459,8 @@ public class Sense extends LocationActivity {
 	}// submit
 
 	/** Build a submission XML */
+	
+	/** Build XML string for the submission */
 	public String buildXML() {
 		StringBuilder submission = new StringBuilder();
 		submission.append("<org.citizensense.model.Submission>");
@@ -456,18 +512,14 @@ public class Sense extends LocationActivity {
 	}// buildXML
 
 	/** Upload the photo to server. */
+	
+	/** Send HttpRequest to upload image and form(questions and answers) */
 	public void uploadImageAndForm(Uri uri, Submission submission) {
 		String imagePath = uri.getPath();
 		ImageResponseHandler imageUploadHandler = new ImageResponseHandler(
 				this, submission);
 		new PostRequest(this, null, IMAGE, imageUploadHandler, true).execute(
 				G.user.getUsername(), imagePath);
-		// Add this code will cause problem. I find the way we are prompting the
-		// user to change location setting is annoying.
-		// Maybe prompt the user when he presses Submit is better?
-		// if(imageUploadHandler.getResult().equalsIgnoreCase("success")){
-		// validateForm();
-		// }
 	}
 
 	@Override
@@ -490,5 +542,12 @@ public class Sense extends LocationActivity {
 	@Override
 	public void onGpsStopped() {
 	}
+	
+	@Override
+	//This is called when the user rotate the screen
+    public void onConfigurationChanged(Configuration newConfig) 
+    {
+		super.onConfigurationChanged(newConfig);
+    }
 
 }// Sense
