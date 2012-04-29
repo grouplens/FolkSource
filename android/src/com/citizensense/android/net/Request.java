@@ -272,11 +272,12 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 					post.setEntity(new UrlEncodedFormEntity(pairs));
 					
 					//recycle the bitmap, otherwise it may cause "exceed" VM budget
-					bm.recycle();
-					bm=null;
-					data = null;
-					imageString = null;
-					pairs = null;
+//					bm.recycle();
+//					bm=null;
+//					data = null;
+//					imageString = null;
+//					pairs = null;
+
 
 				} else if (inputFormat == LOGIN || inputFormat == REGISTER) { // LOGIN,
 					// REGISTER
