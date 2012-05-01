@@ -219,9 +219,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 					}
 					else{
 						Intent i = new Intent(context, Map.class);
-						ArrayList<Campaign> mapCampaigns =  new ArrayList<Campaign>();
-						mapCampaigns.add(campaign);
-						i.putExtra("mapCampaigns", mapCampaigns);
+						i.putExtra("campaign", campaign);
 						context.startActivity(i);
 					}
 				}

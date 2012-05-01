@@ -37,6 +37,7 @@ import android.util.Log;
 import com.citizensense.android.Item;
 import com.citizensense.android.conf.Constants;
 import com.citizensense.android.util.Base64;
+import com.citizensense.android.util.BitmapUtils;
 
 /**
  * HTTP Request
@@ -258,13 +259,19 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 					// FIXME: Maybe use multi-part later.
 					int index = params[1].lastIndexOf(File.separator);
 					String file_name = params[1].substring(index + 1);
-					Bitmap bm = BitmapFactory.decodeFile(params[1]);
+					
+					//Bitmap bm = BitmapFactory.decodeFile(params[1]); will cause crash
+					//To fix the bug of exceed VM budget, should use:
+					//There may be a better to solve the problem rather than decoding the file
+					File image = new File(params[1]);
+					Bitmap bm = BitmapUtils.decodeFile(image);
 					ByteArrayOutputStream bos = new ByteArrayOutputStream();
 					// compress the file
 					bm.compress(CompressFormat.JPEG, 50, bos);
 					byte[] data = bos.toByteArray();
 					// image file is encoded into a string
 					String imageString = Base64.encodeBytes(data);
+					
 					List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 					pairs.add(new BasicNameValuePair("userName", params[0]));
 					pairs.add(new BasicNameValuePair("imageFileName", file_name));
@@ -272,13 +279,11 @@ public class Request extends AsyncTask<String, Void, HttpResponse> {
 					post.setEntity(new UrlEncodedFormEntity(pairs));
 					
 					//recycle the bitmap, otherwise it may cause "exceed" VM budget
-//					bm.recycle();
-//					bm=null;
-//					data = null;
-//					imageString = null;
-//					pairs = null;
-
-
+					bm.recycle();
+					bm=null;
+					data = null;
+					imageString = null;
+					pairs = null;
 				} else if (inputFormat == LOGIN || inputFormat == REGISTER) { // LOGIN,
 					// REGISTER
 					List<NameValuePair> pairs = new ArrayList<NameValuePair>();

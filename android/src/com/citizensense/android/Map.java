@@ -57,23 +57,24 @@ import com.google.android.maps.Projection;
 public class Map extends MapActivity {
 
 	/**
-	 * Contains the set of {@link Campaign Campaigns} currently displayed on the
-	 * map
+	 * Contains the {@link Campaign Campaign} currently displayed on the map
 	 */
-	
-	/** Since we are displaying for one campaign, we probably don't need ArrayList anymore.*/
-	protected ArrayList<Campaign> campaigns;
+	protected Campaign campaign;
+
 	private List<Overlay> mapOverlays;
-	
-	/** Overlay for the user's location*/
+
+	/** Overlay for the user's location */
 	private MyLocationOverlay myLocation;
-	
-	/** GeoPoint for the user's location*/
+
+	/** GeoPoint for the user's location */
 	private GeoPoint myPoint;
-	
-	/** Now submissions are actually global submissions. It's more reasonable to
-	 * make it submissions for the current campaign. */
+
+	/** Submissions for the current campaign. */
 	private ArrayList<Submission> submissions;
+
+	/** Boolean value whether to zoom to span */
+	// I feel it is more user friendly that we only call zoomToSpan once
+	private boolean zoomToSpan;
 
 	/** Initialize the map */
 	@Override
@@ -83,48 +84,49 @@ public class Map extends MapActivity {
 		G.map = (MapView) findViewById(R.id.mapview);
 		G.map.setBuiltInZoomControls(true);
 		mapOverlays = G.map.getOverlays();
+		zoomToSpan = true;
+		handleIntent();
 	}// onCreate
+
+	/** Get campaign object from intent */
+	public void handleIntent() {
+		campaign = getIntent().getParcelableExtra("campaign");
+	}
+
+	/** Update submissions and then update the UI */
+	public void updateSubmissions() {
+		XMLResponseHandler handl = new XMLResponseHandler();
+		handl.setCallback(new XMLResponseHandler.StringCallback() {
+			@Override
+			public void invoke(String xml) {
+				try {
+					Xml.parse(xml, new SubmissionParser(
+							new SubmissionParser.Callback() {
+								@Override
+								public void invoke(
+										ArrayList<Submission> submissions) {
+									G.globalSubmissions = submissions;
+									Map.this.submissions = Submission
+											.getSubmissionsByCampaign(campaign);
+									drawOverlays();
+								}
+							}));
+				} catch (SAXException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		Submission.getAllSubmissions(this, handl);
+	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		
 		// setup MyLocationOverlay
 		myLocation = new MyLocationOverlay(this, G.map);
 		myLocation.enableMyLocation();
 		myPoint = myLocation.getMyLocation();
-
-		// Currently, simply use a global variable.
-		// Its value is set in CampaginBrowser by getCampaigns();
-		// FIXME remove the global variable and unpack the campaigns from
-		// intent.
-		// campaigns = G.globalCampaigns;
-		campaigns = getIntent().getParcelableArrayListExtra("mapCampaigns");
-
-		if (campaigns != null) {
-			XMLResponseHandler handl = new XMLResponseHandler();
-			handl.setCallback(new XMLResponseHandler.StringCallback() {
-				@Override
-				public void invoke(String xml) {
-					try {
-						Xml.parse(xml, new SubmissionParser(
-								new SubmissionParser.Callback() {
-									@Override
-									public void invoke(
-											ArrayList<Submission> submissions) {
-										Log.d("COORD", "size: " + submissions.size());
-										G.globalSubmissions = submissions;
-										drawOverlays();
-									}
-								}));
-					} catch (SAXException e) {
-						e.printStackTrace();
-					}
-				}
-			});
-			this.setSubmissions(Submission.getAllSubmissions(this,handl));
-			
-		}
+		updateSubmissions();
 		Toast.makeText(this,
 				"Tap on the location that you want to make a submission from.",
 				Toast.LENGTH_LONG).show();
@@ -137,63 +139,64 @@ public class Map extends MapActivity {
 		int highLat = Integer.MIN_VALUE;
 		int lowLong = Integer.MAX_VALUE;
 		int highLong = Integer.MIN_VALUE;
-		int overlay = 0; //0 no submissions, 1 my submission, 2 other submissions
-		
+		int overlay; 
+
 		// When we open the map, clear the overlay first
 		mapOverlays.clear();
 		mapOverlays.add(myLocation);
 
-		for (Campaign campaign : campaigns) {
-			for (String loc : campaign.getLocations()) {
-				overlay = 0;
-				String[] locCoords = loc.split("\\,");
-				//match submission with campaign
-				for (Submission sub : Submission.getSubmissionsByCampaign(campaign)) {
-						String[] subCoords = sub.getCoords();
-						if(subCoords[0].equals(locCoords[0]) && subCoords[1].equals(locCoords[1])) {
-								if(G.user.id == sub.getUser_id()) {
-									overlay = 1; //I've made a submission here
-								} else if (overlay != 1){
-									overlay = 2; //others have made a submission here
-								}
-						}
-						
-				}
+		for (String loc : campaign.getLocations()) {
+			overlay = Constants.NO_SUBMISSION;
+			String[] locCoords = loc.split("\\,");
+			// match submission with campaign
+			for (Submission sub : submissions) {
+				String[] subCoords = sub.getCoords();
 				
-				GeoPoint point = getGeopoint(loc);
-				if (point != null) {
-					if (getLocType(loc) == Constants.EXACT_LOCATION) {
-						pointOverlay = new PointOverlay(point, campaign, overlay);
-						mapOverlays.add(pointOverlay);
+				//instead of comparing string, it's safer to compare double value
+				//actually, there is a bug caused by this. 
+				//Example: (-93.242340,44.971139) compared with (-93.242340,44.971139)
+				double lon = Double.parseDouble(locCoords[0]);
+				double lat = Double.parseDouble(locCoords[1]);
+				//if (subCoords[0].equals(locCoords[0])&& subCoords[1].equals(locCoords[1])) {
+				if(lon==Double.parseDouble(subCoords[0]) && lat == Double.parseDouble(subCoords[1])){	
+					if (G.user.id == sub.getUser_id()) {
+						overlay = Constants.I_MADE_SUBMISSION; 
+					} else {
+						overlay = Constants.OTHERS_MADE_SUBMISSION;
 					}
-					circleOverlay = new CircleOverlay(point,
-							getRadius(loc), campaign);
-					mapOverlays.add(circleOverlay);
-
-					if (point.getLatitudeE6() < lowLat)
-						lowLat = point.getLatitudeE6();
-					if (point.getLatitudeE6() > highLat)
-						highLat = point.getLatitudeE6();
-					if (point.getLongitudeE6() < lowLong)
-						lowLong = point.getLongitudeE6();
-					if (point.getLongitudeE6() > highLong)
-						highLong = point.getLongitudeE6();
-
-					G.map.getController().zoomToSpan(
-							Math.abs(highLong - lowLong),
-							Math.abs(highLat - lowLat));
-					// G.map.getController().animateTo(getGeopoint(loc));
-				} else {
-					Toast.makeText(
-							this,
-							"Geocoder failed, can't show some campaigns, please try later.",
-							Toast.LENGTH_LONG).show();
 				}
-
 			}
+
+			GeoPoint point = getGeopoint(loc);
+			if (point == null) {
+				Toast.makeText(this,
+						"Geocoder failed, can't show some campaigns, please try later.",
+						Toast.LENGTH_LONG).show();
+				continue;
+			}
+			if (getLocType(loc) == Constants.EXACT_LOCATION) {
+					pointOverlay = new PointOverlay(point, campaign, overlay);
+					mapOverlays.add(pointOverlay);
+			}
+			circleOverlay = new CircleOverlay(point, getRadius(loc), campaign);
+			mapOverlays.add(circleOverlay);
+
+			if(zoomToSpan == false) continue;
+			if (point.getLatitudeE6() < lowLat)
+					lowLat = point.getLatitudeE6();
+			if (point.getLatitudeE6() > highLat)
+					highLat = point.getLatitudeE6();
+			if (point.getLongitudeE6() < lowLong)
+					lowLong = point.getLongitudeE6();
+			if (point.getLongitudeE6() > highLong)
+					highLong = point.getLongitudeE6();
+		}
+		if(zoomToSpan){
+			G.map.getController().zoomToSpan(Math.abs(highLong - lowLong),
+				Math.abs(highLat - lowLat));
+			zoomToSpan = false;
 		}
 	}
-
 
 	protected void setSubmissions(ArrayList<Submission> submissions) {
 		this.submissions = submissions;
@@ -378,7 +381,7 @@ public class Map extends MapActivity {
 		 * initializes the {@link #geoPoint geoPoint}.
 		 * 
 		 * @param geoPoint
-		 * @param overlay 
+		 * @param overlay
 		 */
 		public PointOverlay(GeoPoint geoPoint, Campaign campaign, int overlay) {
 			this.geoPoint = geoPoint;
@@ -394,13 +397,12 @@ public class Map extends MapActivity {
 				projection.toPixels(geoPoint, pt);
 				Paint paint = new Paint();
 				int markerVal = R.drawable.marker;
-				if(this.overlay == 1)
+				if (this.overlay == Constants.I_MADE_SUBMISSION)
 					markerVal = R.drawable.gmarker;
-				else if(this.overlay == 2)
+				else if (this.overlay == Constants.OTHERS_MADE_SUBMISSION)
 					markerVal = R.drawable.bmarker;
 				Bitmap marker = BitmapFactory.decodeResource(
-						getApplicationContext().getResources(),
-						markerVal);
+						getApplicationContext().getResources(), markerVal);
 				// center the bitmap so that it points to the center of pt
 				canvas.drawBitmap(marker, pt.x - (marker.getWidth() / 2), pt.y
 						- marker.getHeight(), paint);
@@ -415,12 +417,13 @@ public class Map extends MapActivity {
 			Point markerPt = new Point();
 			Point locPt = new Point();
 			boolean inside = false;
-			
+
 			view.getProjection().toPixels(p, tapPt);
 			view.getProjection().toPixels(this.geoPoint, markerPt);
-			if(myPoint!=null){
-				view.getProjection().toPixels( myPoint,locPt);
-				System.out.println("current location available---------------!!");
+			if (myPoint != null) {
+				view.getProjection().toPixels(myPoint, locPt);
+				System.out
+						.println("current location available---------------!!");
 			}
 			Bitmap marker = BitmapFactory.decodeResource(
 					getApplicationContext().getResources(), R.drawable.marker);
@@ -435,14 +438,16 @@ public class Map extends MapActivity {
 					&& tapPt.x <= (markerPt.x + marker.getWidth() / 2))
 				if (tapPt.y >= (markerPt.y - marker.getHeight())
 						&& tapPt.y <= (markerPt.y)) {
-					Intent i = new Intent(view.getContext(), SubmissionHistory.class);
+					Intent i = new Intent(view.getContext(),
+							SubmissionHistory.class);
 					i.putExtra("campaign", campaign);
 					int[] taskLocation = { geoPoint.getLatitudeE6(),
 							geoPoint.getLongitudeE6() };
 					i.putExtra("taskLocation", taskLocation);
-					//make sure the order is correct ??
-					if(myPoint!=null){
-						int[] myLocation = {myPoint.getLatitudeE6(),myPoint.getLongitudeE6()};
+					// make sure the order is correct ??
+					if (myPoint != null) {
+						int[] myLocation = { myPoint.getLatitudeE6(),
+								myPoint.getLongitudeE6() };
 						i.putExtra("myLocation", myLocation);
 					}
 					i.putExtra("inside", inside);
@@ -513,8 +518,8 @@ public class Map extends MapActivity {
 			boolean inside = false;
 			view.getProjection().toPixels(p, tapPt);
 			view.getProjection().toPixels(center, cPt);
-			if(myPoint!=null)
-				view.getProjection().toPixels(myPoint,locPt);
+			if (myPoint != null)
+				view.getProjection().toPixels(myPoint, locPt);
 			float radiusInPixels = getPixelsFromMeters(radius, view,
 					center.getLatitudeE6() / 1000000);
 
@@ -526,14 +531,16 @@ public class Map extends MapActivity {
 			if (tapPt.x >= (this.farLeft) && tapPt.x <= (this.farRight))
 				if (tapPt.y >= (cPt.y - radiusInPixels)
 						&& tapPt.y <= (cPt.y + radiusInPixels)) {
-					Intent i = new Intent(view.getContext(), SubmissionHistory.class);
+					Intent i = new Intent(view.getContext(),
+							SubmissionHistory.class);
 					i.putExtra("campaign", campaign);
 					int[] taskLocation = { center.getLatitudeE6(),
 							center.getLongitudeE6() };
 					i.putExtra("taskLocation", taskLocation);
-					
-					if(myPoint!=null){
-						int[] myLocation = {myPoint.getLatitudeE6(),myPoint.getLongitudeE6()};
+
+					if (myPoint != null) {
+						int[] myLocation = { myPoint.getLatitudeE6(),
+								myPoint.getLongitudeE6() };
 						i.putExtra("myLocation", myLocation);
 					}
 					i.putExtra("inside", inside);
@@ -577,13 +584,11 @@ public class Map extends MapActivity {
 		}
 		return true;
 	}
-	
+
 	@Override
-	//This is called when the user rotate the screen
-    public void onConfigurationChanged(Configuration newConfig) 
-    {
+	// This is called when the user rotate the screen
+	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
-    }
-	
+	}
 
 }// Map

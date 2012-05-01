@@ -208,6 +208,7 @@ public class Submission implements Item, Comparable<Submission> {
 	
 	/**Get all submission for a campaign. Before calling this function, make sure G.globalSubmissions is updated.*/
 	public static ArrayList<Submission> getSubmissionsByCampaign(Campaign campaign){
+		if(campaign == null) return null;
 		ArrayList<Submission> submissionsForCampaign = new ArrayList<Submission>();
 		if(G.globalSubmissions!=null){
 			for(Submission s : G.globalSubmissions){

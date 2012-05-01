@@ -4,49 +4,69 @@
 
 package com.citizensense.android.conf;
 
-/** Configuration constants
+/**
+ * Configuration constants
+ * 
  * @author Phil Brown
  */
 public interface Constants {
 
-	/** This tag is used to determine whether or not to print a Log statement
-	 * in many places throughout the app.*/
+	/**
+	 * This tag is used to determine whether or not to print a Log statement in
+	 * many places throughout the app.
+	 */
 	public static final boolean DEBUG = true;
-	
-	/** This is used to denote whether or not to use local campaigns for testing*/
+
+	/** This is used to denote whether or not to use local campaigns for testing */
 	public static final boolean localCampaignsOnly = false;
-	
-	/** The name of the sharedPreferences file where G.memory is located.*/
+
+	/** The name of the sharedPreferences file where G.memory is located. */
 	public static final String MEM_LOC = "citizenSenseMem";
-	
-	/** Reference to a sharedPreferences item in MEM_LOC*/
+
+	/** Reference to a sharedPreferences item in MEM_LOC */
 	public static final String DB_SIZE = "db_size";
-	
+
 	public static final String DB_DATE_FORMAT = "MM/dd/yyyy hh:mm:ss";
-	
-	/** Minimum time between updates for the network location listener in the
-	 * main activity. */
+
+	/**
+	 * Minimum time between updates for the network location listener in the
+	 * main activity.
+	 */
 	public static final long MAIN_NETWORK_TIME_BETWEEN_UPDATES = 1000 * 1;
-	/** Minimum time between updates for the GPS location listener in the
-	 * main activity. */
+	/**
+	 * Minimum time between updates for the GPS location listener in the main
+	 * activity.
+	 */
 	public static final long MAIN_GPS_TIME_BETWEEN_UPDATES = 1000 * 60;
-	/** Minimum time between updates for the GPS location listener in the
-	 * tracking service. */
+	/**
+	 * Minimum time between updates for the GPS location listener in the
+	 * tracking service.
+	 */
 	public static final long SERVICE_GPS_TIME_BETWEEN_UPDATES = 1000 * 1;
 	/** Minimum distance between updates for location listeners (in meters) */
 	public static final long MIN_DISTANCE_BETWEEN_UPDATES = 1;
-	/** This is a type of campaign location*/
+	/** This is a type of campaign location */
 	public static final boolean EXACT_LOCATION = true,
-	                            NONEXACT_LOCATION = false;
-	/** This is used when creating new Proximity Alerts in 
+			NONEXACT_LOCATION = false;
+	/**
+	 * This is used when creating new Proximity Alerts in
 	 * {@link com.citizensense.android.MyCampaigns MyCampaigns}. Setting the
 	 * expiration to -1 will set the alert to never expire. Otherwise, set this
-	 * to a time, in millisecods, for the alert to expire.  */
+	 * to a time, in millisecods, for the alert to expire.
+	 */
 	public static final int PROXIMITY_ALERT_EXPIRATION = -1;
-		
-	/** Used to indicate the result of Registration*/
+
+	/** Used to indicate the result of Registration */
 	public static final int REGISTRATION_SUCCESS = 1, REGISTRATION_FAILURE = 2;
-	
-	/** This variable is used for open the map from CampaignPage*/
+
+	/** This variable is used for open the map from CampaignPage */
 	public static final int CallMapInCampaignPage = 1;
-}//Constants
+
+	/**
+	 * Used for identifying locations based on whether there is submissions/my
+	 * submissions/others' submissions
+	 */
+	public static final int NO_SUBMISSION = 0;
+	public static final int I_MADE_SUBMISSION = 1;
+	public static final int OTHERS_MADE_SUBMISSION = 2;
+}// Constants

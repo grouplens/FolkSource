@@ -27,6 +27,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.citizensense.android.conf.Constants;
 import com.citizensense.android.net.GetRequest;
 import com.citizensense.android.net.XMLResponseHandler;
 import com.citizensense.android.parsers.LeaderboardParser;
@@ -132,7 +133,6 @@ public class SubmissionHistory extends Activity {
 							new SubmissionParser.Callback() {
 								@Override
 								public void invoke(ArrayList<Submission> subs) {
-
 									G.globalSubmissions = subs;
 									allSubmissions = Submission
 											.getSubmissionsAt(taskLocation,
@@ -143,7 +143,7 @@ public class SubmissionHistory extends Activity {
 													campaign);
 									Log.d("COORD",
 											"all subs: " + subs.size()
-													+ "my subs: "
+													+ " my subs: "
 													+ mySubmissions.size());
 									Collections.sort(mySubmissions);
 									updateLeaderboard();
@@ -156,39 +156,42 @@ public class SubmissionHistory extends Activity {
 		});
 		Submission.getAllSubmissions(this, handl);
 	}
-	
-	/** Update leaderboard so that we can get the user name from their id*/
-	public void updateLeaderboard(){
+
+	/** Update leaderboard so that we can get the user name from their id */
+	public void updateLeaderboard() {
 		XMLResponseHandler handler = new XMLResponseHandler();
 		handler.setCallback(new XMLResponseHandler.StringCallback() {
 			@Override
 			public void invoke(String xml) {
 				try {
-					Xml.parse(xml, new LeaderboardParser(new LeaderboardParser.Callback() {
-						@Override
-						public void invoke(Leaderboard leaderboard) {
-							//Set the LeaderboardMap 
-							if(leaderboard!=null && leaderboard.entries!=null){
-								G.leaderboardMap = new HashMap<Integer,LeaderboardEntry>();
-								for(LeaderboardEntry entry : leaderboard.entries){
-									G.leaderboardMap.put(entry.id,entry);
+					Xml.parse(xml, new LeaderboardParser(
+							new LeaderboardParser.Callback() {
+								@Override
+								public void invoke(Leaderboard leaderboard) {
+									// Set the LeaderboardMap
+									if (leaderboard != null
+											&& leaderboard.entries != null) {
+										G.leaderboardMap = new HashMap<Integer, LeaderboardEntry>();
+										for (LeaderboardEntry entry : leaderboard.entries) {
+											G.leaderboardMap.put(entry.id,
+													entry);
+										}
+									}
+									updateUI();
 								}
-							}
-							updateUI();
-						}
-					}));
+							}));
 				} catch (SAXException e) {
 					e.printStackTrace();
 				}
 			}
 		});
 		new GetRequest(this, Leaderboard.class, null, handler, false).execute();
-		
+
 	}
 
 	/** Unpacks passed-in campaign from the intent. */
 	public void handleIntent(Intent i) {
-		this.campaign = i.getParcelableExtra("campaign");
+		campaign = i.getParcelableExtra("campaign");
 		taskLocation = i.getIntArrayExtra("taskLocation");
 		myLocation = i.getIntArrayExtra("myLocation");
 		inside = i.getBooleanExtra("inside", false);
@@ -202,7 +205,7 @@ public class SubmissionHistory extends Activity {
 				Intent i = new Intent(v.getContext(), Sense.class);
 				i.putExtra("campaign", campaign);
 				i.putExtra("taskLocation", taskLocation);
-				// make sure the order is correct ??
+				// make sure the order of long,lat is correct ??
 				i.putExtra("myLocation", myLocation);
 				i.putExtra("inside", inside);
 				v.getContext().startActivity(i);
@@ -220,18 +223,20 @@ public class SubmissionHistory extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
-				// know the difference between id and postition
+				// know the difference between id and position
 				if (id >= 0 && id < mySubmissions.size()) {
 					Intent intent = new Intent(view.getContext(),
 							SubmissionBrowser.class);
 					intent.putExtra("submission", mySubmissions.get((int) id));
-					
-					//I tried to parse answers as part of submission, but always got problem
-					//We may want to change this later.
+
+					// I tried to parse answers as part of submission, but got
+					// problem
+					// We may want to change this later.
 					Answer[] answers = mySubmissions.get((int) id).getAnswers();
-					ArrayList<Answer> answerList = new ArrayList<Answer>(Arrays.asList(answers));
+					ArrayList<Answer> answerList = new ArrayList<Answer>(Arrays
+							.asList(answers));
 					intent.putParcelableArrayListExtra("answers", answerList);
-					intent.putExtra("campaign",campaign);
+					intent.putExtra("campaign", campaign);
 					startActivity(intent);
 				}
 			}
@@ -245,10 +250,12 @@ public class SubmissionHistory extends Activity {
 					Intent intent = new Intent(view.getContext(),
 							SubmissionBrowser.class);
 					intent.putExtra("submission", allSubmissions.get((int) id));
-					Answer[] answers = allSubmissions.get((int) id).getAnswers();
-					ArrayList<Answer> answerList = new ArrayList<Answer>(Arrays.asList(answers));
+					Answer[] answers = allSubmissions.get((int) id)
+							.getAnswers();
+					ArrayList<Answer> answerList = new ArrayList<Answer>(Arrays
+							.asList(answers));
 					intent.putParcelableArrayListExtra("answers", answerList);
-					intent.putExtra("campaign",campaign);
+					intent.putExtra("campaign", campaign);
 					startActivity(intent);
 				}
 			}
@@ -266,30 +273,34 @@ public class SubmissionHistory extends Activity {
 		allSubsHeader.setTypeface(null, Typeface.BOLD);
 	}
 
+	
+	/** Update the UI after the submissions are updated */
+	//To make sure the notifyDataSetChanged works, we need to recreate the 
+	//adapter, holding the reference of the old mySubmissions and allSubmissions
+	//does not work
 	public void updateUI() {
 		if (mySubsAdapter == null) {
-			mySubsAdapter = new MySubmissionsAdapter(this, mySubmissions);
 			mySubsList.addHeaderView(mySubsHeader);
 			mySubsList.addFooterView(mySubsFooter);
-			mySubsList.setAdapter(mySubsAdapter);
-
-		} else
+		} 
+		mySubsAdapter = new MySubmissionsAdapter(this, mySubmissions);
+		mySubsList.setAdapter(mySubsAdapter);
+		if (mySubsAdapter != null)
 			mySubsAdapter.notifyDataSetChanged();
 		if (mySubmissions.isEmpty())
 			mySubsFooter.setText("Make your first observation!");
 
 		if (allSubsAdapter == null) {
-
-			allSubsAdapter = new AllSubmissionsAdapter(this, allSubmissions);
 			allSubsList.addHeaderView(allSubsHeader);
 			allSubsList.addFooterView(allSubsFooter);
-			allSubsList.setAdapter(allSubsAdapter);
-
-		} else
+		} 
+		allSubsAdapter = new AllSubmissionsAdapter(this, allSubmissions);
+		allSubsList.setAdapter(allSubsAdapter);
+		if (allSubsAdapter != null)
 			allSubsAdapter.notifyDataSetChanged();
 		if (allSubmissions.isEmpty())
-			allSubsFooter.setText("There is no history here. Be the first one and earn more points!");
-
+			allSubsFooter
+					.setText("There is no history here. Be the first one and earn more points!");
 	}
 
 }
