@@ -69,6 +69,9 @@ public class FormParser extends XMLParser {
 				if (content.equals("written_repsonse")) {
 					question.setType(Question.WRITTEN_RESPONSE);
 				}
+				else if(content.equals("count")) {
+					question.setType(Question.COUNTER);
+				}
 				else {
 					question.setType(Question.MULTIPLE_CHOICE);
 				}

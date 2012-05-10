@@ -26,8 +26,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.AsyncTask.Status;
 import android.os.Bundle;
@@ -35,6 +38,7 @@ import android.util.Log;
 import android.util.Xml;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.citizensense.android.conf.Constants;
@@ -69,8 +73,11 @@ public class Map extends MapActivity {
 	/** GeoPoint for the user's location */
 	private GeoPoint myPoint;
 
-	/** Submissions for the current campaign. */
+	/**
+	 * Submissions for the current campaign.
+	 */
 	private ArrayList<Submission> submissions;
+	private boolean findOrientation;
 
 	/** Boolean value whether to zoom to span */
 	// I feel it is more user friendly that we only call zoomToSpan once
@@ -123,8 +130,10 @@ public class Map extends MapActivity {
 	public void onResume() {
 		super.onResume();
 		// setup MyLocationOverlay
-		myLocation = new MyLocationOverlay(this, G.map);
+		// TODO
+		myLocation = new PointableLocationOverlay(this, G.map, 15);
 		myLocation.enableMyLocation();
+		myLocation.enableCompass();
 		myPoint = myLocation.getMyLocation();
 		updateSubmissions();
 		Toast.makeText(this,
@@ -139,28 +148,26 @@ public class Map extends MapActivity {
 		int highLat = Integer.MIN_VALUE;
 		int lowLong = Integer.MAX_VALUE;
 		int highLong = Integer.MIN_VALUE;
-		int overlay; 
+		int overlay;
 
 		// When we open the map, clear the overlay first
 		mapOverlays.clear();
 		mapOverlays.add(myLocation);
 
-		for (String loc : campaign.getLocations()) {
-			overlay = Constants.NO_SUBMISSION;
+			for (String loc : campaign.getLocations()) {
+				overlay = Constants.NO_SUBMISSION;
 			String[] locCoords = loc.split("\\,");
 			// match submission with campaign
 			for (Submission sub : submissions) {
 				String[] subCoords = sub.getCoords();
-				
-				//instead of comparing string, it's safer to compare double value
-				//actually, there is a bug caused by this. 
-				//Example: (-93.242340,44.971139) compared with (-93.242340,44.971139)
 				double lon = Double.parseDouble(locCoords[0]);
 				double lat = Double.parseDouble(locCoords[1]);
-				//if (subCoords[0].equals(locCoords[0])&& subCoords[1].equals(locCoords[1])) {
-				if(lon==Double.parseDouble(subCoords[0]) && lat == Double.parseDouble(subCoords[1])){	
+				// if (subCoords[0].equals(locCoords[0])&&
+				// subCoords[1].equals(locCoords[1])) {
+				if (lon == Double.parseDouble(subCoords[0])
+						&& lat == Double.parseDouble(subCoords[1])) {
 					if (G.user.id == sub.getUser_id()) {
-						overlay = Constants.I_MADE_SUBMISSION; 
+						overlay = Constants.I_MADE_SUBMISSION;
 					} else {
 						overlay = Constants.OTHERS_MADE_SUBMISSION;
 					}
@@ -195,6 +202,17 @@ public class Map extends MapActivity {
 			G.map.getController().zoomToSpan(Math.abs(highLong - lowLong),
 				Math.abs(highLat - lowLat));
 			zoomToSpan = false;
+		}
+
+		if (this.findOrientation) {
+			Intent streetView = new Intent(android.content.Intent.ACTION_VIEW,
+					Uri.parse("google.streetview:cbll="
+							+ myLocation.getMyLocation().getLatitudeE6() + ","
+							+ myLocation.getMyLocation().getLongitudeE6()
+							+ "&cbp=" + myLocation.getOrientation()
+							+ ",99.56,,1,-5.27&mz=21"));
+			Log.d("MAP", "streetview");
+			startActivity(streetView);
 		}
 	}
 
@@ -499,20 +517,21 @@ public class Map extends MapActivity {
 				// set color and style for the inner part of the circle
 				int color = Color.argb(127, 255, 0, 255); // set color
 				circlePaint.setColor(color);
-				circlePaint.setStyle(Style.FILL_AND_STROKE);
+				circlePaint.setStyle(Style.STROKE);
+				circlePaint.setStrokeWidth(7);
 				canvas.drawCircle((float) pt.x, (float) pt.y, radiusInPixels,
 						circlePaint);
 				// set color and style for the border
-				circlePaint.setColor(0x99000000);
-				circlePaint.setStyle(Style.STROKE);
-				canvas.drawCircle((float) pt.x, (float) pt.y, radiusInPixels,
-						circlePaint);
+//				circlePaint.setColor(0x99000000);
+//				circlePaint.setStyle(Style.STROKE);
+//				canvas.drawCircle((float) pt.x, (float) pt.y, radiusInPixels,
+//						circlePaint);
 			}
 		}// draw
 
 		@Override
 		public boolean onTap(GeoPoint p, MapView view) {
-			Point tapPt = new Point();
+			/*Point tapPt = new Point();
 			Point cPt = new Point();
 			Point locPt = new Point();
 			boolean inside = false;
@@ -547,9 +566,157 @@ public class Map extends MapActivity {
 					view.getContext().startActivity(i);
 					return true;
 				}
-
+*/
 			return false;
 		}
+	}// CircleOverlay
+
+	class PointableLocationOverlay extends MyLocationOverlay {
+
+		/** The center GeoPoint of the circle. */
+		private GeoPoint myLocation;
+		/** The radius of the circle. */
+		private float radius;
+		private boolean activated;
+		private int color;
+		private PointF touchPoint;
+		private int tapCount;
+		private PointF oldTp;
+		private int zoomCount;
+		private Point LocCenterPt;
+		private int circSize;
+		private float bearing;
+		private PointF lockPt;
+
+		public PointableLocationOverlay(Context context, MapView mapView,
+				int radius) {
+			super(context, mapView);
+			this.color = Color.argb(255, 128, 128, 128);
+			this.radius = radius;
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		protected void drawMyLocation(Canvas canvas, MapView mapV,
+				Location lastFix, GeoPoint myLocation, long when) {
+			this.myLocation = myLocation;
+			Projection projection = mapV.getProjection();
+			LocCenterPt = new Point();
+			projection.toPixels(myLocation, LocCenterPt);
+
+			float radiusInPixels = getPixelsFromMeters(radius, mapV,
+					myLocation.getLatitudeE6() / 1000000);
+
+			this.circSize = (int) radiusInPixels + 10;
+
+			// set activated color
+			if (this.activated)
+				this.color = Color.argb(100, 0, 0, 255);
+
+			// draw GPS point
+			makeACircle(canvas, Style.STROKE, LocCenterPt, this.circSize);
+
+			// set the bearing if it's not user-defined
+			if (touchPoint == null && oldTp == null && lockPt == null)
+				this.bearing = this.getOrientation();
+			else if (this.activated)
+				this.bearing = getAngleToPoint(oldTp);
+			else
+				this.bearing = getAngleToPoint(lockPt);
+
+			// draw bearing point
+			PointF p = getCirclePoint(this.bearing, this.circSize);
+			makeACircle(canvas, Style.FILL_AND_STROKE, p, this.circSize / 4);
+		}// draw
+
+		private PointF getCirclePoint(float bearing, int rad) {
+			double x = LocCenterPt.x + rad * Math.cos(bearing);
+			double y = LocCenterPt.y + rad * Math.sin(bearing);
+			PointF p = new PointF(new Float(x), new Float(y));
+			return p;
+		}
+
+		private float getAngleToPoint(PointF pt) {
+			return new Float(Math.atan2((pt.y) - LocCenterPt.y, pt.x
+					- (LocCenterPt.x + radius)));
+		}
+
+		// **************** REFACTOR THIS TO MAP ******************
+		private void makeACircle(Canvas canvas, Style style, PointF pt,
+				float radPix) {
+			Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+			circlePaint.setColor(color);
+			circlePaint.setStyle(style);
+			circlePaint.setStrokeWidth(10);
+			canvas.drawCircle(pt.x, pt.y, radPix, circlePaint);
+		}
+
+		private void makeACircle(Canvas canvas, Style style, Point pt,
+				float radPix) {
+			Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+			circlePaint.setColor(color);
+			circlePaint.setStyle(style);
+			circlePaint.setStrokeWidth(5);
+			canvas.drawCircle(pt.x, pt.y, radPix, circlePaint);
+		}
+
+		// *******************************************************
+
+		public boolean locTapped(MotionEvent e, Point p) {
+			if (e.getX() <= (p.x + (this.circSize))
+					&& e.getX() >= (p.x - (this.circSize))) {
+				if (e.getY() <= (p.y + (this.circSize))
+						&& e.getY() >= (p.y - (this.circSize))) {
+					return true;
+				}
+			}
+			return false;
+		}
+
+		@Override
+		public boolean onTouchEvent(MotionEvent e, MapView mapView) {
+			if (this.getMyLocation() != null) {
+				Projection projection = mapView.getProjection();
+				Point p = new Point();
+				if(this.myLocation == null)
+					return false;
+				projection.toPixels(myLocation, p);
+
+				if (locTapped(e, p) || this.activated) {
+					if (e.getAction() == MotionEvent.ACTION_UP) {
+						if (this.tapCount == 2) {
+							this.tapCount = 0;
+							this.activated = !this.activated;
+							if(!this.activated)
+								this.lockPt = oldTp;
+						} else
+							this.tapCount++;
+
+					} else if (e.getAction() == MotionEvent.ACTION_MOVE) {
+						if (this.activated) {
+							this.touchPoint = new PointF(e.getX(), e.getY());
+							oldTp = touchPoint;
+							
+						}
+					}
+
+					if (this.activated) {// we're turning
+						this.color = Color.argb(100, 0, 0, 255);
+						while (mapView.getController().zoomInFixing(p.x, p.y))
+							zoomCount++;
+					} else {
+						this.color = Color.argb(255, 128, 128, 128);
+//						this.touchPoint = null;
+						while (zoomCount != 0
+								&& mapView.getController().zoomOut())
+							zoomCount--;
+					}
+					return true;
+				}
+			} 
+			return false;
+			// return super.onTouchEvent(e, mapView);
+		} 
 	}// CircleOverlay
 
 	/* Create menu. */

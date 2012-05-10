@@ -220,6 +220,7 @@ public class CampaignGalleryAdapter extends BaseAdapter {
 					else{
 						Intent i = new Intent(context, Map.class);
 						i.putExtra("campaign", campaign);
+//						i.putExtra("orient", this.getOrientation);
 						context.startActivity(i);
 					}
 				}

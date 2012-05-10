@@ -20,6 +20,7 @@ public class Question implements Parcelable {
 	public static final int MULTIPLE_CHOICE = 0;
 	/** Question type telling the app to show the question and an EditText. */
 	public static final int WRITTEN_RESPONSE = 1;
+	public static final int COUNTER = 2;
 		
 	/** Whether or not a multiple choice question can have multiple answers */
 	private boolean single_choice;
@@ -99,6 +100,9 @@ public class Question implements Parcelable {
 			this.single_choice = option;
 		}
 		else if (type == WRITTEN_RESPONSE) {
+			this.single_line = option;
+		}
+		else if (type == COUNTER) {
 			this.single_line = option;
 		}
 		else{
