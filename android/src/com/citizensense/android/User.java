@@ -64,8 +64,8 @@ public class User implements Item, Parcelable {
 	 * should instead interact with the server
 	 */
 	public void login(Context context, String username, String password) {
-		campaign_ids.add("1");
-		campaign_ids.add("2");
+//		campaign_ids.add("1");
+//		campaign_ids.add("2");
 
 		AuthenticationResponseHandler loginHandler = new AuthenticationResponseHandler(
 				context, LOGIN,username,password);
@@ -77,8 +77,8 @@ public class User implements Item, Parcelable {
 	 * Register a new account for the user.
 	 */
 	public void register(Context context, String username, String password, String email) {
-		campaign_ids.add("1");
-		campaign_ids.add("2");
+//		campaign_ids.add("1");
+//		campaign_ids.add("2");
 
 		AuthenticationResponseHandler registerHandler = new AuthenticationResponseHandler(
 				context,REGISTER,username,password);

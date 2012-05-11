@@ -4,6 +4,8 @@
 
 package com.citizensense.android;
 
+import com.citizensense.android.util.ActivityHeader;
+
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,18 +21,22 @@ import android.widget.Toast;
 /**
  * Main Activity
  * @author Phil Brown
+ * @author Renji Yu
  */
-public class CitizenSense extends TabActivity implements OnClickListener {
+public class CitizenSense extends TabActivity {
     
 	/** Reference to the tab controller*/
 	static TabHost tabHost;
 	
-	static TextView userNameText;
-	
-	static TextView userPointsText;
-	
+
 	/** Reference to the view inside the tabHost*/
-	View tabView;
+	private View tabView;
+	
+	/** Reference to the header view */
+	private View headerView; 
+	/** Designed to update the header view */
+	private ActivityHeader header;
+	
 	
 	/** Inflate the view and set the tab functions.*/
     @Override
@@ -38,31 +44,15 @@ public class CitizenSense extends TabActivity implements OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         
-        ((ImageView) findViewById(R.id.updates_menu_image)).setOnClickListener(this);
-        ((ImageView) findViewById(R.id.updates_menu_menu)).setOnClickListener(this);
-        ((TextView) findViewById(R.id.updates_menu_text)).setOnClickListener(this);
-        ((ImageView) findViewById(R.id.quick_profile_image)).setOnClickListener(this);
-        ((ImageView) findViewById(R.id.quick_profile_menu)).setOnClickListener(this);
-        if (G.user.getUsername() != null) {
-        	userNameText.setText(G.user.getUsername());
-        }
-        setUserAndPoints();
+        headerView = findViewById(R.id.header);
+        header = new ActivityHeader(headerView);
         
         tabHost = getTabHost();
         Intent intent;
-
         intent = new Intent().setClass(this, CampaignBrowser.class);
         includeTab(intent, "home", null, android.R.drawable.ic_menu_search);
-        
-//        intent = new Intent().setClass(this, MyCampaigns.class);
-//        includeTab(intent, "My Campaigns", null, android.R.drawable.ic_menu_gallery);
-
-////        intent = new Intent().setClass(this, Map.class);
-//        includeTab(intent, "map", null, android.R.drawable.ic_menu_mapmode);
-        
         intent = new Intent().setClass(this, Profile.class);
         includeTab(intent, "profile", null, android.R.drawable.ic_menu_myplaces);
-
         
         //TODO Save the last tab they were on and store it in sharedPreferences
         //or in the onSavedInstanceState bundle
@@ -70,13 +60,7 @@ public class CitizenSense extends TabActivity implements OnClickListener {
         
     }//onCreate
 
-	private void setUserAndPoints() {
-		userNameText = (TextView) findViewById(R.id.quick_profile_text);
-        userPointsText = (TextView) findViewById(R.id.quick_profile_pts);
-        
-        userNameText.setOnClickListener(this);
-        ((TextView) findViewById(R.id.quick_profile_pts)).setOnClickListener(this);
-	}
+
     
 	@Override 
 	public void onDestroy() {
@@ -87,6 +71,9 @@ public class CitizenSense extends TabActivity implements OnClickListener {
     @Override
     public void onResume() {
     	super.onResume();
+    	
+    	header.updateHeader();
+    	
     	if (G.user.getUsername() == null) {
     		Intent intent = new Intent(this, Login.class);
     		startActivity(intent);
@@ -150,32 +137,6 @@ public class CitizenSense extends TabActivity implements OnClickListener {
    		tabHost.addTab(tabHost.newTabSpec(tag).setIndicator(tabView).setContent(intent));
     }//includeTab
 
-    /** Handle clicks*/
-	@Override
-	public void onClick(View v) {
-		switch(v.getId()) {
-		case R.id.updates_menu_image:
-		case R.id.updates_menu_menu:
-		case R.id.updates_menu_text:
-			Toast.makeText(CitizenSense.this, "updates", Toast.LENGTH_SHORT).show();
-			break;
-		case R.id.quick_profile_image:
-		case R.id.quick_profile_menu:
-		case R.id.quick_profile_pts:
-		case R.id.quick_profile_text:
-			Toast.makeText(CitizenSense.this, "profile", Toast.LENGTH_SHORT).show();
-			break;
-			
-		}
-		
-	}//onClick
 	
-	public static TextView getUserNameText() {
-		return userNameText;
-	}
-	
-	public static TextView getUserPointsText() {
-		return userPointsText;
-	}
 	
 }//CitizenSense

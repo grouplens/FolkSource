@@ -65,8 +65,8 @@ public class DirectionDialog extends Dialog {
 		this.setTitle("Sense Dialog");
 		setContentView(R.layout.submission_history);
 
-		yesBtn = (Button) findViewById(R.id.sense_btn);
-		noBtn = (Button) findViewById(R.id.cancel_btn);
+//		yesBtn = (Button) findViewById(R.id.sense_btn);
+//		noBtn = (Button) findViewById(R.id.cancel_btn);
 //		mySubsList = (ListView) findViewById(R.id.mySubmissions);
 //		allSubsList = (ListView) findViewById(R.id.allSubmissions);
 //

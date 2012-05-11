@@ -42,9 +42,13 @@ public class AllSubmissionsAdapter extends ArrayAdapter<Submission> {
 	/** Inflate my submissions history */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		LayoutInflater inflater = (LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = inflater.inflate(R.layout.all_sub_item, parent, false);
+		View rowView = convertView;
+		if(rowView == null){
+			LayoutInflater inflater = (LayoutInflater) context
+			.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			rowView = inflater.inflate(R.layout.all_sub_item, parent, false);
+		}
+		
 		TextView nameView = (TextView) rowView.findViewById(R.id.allSubItemID);
 		TextView dateView = (TextView) rowView.findViewById(R.id.allSubItemDate);
 		TextView pointView = (TextView) rowView.findViewById(R.id.allSubItemPoints);

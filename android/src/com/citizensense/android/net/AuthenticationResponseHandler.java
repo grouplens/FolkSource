@@ -94,8 +94,6 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 				}
 				G.user.setUsername(username);
 				G.user.setScore(Integer.parseInt(this.getPoints()));
-				CitizenSense.getUserNameText().setText(username);
-				CitizenSense.getUserPointsText().setText(points);
 				saveCredentials();
 				((Activity) context).finish();
 			} else {
@@ -118,7 +116,7 @@ public class AuthenticationResponseHandler extends BasicResponseHandler {
 					}
 				}
 				G.user.setUsername(username);
-				CitizenSense.getUserNameText().setText(username);
+//				CitizenSense.getUserNameText().setText(username);
 				saveCredentials();
 				Intent in = new Intent();
 				((Activity) context).setResult(Constants.REGISTRATION_SUCCESS,

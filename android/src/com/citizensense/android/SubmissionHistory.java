@@ -7,34 +7,30 @@
 package com.citizensense.android;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
 import org.xml.sax.SAXException;
 
-import android.app.Activity;
+import android.app.TabActivity;
 import android.content.Intent;
-import android.graphics.Typeface;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Xml;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.view.Window;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.TabHost.TabSpec;
 
-import com.citizensense.android.conf.Constants;
 import com.citizensense.android.net.GetRequest;
 import com.citizensense.android.net.XMLResponseHandler;
 import com.citizensense.android.parsers.LeaderboardParser;
 import com.citizensense.android.parsers.SubmissionParser;
-import com.citizensense.android.util.AllSubmissionsAdapter;
-import com.citizensense.android.util.LeaderboardAdapter;
-import com.citizensense.android.util.MySubmissionsAdapter;
 
 /**
  * This activity will display the submission history at a certain location, it
@@ -45,68 +41,62 @@ import com.citizensense.android.util.MySubmissionsAdapter;
  * 
  */
 
-public class SubmissionHistory extends Activity {
+public class SubmissionHistory extends TabActivity {
 
-	/** Button go to Sense page */
-	private Button senseBtn;
-
-	/** Button to go back to the Map */
-	private Button cancelBtn;
-
-	/** List view for my submissions */
-	private ListView mySubsList;
-
-	/** List view for all submissions */
-	private ListView allSubsList;
+	/** Reference to the tab controller */
+	private TabHost tabHost;
+	/** Reference to the view inside the tabHost */
+	private View tabView;
+	/** click the view go to Sense page */
+	private View senseView;
+	/** ImageView for prompting loading information*/
+	private ImageView loadingImageView;
 
 	/** Campaign object get from Map */
 	private Campaign campaign;
-
-	/** All submissions at this location */
-	private ArrayList<Submission> allSubmissions = new ArrayList<Submission>();
-
-	/** My submissions at this location */
-	private ArrayList<Submission> mySubmissions = new ArrayList<Submission>();
-
-	/** Adapter for my submissions' list view */
-	private MySubmissionsAdapter mySubsAdapter;
-
-	/** Adapter for all submissions' list view */
-	private AllSubmissionsAdapter allSubsAdapter;
-
-	// add header and footer to get the scollbar work for list view
-	/** Header for my submissions' list view */
-	TextView mySubsHeader;
-	/** Footer for my submissions' list view */
-	TextView mySubsFooter;
-	/** Header for all submissions' list view */
-	TextView allSubsHeader;
-	/** Footer for all submissions' list view */
-	TextView allSubsFooter;
-
 	/** The task's location */
 	private int[] taskLocation;
-
 	/** The user's current location */
 	private int[] myLocation;
 
 	/** Indicate whether the user is inside the location */
 	private boolean inside;
 
+	/** My submissions at this location */
+	private ArrayList<Submission> mySubmissions = new ArrayList<Submission>();
+	/** All submissions at this location */
+	private ArrayList<Submission> allSubmissions = new ArrayList<Submission>();
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		this.setTitle("Sense Dialog");
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.submission_history);
-
-		senseBtn = (Button) findViewById(R.id.sense_btn);
-		cancelBtn = (Button) findViewById(R.id.cancel_btn);
-		mySubsList = (ListView) findViewById(R.id.mySubmissions);
-		allSubsList = (ListView) findViewById(R.id.allSubmissions);
-
+		
+		senseView = findViewById(R.id.senseView);
+		tabHost = getTabHost();
+		
+		loadingImageView = (ImageView)findViewById(R.id.loadingImage);
+		
 		handleIntent(this.getIntent());
 		setListener();
-		initiateUI();
+		// initiateUI();
+	}
+	
+	public void refreshTab(){
+		loadingImageView.setVisibility(View.GONE);
+		tabHost.clearAllTabs();
+		Intent intent;
+		intent = new Intent().setClass(this, AllSubmissionHistory.class);
+		intent.putExtra("campaign", campaign);
+		intent.putParcelableArrayListExtra("allSubmissions", allSubmissions);
+		includeTab(intent, "AllSubmissions","All Submissions", 0);
+		intent = new Intent().setClass(this, MySubmissionHistory.class);
+		intent.putExtra("campaign", campaign);
+		intent.putParcelableArrayListExtra("mySubmissions", mySubmissions);
+		includeTab(intent, "MySubmissions", "My Submissions", 0);
+
+		tabHost.setCurrentTab(0);	
 	}
 
 	@Override
@@ -115,6 +105,7 @@ public class SubmissionHistory extends Activity {
 		// We need to update submissions, because after the user made a
 		// submission, the page will go back to SubmissionHistory and
 		// we should be able to update the page.
+		Log.d("SubmissionHistory", "onResume");
 		updateSubmissions();
 
 	}
@@ -147,6 +138,7 @@ public class SubmissionHistory extends Activity {
 													+ mySubmissions.size());
 									Collections.sort(mySubmissions);
 									updateLeaderboard();
+									refreshTab();
 								}
 							}));
 				} catch (SAXException e) {
@@ -177,7 +169,7 @@ public class SubmissionHistory extends Activity {
 													entry);
 										}
 									}
-									updateUI();
+									// updateUI();
 								}
 							}));
 				} catch (SAXException e) {
@@ -199,7 +191,7 @@ public class SubmissionHistory extends Activity {
 
 	/** Set listeners for UI components */
 	public void setListener() {
-		senseBtn.setOnClickListener(new View.OnClickListener() {
+		senseView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(v.getContext(), Sense.class);
@@ -211,96 +203,25 @@ public class SubmissionHistory extends Activity {
 				v.getContext().startActivity(i);
 			}
 		});
-
-		cancelBtn.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				finish();
-			}
-		});
-
-		mySubsList.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				// know the difference between id and position
-				if (id >= 0 && id < mySubmissions.size()) {
-					Intent intent = new Intent(view.getContext(),
-							SubmissionBrowser.class);
-					intent.putExtra("submission", mySubmissions.get((int) id));
-
-					// I tried to parse answers as part of submission, but got
-					// problem
-					// We may want to change this later.
-					Answer[] answers = mySubmissions.get((int) id).getAnswers();
-					ArrayList<Answer> answerList = new ArrayList<Answer>(Arrays
-							.asList(answers));
-					intent.putParcelableArrayListExtra("answers", answerList);
-					intent.putExtra("campaign", campaign);
-					startActivity(intent);
-				}
-			}
-		});
-
-		allSubsList.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				if (id >= 0 && id < allSubmissions.size()) {
-					Intent intent = new Intent(view.getContext(),
-							SubmissionBrowser.class);
-					intent.putExtra("submission", allSubmissions.get((int) id));
-					Answer[] answers = allSubmissions.get((int) id)
-							.getAnswers();
-					ArrayList<Answer> answerList = new ArrayList<Answer>(Arrays
-							.asList(answers));
-					intent.putParcelableArrayListExtra("answers", answerList);
-					intent.putExtra("campaign", campaign);
-					startActivity(intent);
-				}
-			}
-		});
 	}
 
-	public void initiateUI() {
-		mySubsHeader = new TextView(this);
-		mySubsFooter = new TextView(this);
-		allSubsHeader = new TextView(this);
-		allSubsFooter = new TextView(this);
-		mySubsHeader.setText("My History");
-		mySubsHeader.setTypeface(null, Typeface.BOLD);
-		allSubsHeader.setText("All History");
-		allSubsHeader.setTypeface(null, Typeface.BOLD);
-	}
 
-	
-	/** Update the UI after the submissions are updated */
-	//To make sure the notifyDataSetChanged works, we need to recreate the 
-	//adapter, holding the reference of the old mySubmissions and allSubmissions
-	//does not work
-	public void updateUI() {
-		if (mySubsAdapter == null) {
-			mySubsList.addHeaderView(mySubsHeader);
-			mySubsList.addFooterView(mySubsFooter);
-		} 
-		mySubsAdapter = new MySubmissionsAdapter(this, mySubmissions);
-		mySubsList.setAdapter(mySubsAdapter);
-		if (mySubsAdapter != null)
-			mySubsAdapter.notifyDataSetChanged();
-		if (mySubmissions.isEmpty())
-			mySubsFooter.setText("Make your first observation!");
-
-		if (allSubsAdapter == null) {
-			allSubsList.addHeaderView(allSubsHeader);
-			allSubsList.addFooterView(allSubsFooter);
-		} 
-		allSubsAdapter = new AllSubmissionsAdapter(this, allSubmissions);
-		allSubsList.setAdapter(allSubsAdapter);
-		if (allSubsAdapter != null)
-			allSubsAdapter.notifyDataSetChanged();
-		if (allSubmissions.isEmpty())
-			allSubsFooter
-					.setText("There is no history here. Be the first one and earn more points!");
-	}
+    public void includeTab(Intent intent, String tag, String text, int resid) {
+    	tabView = LayoutInflater.from(this).inflate(R.layout.tab, null);
+    	if (text != null) {
+    		((TextView) tabView.findViewById(R.id.tab_text)).setText(text);
+    	}
+    	else {
+    		((TextView) tabView.findViewById(R.id.tab_text)).setVisibility(View.GONE);
+    	}
+    	if (resid != 0) {
+    		((ImageView) tabView.findViewById(R.id.tab_image)).setBackgroundResource(resid);
+    	}
+    	else {
+    		((ImageView) tabView.findViewById(R.id.tab_image)).setVisibility(View.GONE);
+    	}
+    	
+    	tabHost.addTab(tabHost.newTabSpec(tag).setIndicator(tabView).setContent(intent));
+    }//includeTab
 
 }

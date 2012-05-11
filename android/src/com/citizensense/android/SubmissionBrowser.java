@@ -14,12 +14,16 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.citizensense.android.net.GetImageRequest;
-import com.citizensense.android.util.SubmissionContentAdapter;
+import com.citizensense.android.util.ActivityHeader;
+import com.citizensense.android.util.SubmissionGalleryAdapter;
 
 /**
  * @ClassName: SubmissionBrowser
@@ -44,28 +48,34 @@ public class SubmissionBrowser extends Activity {
 	/** Campaign object for the submission, we need this to get questions */
 	private Campaign campaign;
 
-	/** List View for submission's content: questions, answers and image */
-	private ListView submissionContentList;
-
-	private TextView header;
-	private TextView footer;
-	
 	/** ImageView for the submission's image.*/
 	private ImageView image;
 
-	/***/
-	private SubmissionContentAdapter subContentAdapter;
+	/** Reference to the header view */
+	private View headerView; 
+	/** Designed to update the header view */
+	private ActivityHeader header;
+	/** Gallery View for submissions */
+	private Gallery gallery;
+	/** Adapter for gallery view. */
+	private SubmissionGalleryAdapter subGalleryAdapter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.submission_browser);
+        headerView = findViewById(R.id.header);
+        header = new ActivityHeader(headerView);
+		
+		
 		name = (TextView) findViewById(R.id.name);
 		time = (TextView) findViewById(R.id.time);
 		points = (TextView) findViewById(R.id.points);
-		//FIXME: Probably we shouldn't use list view here
-		// The narrow list view doesn't look good.
-		submissionContentList = (ListView) findViewById(R.id.subContentList);
+		
+		gallery = (Gallery) findViewById(R.id.submission_gallery);
+		registerForContextMenu(gallery);
+		
 		image = (ImageView)findViewById(R.id.subImage);
 		handleIntent(this.getIntent());
 		updateUI();
@@ -74,6 +84,7 @@ public class SubmissionBrowser extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
+		header.updateHeader();
 	}
 
 	public void handleIntent(Intent i) {
@@ -84,24 +95,18 @@ public class SubmissionBrowser extends Activity {
 	
 	public void updateImageView(){
 		//FIXME: We should allow the user to rotate/zoom in/zoom out
-		GetImageRequest request = new GetImageRequest(this,image,true);
+		GetImageRequest request = new GetImageRequest(this,image,false);
 		if(submission.getImageUrl()!=null)
 			request.execute(submission.getImageUrl());
 	}
 
 	public void updateUI() {
-		header = new TextView(this);
-		footer = new TextView(this);
-		header.setText("Submission Content");
-		header.setTypeface(null, Typeface.BOLD);
 		updateImageView();
 		
 		if (submission == null) {
 			Log.e("SubmissionBrowser", "submission  is null");
 			return;
 		}
-		// set user name, time and points
-		// FIXME: change this to user name
 		String userName = "";
 		if(G.leaderboardMap!=null) {
 			LeaderboardEntry entry = G.leaderboardMap.get(submission.getUser_id());
@@ -112,16 +117,23 @@ public class SubmissionBrowser extends Activity {
 		time.setText(df.format(submission.getTimestamp()));
 		points.setText("" + submission.getPoints());
 		// update UI for list view
-		if (subContentAdapter == null && answers != null && campaign != null) {
-			submissionContentList.addHeaderView(header);
-			submissionContentList.addFooterView(footer);
+		if (subGalleryAdapter == null && answers != null && campaign != null) {
 			ArrayList<Question> questions = null;
 			if (campaign.getTask() != null
 					&& campaign.getTask().getForm() != null)
 				questions = campaign.getTask().getForm().getQuestionsList();
-			subContentAdapter = new SubmissionContentAdapter(this, answers,
+			subGalleryAdapter = new SubmissionGalleryAdapter(this, answers,
 					questions);
-			submissionContentList.setAdapter(subContentAdapter);
+			//test gallery view
+//			ArrayList<Answer> answers2 = new ArrayList<Answer>();
+//			ArrayList<Question> questions2 = new ArrayList<Question>();
+//			answers2.addAll(answers);
+//			answers2.addAll(answers);
+//			questions2.addAll(questions);
+//			questions2.addAll(questions);
+//			subGalleryAdapter = new SubmissionGalleryAdapter(this, answers2,
+//					questions2);
+			gallery.setAdapter(subGalleryAdapter);
 		}
 
 		// FIXME: if the campaign does not require verification, hide the

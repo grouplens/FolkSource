@@ -11,7 +11,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
     <ImageView android:id="@+id/profile_pic"
-      android:src="@drawable/profile_default"
+      android:src="@drawable/person"
       android:layout_width="130dp"
       android:layout_height="130dp"
       android:padding="15dp" />

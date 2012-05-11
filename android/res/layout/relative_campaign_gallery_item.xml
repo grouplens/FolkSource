@@ -1,106 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent">
-  <View
-    android:id="@+id/separator3"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="1dp"
-    android:background="#666666"
-    android:layout_alignParentBottom="true" />
-  <LinearLayout
-    android:id="@+id/buttons"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:padding="1dp"
-    android:layout_margin="1dp"
-    android:layout_above="@id/separator3" >
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
 
-    <Button 
-      android:id="@+id/download_or_delete"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:layout_weight="1"
-      android:text="GET" />
-  </LinearLayout>
-  <View
-    android:id="@+id/separator2"
-    android:layout_width="fill_parent"
-    android:layout_height="1dp"
-    android:background="#666666"
-    android:layout_above="@id/buttons" />
-  <LinearLayout
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
+    <View
+        android:id="@+id/separator3"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:background="#666666" />
+
     <LinearLayout
-      android:id="@+id/info_layout"
-      android:layout_width="fill_parent"
-      android:layout_height="0dp"
-      android:orientation="horizontal"
-      android:layout_above="@id/separator2"
-      android:layout_weight="2"
-      android:weightSum="2" >
-      <ImageView
-        android:id="@+id/campaign_image"
-        android:layout_weight="1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:layout_margin="1dp"
-        android:src="@drawable/profile_default" />
-      <LinearLayout 
-        android:id="@+id/info"
+        android:id="@+id/buttons"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_weight="1" > 
-        <TextView
-          android:id="@+id/campaign_title"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:gravity="center_horizontal"
-          android:text="Campaign Title"
-          android:textSize="18sp"
-          android:textColor="#FFFFFF"
-          android:padding="1dp"
-          android:layout_margin="1dp" />
+        android:layout_above="@id/separator3"
+        android:layout_margin="1dp"
+        android:padding="1dp" >
+
+        <Button
+            android:id="@+id/download_or_delete"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="GET" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/separator2"
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:layout_above="@id/buttons"
+        android:background="#666666" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:orientation="vertical" >
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#666666"
+            android:padding="1dp" />
 
         <TextView
-            android:id="@+id/campaign_status"
+            android:id="@+id/campaign_title"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="1dp"
-            android:gravity="center_horizontal"
             android:padding="1dp"
-            android:text="Campaign Status"
+            android:text="Campaign Title"
             android:textColor="#FFFFFF"
-            android:textSize="14sp" />
+            android:textSize="18sp" />
 
-        <ImageButton
-            android:id="@+id/camp_map"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/info_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_above="@id/separator2"
+            android:layout_weight="2"
+            android:orientation="horizontal"
+            android:weightSum="2" >
+
+            <ImageView
+                android:id="@+id/campaign_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:adjustViewBounds="true"
+                android:src="@drawable/profile_default" />
+
+            <LinearLayout
+                android:id="@+id/info"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/campaign_status"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="1dp"
+                    android:gravity="center_horizontal"
+                    android:padding="1dp"
+                    android:text="Campaign Status"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp" />
+
+                <ImageButton
+                    android:id="@+id/camp_map"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@android:drawable/ic_menu_mapmode" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/separator1"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#666666"
+            android:padding="1dp" />
+
+        <TextView
+            android:id="@+id/campaign_description"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:src="@android:drawable/ic_menu_mapmode" />
-
-      </LinearLayout>
+            android:layout_margin="1dp"
+            android:padding="1dp"
+            android:text="Campaign Description"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
-    <View
-      android:id="@+id/separator1"
-      android:layout_width="fill_parent"
-      android:layout_height="1dp"
-      android:padding="1dp"
-      android:background="#666666" />
-    <TextView 
-      android:id="@+id/campaign_description" 
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:padding="1dp"
-      android:layout_margin="1dp"
-      android:text="Campaign Description"
-      android:textColor="#FFFFFF" />
-  </LinearLayout>
+
 </RelativeLayout>

@@ -20,6 +20,7 @@ import android.content.DialogInterface;
 import android.widget.Toast;
 
 import com.citizensense.android.CitizenSense;
+import com.citizensense.android.G;
 
 /**
  * @ClassName: SubmissionResponseHandler
@@ -62,8 +63,9 @@ public class SubmissionResponseHandler extends BasicResponseHandler {
 			for (Header header : response.getAllHeaders()) {
 				if (header.getName().equalsIgnoreCase("points")) {
 					p = Integer.parseInt(header.getValue());
-					CitizenSense.getUserPointsText().setText(
-							(header.getValue()));
+					G.user.points = Integer.valueOf(header.getValue());
+//					CitizenSense.getUserPointsText().setText(
+//							(header.getValue()));
 				}
 			}
 			//Instead of using toast, we should use dialog

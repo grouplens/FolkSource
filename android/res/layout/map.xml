@@ -1,15 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2006-2011 Regents of the University of Minnesota.
-   For licensing terms, see the file LICENSE.-->
+<!--
+   Copyright (c) 2006-2011 Regents of the University of Minnesota.
+   For licensing terms, see the file LICENSE.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        layout="@layout/cs_header" />
+
     <!-- Should be using 09CCDff67tEdHO0bFllB1TAEsEEzMrR8pzk6Eow -->
+
     <com.google.android.maps.MapView
-       android:id="@+id/mapview"
-       android:layout_width="fill_parent"
-       android:layout_height="fill_parent"
-       android:clickable="true"
-       android:apiKey="0uJy5NRqmXohVZdN0-l13StruJcG1P52jptLyNg" />
+        android:id="@+id/mapview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:apiKey="0QQ47N8UWfQfVDcM33Dnvap39f7-CQBs1uIJjFQ"
+        android:clickable="true" />
+
 </LinearLayout>

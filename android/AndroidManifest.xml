@@ -57,10 +57,20 @@
             android:label="Sense"
             android:name=".Sense" />
         <activity
+            android:configChanges="orientation|keyboardHidden"
             android:label="SubmissionHistory"
             android:name=".SubmissionHistory"
             android:theme="@android:style/Theme.Dialog" />
         <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:label="MySubmissionHistory"
+            android:name=".MySubmissionHistory" />
+        <activity
+            android:configChanges="orientation|keyboardHidden"
+            android:label="AllSubmissionHistory"
+            android:name=".AllSubmissionHistory" />
+        <activity
+            android:configChanges="orientation|keyboardHidden"
             android:label="SubmissionBrowser"
             android:name=".SubmissionBrowser" />
         <activity

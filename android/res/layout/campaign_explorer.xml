@@ -1,162 +1,184 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2006-2011 Regents of the University of Minnesota.
-   For licensing terms, see the file LICENSE. -->
-<RelativeLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="fill_parent"
-  android:layout_height="fill_parent"
-  android:background="@drawable/tab_selected">
-  <!-- TODO add a bar containing a "sort by" button -->
-  <RelativeLayout
-    android:id="@+id/gallery_layout"
+<!--
+   Copyright (c) 2006-2011 Regents of the University of Minnesota.
+   For licensing terms, see the file LICENSE.
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:background="#000000"
-    android:layout_margin="5dp" >
-    <LinearLayout
-      android:id="@+id/gallery_index_indicator"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:orientation="horizontal"
-      android:gravity="center_horizontal"
-      android:layout_alignParentBottom="true" />
-    <Gallery 
-      android:id="@+id/campaign_gallery"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
-      android:spacing="5dp"
-      android:layout_above="@id/gallery_index_indicator"
-      android:background="#000000"
-      android:layout_margin="5dp" />
-  </RelativeLayout>
-  <ListView 
-    android:id="@android:id/list"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#000000" />
-  <ScrollView 
-    android:id="@+id/campaign_page"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#000000" >
-    <LinearLayout
-      android:orientation="vertical"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent">
-      <ImageView
-        android:id="@+id/campaign_image"
-        android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:layout_margin="10dp"
-        android:src="@drawable/profile_default" />
-        <TextView
-          android:id="@+id/campaign_title"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:gravity="center_horizontal"
-          android:text="Campaign Title"
-          android:textSize="18sp"
-          android:textColor="#FFFFFF"
-          android:padding="5dp"
-          android:layout_margin="5dp" />
-        <TextView
-          android:id="@+id/campaign_location"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:gravity="center_horizontal"
-          android:text="Location"
-          android:textSize="14sp"
-          android:textColor="#FFFFFF"
-          android:padding="5dp"
-          android:layout_marginLeft="5dp"
-          android:layout_marginRight="5dp" />
-        <TextView
-          android:id="@+id/campaign_times"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:gravity="center_horizontal"
-          android:text="Times"
-          android:textSize="14sp"
-          android:textColor="#FFFFFF"
-          android:padding="5dp"
-          android:layout_marginLeft="5dp"
-          android:layout_marginRight="5dp" />
-        <TextView
-          android:id="@+id/campaign_status"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:gravity="center_horizontal"
-          android:text="Campaign Status"
-          android:textSize="14sp"
-          android:textColor="#FFFFFF"
-          android:padding="5dp"
-          android:layout_marginLeft="5dp"
-          android:layout_marginRight="5dp" />
-        <TextView
-          android:id="@+id/campaign_start_and_end_dates"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:gravity="center_horizontal"
-          android:text="Start Date - End Date"
-          android:textSize="8sp"
-          android:textColor="#FFFFFF"
-          android:layout_marginLeft="5dp"
-          android:layout_marginRight="5dp" />
-      <View
-        android:id="@+id/separator2"
+    android:background="@drawable/tab_selected" >
+
+    <!-- TODO add a bar containing a "sort by" button -->
+    <RelativeLayout
+        android:id="@+id/gallery_layout"
         android:layout_width="fill_parent"
-        android:layout_height="2dp"
-        android:layout_margin="10dp"
-        android:background="#666666" />    
-      <TextView 
-        android:id="@+id/campaign_description" 
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
+        android:layout_height="fill_parent"
         android:layout_margin="5dp"
-        android:text="Campaign Description"
-        android:textColor="#FFFFFF" />
-      <View
-        android:id="@+id/separator2"
+        android:background="#000000"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/gallery_index_indicator"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal" />
+
+        <Gallery
+            android:id="@+id/campaign_gallery"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_above="@id/gallery_index_indicator"
+            android:layout_margin="5dp"
+            android:background="#000000"
+            android:spacing="5dp" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@android:id/list"
         android:layout_width="fill_parent"
-        android:layout_height="2dp"
-        android:layout_margin="10dp"
-        android:background="#666666" />    
-      <TextView 
-        android:id="@+id/task_description" 
+        android:layout_height="fill_parent"
+        android:background="#000000" />
+
+    <ScrollView
+        android:id="@+id/campaign_page"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:layout_margin="5dp"
-        android:text="Task Description"
-        android:textColor="#FFFFFF" />
-      <View
-        android:id="@+id/separator2"
-        android:layout_width="fill_parent"
-        android:layout_height="2dp"
-        android:layout_margin="10dp"
-        android:background="#666666" />
-      <LinearLayout
-        android:id="@+id/buttons"
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" >
-      <Button 
-        android:id="@+id/task"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="SENSE" />
-      <Button 
-        android:id="@+id/download_or_delete"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="GET" />
-      </LinearLayout>
-    </LinearLayout>
-  </ScrollView>
+        android:layout_height="fill_parent"
+        android:background="#000000" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/campaign_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="10dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/profile_default" />
+
+            <TextView
+                android:id="@+id/campaign_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:gravity="center_horizontal"
+                android:padding="5dp"
+                android:text="Campaign Title"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/campaign_location"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:gravity="center_horizontal"
+                android:padding="5dp"
+                android:text="Location"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/campaign_times"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:gravity="center_horizontal"
+                android:padding="5dp"
+                android:text="Times"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/campaign_status"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:gravity="center_horizontal"
+                android:padding="5dp"
+                android:text="Campaign Status"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/campaign_start_and_end_dates"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:gravity="center_horizontal"
+                android:text="Start Date - End Date"
+                android:textColor="#FFFFFF"
+                android:textSize="8sp" />
+
+            <View
+                android:id="@+id/separator2"
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:layout_margin="10dp"
+                android:background="#666666" />
+
+            <TextView
+                android:id="@+id/campaign_description"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:padding="5dp"
+                android:text="Campaign Description"
+                android:textColor="#FFFFFF" />
+
+            <View
+                android:id="@+id/separator2"
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:layout_margin="10dp"
+                android:background="#666666" />
+
+            <TextView
+                android:id="@+id/task_description"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:padding="5dp"
+                android:text="Task Description"
+                android:textColor="#FFFFFF" />
+
+            <View
+                android:id="@+id/separator2"
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:layout_margin="10dp"
+                android:background="#666666" />
+
+            <LinearLayout
+                android:id="@+id/buttons"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <Button
+                    android:id="@+id/task"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="SENSE" />
+
+                <Button
+                    android:id="@+id/download_or_delete"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="GET" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
 </RelativeLayout>

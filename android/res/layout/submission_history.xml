@@ -5,75 +5,71 @@
     android:orientation="vertical" >
 
     <LinearLayout
+        android:id="@+id/senseView"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="horizontal" >
+        android:layout_height="fill_parent"
+        android:background="#FFFFFF"
+        android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/sense_btn"
+        <ImageView
+            android:id="@+id/senseImage"
+            android:layout_width="45dip"
+            android:layout_height="45dip"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:paddingTop="5dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/sense" />
+
+        <TextView
+            android:id="@+id/senseText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="Make an Observation" />
-
-        <Button
-            android:id="@+id/cancel_btn"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="Go Back to Map" />
+            android:layout_gravity="center"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:text="Make an Observation"
+            android:textColor="#ff000000" />
     </LinearLayout>
 
-    <LinearLayout
+    <View
         android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#666666" />
+
+    <ImageView
+        android:id="@+id/loadingImage"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:layout_weight="1"
-        android:orientation="vertical" >
+        android:layout_centerHorizontal="true"
+        android:layout_margin="1dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/loading" >
+    </ImageView>
 
-        <ListView
-            android:id="@+id/mySubmissions"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
-        </ListView>
-    </LinearLayout>
-
-    <LinearLayout
+    <TabHost
+        android:id="@android:id/tabhost"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:layout_weight="1"
-        android:orientation="vertical" >
+        android:layout_height="fill_parent" >
 
-        <ListView
-            android:id="@+id/allSubmissions"
+        <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="fill_horizontal" >
-        </ListView>
-    </LinearLayout>
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:padding="0dp" >
 
-    <!--
-    RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp" >
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
 
-        <ListView
-            android:id="@+id/mySubmissions"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
-        </ListView>
-
-        <ListView
-            android:id="@+id/allSubmissions"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="fill_horizontal"
-            android:layout_below="@id/mySubmissions" >
-        </ListView>
-    </RelativeLayout
-    -->
-
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:padding="0dp" />
+        </LinearLayout>
+    </TabHost>
 </LinearLayout>

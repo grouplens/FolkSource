@@ -24,7 +24,7 @@ import com.citizensense.android.R;
  * @Description: TODO
  *  
  */
-public class SubmissionContentAdapter extends ArrayAdapter<Answer> {
+public class SubmissionGalleryAdapter extends ArrayAdapter<Answer> {
 	/** context in order to allow access to resources and system services */
 	private Context context;
 	/** The answers to inflate */
@@ -32,7 +32,7 @@ public class SubmissionContentAdapter extends ArrayAdapter<Answer> {
 	/** The questions to inflate*/
 	private ArrayList<Question> questions;
 
-	public SubmissionContentAdapter(Context context,
+	public SubmissionGalleryAdapter(Context context,
 			ArrayList<Answer> answers,ArrayList<Question> questions) {
 		super(context, 0, answers);
 		this.context = context;
@@ -46,9 +46,8 @@ public class SubmissionContentAdapter extends ArrayAdapter<Answer> {
 		int index = position+1;
 		LayoutInflater inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View rowView = inflater.inflate(R.layout.sub_content_item, parent, false);
+		View rowView = inflater.inflate(R.layout.sub_gallery_item, parent, false);
 		TextView questionView = (TextView) rowView.findViewById(R.id.question);
-		//FIXME: add question content later
 		String questionText = "Q"+index+": ";
 		if(questions!=null) questionText += questions.get(position).getQuestion();
 		questionView.setText(questionText);

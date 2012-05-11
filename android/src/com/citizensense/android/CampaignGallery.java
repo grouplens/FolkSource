@@ -6,19 +6,20 @@ package com.citizensense.android;
 
 import java.util.ArrayList;
 
-import com.citizensense.android.util.CampaignGalleryAdapter;
-
 import android.app.Activity;
-import android.app.ListActivity;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Gallery;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.citizensense.android.util.ActivityHeader;
+import com.citizensense.android.util.CampaignGalleryAdapter;
 
 /**
  * Gallery Campaign 
@@ -36,6 +37,11 @@ public class CampaignGallery extends Activity implements OnItemSelectedListener{
 	/** The current position of the set*/
 	protected int position;
 	
+	/** Reference to the header view */
+	View headerView; 
+	/** Designed to update the header view */
+	ActivityHeader header;
+	
 	@Override
     public void onItemSelected(AdapterView<?> parent, 
     		 				   View view,
@@ -48,7 +54,13 @@ public class CampaignGallery extends Activity implements OnItemSelectedListener{
 	@Override
 	public void onCreate(Bundle savedInstanceState){
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.gallery_campaign);
+		
+        headerView = findViewById(R.id.header);
+        header = new ActivityHeader(headerView);
+		
+		
 		gallery = (Gallery) findViewById(R.id.campaign_gallery);
 		registerForContextMenu(gallery);
 		
@@ -61,6 +73,12 @@ public class CampaignGallery extends Activity implements OnItemSelectedListener{
 		
 	}
 	
+	@Override
+	public void onResume(){
+		super.onResume();
+		header.updateHeader();
+	}
+	
 	/** Update the index indicator at the bottom of the campaign view. 
 	 * @param position the current gallery position */
 	public void updateIndicator(int position) {
@@ -70,7 +88,7 @@ public class CampaignGallery extends Activity implements OnItemSelectedListener{
 		indicator.removeAllViews();
 		for (int i = 0; i < totalAdds; i++) {
 			temp = new TextView(this);
-			temp.setText("� ");
+			temp.setText("�");
 			temp.setGravity(Gravity.CENTER);
 			if (i == position){
 				temp.setTextColor(Color.BLUE);

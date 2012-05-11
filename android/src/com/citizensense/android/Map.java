@@ -38,6 +38,8 @@ import android.util.Log;
 import android.util.Xml;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
@@ -45,6 +47,7 @@ import com.citizensense.android.conf.Constants;
 import com.citizensense.android.net.GetRequest;
 import com.citizensense.android.net.XMLResponseHandler;
 import com.citizensense.android.parsers.SubmissionParser;
+import com.citizensense.android.util.ActivityHeader;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -83,11 +86,21 @@ public class Map extends MapActivity {
 	// I feel it is more user friendly that we only call zoomToSpan once
 	private boolean zoomToSpan;
 
+	/** Reference to the header view */
+	private View headerView;
+	/** Designed to update the header view */
+	private ActivityHeader header;
+
 	/** Initialize the map */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.map);
+
+		headerView = findViewById(R.id.header);
+		header = new ActivityHeader(headerView);
+
 		G.map = (MapView) findViewById(R.id.mapview);
 		G.map.setBuiltInZoomControls(true);
 		mapOverlays = G.map.getOverlays();
@@ -129,6 +142,9 @@ public class Map extends MapActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
+
+		header.updateHeader();
+
 		// setup MyLocationOverlay
 		// TODO
 		myLocation = new PointableLocationOverlay(this, G.map, 15);
@@ -154,9 +170,13 @@ public class Map extends MapActivity {
 		mapOverlays.clear();
 		mapOverlays.add(myLocation);
 
-			for (String loc : campaign.getLocations()) {
-				overlay = Constants.NO_SUBMISSION;
+		for (String loc : campaign.getLocations()) {
+			overlay = Constants.NO_SUBMISSION;
+			if (getLocType(loc) == Constants.NONEXACT_LOCATION) 
+				continue;
 			String[] locCoords = loc.split("\\,");
+			Log.d("Locations", "locCoords:"+loc);
+			
 			// match submission with campaign
 			for (Submission sub : submissions) {
 				String[] subCoords = sub.getCoords();
@@ -176,31 +196,33 @@ public class Map extends MapActivity {
 
 			GeoPoint point = getGeopoint(loc);
 			if (point == null) {
-				Toast.makeText(this,
+				Toast.makeText(
+						this,
 						"Geocoder failed, can't show some campaigns, please try later.",
 						Toast.LENGTH_LONG).show();
 				continue;
 			}
 			if (getLocType(loc) == Constants.EXACT_LOCATION) {
-					pointOverlay = new PointOverlay(point, campaign, overlay);
-					mapOverlays.add(pointOverlay);
+				pointOverlay = new PointOverlay(point, campaign, overlay);
+				mapOverlays.add(pointOverlay);
 			}
 			circleOverlay = new CircleOverlay(point, getRadius(loc), campaign);
 			mapOverlays.add(circleOverlay);
 
-			if(zoomToSpan == false) continue;
+			if (zoomToSpan == false)
+				continue;
 			if (point.getLatitudeE6() < lowLat)
-					lowLat = point.getLatitudeE6();
+				lowLat = point.getLatitudeE6();
 			if (point.getLatitudeE6() > highLat)
-					highLat = point.getLatitudeE6();
+				highLat = point.getLatitudeE6();
 			if (point.getLongitudeE6() < lowLong)
-					lowLong = point.getLongitudeE6();
+				lowLong = point.getLongitudeE6();
 			if (point.getLongitudeE6() > highLong)
-					highLong = point.getLongitudeE6();
+				highLong = point.getLongitudeE6();
 		}
-		if(zoomToSpan){
+		if (zoomToSpan) {
 			G.map.getController().zoomToSpan(Math.abs(highLong - lowLong),
-				Math.abs(highLat - lowLat));
+					Math.abs(highLat - lowLat));
 			zoomToSpan = false;
 		}
 
@@ -522,51 +544,40 @@ public class Map extends MapActivity {
 				canvas.drawCircle((float) pt.x, (float) pt.y, radiusInPixels,
 						circlePaint);
 				// set color and style for the border
-//				circlePaint.setColor(0x99000000);
-//				circlePaint.setStyle(Style.STROKE);
-//				canvas.drawCircle((float) pt.x, (float) pt.y, radiusInPixels,
-//						circlePaint);
+				// circlePaint.setColor(0x99000000);
+				// circlePaint.setStyle(Style.STROKE);
+				// canvas.drawCircle((float) pt.x, (float) pt.y, radiusInPixels,
+				// circlePaint);
 			}
 		}// draw
 
 		@Override
 		public boolean onTap(GeoPoint p, MapView view) {
-			/*Point tapPt = new Point();
-			Point cPt = new Point();
-			Point locPt = new Point();
-			boolean inside = false;
-			view.getProjection().toPixels(p, tapPt);
-			view.getProjection().toPixels(center, cPt);
-			if (myPoint != null)
-				view.getProjection().toPixels(myPoint, locPt);
-			float radiusInPixels = getPixelsFromMeters(radius, view,
-					center.getLatitudeE6() / 1000000);
-
-			if (locPt.x >= (this.farLeft) && locPt.x <= (this.farRight))
-				if (locPt.y >= (cPt.y - radiusInPixels)
-						&& locPt.y <= (cPt.y + radiusInPixels))
-					inside = true;
-
-			if (tapPt.x >= (this.farLeft) && tapPt.x <= (this.farRight))
-				if (tapPt.y >= (cPt.y - radiusInPixels)
-						&& tapPt.y <= (cPt.y + radiusInPixels)) {
-					Intent i = new Intent(view.getContext(),
-							SubmissionHistory.class);
-					i.putExtra("campaign", campaign);
-					int[] taskLocation = { center.getLatitudeE6(),
-							center.getLongitudeE6() };
-					i.putExtra("taskLocation", taskLocation);
-
-					if (myPoint != null) {
-						int[] myLocation = { myPoint.getLatitudeE6(),
-								myPoint.getLongitudeE6() };
-						i.putExtra("myLocation", myLocation);
-					}
-					i.putExtra("inside", inside);
-					view.getContext().startActivity(i);
-					return true;
-				}
-*/
+			/*
+			 * Point tapPt = new Point(); Point cPt = new Point(); Point locPt =
+			 * new Point(); boolean inside = false;
+			 * view.getProjection().toPixels(p, tapPt);
+			 * view.getProjection().toPixels(center, cPt); if (myPoint != null)
+			 * view.getProjection().toPixels(myPoint, locPt); float
+			 * radiusInPixels = getPixelsFromMeters(radius, view,
+			 * center.getLatitudeE6() / 1000000);
+			 * 
+			 * if (locPt.x >= (this.farLeft) && locPt.x <= (this.farRight)) if
+			 * (locPt.y >= (cPt.y - radiusInPixels) && locPt.y <= (cPt.y +
+			 * radiusInPixels)) inside = true;
+			 * 
+			 * if (tapPt.x >= (this.farLeft) && tapPt.x <= (this.farRight)) if
+			 * (tapPt.y >= (cPt.y - radiusInPixels) && tapPt.y <= (cPt.y +
+			 * radiusInPixels)) { Intent i = new Intent(view.getContext(),
+			 * SubmissionHistory.class); i.putExtra("campaign", campaign); int[]
+			 * taskLocation = { center.getLatitudeE6(), center.getLongitudeE6()
+			 * }; i.putExtra("taskLocation", taskLocation);
+			 * 
+			 * if (myPoint != null) { int[] myLocation = {
+			 * myPoint.getLatitudeE6(), myPoint.getLongitudeE6() };
+			 * i.putExtra("myLocation", myLocation); } i.putExtra("inside",
+			 * inside); view.getContext().startActivity(i); return true; }
+			 */
 			return false;
 		}
 	}// CircleOverlay
@@ -678,7 +689,7 @@ public class Map extends MapActivity {
 			if (this.getMyLocation() != null) {
 				Projection projection = mapView.getProjection();
 				Point p = new Point();
-				if(this.myLocation == null)
+				if (this.myLocation == null)
 					return false;
 				projection.toPixels(myLocation, p);
 
@@ -687,7 +698,7 @@ public class Map extends MapActivity {
 						if (this.tapCount == 2) {
 							this.tapCount = 0;
 							this.activated = !this.activated;
-							if(!this.activated)
+							if (!this.activated)
 								this.lockPt = oldTp;
 						} else
 							this.tapCount++;
@@ -696,7 +707,7 @@ public class Map extends MapActivity {
 						if (this.activated) {
 							this.touchPoint = new PointF(e.getX(), e.getY());
 							oldTp = touchPoint;
-							
+
 						}
 					}
 
@@ -706,17 +717,17 @@ public class Map extends MapActivity {
 							zoomCount++;
 					} else {
 						this.color = Color.argb(255, 128, 128, 128);
-//						this.touchPoint = null;
+						// this.touchPoint = null;
 						while (zoomCount != 0
 								&& mapView.getController().zoomOut())
 							zoomCount--;
 					}
 					return true;
 				}
-			} 
+			}
 			return false;
 			// return super.onTouchEvent(e, mapView);
-		} 
+		}
 	}// CircleOverlay
 
 	/* Create menu. */

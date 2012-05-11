@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -28,6 +29,7 @@ public class Login extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.login);
 		final EditText uname = (EditText) findViewById(R.id.username_field);
 		final EditText passwd = (EditText) findViewById(R.id.password_field);
@@ -73,7 +75,7 @@ public class Login extends Activity {
 			@Override
 			public void onClick(View v) {
 				G.user.setUsername("Anonymous");
-				CitizenSense.getUserNameText().setText("Anonymous");
+//				CitizenSense.getUserNameText().setText("Anonymous");
 				((Activity)v.getContext()).finish();
 			}
 		});
