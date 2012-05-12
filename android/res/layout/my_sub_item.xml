@@ -19,34 +19,80 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/userImage"
         android:layout_toRightOf="@id/userImage"
-        android:orientation="horizontal" >
+        android:orientation="vertical" >
 
         <TextView
             android:id="@+id/mySubItemDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="5dip"
             android:text="Date"
             android:textColor="#999999"
             android:textSize="14sp" />
 
+        <TextView
+            android:id="@+id/mySubItemPoints"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dip"
+            android:layout_below="@id/mySubItemDate"
+            android:text="Points"
+            android:textColor="#999999"
+            android:textSize="18sp" />
+
         <ImageView
             android:id="@+id/pointImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/mySubItemDate"
-            android:layout_toRightOf="@id/allSubItemDate"
+            android:layout_toLeftOf="@id/mySubItemPoints"
             android:adjustViewBounds="true"
             android:src="@android:drawable/star_on" />
 
+        <ImageView
+            android:id="@+id/thumbupImage"
+            android:layout_width="15dip"
+            android:layout_height="15dip"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/mySubItemDate"
+            android:layout_marginLeft="5dip"
+            android:layout_marginTop="5dip"
+            android:adjustViewBounds="true"
+            android:src="@drawable/thumbs_up" />
+
         <TextView
-            android:id="@+id/mySubItemPoints"
+            android:id="@+id/thumbupText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/mySubItemDate"
-            android:layout_toRightOf="@id/pointImage"
-            android:text="Points"
+            android:layout_marginLeft="3dip"
+            android:layout_marginRight="5dip"
+            android:layout_toRightOf="@id/thumbupImage"
+            android:text="0"
+            android:textColor="#999999"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/thumbdownImage"
+            android:layout_width="15dip"
+            android:layout_height="15dip"
+            android:layout_below="@id/mySubItemDate"
+            android:layout_marginTop="5dip"
+            android:layout_toRightOf="@id/thumbupText"
+            android:adjustViewBounds="true"
+            android:src="@drawable/thumbs_down" />
+
+        <TextView
+            android:id="@+id/thumbdownText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/mySubItemDate"
+            android:layout_marginLeft="3dip"
+            android:layout_toRightOf="@id/thumbdownImage"
+            android:text="0"
             android:textColor="#999999"
             android:textSize="18sp" />
     </RelativeLayout>

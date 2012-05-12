@@ -9,6 +9,7 @@ package com.citizensense.android.util;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -50,6 +51,14 @@ public class MySubmissionsAdapter extends ArrayAdapter<Submission> {
 		
 		TextView dateView = (TextView) rowView.findViewById(R.id.mySubItemDate);
 		TextView pointsView = (TextView) rowView.findViewById(R.id.mySubItemPoints);
+		
+		TextView acceptView = (TextView) rowView.findViewById(R.id.thumbupText);
+		TextView rejectView = (TextView) rowView.findViewById(R.id.thumbdownText);
+		//FIXME: we set these values to random numbers now
+		Random r = new Random();
+		acceptView.setText(r.nextInt(10)+"");
+		rejectView.setText(r.nextInt(10)+"");
+		
 		if(mySubmissions!=null){
 			Submission sub = mySubmissions.get(position);
 			SimpleDateFormat dateformat = new SimpleDateFormat("yyyy/MM/dd HH:mm");

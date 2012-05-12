@@ -14,49 +14,102 @@
         android:adjustViewBounds="true"
         android:src="@drawable/person" />
 
-    <TextView
-        android:id="@+id/allSubItemID"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/userImage"
-        android:layout_marginLeft="5dip"
         android:layout_toRightOf="@id/userImage"
-        android:singleLine="true"
-        android:text="UserName"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp" />
+        android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/pointImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/userImage"
-        android:layout_toRightOf="@id/allSubItemID"
-        android:adjustViewBounds="true"
-        android:paddingLeft="10dp"
-        android:src="@android:drawable/star_on" />
+        <TextView
+            android:id="@+id/allSubItemID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="5dip"
+            android:singleLine="true"
+            android:text="UserName"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/allSubItemPoints"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/userImage"
-        android:layout_toRightOf="@id/pointImage"
-        android:text="Points"
-        android:textColor="#999999"
-        android:textSize="18sp" />
+        <TextView
+            android:id="@+id/thumbdownText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="3dip"
+            android:layout_marginRight="10dip"
+            android:text="0"
+            android:textColor="#999999"
+            android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/allSubItemDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/allSubItemID"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="5dip"
-        android:layout_toRightOf="@id/userImage"
-        android:singleLine="true"
-        android:text="Date"
-        android:textColor="#999999"
-        android:textSize="14sp" />
+        <ImageView
+            android:id="@+id/thumbdownImage"
+            android:layout_width="15dip"
+            android:layout_height="15dip"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="5dip"
+            android:layout_toLeftOf="@id/thumbdownText"
+            android:adjustViewBounds="true"
+            android:src="@drawable/thumbs_down" />
+
+        <TextView
+            android:id="@+id/thumbupText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="3dip"
+            android:layout_marginRight="5dip"
+            android:layout_toLeftOf="@id/thumbdownImage"
+            android:text="0"
+            android:textColor="#999999"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/thumbupImage"
+            android:layout_width="15dip"
+            android:layout_height="15dip"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="8dip"
+            android:layout_marginTop="5dip"
+            android:layout_toLeftOf="@id/thumbupText"
+            android:adjustViewBounds="true"
+            android:src="@drawable/thumbs_up" />
+
+        <TextView
+            android:id="@+id/allSubItemDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/allSubItemID"
+            android:layout_marginLeft="5dip"
+            android:paddingTop="5dip"
+            android:singleLine="true"
+            android:text="Date"
+            android:textColor="#999999"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/allSubItemPoints"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/allSubItemID"
+            android:layout_marginRight="10dip"
+            android:text="Points"
+            android:textColor="#999999"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/pointImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/allSubItemID"
+            android:layout_toLeftOf="@id/allSubItemPoints"
+            android:adjustViewBounds="true"
+            android:src="@android:drawable/star_on" />
+    </RelativeLayout>
 
 </RelativeLayout>

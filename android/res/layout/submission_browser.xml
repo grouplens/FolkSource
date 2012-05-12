@@ -118,7 +118,7 @@
         android:src="@drawable/loading" >
     </ImageView>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/verifyLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -126,29 +126,34 @@
         android:orientation="vertical" >
 
         <TextView
+            android:id="@+id/verifyText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
             android:text="Please provide your feedback to this submission:" />
 
-        <RelativeLayout
-            android:layout_width="fill_parent"
+        <Button
+            android:id="@+id/acceptBtn"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:layout_alignLeft="@id/verifyText"
+            android:layout_below="@id/verifyText"
+            android:layout_marginLeft="10dip"
+            android:background="@drawable/thumbs_up"
+            android:paddingTop="35dip"
+            android:text="Accept" />
 
-            <Button
-                android:id="@+id/acceptBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:text="Accept" />
-
-            <Button
-                android:id="@+id/rejectBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:text="Reject" />
-        </RelativeLayout>
-    </LinearLayout>
+        <Button
+            android:id="@+id/rejectBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/verifyText"
+            android:layout_below="@id/verifyText"
+            android:layout_marginRight="10dip"
+            android:background="@drawable/thumbs_down"
+            android:paddingTop="35dip"
+            android:text="Reject" />
+    </RelativeLayout>
 
 </RelativeLayout>
