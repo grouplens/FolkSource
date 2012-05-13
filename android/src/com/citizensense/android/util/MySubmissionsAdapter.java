@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.citizensense.android.R;
 import com.citizensense.android.Submission;
+import com.citizensense.android.SubmissionHistory;
 
 /**
  * @ClassName: MySubmissionsAdapter
@@ -54,10 +55,7 @@ public class MySubmissionsAdapter extends ArrayAdapter<Submission> {
 		
 		TextView acceptView = (TextView) rowView.findViewById(R.id.thumbupText);
 		TextView rejectView = (TextView) rowView.findViewById(R.id.thumbdownText);
-		//FIXME: we set these values to random numbers now
-		Random r = new Random();
-		acceptView.setText(r.nextInt(10)+"");
-		rejectView.setText(r.nextInt(10)+"");
+
 		
 		if(mySubmissions!=null){
 			Submission sub = mySubmissions.get(position);
@@ -65,7 +63,11 @@ public class MySubmissionsAdapter extends ArrayAdapter<Submission> {
 			String time = dateformat.format(sub.getTimestamp());
 			dateView.setText(time);
 			pointsView.setText(sub.getPoints() + ""); //toString
-//			textView.setText(time+"               "+sub.getPoints());
+			//FIXME:get this from server
+			int accept = (Integer)SubmissionHistory.acceptMap.get(position);
+			int reject = (Integer)SubmissionHistory.rejectMap.get(position);
+			acceptView.setText(accept+"");
+			rejectView.setText(reject+"");
 		}
 		return rowView;
 	}// getView

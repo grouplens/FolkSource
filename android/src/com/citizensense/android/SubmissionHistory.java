@@ -6,31 +6,19 @@
  */
 package com.citizensense.android;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-
-import org.xml.sax.SAXException;
+import java.util.Random;
 
 import android.app.TabActivity;
 import android.content.Intent;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.TabHost.TabSpec;
-
-import com.citizensense.android.net.GetRequest;
-import com.citizensense.android.net.XMLResponseHandler;
-import com.citizensense.android.parsers.LeaderboardParser;
-import com.citizensense.android.parsers.SubmissionParser;
 
 /**
  * This activity will display the submission history at a certain location, it
@@ -49,8 +37,6 @@ public class SubmissionHistory extends TabActivity {
 	private View tabView;
 	/** click the view go to Sense page */
 	private View senseView;
-	/** ImageView for prompting loading information*/
-	private ImageView loadingImageView;
 
 	/** Campaign object get from Map */
 	private Campaign campaign;
@@ -61,11 +47,11 @@ public class SubmissionHistory extends TabActivity {
 
 	/** Indicate whether the user is inside the location */
 	private boolean inside;
+	
+	//FIXME: remove this later, just for mocking up accept/reject 
+	public static HashMap<Integer,Integer> acceptMap = new HashMap<Integer,Integer>();
+	public static HashMap<Integer,Integer> rejectMap = new HashMap<Integer,Integer>();
 
-	/** My submissions at this location */
-	private ArrayList<Submission> mySubmissions = new ArrayList<Submission>();
-	/** All submissions at this location */
-	private ArrayList<Submission> allSubmissions = new ArrayList<Submission>();
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -76,28 +62,16 @@ public class SubmissionHistory extends TabActivity {
 		senseView = findViewById(R.id.senseView);
 		tabHost = getTabHost();
 		
-		loadingImageView = (ImageView)findViewById(R.id.loadingImage);
-		
 		handleIntent(this.getIntent());
 		setListener();
-		// initiateUI();
+		 initiateUI();
+		 Random r = new Random();
+		 for(int i=0;i<100;i++){
+			 acceptMap.put(i,r.nextInt(9));
+			 rejectMap.put(i,r.nextInt(9));
+		 }
 	}
 	
-	public void refreshTab(){
-		loadingImageView.setVisibility(View.GONE);
-		tabHost.clearAllTabs();
-		Intent intent;
-		intent = new Intent().setClass(this, AllSubmissionHistory.class);
-		intent.putExtra("campaign", campaign);
-		intent.putParcelableArrayListExtra("allSubmissions", allSubmissions);
-		includeTab(intent, "AllSubmissions","All Submissions", 0);
-		intent = new Intent().setClass(this, MySubmissionHistory.class);
-		intent.putExtra("campaign", campaign);
-		intent.putParcelableArrayListExtra("mySubmissions", mySubmissions);
-		includeTab(intent, "MySubmissions", "My Submissions", 0);
-
-		tabHost.setCurrentTab(0);	
-	}
 
 	@Override
 	public void onResume() {
@@ -106,80 +80,11 @@ public class SubmissionHistory extends TabActivity {
 		// submission, the page will go back to SubmissionHistory and
 		// we should be able to update the page.
 		Log.d("SubmissionHistory", "onResume");
-		updateSubmissions();
-
 	}
 
-	/**
-	 * Update global submissions, submissions at this location and my
-	 * submissions at this location
-	 */
-	public void updateSubmissions() {
-		XMLResponseHandler handl = new XMLResponseHandler();
-		handl.setCallback(new XMLResponseHandler.StringCallback() {
-			@Override
-			public void invoke(String xml) {
-				try {
-					Xml.parse(xml, new SubmissionParser(
-							new SubmissionParser.Callback() {
-								@Override
-								public void invoke(ArrayList<Submission> subs) {
-									G.globalSubmissions = subs;
-									allSubmissions = Submission
-											.getSubmissionsAt(taskLocation,
-													campaign);
-									Collections.sort(allSubmissions);
-									mySubmissions = Submission
-											.getMySubmissionsAt(taskLocation,
-													campaign);
-									Log.d("COORD",
-											"all subs: " + subs.size()
-													+ " my subs: "
-													+ mySubmissions.size());
-									Collections.sort(mySubmissions);
-									updateLeaderboard();
-									refreshTab();
-								}
-							}));
-				} catch (SAXException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		Submission.getAllSubmissions(this, handl);
-	}
 
-	/** Update leaderboard so that we can get the user name from their id */
-	public void updateLeaderboard() {
-		XMLResponseHandler handler = new XMLResponseHandler();
-		handler.setCallback(new XMLResponseHandler.StringCallback() {
-			@Override
-			public void invoke(String xml) {
-				try {
-					Xml.parse(xml, new LeaderboardParser(
-							new LeaderboardParser.Callback() {
-								@Override
-								public void invoke(Leaderboard leaderboard) {
-									// Set the LeaderboardMap
-									if (leaderboard != null
-											&& leaderboard.entries != null) {
-										G.leaderboardMap = new HashMap<Integer, LeaderboardEntry>();
-										for (LeaderboardEntry entry : leaderboard.entries) {
-											G.leaderboardMap.put(entry.id,
-													entry);
-										}
-									}
-									// updateUI();
-								}
-							}));
-				} catch (SAXException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		new GetRequest(this, Leaderboard.class, null, handler, false).execute();
 
-	}
+
 
 	/** Unpacks passed-in campaign from the intent. */
 	public void handleIntent(Intent i) {
@@ -223,5 +128,21 @@ public class SubmissionHistory extends TabActivity {
     	
     	tabHost.addTab(tabHost.newTabSpec(tag).setIndicator(tabView).setContent(intent));
     }//includeTab
+    
+    
+	public void initiateUI(){
+		tabHost.clearAllTabs();
+		Intent intent;
+		intent = new Intent().setClass(this, AllSubmissionHistory.class);
+		intent.putExtra("campaign", campaign);
+		intent.putExtra("taskLocation", taskLocation);
+		
+		includeTab(intent, "AllSubmissions","All Submissions", 0);
+		intent = new Intent().setClass(this, MySubmissionHistory.class);
+		intent.putExtra("campaign", campaign);
+		intent.putExtra("taskLocation", taskLocation);
+		includeTab(intent, "MySubmissions", "My Submissions", 0);
 
+		tabHost.setCurrentTab(0);
+	}
 }

@@ -4,6 +4,16 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
+    <ImageView
+        android:id="@+id/loadingImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="1dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/loading" >
+    </ImageView>
+
     <ListView
         android:id="@+id/allSubmissions"
         android:layout_width="fill_parent"

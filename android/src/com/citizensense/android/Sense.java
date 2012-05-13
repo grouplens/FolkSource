@@ -58,6 +58,10 @@ public class Sense extends LocationActivity {
 	 * been assigned.
 	 */
 	private Uri imageUri;
+	/** The temp Uri of the image when the user taking a photo. This may not be 
+	 * assigned to imageUri, since the user may retake or cancel. */
+	private Uri tempImageUri;
+	
 	/** Used for receiving Intent back from the camera. */
 	public static final int CAMERA_CAPTURE_REQUEST_CODE = 100;
 
@@ -159,11 +163,12 @@ public class Sense extends LocationActivity {
 			@Override
 			public void onClick(View v) {
 				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-				Uri fileUri = getOutputImageUri(); // create a file to save the image
-				Sense.this.imageUri = fileUri;
-				if(fileUri!=null)
-					intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); 
-				startActivityForResult(intent, CAMERA_CAPTURE_REQUEST_CODE);
+				tempImageUri = getOutputImageUri(); // create a file to save the image
+				if(tempImageUri!=null){
+					intent.putExtra(MediaStore.EXTRA_OUTPUT, tempImageUri); 
+					startActivityForResult(intent, CAMERA_CAPTURE_REQUEST_CODE);
+				}else
+					Toast.makeText(Sense.this, "Sorry. Please check your storage.", Toast.LENGTH_SHORT).show();
 			}
 		});
 		//set listener for next button
@@ -210,17 +215,15 @@ public class Sense extends LocationActivity {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == CAMERA_CAPTURE_REQUEST_CODE) {
 			if (resultCode == RESULT_OK) {
-
 				hasTakenPhoto.setChecked(true);
+				Sense.this.imageUri = tempImageUri;
 				photoText.setText("Photo is stored for upload later.");
 			} else if (resultCode == RESULT_CANCELED) {
 				// User canceled the image capture. Do nothing
-				this.imageUri = null;
 			} else {
 				// Image capture failed
 				Toast.makeText(this, "could not use incompatible camera app",
 						Toast.LENGTH_SHORT).show();
-				this.imageUri = null;
 			}
 		} else {
 			super.onActivityResult(requestCode, resultCode, data);
@@ -417,8 +420,8 @@ public class Sense extends LocationActivity {
 	 */
 	public void validateForm() {
 		if (this.answers.size() == campaign.getTask().getForm().getQuestions().length) {
-			if (this.hasLocationFix() || this.pt != null) { //exclusive or
-				if (this.imageUri != null) {
+			if (this.hasLocationFix() || this.pt != null) { 
+				if (hasTakenPhoto.isChecked()) {
 					((Button) findViewById(R.id.submit)).setEnabled(true);
 				} else {
 					if (Constants.DEBUG) {
@@ -450,7 +453,7 @@ public class Sense extends LocationActivity {
 				Toast.makeText(this,
 						"Sorry. Submission is not allowed for anonymous user.",
 						Toast.LENGTH_LONG).show();
-			} else {
+			} else if(this.imageUri!=null){
 				// to resolve UI conflict, move submission post request into
 				// ImageResponseHandler
 				uploadImageAndForm(this.imageUri, new Submission(buildXML()));

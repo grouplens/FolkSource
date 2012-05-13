@@ -45,8 +45,18 @@ public class G {
 	public static String notification_campaign_id;
 	/** All submissions for the current campaign(??) */
 	public static ArrayList<Submission> globalSubmissions;
+	
+	/** All submissions at a location */
+	public static ArrayList<Submission> allSubmissionsAt;
+	/** My submissions at a location */
+	public static ArrayList<Submission> mySubmissionsAt;
 
 	/** HashMap stores the leaderboard, sufficient for look up */
 	public static HashMap<Integer, LeaderboardEntry> leaderboardMap;
+	
+	public static final int SUMBMISSION_UPDATE_COMPLETE = 1;
+	
+	public static final int LEADERBOARD_UPDATE_COMPLETE = 2;
 
+	
 }// G

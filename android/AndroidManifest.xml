@@ -23,26 +23,28 @@
         android:label="@string/app_name"
         android:name="Init" >
         <activity
-            android:configChanges="orientation"
+            android:configChanges="orientation|keyboardHidden"
             android:label="@string/app_name"
             android:name=".CitizenSense"
             android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
+            android:configChanges="orientation|keyboardHidden"
             android:label="CampaignBrowser"
             android:name=".CampaignBrowser" />
         <activity
             android:label="MyCampaigns"
             android:name=".MyCampaigns" />
         <activity
+            android:configChanges="orientation|keyboardHidden"
             android:label="GalleryCampaign"
             android:name=".CampaignGallery" />
         <activity
+            android:configChanges="orientation|keyboardHidden"
             android:label="Home"
             android:name=".Home" />
         <activity
@@ -50,6 +52,7 @@
             android:label="Map"
             android:name=".Map" />
         <activity
+            android:configChanges="orientation|keyboardHidden"
             android:label="Profile"
             android:name=".Profile" />
         <activity
@@ -74,10 +77,12 @@
             android:label="SubmissionBrowser"
             android:name=".SubmissionBrowser" />
         <activity
+            android:configChanges="orientation|keyboardHidden"
             android:label="Login"
             android:name=".Login"
             android:windowSoftInputMode="adjustPan" />
         <activity
+            android:configChanges="orientation|keyboardHidden"
             android:label="Register"
             android:name=".Register"
             android:windowSoftInputMode="adjustPan" />
@@ -85,6 +90,7 @@
             android:label="CampaignPage"
             android:name=".CampaignPage" />
         <activity
+            android:configChanges="orientation|keyboardHidden"
             android:label="ForgetPassword"
             android:name=".ForgetPassword" />
 

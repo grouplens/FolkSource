@@ -11,14 +11,14 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.citizensense.android.net.GetImageRequest;
@@ -59,6 +59,12 @@ public class SubmissionBrowser extends Activity {
 	private Gallery gallery;
 	/** Adapter for gallery view. */
 	private SubmissionGalleryAdapter subGalleryAdapter;
+	
+	private Button acceptBtn;
+	
+	private Button rejectBtn;
+	
+	private int position = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -73,13 +79,36 @@ public class SubmissionBrowser extends Activity {
 		time = (TextView) findViewById(R.id.time);
 		points = (TextView) findViewById(R.id.points);
 		
+		acceptBtn = (Button) findViewById(R.id.acceptBtn);
+		rejectBtn = (Button) findViewById(R.id.rejectBtn);
+		
 		gallery = (Gallery) findViewById(R.id.submission_gallery);
 		registerForContextMenu(gallery);
 		
 		image = (ImageView)findViewById(R.id.subImage);
 		handleIntent(this.getIntent());
+		setListener();
 		updateUI();
 	}
+	
+	
+	public void setListener(){
+		acceptBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				int acceptNum = SubmissionHistory.acceptMap.get(position);
+				SubmissionHistory.acceptMap.put(position,acceptNum+1);
+			}
+		});
+		rejectBtn.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				int rejectNum = SubmissionHistory.rejectMap.get(position);
+				SubmissionHistory.acceptMap.put(position,rejectNum+1);
+			}
+		});
+	}
+	
 
 	@Override
 	public void onResume() {
@@ -91,6 +120,8 @@ public class SubmissionBrowser extends Activity {
 		this.submission = i.getParcelableExtra("submission");
 		this.answers = i.getParcelableArrayListExtra("answers");
 		this.campaign = i.getParcelableExtra("campaign");
+		
+		this.position = i.getIntExtra("position", 0);
 	}
 	
 	public void updateImageView(){
