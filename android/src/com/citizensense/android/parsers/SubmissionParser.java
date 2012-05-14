@@ -15,6 +15,7 @@ import android.util.Log;
 import com.citizensense.android.Answer;
 import com.citizensense.android.Campaign;
 import com.citizensense.android.Submission;
+import com.citizensense.android.net.Request;
 
 /**
  * This SAX Parser will work with the new XML format
@@ -119,7 +120,9 @@ public class SubmissionParser extends XMLParser {
 				}
 			}
 			else if (localName.equalsIgnoreCase("img__path")) {
-				submission.setImageUrl(content);
+				//BASE_URL is "http://ugly.cs.umn.edu:8080"
+				//content is like: "./UploadImage/mm/Find Bike Racks/20120514_001147.jpg"
+				submission.setImageUrl(Request.BASE_URL+ content.substring(1));
 			}
 			//parse answer
 			else if(localName.equalsIgnoreCase("answer")){

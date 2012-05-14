@@ -234,7 +234,7 @@ public class Campaign implements Item, Comparable<Campaign> {
 			return R.drawable.bikerack;
 		}
 		else if (this.getId().equals("2")) {
-			return R.drawable.potholes;
+			return R.drawable.profile_default;
 		}
 		else {
 			return R.drawable.profile_default;

@@ -133,9 +133,12 @@ public class SubmissionBrowser extends Activity {
 		// FIXME: We should allow the user to rotate/zoom in/zoom out
 		GetImageRequest request = new GetImageRequest(this, image, false);
 		String imagePath = submission.getImageUrl();
-		if (imagePath==null || imagePath.equals("null"))
-			imagePath = G.defaultImagePath;
-		request.execute(imagePath);
+		// if (imagePath==null || imagePath.equals("null"))
+		 imagePath = G.defaultImagePath;
+		if (imagePath != null){
+			request.execute(imagePath);
+			Log.e("SubmissionBrowser", "imagePath:"+imagePath);
+		}
 	}
 
 	public void updateUI() {
@@ -153,13 +156,12 @@ public class SubmissionBrowser extends Activity {
 				userName = entry.name;
 		}
 		name.setText(userName);
-		//can't verify submissions by yourself
-		if(userName.equals(G.user.getUsername())){
+		// can't verify submissions by yourself
+		if (userName.equals(G.user.getUsername())) {
 			View verifyView = (View) findViewById(R.id.verifyLayout);
 			verifyView.setVisibility(View.GONE);
 		}
-		
-		
+
 		SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd HH:mm");
 		time.setText(df.format(submission.getTimestamp()));
 		points.setText("" + submission.getPoints());
