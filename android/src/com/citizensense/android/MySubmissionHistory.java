@@ -115,6 +115,8 @@ public class MySubmissionHistory extends Activity {
 			mySubsAdapter.notifyDataSetChanged();
 		if (mySubmissions.isEmpty())
 				emptyMySubText.setVisibility(View.VISIBLE);
+		else
+			emptyMySubText.setVisibility(View.GONE);
 	}
 	
 	/**

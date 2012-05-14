@@ -187,6 +187,8 @@ public class AllSubmissionHistory extends Activity {
 			allSubsAdapter.notifyDataSetChanged();
 		if (allSubmissions.isEmpty())
 				emptyAllSubText.setVisibility(View.VISIBLE);
+		else
+			emptyAllSubText.setVisibility(View.GONE);
 	}
 
 }
