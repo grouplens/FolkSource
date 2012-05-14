@@ -11,6 +11,7 @@ public class Submission {
 	private String gps_location;
 	private List<Answer> answers;
 	private Date timestamp;
+	private String img_path;
 
 	public int getId() {
 		return id;
@@ -53,5 +54,11 @@ public class Submission {
 	}
 	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
+	}
+	public String getImg_path() {
+		return img_path;
+	}
+	public void setImg_path(String img_path) {
+		this.img_path = img_path;
 	}
 }
