@@ -118,6 +118,9 @@ public class SubmissionParser extends XMLParser {
 					e.printStackTrace();
 				}
 			}
+			else if (localName.equalsIgnoreCase("img__path")) {
+				submission.setImagePath(content);
+			}
 			//parse answer
 			else if(localName.equalsIgnoreCase("answer")){
 				answer.setAnswer(content);

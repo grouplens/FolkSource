@@ -57,6 +57,8 @@ public class G {
 	public static final int SUMBMISSION_UPDATE_COMPLETE = 1;
 	
 	public static final int LEADERBOARD_UPDATE_COMPLETE = 2;
+	
+	public static final String defaultImagePath = "http://www-users.cs.umn.edu/~ryu/CitizenSense/bikerack.jpg";
 
 	
 }// G

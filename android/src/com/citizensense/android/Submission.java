@@ -36,7 +36,7 @@ public class Submission implements Item, Comparable<Submission> {
 	private int points = 1;
 	/** The path of the image on the server */
 	// FIXME: get this from server
-	private String imageUrl = "http://www-users.cs.umn.edu/~ryu/CitizenSense/bikerack.jpg";
+	private String imagePath;
 
 	//FIXME: this is just mocking up the verification idea.
 	Random r = new Random();
@@ -277,12 +277,12 @@ public class Submission implements Item, Comparable<Submission> {
 		return points;
 	}
 
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 
-	public String getImageUrl() {
-		return imageUrl;
+	public String getImagePath() {
+		return imagePath;
 	}
 
 

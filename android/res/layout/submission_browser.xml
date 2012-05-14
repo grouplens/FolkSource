@@ -130,7 +130,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:hint="Please provide comments if you want to reject this submission." />
+            android:hint="Comments will help us understand why you accept/reject this submission." />
 
         <Button
             android:id="@+id/acceptBtn"
