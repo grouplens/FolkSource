@@ -132,7 +132,7 @@ public class SubmissionBrowser extends Activity {
 	public void updateImageView() {
 		// FIXME: We should allow the user to rotate/zoom in/zoom out
 		GetImageRequest request = new GetImageRequest(this, image, false);
-		String imagePath = submission.getImagePath();
+		String imagePath = submission.getImageUrl();
 		if (imagePath==null || imagePath.equals("null"))
 			imagePath = G.defaultImagePath;
 		request.execute(imagePath);

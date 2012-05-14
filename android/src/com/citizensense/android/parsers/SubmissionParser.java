@@ -119,7 +119,7 @@ public class SubmissionParser extends XMLParser {
 				}
 			}
 			else if (localName.equalsIgnoreCase("img__path")) {
-				submission.setImagePath(content);
+				submission.setImageUrl(content);
 			}
 			//parse answer
 			else if(localName.equalsIgnoreCase("answer")){

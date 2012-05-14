@@ -6,37 +6,41 @@ import java.util.Random;
 
 import org.json.JSONObject;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+import android.util.Xml;
 
 import com.citizensense.android.net.GetRequest;
 import com.citizensense.android.net.XMLResponseHandler;
+import com.citizensense.android.parsers.SubmissionParser;
 
 public class Submission implements Item, Comparable<Submission> {
-
+	
 	public String xml;
-	/** This submissions unique id */
+	/**This submissions unique id*/
 	private int id;
-	/** The ID of the associated task */
+	/**The ID of the associated task*/
 	private int task_id;
-	/** THe ID of the owning user */
+	/**THe ID of the owning user*/
 	private int user_id;
-	/** The timestamp the submission was made on */
+	/**The timestamp the submission was made on*/
 	private Date timestamp;
-	/** The GPS coordinates the submission was made at */
+	/**The GPS coordinates the submission was made at*/
 	private String[] coords;
-	/** The user's gps coordinates */
+	/**The user's gps coordinates*/
 	private String[] myCoords;
-	/** The Answers associated with the submission */
+	/**The Answers associated with the submission*/
 	private Answer[] answers;
-	/** The points earned for submission */
-	// FIXME: set this to 1 point now, should get from server
+	/** The points earned for submission*/
+	//FIXME: set this to 1 point now, should get from server
 	private int points = 1;
 	/** The path of the image on the server */
 	// FIXME: get this from server
-	private String imagePath;
+	private String img_path;
 
 	//FIXME: this is just mocking up the verification idea.
 	Random r = new Random();
@@ -46,10 +50,11 @@ public class Submission implements Item, Comparable<Submission> {
 	public Submission(String xml) {
 		this.xml = xml;
 	}
-
+	
 	public Submission() {
-		// there's nothing here
+		//there's nothing here
 	}
+
 
 	@Override
 	public String buildXML() {
@@ -59,13 +64,13 @@ public class Submission implements Item, Comparable<Submission> {
 	@Override
 	public void createFromXML(Document document) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void createFromXML(String string) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -77,7 +82,7 @@ public class Submission implements Item, Comparable<Submission> {
 	@Override
 	public void createFromJSON(JSONObject object) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -140,36 +145,37 @@ public class Submission implements Item, Comparable<Submission> {
 	public String[] getMyCoords() {
 		return myCoords;
 	}
-
+	
 	/** This CREATOR is used to parcel this Object. */
-	public static final Parcelable.Creator<Submission> CREATOR = new Parcelable.Creator<Submission>() {
-
+	public static final Parcelable.Creator<Submission> CREATOR =
+        new Parcelable.Creator<Submission>() {
+     
 		@Override
 		public Submission createFromParcel(Parcel in) {
 			return new Submission(in);
-		}// createFromParcel
+		}//createFromParcel
 
 		@Override
 		public Submission[] newArray(int size) {
 			return new Submission[size];
-		}// newArray
+		}//newArray
 	};
-
+	
 	/**
-	 * Constructor to use when re-constructing object from a parcel
-	 * 
-	 * @param in
-	 *            a parcel from which to read this object
+	 * Constructor to use when re-constructing object
+	 * from a parcel
+	 * @param in a parcel from which to read this object
 	 */
 	public Submission(Parcel in) {
 		readFromParcel(in);
-	}// Submission
-
+	}//Submission
+	
+	
 	/**
-	 * Called from the constructor to create this object from a parcel.
-	 * 
-	 * @param in
-	 *            parcel from which to re-create object
+	 * Called from the constructor to create this
+	 * object from a parcel.
+	 *
+	 * @param in parcel from which to re-create object
 	 */
 	private void readFromParcel(Parcel in) {
 		this.xml = in.readString();
@@ -179,10 +185,10 @@ public class Submission implements Item, Comparable<Submission> {
 		this.timestamp = new Date(in.readLong());
 		this.coords = in.createStringArray();
 		this.myCoords = in.createStringArray();
-		// in.readTypedArray(this.answers,Answer.CREATOR);
+//		in.readTypedArray(this.answers,Answer.CREATOR);
 		this.points = in.readInt();
 	}
-
+	
 	@Override
 	public void writeToParcel(Parcel out, int flags) {
 		out.writeString(this.xml);
@@ -192,68 +198,59 @@ public class Submission implements Item, Comparable<Submission> {
 		out.writeLong(this.timestamp.getTime());
 		out.writeStringArray(this.coords);
 		out.writeStringArray(this.myCoords);
-		// out.writeTypedArray(this.answers,flags);
+//		out.writeTypedArray(this.answers,flags);
 		out.writeInt(this.points);
 	}
-
+	
 	@Override
 	public int describeContents() {
 		return 0;
 	}
-
-	public static ArrayList<Submission> getAllSubmissions(Context context,
-			XMLResponseHandler handl) {
+	
+	public static ArrayList<Submission> getAllSubmissions(Context context, XMLResponseHandler handl) {
 		new GetRequest(context, Submission.class, null, handl, false).execute();
 		return G.globalSubmissions;
 	}
-
-	/**
-	 * Get all submission for a campaign. Before calling this function, make
-	 * sure G.globalSubmissions is updated.
-	 */
-	public static ArrayList<Submission> getSubmissionsByCampaign(
-			Campaign campaign) {
-		if (campaign == null)
-			return null;
+	
+	/**Get all submission for a campaign. Before calling this function, make sure G.globalSubmissions is updated.*/
+	public static ArrayList<Submission> getSubmissionsByCampaign(Campaign campaign){
+		if(campaign == null) return null;
 		ArrayList<Submission> submissionsForCampaign = new ArrayList<Submission>();
-		if (G.globalSubmissions != null) {
-			for (Submission s : G.globalSubmissions) {
-				// make sure the submission match the campaign
-				if (s.getTask_id() == Integer.parseInt(campaign.getTaskId())) {
+		if(G.globalSubmissions!=null){
+			for(Submission s : G.globalSubmissions){
+				//make sure the submission match the campaign
+				if(s.getTask_id() == Integer.parseInt(campaign.getTaskId())){
 					submissionsForCampaign.add(s);
 				}
 			}
 		}
 		return submissionsForCampaign;
 	}
-
-	/** Get all submissions at a location of campaign */
-	public static ArrayList<Submission> getSubmissionsAt(int[] coords,
-			Campaign campaign) {
+	
+	
+	/** Get all submissions at a location of campaign*/
+	public static ArrayList<Submission> getSubmissionsAt(int[] coords, Campaign campaign){
 		ArrayList<Submission> submissionsAt = new ArrayList<Submission>();
-		for (Submission s : getSubmissionsByCampaign(campaign)) {
-			String[] subCoords = s.getCoords();
-			double lat = (double) coords[0] / 1000000;
-			double lon = (double) coords[1] / 1000000;
-			if (lat == Double.parseDouble(subCoords[1])
-					&& lon == Double.parseDouble(subCoords[0])) {
-				submissionsAt.add(s);
+			for(Submission s : getSubmissionsByCampaign(campaign)){
+				String[] subCoords = s.getCoords();
+				double lat = (double)coords[0]/1000000;
+				double lon = (double)coords[1]/1000000;
+				if(lat==Double.parseDouble(subCoords[1]) && lon == Double.parseDouble(subCoords[0])){
+					submissionsAt.add(s);
+				}
 			}
-		}
 		return submissionsAt;
 	}
-
-	/** Get all my submissions at a location. */
-	public static ArrayList<Submission> getMySubmissionsAt(int[] coords,
-			Campaign campaign) {
+	
+	/** Get all my submissions at a location.*/
+	public static ArrayList<Submission> getMySubmissionsAt(int[] coords, Campaign campaign){
 		ArrayList<Submission> mySubmissionsAt = new ArrayList<Submission>();
-		for (Submission s : getSubmissionsByCampaign(campaign)) {
+		for(Submission s : getSubmissionsByCampaign(campaign)){
 			String[] subCoords = s.getCoords();
-			double lat = (double) coords[0] / 1000000;
-			double lon = (double) coords[1] / 1000000;
-			if (lat == Double.parseDouble(subCoords[1])
-					&& lon == Double.parseDouble(subCoords[0])
-					&& s.getUser_id() == G.user.id) {
+			double lat = (double)coords[0]/1000000;
+			double lon = (double)coords[1]/1000000;
+			if(lat==Double.parseDouble(subCoords[1]) && lon == Double.parseDouble(subCoords[0])
+					&& s.getUser_id() == G.user.id){
 				mySubmissionsAt.add(s);
 			}
 		}
@@ -262,10 +259,10 @@ public class Submission implements Item, Comparable<Submission> {
 
 	@Override
 	public int compareTo(Submission arg0) {
-		if (this.getTimestamp().after(arg0.getTimestamp()))
+		if(this.getTimestamp().after(arg0.getTimestamp()))
 			return -1;
-		if (this.getTimestamp().before(arg0.getTimestamp()))
-			return 1;
+		if(this.getTimestamp().before(arg0.getTimestamp()))
+				return 1;
 		return 0;
 	}
 
@@ -277,13 +274,12 @@ public class Submission implements Item, Comparable<Submission> {
 		return points;
 	}
 
-	public void setImagePath(String imagePath) {
-		this.imagePath = imagePath;
+	public void setImageUrl(String imageUrl) {
+		this.img_path = imageUrl;
 	}
 
-	public String getImagePath() {
-		return imagePath;
+	public String getImageUrl() {
+		return img_path;
 	}
-
 
 }

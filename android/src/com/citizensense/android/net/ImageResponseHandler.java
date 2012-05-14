@@ -5,6 +5,7 @@ package com.citizensense.android.net;
 
 import java.io.IOException;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpResponseException;
@@ -63,6 +64,18 @@ public class ImageResponseHandler extends BasicResponseHandler{
 	    	photoText.setText("Photo updated successfully!");
 	    	//After image uploaded successfully, send the post request for submission(forms)
 			Log.d("IMAGE UPLOAD", "image upload success");
+			for (Header header : response.getAllHeaders()) {
+				if(header.getName().equalsIgnoreCase("img")) {
+					Log.d("HEADER", header.getName() + " : " + header.getValue());
+					/*
+					 * THIS IS DISGUSTING AND HACKY, BUT THE XML IS BUILT BEFORE WE GET TO THIS POINT
+					 * SO IT'S THE BEST OPTION RIGHT NOW
+					 */
+					submission.xml = submission.xml + "<img__path>"+ header.getValue() + "</img__path>";
+					//Log.d("HEADER", submission.getImageUrl());
+				}
+			}
+			submission.xml = submission.xml + "</org.citizensense.model.Submission>";
 	    	SubmissionResponseHandler submissionHandler = new SubmissionResponseHandler(
 					context);
 			new PostRequest(context, submission, Request.XML,
