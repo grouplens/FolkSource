@@ -56,6 +56,7 @@ public class ImageController {
 			byte[] buf = Base64.decode(imageString);
 			out.write(buf);
 			out.close();
+			res.addHeader("img", imageFile.getPath());
 		} catch (Exception e) {
 			e.printStackTrace();
 			res.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);

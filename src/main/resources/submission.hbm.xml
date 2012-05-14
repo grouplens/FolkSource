@@ -17,5 +17,6 @@
 		<one-to-many class="Answer" />
 	</bag>
 	<property name="timestamp" />
+	<property name="img_path" />
 </class>
 </hibernate-mapping>
