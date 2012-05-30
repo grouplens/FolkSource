@@ -18,6 +18,7 @@
 	<constant name="struts.convention.package.locators.basePackage"
 		value="org.citizensense" />
 	<constant name="struts.convention.result.path" value="/jsp/" />
+	<constant name="struts.rest.content.restrictToGET" value="false" />
 
 	<package name="citizen-sense" extends="rest-default">
 		<!-- <result-types> <result-type name="exceptionResult" class="org.grouplens.bl.struts.result.ExceptionResult" 
