@@ -1,14 +1,18 @@
 package org.citizensense.model;
 
-public class Answer {
-	private int id;
-	private String answer;
-	private String type;
-	private int q_id;
-	private int sub_id;
-	private Submission submission;
+import org.grouplens.common.dto.Dto;
+
+public class Answer extends Dto {
+	public Integer id;
+	public String answer;
+	public String type;
+	public Integer q_id;
+	public Integer sub_id;
 	
-	public int getId() {
+	@Exclude(ExcludeType.EXPORT)
+	public Submission submission;
+	
+	public Integer getId() {
 		return id;
 	}
 	public void setId(int id) {
@@ -26,13 +30,13 @@ public class Answer {
 	public void setType(String type) {
 		this.type = type;
 	}
-	public int getQ_id() {
+	public Integer getQ_id() {
 		return q_id;
 	}
 	public void setQ_id(int q_id) {
 		this.q_id = q_id;
 	}
-	public int getSub_id() {
+	public Integer getSub_id() {
 		return sub_id;
 	}
 	public void setSub_id(int sub_id) {

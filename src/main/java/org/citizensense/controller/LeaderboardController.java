@@ -5,30 +5,19 @@ import java.util.Collection;
 
 import org.citizensense.model.LeaderboardEntry;
 import org.citizensense.util.*;
+import org.grouplens.common.dto.DtoContainer;
 
 import com.opensymphony.xwork2.ModelDriven;
 import org.apache.struts2.rest.DefaultHttpHeaders;
 import org.apache.struts2.rest.HttpHeaders;
 
-public class LeaderboardController implements ModelDriven<Object>{
+public class LeaderboardController implements ModelDriven<DtoContainer<LeaderboardEntry>>{
 	
-
-	private Collection<LeaderboardEntry> list;
-	private LeaderboardEntry entry = new LeaderboardEntry();
+	private DtoContainer<LeaderboardEntry> content = new DtoContainer<LeaderboardEntry>(LeaderboardEntry.class, false);
 	
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-
-
 	@Override
-	public Object getModel() {
-		return (list != null ? list : entry);
+	public DtoContainer<LeaderboardEntry> getModel() {
+		return content;
 	}
 	
 //	public HttpHeaders show() {
@@ -45,9 +34,11 @@ public class LeaderboardController implements ModelDriven<Object>{
 //		return this.id;
 //	}
 	
-	public HttpHeaders index() {
-		list = LeaderboardService.getLeaderboard();
-		return new DefaultHttpHeaders("index").disableCaching();
+	public String index() {
+		content = new DtoContainer<LeaderboardEntry>(LeaderboardEntry.class, true);
+		content.set(LeaderboardService.getLeaderboard());
+		//list = LeaderboardService.getLeaderboard();
+		return "index";
 	}
 	
 //	public HttpHeaders create()

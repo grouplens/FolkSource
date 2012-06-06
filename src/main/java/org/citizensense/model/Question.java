@@ -1,14 +1,18 @@
 package org.citizensense.model;
 
-public class Question implements Comparable<Question> {
-	private Integer id;
+import org.grouplens.common.dto.Dto;
 
-	private String question;
-	private String type;
-	private boolean required;
-	private String options;
-	private Integer task_id;
-	private Answer answer;
+public class Question extends Dto implements Comparable<Question> {
+	public Integer id;
+
+	public String question;
+	public String type;
+	public Boolean required;
+	public String options;
+	public Integer task_id;
+	
+	@Exclude(ExcludeType.EXPORT)
+	public Answer answer;
 
 	public String getQuestion() {
 		return question;
@@ -34,11 +38,11 @@ public class Question implements Comparable<Question> {
 		this.type = type;
 	}
 
-	public boolean isRequired() {
+	public Boolean isRequired() {
 		return required;
 	}
 
-	public void setRequired(boolean required) {
+	public void setRequired(Boolean required) {
 		this.required = required;
 	}
 

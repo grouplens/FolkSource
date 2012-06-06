@@ -1,39 +1,25 @@
 package org.citizensense.controller;
 
-
-import java.util.Collection;
-
 import org.citizensense.model.Task;
 import org.citizensense.util.*;
+import org.grouplens.common.dto.DtoContainer;
 
 import com.opensymphony.xwork2.ModelDriven;
-import org.apache.struts2.rest.DefaultHttpHeaders;
-import org.apache.struts2.rest.HttpHeaders;
 
-public class TaskController implements ModelDriven<Object>{
+public class TaskController implements ModelDriven<DtoContainer<Task>>{
 	
-
-	private Collection<Task> list;
+	DtoContainer<Task> content = new DtoContainer<Task>(Task.class, false);
+	//private Collection<Task> list;
 	private int id;
-	private Task task = new Task();
-	
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
-	}
-
+	//private Task task = new Task();
 
 	@Override
-	public Object getModel() {
-		return (list != null ? list : task);
+	public DtoContainer<Task> getModel() {
+		return content;
 	}
 	
-	public HttpHeaders show() {
-		return new DefaultHttpHeaders("show");
+	public String show() {
+		return "show";
 	}
 	
 //	public void setId(String id) {
@@ -42,8 +28,8 @@ public class TaskController implements ModelDriven<Object>{
 //		this.id = Integer.parseInt(id);		
 //	}
 	public void setId(String id) {
-		if (id != null)
-			this.task = TaskService.getTaskById(Integer.parseInt(id));
+//		if (id != null)
+//			this.task = TaskService.getTaskById(Integer.parseInt(id));
 		this.id = Integer.parseInt(id);		
 	}
 	
@@ -51,15 +37,16 @@ public class TaskController implements ModelDriven<Object>{
 		return this.id;
 	}
 	
-	public HttpHeaders index() {
-		list = TaskService.getTasks();
-		return new DefaultHttpHeaders("index").disableCaching();
+	public String index() {
+		content = new DtoContainer<Task>(Task.class, true);
+		content.set(TaskService.getTasks());
+		return "index";
 	}
 	
-	public HttpHeaders create()
+	public String create()
 	{
-		TaskService.save(task);
-		return new DefaultHttpHeaders("create");
+		TaskService.save(content.getSingle());
+		return "create";
 	}
 
 }

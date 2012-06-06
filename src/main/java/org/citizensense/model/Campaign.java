@@ -1,20 +1,23 @@
 package org.citizensense.model;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class Campaign {
+import org.grouplens.common.dto.Dto;
 
-	private Long id;
-	private String title;
-	private String description;
-	private String location;
-	private Date start_date;
-	private Date end_date;
+public class Campaign extends Dto{
+
+	public Long id;
+	public String title;
+	public String description;
+	public String location;
+	public Date start_date;
+	public Date end_date;
 	//private String times; //figure out if this is actually how we want to represent this
-	private int owner_id;
-	private int task_id;
+	public Integer owner_id;
+	public Integer task_id;
 
-	private List<Task> tasks;
+	private Task[] tasks;
 	
 	/**
 	 * @param args
@@ -33,10 +36,10 @@ public class Campaign {
 		this.id = id;
 	}
 	public List<Task> getTasks() {
-		return tasks;
+		return Arrays.asList(tasks);
 	}
 	public void setTasks(List<Task> tasks) {
-		this.tasks = tasks;
+		this.tasks = tasks.toArray(new Task[tasks.size()]);
 	}
 	public String getDescription() {
 		return description;
@@ -68,7 +71,7 @@ public class Campaign {
 	public void setOwner_id(int owner_id) {
 		this.owner_id = owner_id;
 	}
-	public int getTask_id() {
+	public Integer getTask_id() {
 		return task_id;
 	}
 	public void setTask_id(int task_id) {

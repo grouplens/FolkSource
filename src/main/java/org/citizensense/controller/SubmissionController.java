@@ -1,40 +1,37 @@
 package org.citizensense.controller;
 
-import java.util.Collection;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.rest.DefaultHttpHeaders;
-import org.apache.struts2.rest.HttpHeaders;
 import org.citizensense.model.Submission;
 import org.citizensense.util.SubmissionService;
+import org.grouplens.common.dto.DtoContainer;
 
 import com.opensymphony.xwork2.ModelDriven;
 
-public class SubmissionController implements ModelDriven<Object> {
+public class SubmissionController implements ModelDriven<DtoContainer<Submission>> {
 
-	private Collection<Submission> list;
+	//private Collection<Submission> list;
 	private int id;
-	private Submission submission = new Submission();
+	//private Submission submission = new Submission();
 
+	private DtoContainer<Submission> content = new DtoContainer<Submission>(Submission.class, false);
+	
 	@Override
-	public Object getModel() {
-		return (list != null ? list : submission);
+	public DtoContainer<Submission> getModel() {
+		return content;
 	}
 
 	// Handles /submission/{id} GET requests
-	public HttpHeaders show() {
-		return new DefaultHttpHeaders("show");
+	public String show() {
+		return "show";//new DefaultHttpHeaders("show");
 	}
 
 	public void setId(String id) {
-		if (	id != null)
-			for (Submission s : SubmissionService.getSubmissions()) {
-				if (s.getId() == Integer.parseInt(id))
-					this.submission = s;
-			}
+		//if (id != null)
+		//	for (Submission s : SubmissionService.getSubmissions()) {
+		//		if (s.getId() == Integer.parseInt(id))
+		//			this.submission = s;
+		//	}
 		// SubmissionService.getSubmissions()..get(Integer.parseInt(id)-1);
 		this.id = Integer.parseInt(id);
 	}
@@ -44,15 +41,18 @@ public class SubmissionController implements ModelDriven<Object> {
 	}
 
 	// Handles /submission GET requests
-	public HttpHeaders index() {
-		list = SubmissionService.getSubmissions();
-		return new DefaultHttpHeaders("index").disableCaching();
+	//public HttpHeaders index() {
+	public String index() {
+		content = new DtoContainer<Submission>(Submission.class, true);
+		content.set(SubmissionService.getSubmissions());
+		//return new DefaultHttpHeaders("index").disableCaching();
+		return "index";
 	}
-	public HttpHeaders create() {
-		SubmissionService.save(submission);
+	public String create() {
+		SubmissionService.save(content.getSingle());
 		HttpServletResponse res = ServletActionContext.getResponse();
-		res.addIntHeader("points", SubmissionService.getSubUser(submission).getPoints());
-		return new DefaultHttpHeaders("create");
+		res.addIntHeader("points", SubmissionService.getSubUser(content.getSingle()).getPoints());
+		return "create";//new DefaultHttpHeaders("create");
 	}
 	
 //	 public String create() {

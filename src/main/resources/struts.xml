@@ -4,6 +4,10 @@
 
 <struts>
 
+	<bean name="myJson" type="org.apache.struts2.rest.handler.ContentTypeHandler" class="org.citizensense.struts.JsonDtoContentTypeHandler" />
+
+	<constant name="struts.rest.handlerOverride.json" value="myJson" />
+
 	<constant name="struts.enable.SlashesInActionNames" value="true" />
 	<constant name="struts.mapper.alwaysSelectFullNamespace"
 		value="false" />
@@ -19,6 +23,7 @@
 		value="org.citizensense" />
 	<constant name="struts.convention.result.path" value="/jsp/" />
 	<constant name="struts.rest.content.restrictToGET" value="false" />
+	<constant name="struts.rest.namespace" value=""/> 
 
 	<package name="citizen-sense" extends="rest-default">
 		<!-- <result-types> <result-type name="exceptionResult" class="org.grouplens.bl.struts.result.ExceptionResult" 

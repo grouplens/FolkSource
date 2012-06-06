@@ -5,20 +5,22 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 import org.citizensense.model.User;
 import org.citizensense.util.UserService;
+import org.grouplens.common.dto.DtoContainer;
 
 import com.opensymphony.xwork2.ModelDriven;
 
-public class LoginController implements ModelDriven<User>{
+public class LoginController implements ModelDriven<DtoContainer<User>>{
 	
-	User user = new User();
+	//User user = new User();
+	DtoContainer<User> content = new DtoContainer<User>(User.class, false);
 	
 	private String name;
 	private String password;
 	private String salt;
 
 	@Override
-	public User getModel() {
-		return user;
+	public DtoContainer<User> getModel() {
+		return content;
 	}
 	
 	public void setName(String name) {
@@ -47,13 +49,13 @@ public class LoginController implements ModelDriven<User>{
 	public String create()// deal with login  /Login/user_id
 	{	
 		HttpServletResponse response = ServletActionContext.getResponse();
-		User u = UserService.getUserByName(user.getName());
+		User u = UserService.getUserByName(content.getSingle().getName());
 		
 		if (u == null) {//fail
 			response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
 			return "login_no_user";
 		}
-		if (UserService.isPasswordValid(u, user.getPassword())) {// success
+		if (UserService.isPasswordValid(u, content.getSingle().getPassword())) {// success
 			//FIXME
 //			if (user is already logged in )
 //				return doing nothing

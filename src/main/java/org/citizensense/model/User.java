@@ -1,16 +1,19 @@
 package org.citizensense.model;
 
+import java.util.Arrays;
 import java.util.List;
 
-public class User {
-	private int Id;
+import org.grouplens.common.dto.Dto;
+
+public class User extends Dto{
+	private Integer Id;
 	private String name;
 	private String password;
     /** The base64 encoded salt value used to hash the password*/
     private String salt;
     private String email;
-	private List<Incentive> tasks;
-	private int points;
+	private Incentive[] tasks;
+	private Integer points;
 	private String badges;	
 	/** Used to construct the link to find user's password. 
 	 * findpwid is hashed value of a string: Id+findpwtime.*/
@@ -18,10 +21,10 @@ public class User {
 	/** The time user reports forget password.*/
 	private String findpwtime;
 
-	public int getId() {
+	public Integer getId() {
 		return Id;
 	}
-	public void setId(int id) {
+	public void setId(Integer id) {
 		Id = id;
 	}
 	public String getBadges() {
@@ -43,10 +46,10 @@ public class User {
 		this.points = points;
 	}
 	public List<Incentive> getTasks() {
-		return tasks;
+		return Arrays.asList(tasks);
 	}
 	public void setTasks(List<Incentive> tasks) {
-		this.tasks = tasks;
+		this.tasks = tasks.toArray(new Incentive[tasks.size()]);
 	}
 	public void setPassword(String password) {
 		this.password = password;

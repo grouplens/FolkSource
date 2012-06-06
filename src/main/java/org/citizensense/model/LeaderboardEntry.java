@@ -1,9 +1,11 @@
 package org.citizensense.model;
 
-public class LeaderboardEntry implements Comparable<LeaderboardEntry> {
-	private String name;
-	private int id;
-	private int points;
+import org.grouplens.common.dto.Dto;
+
+public class LeaderboardEntry extends Dto implements Comparable<LeaderboardEntry> {
+	public String name;
+	public Integer id;
+	public Integer points;
 
 	public String getName() {
 		return name;
@@ -13,19 +15,19 @@ public class LeaderboardEntry implements Comparable<LeaderboardEntry> {
 		this.name = name;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public int getPoints() {
+	public Integer getPoints() {
 		return points;
 	}
 
-	public void setPoints(int points) {
+	public void setPoints(Integer points) {
 		this.points = points;
 	}
 

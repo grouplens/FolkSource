@@ -1,18 +1,21 @@
 package org.citizensense.model;
 
+import java.util.Arrays;
 import java.util.List;
 
-public class Task {
-	private int id;
+import org.grouplens.common.dto.Dto;
+
+public class Task extends Dto{
+	private Integer id;
 	private String name;
 	private String instructions;
-	private boolean required;
+	private Boolean required;
 //	private String requirements; // possibly wrong datatype, but for now
 //	private Form form;
 //	private Location loc;
 
-	private List<Submission> submissions;
-	private List<Question> questions;
+	private Submission[] submissions;
+	private Question[] questions;
 	
 	//	public Location getLocation() {
 //		return loc;
@@ -39,35 +42,35 @@ public class Task {
 	}
 
 	public List<Submission> getSubmissions() {
-		return submissions;
+		return Arrays.asList(submissions);
 	}
 
 	public void setSubmissions(List<Submission> submissions) {
-		this.submissions = submissions;
+		this.submissions = submissions.toArray(new Submission[submissions.size()]);
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public boolean isRequired() {
+	public Boolean isRequired() {
 		return required;
 	}
 
-	public void setRequired(boolean required) {
+	public void setRequired(Boolean required) {
 		this.required = required;
 	}
 
 	public List<Question> getQuestions() {
-		return questions;
+		return Arrays.asList(questions);
 	}
 
 	public void setQuestions(List<Question> questions) {
-		this.questions = questions;
+		this.questions = questions.toArray(new Question[questions.size()]);
 	}
 
 //	public String getRequirements() {
