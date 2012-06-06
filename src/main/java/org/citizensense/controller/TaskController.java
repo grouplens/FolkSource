@@ -10,7 +10,7 @@ public class TaskController implements ModelDriven<DtoContainer<Task>>{
 	
 	DtoContainer<Task> content = new DtoContainer<Task>(Task.class, false);
 	//private Collection<Task> list;
-	private int id;
+	public Integer id;
 	//private Task task = new Task();
 
 	@Override
@@ -22,18 +22,12 @@ public class TaskController implements ModelDriven<DtoContainer<Task>>{
 		return "show";
 	}
 	
-//	public void setId(String id) {
-//		if (id != null)
-//			this.task = TaskService.getTasks().get(Integer.parseInt(id)-1);
-//		this.id = Integer.parseInt(id);		
-//	}
-	public void setId(String id) {
-//		if (id != null)
-//			this.task = TaskService.getTaskById(Integer.parseInt(id));
-		this.id = Integer.parseInt(id);		
+
+	public void setId(Integer id) {
+		this.id = id;		
 	}
 	
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 	

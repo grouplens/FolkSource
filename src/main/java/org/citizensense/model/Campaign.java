@@ -17,7 +17,7 @@ public class Campaign extends Dto{
 	public Integer owner_id;
 	public Integer task_id;
 
-	private Task[] tasks;
+	public Task[] tasks;
 	
 	/**
 	 * @param args
