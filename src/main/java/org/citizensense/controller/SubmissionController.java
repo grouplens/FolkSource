@@ -23,6 +23,10 @@ public class SubmissionController implements ModelDriven<DtoContainer<Submission
 
 	// Handles /submission/{id} GET requests
 	public String show() {
+		for (Submission s : SubmissionService.getSubmissions()) {
+			if(s.getId().equals(id))
+				content.set(s);
+		}
 		return "show";//new DefaultHttpHeaders("show");
 	}
 

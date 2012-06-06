@@ -44,7 +44,7 @@ public class Submission extends Dto {
 		return Arrays.asList(answers);
 	}
 	public void setAnswers(List<Answer> answers) {
-		System.out.println(answers);
+//		System.out.println(answers);
 //		for(Object o : answers) {
 //			if(o instanceof Answer)
 //				this.answers.add((Answer)o);
