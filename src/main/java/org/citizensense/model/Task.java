@@ -6,16 +6,16 @@ import java.util.List;
 import org.grouplens.common.dto.Dto;
 
 public class Task extends Dto{
-	private Integer id;
-	private String name;
-	private String instructions;
-	private Boolean required;
+	public Integer id;
+	public String name;
+	public String instructions;
+	public Boolean required;
 //	private String requirements; // possibly wrong datatype, but for now
 //	private Form form;
 //	private Location loc;
 
-	private Submission[] submissions;
-	private Question[] questions;
+	public Submission[] submissions;
+	public Question[] questions;
 	
 	//	public Location getLocation() {
 //		return loc;
