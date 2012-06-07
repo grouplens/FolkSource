@@ -22,7 +22,7 @@ public class CampaignController implements ModelDriven<DtoContainer<Campaign>>{
 	
 	public String show() {
 		for (Campaign c : CampaignService.getCampaigns())
-			if(c.getId().equals(id))
+			if(c.getId().equals(((Integer)id).longValue()))
 				content.set(c);
 		//content.getSingle();
 		return "show";
