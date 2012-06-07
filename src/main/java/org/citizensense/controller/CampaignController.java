@@ -21,6 +21,10 @@ public class CampaignController implements ModelDriven<DtoContainer<Campaign>>{
 	}
 	
 	public String show() {
+		for (Campaign c : CampaignService.getCampaigns())
+			if(c.getId().equals(id))
+				content.set(c);
+		//content.getSingle();
 		return "show";
 		//return new DefaultHttpHeaders("show").disableCaching();
 	}
