@@ -49,7 +49,7 @@ public class LoginController implements ModelDriven<DtoContainer<User>>{
 	public String create()// deal with login  /Login/user_id
 	{	
 		HttpServletResponse response = ServletActionContext.getResponse();
-		User u = UserService.getUserByName(content.getSingle().getName());
+		User u = UserService.getUserByName(name);
 		
 		if (u == null) {//fail
 			response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
