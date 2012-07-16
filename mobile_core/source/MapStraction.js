@@ -8,11 +8,7 @@ enyo.kind({
 		gpsTimeout: "10000"
 	},
 	components: [
-		{name: "gps", kind: "rok.geolocation", watch: true, enableHighAccuracy: true, timeout: this.gpsTimeout, maximumAge: "3000", onSuccess: "locSuccess", onError: "locError"},
-        {tag: "div", name: "mapDiv", fit: true, classes: "mapItem"},
-        {kind: "enyo.Popup", name: "pp", modal: true, autoDismiss: false, style: "position: fixed; z-index: -500;", components: [
-            {name: "spinner", fit: true, kind: "jmtk.Spinner", shape: "roundRect", speed: 1.5, range: 1.10, density: 170, diameter: 50}
-        ]}
+		{name: "gps", kind: "rok.geolocation", watch: true, enableHighAccuracy: true, timeout: this.gpsTimeout, maximumAge: "3000", onSuccess: "locSuccess", onError: "locError"}
 	],
     events: {
         onLoaded: "",
@@ -26,8 +22,7 @@ enyo.kind({
         loaded = false;
 	},
 	rendered: function() {
-        this.log(this.$.mapDiv);
-		this.straction = new mxn.Mapstraction(this.$.mapDiv.id, this.provider);
+		this.straction = new mxn.Mapstraction(this.id, this.provider);
 		this.straction.load.addHandler(this.makeBubbleLoad());
         this.straction.changeZoom.addHandler(enyo.bind(this, "makeFilter"));
         this.straction.endPan.addHandler(enyo.bind(this, "makeFilter"));
@@ -37,7 +32,6 @@ enyo.kind({
 	locSuccess: function(inSender, inPosition) {
 		this.myLocation = inPosition.coords;
         enyo.Signals.send("onGPSSet", {prop: this.myLocation});
-        //this.doGPSSet(this.myLocation);
 		this.centerMap();
         return true;
 	},
@@ -49,12 +43,12 @@ enyo.kind({
             //DO NOTHING, THIS IS A BAD HACK FOR NOW
         } else {
             this.locPlot(locs);
-            this.makeFilter(locs);
+            this.makeFilter();
         }
     },
     locPlot: function(locs) {
         this.locations = locs.split("|");
-            this.makeFilter();
+        this.makeFilter();
     },
     inside: function(coords) {
         var ne = this.straction.getBounds().getNorthEast();
@@ -89,7 +83,6 @@ enyo.kind({
     makeBubbleLoad: function() {
         this.log();
         loaded = true;
-        this.$.spinner.applyStyle("visibility", "hidden");
         this.doLoaded();
     }
 });

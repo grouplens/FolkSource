@@ -38,12 +38,14 @@ enyo.kind({
             var item = "item_"+obj.id;
             var map = "map_"+obj.id;
 
+            this.log();
             this.$.panels.createComponent(
                 {name: panel, kind: "enyo.FittableRows",  classes: "panelItem", components: [
                     {name: item, kind: "CampaignItem", fit: true, title: ""+obj.title, description: ""+obj.description},
                     {name: map, kind: "MapStraction", fit: true}
                 ]}
             );
+            this.log();
         }
         this.render();
     },
