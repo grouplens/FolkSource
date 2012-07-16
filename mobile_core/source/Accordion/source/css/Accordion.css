@@ -1,0 +1,37 @@
+.accordion {
+/*	font-family: Century Gothic, 'Lucida Grande', 'Lucida Sans Unicode', Prelude, Prelude Medium, Segoe UI, Neue Helvetica, Arial, Helvetica, Sans-Serif;*/
+	overflow: hidden;
+}
+.accordionItem {
+	position: relative;
+	top: 0px;
+	/*min-height: 40px;*/
+	margin-top: 1px;
+	overflow: hidden;	
+}
+.accordionHeader {
+	position: relative;
+	/* height: 40px; */
+	
+	vertical-align: middle;
+	font-size: 14px;
+	font-weight: bold;
+	color: #FFF;
+	padding-left: 50px;
+	background-color: #152737;
+	
+	/*
+	background-image: url('../../images/arrow.png');
+	background-repeat: repeat-y;
+	*/
+}
+.accordionContent {
+	position: relative;
+    width: 100%;
+	color: white;
+	background-color: #0B333E;
+}
+.accordionHeaderHighlight {
+	background-color: #2B4E69;
+	color: #FAFAFA;
+}

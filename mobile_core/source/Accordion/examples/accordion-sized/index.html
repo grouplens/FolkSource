@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+	<title>Accordian</title>
+	<!-- -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<!-- -->
+	<script src="../../../../../enyo/enyo.js" type="text/javascript"></script>
+	<script src="../../../../../lib/onyx/package.js" type="text/javascript"></script>
+	<!-- <script src="../../../../lib/layout/fittable/package.js" type="text/javascript"></script> -->
+	
+	<script src="../../../Accordion/package.js" type="text/javascript"></script>
+	<!-- -->
+	<script src="App.js" type="text/javascript"></script>
+	<!-- -->
+	<style>
+		body {
+			background-color: #CCCCCC;
+		}
+		.contentHeader {
+			padding-bottom: 10px;
+			color: #682321;
+			font-size: 20px;
+			font-weight: bold;
+			
+		}
+		ul {
+			margin:0px;
+		}
+		pre {
+			float: left;
+			padding: 10px;
+			margin-left: 40px;
+			background-color: #d5dce1;
+			border: 1px dashed #8599A6;
+		}
+		.description {
+			margin: 10px 0px 0px 40px;
+			color: #666;
+			font-style: italic
+		}
+		.spacer {
+			clear: left;
+			height: 40px;
+		}
+		.spacerBullet {
+			clear: left;
+			height: 20px;
+		}
+		
+		/*
+		Over-writing the following classes in accordion
+		*/
+		.accordionHeader {
+			background-image: url('images/arrow.png');
+			background-repeat: repeat-y;
+		}
+		.accordionHeaderHighlight {
+			background-position: 0px 40px;
+		}
+	</style>
+</head>
+<body>
+<script type="text/javascript">
+	new App({classes: "enyo-unselectable"}).write();
+</script>
+</body>
+</html>

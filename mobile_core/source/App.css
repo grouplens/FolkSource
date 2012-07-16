@@ -1,0 +1,111 @@
+/*
+	Put anything you reference with "url()" in ../assets/
+	This way, you can minify your application, and just remove the "source" folder for production
+*/
+#app {
+    top: 0;
+    left: 0;
+}
+
+/*These next 2 hide the Google links in our maps */
+.gmnoprint img {
+    display: none;
+}
+.terms-of-use-link {
+    display: none;
+}
+/* END */
+
+.imgDiv {
+    width: 100%;
+    height: 15%;
+}
+
+.imgDiv img {
+    width: 100%;
+    height: 100%;
+}
+.enyo-google-map-map {
+    height:500px;
+}
+
+.campTitle {
+    color: #9A7A34;
+    display:inline;
+    padding: 0.5%;
+}
+.leaderTable {
+    display: table-cell; 
+    text-align: center; 
+    width: 50%;
+}
+.leaderUser {
+    color: #9A7A34;
+    font-weight: bold;
+}
+.leaderPoints {
+    color: #CC7967;
+    font-style: italic;
+}
+.campLoc {
+    font-style: italic;
+    font-size: 0.75em;
+    display: clear;
+    padding: 1%;
+}
+.campDesc {
+    font-weight: bold;
+    font-size: 0.65em;
+    color: #CC7967;
+    display: clear;
+    overflow-y: hidden;
+}
+.togButton {
+    //padding: 0.5%;
+}
+.campItem {
+    padding: 20px;
+    word-break: hyphenate;
+    height: 20%;
+}
+.leaderItem {
+    height: 100%;
+    width: 100%;
+    display: table;
+}
+.toolbar {
+    background-color: #641F11;
+    color: #5C9DAF;
+}
+.mapItem {
+    height: 80%;
+    clear: both;
+}
+.panelItem {
+    height: 100%;
+    width: 100%;
+	background-color: #235260;
+}
+.filledPanels {
+    height: 100%;
+    width: 90%;
+    float: left;
+}
+.filledButtons {
+    background-color: #0B333E;
+    color: #CCAD67;
+    width: 5%;
+    float: left;
+    height: 100%;
+    padding: 0 0;
+}
+
+/* BORROWED FROM THE ACCORDION EXAMPLES */
+.accordionHeader {
+    background-image: url('../assets/arrow.png');
+    background-repeat: repeat-y;
+}
+.accordionHeaderHighlight {
+    background-position: 0px 40px;
+}
+
