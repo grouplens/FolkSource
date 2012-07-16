@@ -28,7 +28,7 @@ enyo.kind({
         if(this.complex) { //THIS IS FOR BIKING ONLY RIGHT NOW
             this.log(this.complex);
             this.$.formDiv.createComponent({name: "acc", kind: "Accordion", fit: true, headerHeight: 40, onViewChange: "viewChanged", components: []});
-            this.$.formDiv.$.acc.createComponent({name: "qs",kind: "AccordionItem", headerTitle: "Form", components: []});
+            this.$.formDiv.$.acc.createComponent({name: "qs",kind: "AccordionItem", headerTitle: "Questions about you", components: []});
         } else {
             this.$.formDiv.createComponent({name: "qbody", style: "height: 100%;", components: []});
         }
@@ -255,7 +255,7 @@ enyo.kind({
                    var num = type.charAt(numLoc);
                if(num != questionBody.length && this.complex) {
                    var qs = "qs"+(num+1);
-                   this.$.formDiv.$.acc.createComponent({name: qs, prepend: false, kind: "AccordionItem", headerTitle: "Hour 1", components: []});
+                   this.$.formDiv.$.acc.createComponent({name: qs, prepend: false, kind: "AccordionItem", headerTitle: "Counts Bicycles and/or Pedestrians", components: []});
                    this.$.formDiv.$.acc.render();
                    //this.log(this.$.
                    questionBody.push(this.$.formDiv.$.acc.$[qs].$.accordionItemContent);
