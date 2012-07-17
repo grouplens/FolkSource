@@ -30,7 +30,8 @@ enyo.kind({
             this.$.formDiv.$.acc.createComponent({name: "qs",kind: "AccordionItem", headerTitle: "Questions about you", components: []});
         } else {
             this.$.formDiv.createComponent({name: "qbody", style: "height: 100%;", components: []});
-            //this.$.formDiv.$.qbody.createComponent({name: "imgDiv", classes: "imgDiv", components: []}); 
+            this.$.formDiv.$.qbody.createComponent({name: "imgDiv", classes: "imgDiv", components: []}); 
+            this.$.formDiv.$.qbody.$.imgDiv.createComponent({name: "photoButton", kind: "onyx.Button", content: "Take Photo", style: "width: 100%;", ontap: "retakePhoto", classes: "onyx-affirmative"}, {owner: this});
         }
         this.$.formDiv.createComponents([{kind: "onyx.Button", fit: true, classes: "onyx-negative", content: "Cancel", ontap: "close", style: "width: 50%;"},{name: "submit", kind: "onyx.Button", fit: true, classes: "onyx-affirmative", content: "Submit", ontap: "buildAndSendSubmission", disabled: true, style: "width: 50%;"}], {owner: this});
         this.$.formDiv.render();
@@ -70,8 +71,8 @@ enyo.kind({
     onPhotoSuccess: function(inURI) {
         //this.photoButton.setContent("Retake Photo");
         var src = /*"data:image/jpeg;base64," +*/ inURI;
-        this.$.imgDiv.createComponent({name: "myImage", kind: "enyo.Image", src: "./assets/leaf-2.jpg"});//src});
-        this.$.imgDiv.render();
+        this.$.formDiv.$.qbody.$.imgDiv.createComponent({name: "myImage", kind: "enyo.Image", src: "./assets/leaf-2.jpg"});//src});
+        this.$.formDiv.$.qbody.$.imgDiv.render();
         this.$.submit.setDisabled(false);
         this.camComplete = true;
         enyo.Signals.send("onPhotoData", inURI);
@@ -86,8 +87,8 @@ enyo.kind({
     },
     retakePhoto: function()
     {
-        if(!this.complex && this.$.imgDiv.getComponents().length >0) {
-            this.$.imgDiv.destroyComponents();
+        if(!this.complex && this.$.formDiv.$.qbody.$.imgDiv.getComponents().length >0) {
+            this.$.formDiv.$.qbody.$.imgDiv.destroyComponents();
         }
         //this.takePhoto();
         this.onPhotoSuccess();
