@@ -15,7 +15,7 @@ enyo.kind({
         onGPSSet: "currentLocation"
     },
     components: [
-        {kind: "enyo.Signals", onGPSSet: "currentLocation", onPinClicked: "chosenLocation", onPhotoData: "photoData"},
+        {kind: "enyo.Signals", onGPSSet: "currentLocation", onPinClicked: "chosenLocation", onPhotoData: "photoData", onButtonGroupChosen: "renderSubmitButton"},
     ],
     create: function(inSender, inEvent)
     {
@@ -26,11 +26,11 @@ enyo.kind({
     recreate: function() {
             this.createComponent({name: "formDiv", kind: "enyo.Scroller", horizontal: "hidden", vertical: "scroll", fit: true, components: []});
         if(this.complex) { //THIS IS FOR BIKING ONLY RIGHT NOW
-            this.log(this.complex);
             this.$.formDiv.createComponent({name: "acc", kind: "Accordion", fit: true, headerHeight: 40, onViewChange: "viewChanged", components: []});
             this.$.formDiv.$.acc.createComponent({name: "qs",kind: "AccordionItem", headerTitle: "Questions about you", components: []});
         } else {
             this.$.formDiv.createComponent({name: "qbody", style: "height: 100%;", components: []});
+            //this.$.formDiv.$.qbody.createComponent({name: "imgDiv", classes: "imgDiv", components: []}); 
         }
         this.$.formDiv.createComponents([{kind: "onyx.Button", fit: true, classes: "onyx-negative", content: "Cancel", ontap: "close", style: "width: 50%;"},{name: "submit", kind: "onyx.Button", fit: true, classes: "onyx-affirmative", content: "Submit", ontap: "buildAndSendSubmission", disabled: true, style: "width: 50%;"}], {owner: this});
         this.$.formDiv.render();
@@ -74,10 +74,12 @@ enyo.kind({
         this.$.imgDiv.render();
         this.$.submit.setDisabled(false);
         this.camComplete = true;
-        //console.log(this.camComplete);
         enyo.Signals.send("onPhotoData", inURI);
         //this.doPhotoOk();
         //this.photoOk();
+    },
+    renderSubmitButton: function(inSender, inEvent) {
+        this.$.submit.setDisabled(false);
     },
     onPhotoFail: function(inStuff) {
         console.log(inStuff);
@@ -98,7 +100,6 @@ enyo.kind({
         if(this.complex) {
             var array = this.$.formDiv.$.acc.getItems();
             var view = this.$.formDiv.$.acc.getActiveView();
-            this.log(this.$.formDiv.$.acc.getActiveView());
             if(view === false) {
                 this.$.formDiv.$.acc.toggleItem(array[0]);
             }
@@ -255,9 +256,8 @@ enyo.kind({
                    var num = type.charAt(numLoc);
                if(num != questionBody.length && this.complex) {
                    var qs = "qs"+(num+1);
-                   this.$.formDiv.$.acc.createComponent({name: qs, prepend: false, kind: "AccordionItem", headerTitle: "Counts Bicycles and/or Pedestrians", components: []});
+                   this.$.formDiv.$.acc.createComponent({name: qs, prepend: false, kind: "AccordionItem", headerTitle: "Counts Bicycles and/or Pedestrians", components: []}, {owner: this.$.formDiv.$.acc});
                    this.$.formDiv.$.acc.render();
-                   //this.log(this.$.
                    questionBody.push(this.$.formDiv.$.acc.$[qs].$.accordionItemContent);
 
                }
@@ -341,8 +341,9 @@ enyo.kind({
     buildAndSendSubmission: function() {
         if(!this.$.submit.disabled) {
 
-            this.fileEntry(this.$.imgDiv.$.myImage.src);
-            if(this.imageOK) {
+            if(!this.complex)
+                this.fileEntry(this.$.imgDiv.$.myImage.src);
+            if(this.imageOK ? !this.complex : this.complex) { //XOR
                 //SETUP THE SUBMISSION OBJECT NEEDED
                 var sub =  {"submission": {
                     "task_id": this.task.id,
@@ -358,6 +359,16 @@ enyo.kind({
                 sub.submission.user_id = LocalStorage.get("user");
                 for(i in this.task.questions) {
                     var curQ = this.task.questions[i];
+                    type = curQ.type;
+                    if(type.indexOf("complex") != -1) {
+                        type = "counter";
+                        var numLoc = type.search(/\d/);
+                        var num = 0;
+                        if(numLoc != -1)
+                            var num = type.charAt(numLoc);
+                        if(num != questionBody.length && this.complex)
+                            var qs = "qs"+(num+1);
+                    }
                     //CREATE AN INDIVIDUAL ANSWER OBJECT
                     var q = {
                         "answer":"BOOM",
@@ -366,7 +377,7 @@ enyo.kind({
                         "sub_id": 0 //THIS GETS RESET SERVERSIDE
                     };
 
-                    switch(curQ.type) {
+                    switch(type) {
                         case "text":
                             q.answer = this.readFormText(curQ);
                         break;
@@ -379,8 +390,12 @@ enyo.kind({
                         case "counter":
                             q.answer = this.readFormCounter(curQ);
                         break;
+                        case "cur_time":
+                            q.answer = this.readTime(curQ);
+                        break;
                         default: 
-                            break;
+                            continue;
+                            //break;
                     }
                     sub.submission.answers.push(q);
                 }
@@ -389,7 +404,7 @@ enyo.kind({
                 this.log("SENDING TO SERVER: "+JSON.stringify(sub));
 
                 var url = Data.getURL() + "submission.json";
-                var req  = new enyo.Ajax({contentType:"application/json", method: "POST", url: url, postBody: JSON.stringify(sub), handleAs: "json"});
+                var req  = new enyo.Ajax({contentType:"application/json", method: "POST", url: url, postBody: JSON.stringify(sub), cacheBust: false, handleAs: "json"});
                 //req.postBody = JSON.stringify(sub);
                 req.response(this, "handlePostResponse");
                 req.go();
@@ -405,7 +420,7 @@ enyo.kind({
         LocalStorage.remove("image");
         //this.photoData = undefined;
         this.imageOK = false;
-        if(this.$.imgDiv.getComponents().length >0) {
+        if(!this.complex && this.$.imgDiv.getComponents().length >0) {
             this.$.imgDiv.destroyComponents();
         }
         //this.doSubmissionMade();
@@ -433,7 +448,7 @@ enyo.kind({
         var nom = "input_"+curQ.id;
 
         //CREATE THE COMPONENT
-        questionBody[0].createComponent({name: dec, kind: "onyx.InputDecorator", classes: "onyx-input-decorator", components: [ {name: nom, kind: "onyx.Input", classes: "onyx-input", defaultFocus: true}]}, {owner: questionBody[0]});
+        questionBody[0].createComponent({name: dec, kind: "onyx.InputDecorator", classes: "onyx-input-decorator", components: [ {name: nom, kind: "onyx.Input", classes: "onyx-input"}]}, {owner: questionBody[0]});
     },
     newFormExclusiveChoice: function(curQ) {
         var nom = "input_"+curQ.id;
@@ -442,7 +457,10 @@ enyo.kind({
 
         for(i in opts) {
             //COLLECT EACH OF THE OPTIONS
-            tmp.push({content: opts[i], ontap: "testButtons"});
+            if(i === 0)
+                tmp.push({content: opts[i], active: true, ontap: "testButton"});
+            else
+                tmp.push({content: opts[i], ontap: "testButtons"});
         }
 
         //CREATE THE COMPONENT
@@ -451,8 +469,9 @@ enyo.kind({
     newTime: function(curQ) {
         var d = new Date();
         var s = d.toTimeString().split(' ')[0];
+        var name = "time_"+curQ.id;
         questionBody[0].createComponent({content: curQ.question});
-        questionBody[0].createComponent({content: s});
+        questionBody[0].createComponent({name: name, content: s, time: d.toTimeString()});
     },
     newFormMultipleChoice: function(curQ) {
         var opts = curQ.options.split("|");
@@ -490,7 +509,6 @@ enyo.kind({
         }
         var string = "input_"+id;
         if(curQ.type.split("_")[1].indexOf('2') === -1) {
-            this.log(questionBody[1]);
             questionBody[1].createComponent({name: nom, kind: "BikeCounter", title: curQ.question, style: "clear: both;"});
         } else {
             questionBody[2].createComponent({name: nom, kind: "BikeCounter", title: curQ.question, style: "clear: both;"});
@@ -505,12 +523,12 @@ enyo.kind({
     readFormText: function(curQ) {
         //READ FREE TEXT INPUT
         var name = "input_"+curQ.id;
-        return questionBody[0][name].getValue();
+        return questionBody[0].$[name].getValue();
     },
     readFormExclusiveChoice: function(curQ) {
         //READ RADIO BUTTON GROUP
         var name = "input_"+curQ.id;
-        var buttons = questionBody[0][name].children;
+        var buttons = this.$[name].children;
         //this is a bad hack
         for(x in buttons)
             if(buttons[x].hasClass("active"))
@@ -528,7 +546,34 @@ enyo.kind({
         return tmp.join("|"); //after we've collected the checkboxes
     },
     readFormCounter: function(curQ) {
+        var ans = '';
         var nom = "counter_"+curQ.id;
-        return this.$.qbody.$[nom].getCount();
-    }
+        for(var x in questionBody) {
+            var p = questionBody[x].$[nom];
+            if(p === undefined)
+                continue;
+            else {
+                //FORMAT: bikes|peds
+                //EG: m0,1,4,5,3f5,3,6,8,3|m5,4,0,0,0f3,4,0,1,6
+                //  - anything following m is a reading for males
+                //  - anything following f is a reading for females
+                //  - example above shows 5 readings, for both bikes and peds
+                var data = p.getData();
+                if(data.bikes != undefined) {
+                    ans += "m"+data.bikes.m;
+                    ans += "f"+data.bikes.f;
+                }
+                ans += "|";
+                if(data.peds != undefined) {
+                    ans += "m"+data.peds.m;
+                    ans += "f"+data.peds.f;
+                }
+            }
+        }
+        return ans;
+    }, 
+    readTime: function(curQ) {
+        var nom = "time_"+curQ.id;
+        return questionBody[0].$[nom].time;
+    },
 });

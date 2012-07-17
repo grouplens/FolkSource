@@ -14,6 +14,9 @@
 .terms-of-use-link {
     display: none;
 }
+.mapItem span {
+    display: none;
+}
 /* END */
 
 .imgDiv {
@@ -107,5 +110,10 @@
 }
 .accordionHeaderHighlight {
     background-position: 0px 40px;
+}
+.accordionContent div {
+	position: relative;
+	color: white;
+	background-color: #0B333E;
 }
 

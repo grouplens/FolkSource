@@ -38,19 +38,16 @@ enyo.kind({
             var item = "item_"+obj.id;
             var map = "map_"+obj.id;
 
-            this.log();
             this.$.panels.createComponent(
                 {name: panel, kind: "enyo.FittableRows",  classes: "panelItem", components: [
                     {name: item, kind: "CampaignItem", fit: true, title: ""+obj.title, description: ""+obj.description},
                     {name: map, kind: "MapStraction", fit: true}
                 ]}
             );
-            this.log();
         }
         this.render();
     },
     buttonTapHandler: function(inSender, inEvent) {
-        this.log(inSender.slide);
         if (inSender.slide === "prev") {
             this.$.panels.previous();
         } else if (inSender.slide === "next") {
@@ -61,14 +58,12 @@ enyo.kind({
     },
 
     transitionFinishHandler: function(inSender, inEvent) {
-        this.log(this.$.panels.getIndex());
         this.doSnapped(undefined, this.$.panels.getIndex());
         this.checkSides()
     },
 
     checkSides: function() {
         var index = this.$.panels.getIndex();
-        //this.log(
         if(this.campaignArray != undefined)
         var end = this.campaignArray.length - 1;
         if(index == 0) {
@@ -83,8 +78,6 @@ enyo.kind({
         }
     },
     drawMap: function(inSender, inEvent) {
-        this.log(inSender);
-        this.log(inEvent);
         var p = this.$.panels.getPanels();
         var id = 0;
         var locations;

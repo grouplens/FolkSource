@@ -81,7 +81,6 @@ enyo.kind({
         enyo.Signals.send("onPinClicked", inEvent.location);
     },
     makeBubbleLoad: function() {
-        this.log();
         loaded = true;
         this.doLoaded();
     }

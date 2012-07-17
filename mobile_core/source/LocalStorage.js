@@ -35,7 +35,7 @@ enyo.kind({
 		/* Remove the item with the key 'name'. */
 		remove: function(name){
 			if(typeof name === "string") {
-				localStorage.remove(name);
+				localStorage.removeItem(name);
 			} else {
 				throw "ERROR [Storage.remove]: 'name' was not a String.";
 			}
