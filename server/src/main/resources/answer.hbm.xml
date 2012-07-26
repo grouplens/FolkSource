@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="org.citizensense.model">
+<class name="Answer" table="answers">
+	<id name="id" column="id">
+		<generator class="native" />
+	</id>
+	<property name="answer" />
+	<property name="type" />
+	<property name="q_id" />
+	<property name="sub_id" />
+<!-- 	<many-to-one name="submission" column="sub_id" class="Submission" cascade="all"/> -->
+<!-- 	<bag name="tasks" lazy="false"> -->
+<!-- 		<key column="camp_id" not-null="false"/> -->
+<!-- 		<index column="id" base="1" /> -->
+<!-- 		<one-to-many class="Task" /> -->
+<!-- 	</bag> -->
+<!-- 	<property name="points" /> -->
+<!-- 	<property name="badges" /> -->
+</class>
+</hibernate-mapping>
