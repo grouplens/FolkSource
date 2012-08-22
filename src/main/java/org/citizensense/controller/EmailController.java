@@ -65,6 +65,7 @@ public class EmailController implements ModelDriven<User>{
 	 */
 	public String create() {
 		HttpServletResponse response = ServletActionContext.getResponse();
+		response.addHeader("Access-Control-Allow-Origin", "*");
 		User u = UserService.getUserByEmail(user.getEmail());
 
 		if (u == null) {// if email not exist in the db

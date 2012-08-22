@@ -100,6 +100,7 @@ public class UserController implements ModelDriven<User> {
 
 	public String create() {// deal with register
 		HttpServletResponse response = ServletActionContext.getResponse();
+		response.addHeader("Access-Control-Allow-Origin", "*");
 		User u = UserService.getUserByName(user.getName());
 		if (u == null) {// user name doesn't exist, could register
 

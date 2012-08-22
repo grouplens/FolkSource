@@ -23,6 +23,8 @@ public class SubmissionController implements ModelDriven<DtoContainer<Submission
 
 	// Handles /submission/{id} GET requests
 	public String show() {
+		HttpServletResponse res = ServletActionContext.getResponse();
+		res.addHeader("Access-Control-Allow-Origin", "*");
 		for (Submission s : SubmissionService.getSubmissions()) {
 			if(s.getId().equals(id))
 				content.set(s);
@@ -47,6 +49,8 @@ public class SubmissionController implements ModelDriven<DtoContainer<Submission
 	// Handles /submission GET requests
 	//public HttpHeaders index() {
 	public String index() {
+		HttpServletResponse res = ServletActionContext.getResponse();
+		res.addHeader("Access-Control-Allow-Origin", "*");
 		content = new DtoContainer<Submission>(Submission.class, true);
 		content.set(SubmissionService.getSubmissions());
 		//return new DefaultHttpHeaders("index").disableCaching();
@@ -55,6 +59,7 @@ public class SubmissionController implements ModelDriven<DtoContainer<Submission
 	public String create() {
 		SubmissionService.save(content.getSingle());
 		HttpServletResponse res = ServletActionContext.getResponse();
+		res.addHeader("Access-Control-Allow-Origin", "*");
 		res.addIntHeader("points", SubmissionService.getSubUser(content.getSingle()).getPoints());
 		return "create";//new DefaultHttpHeaders("create");
 	}

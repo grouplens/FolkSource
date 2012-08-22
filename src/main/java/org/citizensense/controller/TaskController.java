@@ -1,5 +1,8 @@
 package org.citizensense.controller;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts2.ServletActionContext;
 import org.citizensense.model.Task;
 import org.citizensense.util.*;
 import org.grouplens.common.dto.DtoContainer;
@@ -32,6 +35,8 @@ public class TaskController implements ModelDriven<DtoContainer<Task>>{
 	}
 	
 	public String index() {
+		HttpServletResponse res = ServletActionContext.getResponse();
+		res.addHeader("Access-Control-Allow-Origin", "*");
 		content = new DtoContainer<Task>(Task.class, true);
 		content.set(TaskService.getTasks());
 		return "index";
@@ -39,6 +44,8 @@ public class TaskController implements ModelDriven<DtoContainer<Task>>{
 	
 	public String create()
 	{
+		HttpServletResponse res = ServletActionContext.getResponse();
+		res.addHeader("Access-Control-Allow-Origin", "*");
 		TaskService.save(content.getSingle());
 		return "create";
 	}

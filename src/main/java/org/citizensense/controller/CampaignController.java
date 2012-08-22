@@ -25,6 +25,8 @@ public class CampaignController implements ModelDriven<DtoContainer<Campaign>>{
 	}
 	
 	public String show() {
+		HttpServletResponse res = ServletActionContext.getResponse();
+		res.addHeader("Access-Control-Allow-Origin", "*");
 		for (Campaign c : CampaignService.getCampaigns())
 			if(c.getId().equals(((Integer)id).longValue()))
 				content.set(c);
@@ -55,6 +57,8 @@ public class CampaignController implements ModelDriven<DtoContainer<Campaign>>{
 	
 	public HttpHeaders create()
 	{
+		HttpServletResponse res = ServletActionContext.getResponse();
+		res.addHeader("Access-Control-Allow-Origin", "*");
 		CampaignService.save(content.getSingle());
 		return new DefaultHttpHeaders("create");
 	}
