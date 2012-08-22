@@ -26,7 +26,7 @@ public class CampaignController implements ModelDriven<DtoContainer<Campaign>>{
 	
 	public String show() {
 		HttpServletResponse res = ServletActionContext.getResponse();
-		res.addHeader("Access-Control-Allow-Origin", "*");
+		res.addHeader("Access-Control-Allow-Origin", "ugly.cs.umn.edu:8080");
 		//res.addHeader("Access-Control-Allow-Methods", "GET");
 		for (Campaign c : CampaignService.getCampaigns())
 			if(c.getId().equals(((Integer)id).longValue()))
