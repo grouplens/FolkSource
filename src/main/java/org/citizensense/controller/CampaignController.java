@@ -1,10 +1,14 @@
 package org.citizensense.controller;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.citizensense.model.Campaign;
 import org.citizensense.util.*;
 import org.grouplens.common.dto.DtoContainer;
 
 import com.opensymphony.xwork2.ModelDriven;
+
+import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.rest.DefaultHttpHeaders;
 import org.apache.struts2.rest.HttpHeaders;
 
@@ -42,6 +46,8 @@ public class CampaignController implements ModelDriven<DtoContainer<Campaign>>{
 	public String index() {
 		//list = CampaignService.getCampaigns();
 		//return new DefaultHttpHeaders("index").disableCaching();
+		HttpServletResponse res = ServletActionContext.getResponse();
+		res.addHeader("Access-Control-Allow-Origin", "*");
 		content = new DtoContainer<Campaign>(Campaign.class, true);
 		content.set(CampaignService.getCampaigns());
 		return "index";
