@@ -8,14 +8,15 @@
 	<name>Citizen Sense</name>
 
 	<properties>
-		<db.username>sa</db.username>
+		<db.username>citizensense</db.username>
 		<db.password></db.password>
 		<db.schema>public</db.schema>
-		<db.connection.driver.class>org.h2.Driver</db.connection.driver.class>
-		<db.url>jdbc:h2:tcp://localhost:7080/mem:~/civic_sense;DB_CLOSE_DELAY=-1</db.url>
-		<db.dialect>org.hibernate.dialect.H2Dialect</db.dialect>
+		<db.connection.driver.class>org.postgresql.Driver</db.connection.driver.class>
+		<db.url>jdbc:postgresql://localhost/citizensense</db.url>
+		<db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
 		<db.connection.maxcount>40</db.connection.maxcount>
 	</properties>
+
 	<profiles>
 		<profile>
 			<id>properties-filter</id>
@@ -100,14 +101,14 @@
 				<configuration>
 					<container>
 						<containerId>tomcat7x</containerId>
-						<home>/Users/jts/apache-tomcat-7.0.22/</home>
+						<home>/home/grad01/thebault/apache-tomcat-7.0.29</home>
 						<type>installed</type>
 					</container>
 
 					<configuration>
 						<type>standalone</type>
 						<properties>
-							<cargo.servlet.port>8080</cargo.servlet.port>
+							<cargo.servlet.port>9080</cargo.servlet.port>
 							<cargo.hostname>localhost</cargo.hostname>
 							<!-- Only needed when using Tomcat. -->
 							<cargo.rmi.port>8089</cargo.rmi.port>
