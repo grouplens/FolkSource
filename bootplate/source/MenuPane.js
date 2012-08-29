@@ -26,13 +26,15 @@ enyo.kind({
     }, {
         name: "pane",
         kind: "enyo.Slideable",
-        classes: "menupane-pane",
+        classes: "menupane-pane enyo-fit",
+        /*layoutKind: "enyo.FittableRowsLayout",
+        fit: true,*/
         value: 0,
         min: 0,
         max: 85,
         unit: "%",
         draggable: !1,
-        style: "width: 100%; height: 100%;",
+        //style: "width: 100%; height: 100%;",
         onAnimateFinish: "paneAnimateFinishHandler"
     }],
     selectView: function (a) {

@@ -1,6 +1,7 @@
 enyo.kind({
     name: "CSenseMenuPane",
-    classes: "enyo-fit",
+    //classes: "enyo-fit",
+    kind: "enyo.FittableRows",
     handlers: {
         onSuccessCode: "unPop",
         onFailureCode: "rePop",
@@ -23,7 +24,8 @@ enyo.kind({
     }, {
         name: "menupane",
         kind: "rwatkins.MenuPane",
-        style: "height: 100%;",
+        fit: true,
+        //style: "height: 100%;",
         onViewChanged: "viewChangedHandler",
         onMenuOpened: "menuOpenedHandler",
         onMenuClosed: "menuClosedHandler",
@@ -51,9 +53,9 @@ enyo.kind({
                 onToggleSecondaryMenu: "toolbarToggleSecondaryMenuHandler",
                 classes: "toolbar"
             }, {
-                style: "clear: both;",
+                //style: "clear: both;",
                 classes: "content",
-                fit: !0,
+                fit: true,
                 kind: "FilledPanels"
             }]
         }, {
@@ -72,28 +74,13 @@ enyo.kind({
                 fit: !0,
                 multiselect: !1
             }]
-        }, {
-            name: "sense",
-            kind: "enyo.FittableRows",
-            fit: !0,
-            classes: "view",
-            components: [{
-                kind: "Toolbar",
-                onToggleMenu: "toolbarToggleMenuHandler",
-                onToggleSecondaryMenu: "toolbarToggleSecondaryMenuHandler",
-                classes: "toolbar"
-            }, {
-                name: "sensr",
-                classes: "content",
-                style: "height: 400px;",
-                kind: "enyo.Scroller",
-                components: [{
-                    kind: "TryComplexSensr",
-                    complex: !1
-                }]
-            }]
-        }]
-    }],
+        },
+        {name: "sense", kind: "enyo.FittableRows", classes: "view", components: [
+            {kind: "Toolbar", onToggleMenu: "toolbarToggleMenuHandler", onToggleSecondaryMenu: "toolbarToggleSecondaryMenuHandler", classes: "toolbar"},
+            {name: "sensr", kind: "TryComplexSensr", complex: false, fit: true}
+        ]}
+        ]}
+    ],
     unPop: function () {
         this.$.popup.setShowing(!1);
     },
@@ -101,18 +88,20 @@ enyo.kind({
         this.$.popup.setShowing(!1), this.$.popup.setShowing(!0);
     },
     renderScroller: function () {
-        this.$.sensr.render();
+        /*this.reflow();*/
+        //this.$.sensr.render();
     },
     openSense: function (a, b) {
         var c = b.originator;
         for (var d in c.tasks[0].questions) {
             if (c.tasks[0].questions[d].type.indexOf("complex") != -1) {
-                this.$.tryComplexSensr.complex = !0;
+                this.$.sensr.complex = true;
                 break;
             }
-            this.$.tryComplexSensr.complex = !1;
+            this.log(this.$);
+            this.$.sensr.complex = false;
         }
-        return this.$.tryComplexSensr.setTaskData(c), this.$.sensr.reflow(), this.$.menupane.selectView("sense"), !0;
+        return this.$.sensr.setTaskData(c), this.$.sensr.render(), this.$.menupane.selectView("sense"), !0;
     },
     closeSense: function (a, b) {
         return this.log(), this.$.menupane.selectView("campList"), !0;
@@ -133,6 +122,7 @@ enyo.kind({
         this.log();
     },
     toolbarToggleMenuHandler: function (a, b) {
-        this.log(), this.$.menupane.toggleMenu();
+        this.log();
+        this.$.menupane.toggleMenu();
     }
 });

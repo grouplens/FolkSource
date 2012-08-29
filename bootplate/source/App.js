@@ -1,10 +1,11 @@
 enyo.kind({
     name: "App",
-    style: "height: 100%; width: 100%;",
-    components: [{
-        kind: "Signals",
-        ondeviceready: "deviceReady"
-    }, {
-        kind: "CSenseMenuPane"
-    }]
+    //style: "",
+    //classes: "enyo-fit"
+    kind: "enyo.FittableRows",
+    components: [
+        {kind: "enyo.Signals", ondeviceready: "deviceReady"}, 
+        {kind: "CSenseMenuPane", fit: true}
+        //{kind: "BikeCounter"}
+    ]
 });

@@ -21,6 +21,7 @@ enyo.depends(
     "PinView.js",
     "Sensr.js",
     "SimpleSensr.js",
+    "TickerList.js",
     "Toolbar.js",
     "TryComplexSensr.js",
     "rok.geolocation.js"

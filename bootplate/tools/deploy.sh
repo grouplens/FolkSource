@@ -58,3 +58,6 @@ for i in "$SOURCE/lib/"*; do
 		cp -r "$i" "$TARGET/lib"
 	fi
 done
+
+echo "Copying to server"
+scp -r $TARGET/* summatusmentis.com://home/jts/sites/blog/csense

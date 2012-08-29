@@ -1,91 +1,50 @@
 enyo.kind({
     name: "TryComplexSensr",
-    kind: "enyo.Control",
-    style: "height: 100%;",
+    //kind: "enyo.Control",
+    kind: "enyo.FittableRows",
+    //style: "height: 100%;",
     published: {
         complex: !1
     },
     events: {
         onSubmisisonMade: "",
         on2DrawerClick: "",
-        onRenderScroller: ""
+        onRenderScroller: "",
     },
     handlers: {
         onSenseOpened: "openNext",
         onPhotoOk: "photoOk",
         onDeviceReady: "setReady",
         onGPSSet: "currentLocation",
-        onDrawerOk: "openDrawer2"
+        onDrawerOk: "openDrawer2",
+        onRenderDrawer: "renderDrawer2"
     },
-    components: [ {
-        kind: "enyo.Signals",
-        onGPSSet: "currentLocation",
-        onPinClicked: "chosenLocation",
-        onPhotoData: "photoData",
-        onButtonGroupChosen: "renderSubmitButton"
-    } ],
+    components: [
+        {kind: "enyo.Signals", onGPSSet: "currentLocation", onPinClicked: "chosenLocation", onPhotoData: "photoData", onButtonGroupChosen: "renderSubmitButton"},
+        //{name: "formDiv", fit: true, kind: "enyo.FittableRows", components: []}
+    ],
     create: function(a, b) {
-        this.devReady = !1, this.inherited(arguments), this.recreate();
+        this.devReady = !1;
+        this.inherited(arguments);
+        this.recreate();
+        this.log(this.$);
     },
     recreate: function() {
-        this.createComponent({
-            name: "formDiv",
-            kind: "enyo.FittableRows",
-            components: []
-        }), this.complex ? (this.$.formDiv.createComponent({
-            kind: "enyo.Scroller",
-            vertical: "scroll",
-            strategyKind: "TouchScrollStrategy",
-            name: "acc",
-            components: []
-        }), this.$.formDiv.$.acc.createComponent({
-            content: "Questions about you",
-            ontap: "activateFormDrawer",
-            classes: "accordionHeader"
-        }, {
-            owner: this
-        }), this.$.formDiv.$.acc.createComponent({
-            name: "qs",
-            kind: "onyx.Drawer",
-            open: !1,
-            components: [],
-            style: "white-space: nowrap; overflow: hidden;"
-        }), this.$.formDiv.$.acc.$.qs.createComponent({
-            name: "accordionItemContent",
-            components: []
-        })) : (this.$.formDiv.createComponent({
-            name: "qbody",
-            style: "height: 100%;",
-            components: []
-        }), this.$.formDiv.$.qbody.createComponent({
-            name: "imgDiv",
-            classes: "imgDiv",
-            components: []
-        }), this.$.formDiv.$.qbody.$.imgDiv.createComponent({
-            name: "photoButton",
-            kind: "onyx.Button",
-            content: "Take Photo",
-            style: "width: 100%;",
-            ontap: "retakePhoto",
-            classes: "onyx-affirmative"
-        }, {
-            owner: this
-        })), this.$.formDiv.createComponents([ {
-            kind: "onyx.Button",
-            classes: "onyx-negative",
-            content: "Cancel",
-            ontap: "close",
-            style: "width: 50%;"
-        }, {
-            name: "submit",
-            kind: "onyx.Button",
-            classes: "onyx-affirmative",
-            content: "Submit",
-            ontap: "buildAndSendSubmission",
-            style: "width: 50%;"
-        } ], {
-            owner: this
-        }), this.render();
+        this.createComponent({name: "formDiv", fit: true, kind: "enyo.FittableRows", components: []});
+        if(this.complex) {
+            this.$.formDiv.createComponent({kind: "enyo.Scroller", layoutKind: "enyo.FittableRowsLayout", /*fit: true,*/ vertical: "scroll",strategyKind: "TouchScrollStrategy",name: "acc",components: []});
+            this.$.formDiv.$.acc.createComponent({content: "Questions about you",ontap: "activateFormDrawer",classes: "accordionHeader"}, {owner: this});
+            this.$.formDiv.$.acc.createComponent({name: "qs",kind: "onyx.Drawer",open: false,components: [],style: "white-space: nowrap; overflow: hidden;"});
+            this.$.formDiv.$.acc.$.qs.createComponent({name: "accordionItemContent",components: []}) 
+        } else {
+            this.$.formDiv.createComponent({name: "qbody",/*style: "height: 100%;",*/ fit: true, components: []});
+            this.$.formDiv.$.qbody.createComponent({name: "imgDiv",classes: "imgDiv",components: []});
+            this.$.formDiv.$.qbody.$.imgDiv.createComponent({name: "photoButton",kind: "onyx.Button",content: "Take Photo",style: "width: 100%;",ontap: "retakePhoto",classes: "onyx-affirmative"}, {owner: this});
+        }
+        this.$.formDiv.createComponents([{kind: "onyx.Button", classes: "onyx-negative", content: "Cancel", ontap: "close", style: "width: 50%; bottom: 0;"},{name: "submit", kind: "onyx.Button", classes: "onyx-affirmative", content: "Submit", ontap: "buildAndSendSubmission", style: "width: 50%; bottom: 0;"}], {owner: this});
+        this.$.formDiv.reflow();
+        this.$.formDiv.render();
+        this.doRenderScroller();
     },
     activateFormDrawer: function(a, b) {
         a.addRemoveClass("accordionHeaderHighlight", !this.$.formDiv.$.acc.$.qs.open), this.$.formDiv.$.acc.$.qs.setOpen(!this.$.formDiv.$.acc.$.qs.open);
@@ -125,6 +84,9 @@ enyo.kind({
     renderSubmitButton: function(a, b) {
         this.$.submit.setDisabled(!1);
     },
+    renderDrawer2: function(inSender, inEvent) {
+        this.$.draw2.render();
+    },
     onPhotoFail: function(a) {
         console.log(a);
     },
@@ -137,25 +99,6 @@ enyo.kind({
     },
     photoOk: function() {
         return this.log(), !0;
-    },
-    utf8_encode: function(a) {
-        if (a === null || typeof a == "undefined") return "";
-        var b = a + "", c = "", d, e, f = 0;
-        d = e = 0, f = b.length;
-        for (var g = 0; g < f; g++) {
-            var h = b.charCodeAt(g), i = null;
-            h < 128 ? e++ : h > 127 && h < 2048 ? i = String.fromCharCode(h >> 6 | 192) + String.fromCharCode(h & 63 | 128) : i = String.fromCharCode(h >> 12 | 224) + String.fromCharCode(h >> 6 & 63 | 128) + String.fromCharCode(h & 63 | 128), i !== null && (e > d && (c += b.slice(d, e)), c += i, d = e = g + 1);
-        }
-        return e > d && (c += b.slice(d, f)), c;
-    },
-    encodeAsBase64: function(a) {
-        var b = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=", c, d, e, f, g, h, i, j, k = 0, l = 0, m = "", n = [];
-        if (!a) return a;
-        a = this.utf8_encode(a + "");
-        do c = a.charCodeAt(k++), d = a.charCodeAt(k++), e = a.charCodeAt(k++), j = c << 16 | d << 8 | e, f = j >> 18 & 63, g = j >> 12 & 63, h = j >> 6 & 63, i = j & 63, n[l++] = b.charAt(f) + b.charAt(g) + b.charAt(h) + b.charAt(i); while (k < a.length);
-        m = n.join("");
-        var o = a.length % 3;
-        return (o ? m.slice(0, o - 3) : m) + "===".slice(o || 3);
     },
     setTaskData: function(a) {
         this.task = a.tasks[0], this.campTitle = a.title, questionBody = [], this.$.formDiv.getComponents().length > 0 && (this.$.formDiv.destroyClientControls(), this.$.formDiv.destroy()), this.recreate(), this.complex ? questionBody.push(this.$.formDiv.$.acc.$.qs.$.accordionItemContent) : questionBody.push(this.$.formDiv.$.qbody);
@@ -218,7 +161,8 @@ enyo.kind({
                 default:
             }
         }
-        this.render(), this.doRenderScroller();
+        this.render();
+        this.doRenderScroller();
     },
     fileEntry: function(a) {
         window.resolveLocalFileSystemURI(a, this.getImageData, null);
@@ -434,14 +378,16 @@ enyo.kind({
         return b.join("|");
     },
     readFormCounter: function(a) {
-        var b = "", c = "counter_" + a.id;
+        var out;
+        c = "counter_" + a.id;
         for (var d in questionBody) {
             var e = questionBody[d].$[c];
             if (e === undefined) continue;
-            var f = e.getData();
-            this.log(f);
+            out = e.getData();
+            //this.log(f);
         }
-        return b;
+
+        return out.join("|");
     },
     readTime: function(a) {
         var b = "time_" + a.id;

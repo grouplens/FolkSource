@@ -1273,7 +1273,7 @@ table, tr, td {
 .accordionHeader {
     background-image: url(../assets/arrow.png);
     background-repeat: repeat-y;
-    height: 40px;
+    height: 30px;
 	position: relative;
 	vertical-align: middle;
 	font-size: 14px;
@@ -1283,9 +1283,10 @@ table, tr, td {
 	background-color: #152737;
 }
 .accordionHeaderHighlight {
-    background-position: 0px 40px;
+    background-position: 0px 30px;
 }
 .accordionContent div {
+    background-position: 0px 30px;
 	position: relative;
 	color: white;
 	background-color: #0B333E;
