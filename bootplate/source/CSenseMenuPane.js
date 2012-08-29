@@ -98,10 +98,12 @@ enyo.kind({
                 this.$.sensr.complex = true;
                 break;
             }
-            this.log(this.$);
             this.$.sensr.complex = false;
         }
-        return this.$.sensr.setTaskData(c), this.$.sensr.render(), this.$.menupane.selectView("sense"), !0;
+        this.$.sensr.setTaskData(c);
+        this.$.sensr.render();
+        this.$.menupane.selectView("sense");
+        return true;
     },
     closeSense: function (a, b) {
         return this.log(), this.$.menupane.selectView("campList"), !0;

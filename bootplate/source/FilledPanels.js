@@ -94,8 +94,22 @@ enyo.kind({
     },
     checkSides: function () {
         var a = this.$.panels.getIndex();
-        if (this.campaignArray != undefined) var b = this.campaignArray.length - 1;
-        a == 0 ? (this.$.rightButton.setDisabled(!1), this.$.leftButton.setDisabled(!0)) : a == b ? (this.$.leftButton.setDisabled(!1), this.$.rightButton.setDisabled(!0)) : (this.$.leftButton.setDisabled(!1), this.$.rightButton.setDisabled(!1));
+        var size = this.$.panels.getPanels().length;
+        if(size == 1) {
+            this.$.rightButton.setDisabled(true);
+            this.$.leftButton.setDisabled(true);
+        } else {
+            if (this.campaignArray != undefined) {
+                var b = this.campaignArray.length - 1;
+                if (a == 0) {
+                    this.$.rightButton.setDisabled(false);
+                    this.$.leftButton.setDisabled(true);
+                } else if (a == b) {
+                    this.$.rightButton.setDisabled(true);
+                    this.$.leftButton.setDisabled(false);
+                }
+            }
+        }
     },
     drawMap: function (a, b) {
         var c = this.$.panels.getPanels(),
