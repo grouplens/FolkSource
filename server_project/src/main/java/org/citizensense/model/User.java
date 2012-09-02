@@ -1,5 +1,6 @@
 package org.citizensense.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,7 +47,10 @@ public class User extends Dto{
 		this.points = points;
 	}
 	public List<Incentive> getTasks() {
-		return Arrays.asList(tasks);
+		if(tasks != null)
+			return Arrays.asList(tasks);
+		
+		return new ArrayList<Incentive>();
 	}
 	public void setTasks(List<Incentive> tasks) {
 		this.tasks = tasks.toArray(new Incentive[tasks.size()]);
