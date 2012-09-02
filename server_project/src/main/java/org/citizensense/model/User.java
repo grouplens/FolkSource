@@ -40,10 +40,10 @@ public class User extends Dto{
 	public void setName(String name) {
 		this.name = name;
 	}
-	public int getPoints() {
+	public Integer getPoints() {
 		return this.points;
 	}
-	public void setPoints(int points) {
+	public void setPoints(Integer points) {
 		this.points = points;
 	}
 	public List<Incentive> getTasks() {
