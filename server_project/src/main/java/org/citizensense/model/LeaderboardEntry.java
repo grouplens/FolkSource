@@ -24,6 +24,8 @@ public class LeaderboardEntry extends Dto implements Comparable<LeaderboardEntry
 	}
 
 	public Integer getPoints() {
+		if(points == null)
+			points = 0;
 		return points;
 	}
 
@@ -37,7 +39,6 @@ public class LeaderboardEntry extends Dto implements Comparable<LeaderboardEntry
 			return -1;
 		if (this.getPoints() < arg0.getPoints())
 			return 1;
-
 		return 0;
 	}
 
