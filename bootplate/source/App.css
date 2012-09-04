@@ -1202,12 +1202,8 @@ button.onyx-button.onyx-blue {
     display: clear;
     overflow-y: hidden;
 }
-.togButton {
-    //padding: 0.5%;
-}
 .campItem {
     padding: 20px;
-    //word-break: hyphenate;
     height: 20%;
 }
 .leaderItem {

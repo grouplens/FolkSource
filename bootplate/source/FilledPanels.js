@@ -1,6 +1,6 @@
 enyo.kind({
     name: "FilledPanels",
-    style: "height: 100%; z-index: -14; width: 100%;",
+    style: "z-index: -14;",
     events: {
         onSnapped: "",
         onPlaceChosen: ""

@@ -34,11 +34,12 @@ enyo.kind({
         this.refreshList();
     },
     getReversedIndex: function(inIndex) {
-        if(this.array != undefined) {
-            var count = this.array.length - 1; //adjust to start at 0
-            var i = count - inIndex; // start at the end
-            return i;
-        }
+        if(this.array !== undefined) {
+            //adjust for counting at 0, then start at end
+            return (this.array.length - 1) - inIndex;
+
+        } else 
+            return -1;
     },
     setupItem: function (a, b) {
         b.item.$.entry.setContent(this.array[this.getReversedIndex(b.index)]);

@@ -1,6 +1,5 @@
 enyo.kind({
     name: "CSenseMenuPane",
-    //classes: "enyo-fit",
     kind: "enyo.FittableRows",
     handlers: {
         onSuccessCode: "unPop",
@@ -12,73 +11,28 @@ enyo.kind({
     events: {
         onSenseOpened: ""
     },
-    components: [{
-        kind: "onyx.Popup",
-        centered: !0,
-        modal: !0,
-        autoDismiss: !1,
-        style: "position: fixed; z-index: 15;",
-        components: [{
-            kind: "CSenseLoginRegister"
-        }]
-    }, {
-        name: "menupane",
-        kind: "rwatkins.MenuPane",
-        fit: true,
-        //style: "height: 100%;",
-        onViewChanged: "viewChangedHandler",
-        onMenuOpened: "menuOpenedHandler",
-        onMenuClosed: "menuClosedHandler",
-        menu: [{
-            content: "I want to see:",
-            classes: "menu-header"
-        }, {
-            content: "Campaign List",
-            view: "campList",
-            classes: "menu-item"
-        }, {
-            name: "lb",
-            content: "Leaderboard",
-            view: "lboard",
-            classes: "menu-item"
-        }],
-        components: [{
-            name: "campList",
-            kind: "enyo.FittableRows",
-            classes: "view enyo-fit",
-            components: [{
-                kind: "Toolbar",
-                header: "Campaign List",
-                onToggleMenu: "toolbarToggleMenuHandler",
-                onToggleSecondaryMenu: "toolbarToggleSecondaryMenuHandler",
-                classes: "toolbar"
-            }, {
-                //style: "clear: both;",
-                classes: "content",
-                fit: true,
-                kind: "FilledPanels"
-            }]
-        }, {
-            name: "lboard",
-            kind: "enyo.FittableRows",
-            classes: "view enyo-fit",
-            components: [{
-                kind: "Toolbar",
-                header: "Leaderboard",
-                onToggleMenu: "toolbarToggleMenuHandler",
-                onToggleSecondaryMenu: "toolbarToggleSecondaryMenuHandler",
-                classes: "toolbar"
-            }, {
-                classes: "content",
-                kind: "LeaderboardList",
-                fit: !0,
-                multiselect: !1
-            }]
-        },
-        {name: "sense", kind: "enyo.FittableRows", classes: "view", components: [
-            {kind: "Toolbar", onToggleMenu: "toolbarToggleMenuHandler", onToggleSecondaryMenu: "toolbarToggleSecondaryMenuHandler", classes: "toolbar"},
-            {name: "sensr", kind: "TryComplexSensr", complex: false, fit: true}
-        ]}
+    components: [
+        {kind: "onyx.Popup", centered: true, modal: true, autoDismiss: false, style: "position: fixed; z-index: 15;", components: [
+            {kind: "CSenseLoginRegister"}
+        ]},
+        {name: "menupane", kind: "rwatkins.MenuPane", fit: true, onViewChanged: "viewChangedHandler", onMenuOpened: "menuOpenedHandler", onMenuClosed: "menuClosedHandler", menu: [
+            {content: "I want to see:", classes: "menu-header"},
+            {content: "Campaign List", view: "campList", classes: "menu-item"},
+            {name: "lb", content: "Leaderboard", view: "lboard",classes: "menu-item"}
+        ],
+        components: [
+            {name: "campList", kind: "enyo.FittableRows", classes: "view enyo-fit", components: [
+                {kind: "Toolbar", header: "Campaign List", onToggleMenu: "toolbarToggleMenuHandler", onToggleSecondaryMenu: "toolbarToggleSecondaryMenuHandler", classes: "toolbar"},
+                {classes: "content", fit: true,kind: "FilledPanels"}
+            ]},
+            {name: "lboard", kind: "enyo.FittableRows", classes: "view", components: [
+                {kind: "Toolbar", header: "Leaderboard", onToggleMenu: "toolbarToggleMenuHandler", onToggleSecondaryMenu: "toolbarToggleSecondaryMenuHandler", classes: "toolbar"},
+                {classes: "content", kind: "LeaderboardList", fit: true, multiselect: false}
+            ]},
+            {name: "sense", kind: "enyo.FittableRows", classes: "view enyo-fit", components: [
+                {kind: "Toolbar", onToggleMenu: "toolbarToggleMenuHandler", onToggleSecondaryMenu: "toolbarToggleSecondaryMenuHandler", classes: "toolbar"},
+                {name: "sensr", kind: "TryComplexSensr", fit: true, complex: false}
+            ]}
         ]}
     ],
     unPop: function () {

@@ -1,8 +1,7 @@
 enyo.kind({
     name: "TryComplexSensr",
-    //kind: "enyo.Control",
     kind: "enyo.FittableRows",
-    //style: "height: 100%;",
+    style: "background-color: #254048;",
     published: {
         complex: !1
     },
@@ -20,30 +19,27 @@ enyo.kind({
         onRenderDrawer: "renderDrawer2"
     },
     components: [
-        {kind: "enyo.Signals", onGPSSet: "currentLocation", onPinClicked: "chosenLocation", onPhotoData: "photoData", onButtonGroupChosen: "renderSubmitButton"},
-        //{name: "formDiv", fit: true, kind: "enyo.FittableRows", components: []}
+        {kind: "enyo.Signals", onGPSSet: "currentLocation", onPinClicked: "chosenLocation", onPhotoData: "photoData", onButtonGroupChosen: "renderSubmitButton"}
     ],
     create: function(a, b) {
-        this.devReady = !1;
         this.inherited(arguments);
         this.recreate();
-        this.log(this.$);
     },
     recreate: function() {
-        this.createComponent({name: "formDiv", fit: true, kind: "enyo.FittableRows", components: []});
+        this.createComponent({name: "formDiv", fit: true,/* kind: "enyo.FittableRows", */components: []});
         if(this.complex) {
-            this.$.formDiv.createComponent({kind: "enyo.Scroller", layoutKind: "enyo.FittableRowsLayout", /*fit: true,*/ vertical: "scroll",strategyKind: "TouchScrollStrategy",name: "acc",components: []});
+            this.$.formDiv.createComponent({kind: "enyo.Scroller", fit: true, layoutKind: "enyo.FittableRowsLayout", vertical: "scroll", strategyKind: "TouchScrollStrategy", name: "acc", components: []});
             this.$.formDiv.$.acc.createComponent({content: "Questions about you",ontap: "activateFormDrawer",classes: "accordionHeader"}, {owner: this});
             this.$.formDiv.$.acc.createComponent({name: "qs",kind: "onyx.Drawer",open: false,components: [],style: "white-space: nowrap; overflow: hidden;"});
             this.$.formDiv.$.acc.$.qs.createComponent({name: "accordionItemContent",components: []}) 
         } else {
-            this.$.formDiv.createComponent({name: "qbody",/*style: "height: 100%;",*/ fit: true, components: []});
+            this.$.formDiv.createComponent({name: "qbody", fit: true, components: []});
             this.$.formDiv.$.qbody.createComponent({name: "imgDiv",classes: "imgDiv",components: []});
             this.$.formDiv.$.qbody.$.imgDiv.createComponent({name: "photoButton",kind: "onyx.Button",content: "Take Photo",style: "width: 100%;",ontap: "retakePhoto",classes: "onyx-affirmative"}, {owner: this});
         }
         this.$.formDiv.createComponents([{kind: "onyx.Button", classes: "onyx-negative", content: "Cancel", ontap: "close", style: "width: 50%; bottom: 0;"},{name: "submit", kind: "onyx.Button", classes: "onyx-affirmative", content: "Submit", ontap: "buildAndSendSubmission", style: "width: 50%; bottom: 0;"}], {owner: this});
+        this.reflow();
         this.$.formDiv.reflow();
-        this.$.formDiv.render();
         this.doRenderScroller();
     },
     activateFormDrawer: function(a, b) {
@@ -162,7 +158,8 @@ enyo.kind({
             }
         }
         this.render();
-        this.doRenderScroller();
+        this.$.formDiv.$.acc.setFit(true);
+        //this.doRenderScroller();
     },
     fileEntry: function(a) {
         window.resolveLocalFileSystemURI(a, this.getImageData, null);
@@ -264,9 +261,6 @@ enyo.kind({
     },
     close: function() {
         this.bubble("onSubmissionMade");
-    },
-    setReady: function() {
-        this.devReady = !0;
     },
     testButtons: function(a, b) {
         enyo.Signals.send("onButtonGroupChosen", a);

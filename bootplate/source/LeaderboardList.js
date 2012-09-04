@@ -1,36 +1,38 @@
 enyo.kind({
     name: "LeaderboardList",
-    kind: "enyo.List",
-    style: "background-color: #254048;",
-    classes: "list",
-    components: [{
-        name: "item",
-        kind: "LeaderboardItem",
-        classes: "campItem"
-    }],
+    kind: "enyo.FittableRows",
+    components: [
+        {name: "list", style: "background-color: #254048;", kind: "enyo.List", count: 5, classes: "list", components: [
+            {name: "item", kind: "LeaderboardItem", classes: "campItem"}
+        ]}
+    ],
     handlers: {
         onSetupItem: "setupItem"
     },
     create: function (a) {
-        var b = Data.getURL() + "leaderboard.json",
-            c = new enyo.Ajax({
-                method: "GET",
-                cacheBust: !1,
-                url: b,
-                handleAs: "json"
-            });
-        c.response(this, "renderResponse"), c.go(), this.inherited(arguments);
+        var url = Data.getURL() + "leaderboard.json";
+        var req = new enyo.Ajax({method: "GET", cacheBust: !1, url: url, handleAs: "json"});
+        req.response(this, "renderResponse");
+        req.go();
+        this.inherited(arguments);
     },
     rendered: function () {
         this.inherited(arguments);
     },
-    renderResponse: function (a, b) {
-        this.leaderboardArray = b.leaderboardEntrys, this.refreshList();
+    renderResponse: function (inSender, inEvent) {
+        this.leaderboardArray = inEvent.leaderboardEntrys;
+        this.refreshList();
     },
-    setupItem: function (a, b) {
-        return this.$.item.setIndex(b.index), this.$.item.$.User.setContent(this.leaderboardArray[b.index].name), this.$.item.$.Points.setContent(this.leaderboardArray[b.index].points), !0;
+    setupItem: function (inSender, inEvent) {
+        this.$.item.setIndex(inEvent.index);
+        if(this.leaderboardArray != undefined) {
+            this.$.item.$.User.setContent(this.leaderboardArray[inEvent.index].name);
+            this.$.item.$.Points.setContent(this.leaderboardArray[inEvent.index].points);
+        }
+        return true;
     },
     refreshList: function () {
-        this.setCount(this.leaderboardArray.length), this.refresh();
+        this.$.list.setCount(this.leaderboardArray.length);
+        this.$.list.refresh();
     }
 });
