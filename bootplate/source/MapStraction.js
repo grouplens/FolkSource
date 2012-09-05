@@ -46,11 +46,7 @@ enyo.kind({
         this.log(marker);
         marker.setIcon('assets/myLoc.gif', 32, 0);
         this.straction.addMarker(marker, true);
-        if(this.firstTime) {
-            this.centerMap();
-            this.firstTime = true;
-        }
-        if(this.panZoomed) {
+        if(!this.panZoomed) {
             this.centerMap();
         }
         return true;
