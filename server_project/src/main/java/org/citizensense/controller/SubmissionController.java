@@ -57,10 +57,10 @@ public class SubmissionController implements ModelDriven<DtoContainer<Submission
 		return "index";
 	}
 	public String create() {
-		SubmissionService.save(content.getSingle());
 		HttpServletResponse res = ServletActionContext.getResponse();
 		res.addHeader("Access-Control-Allow-Origin", "*");
 		res.addIntHeader("points", SubmissionService.getSubUser(content.getSingle()).getPoints());
+		SubmissionService.save(content.getSingle());
 		return "create";//new DefaultHttpHeaders("create");
 	}
 	
