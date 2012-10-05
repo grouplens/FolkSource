@@ -59,5 +59,24 @@ for i in "$SOURCE/lib/"*; do
 	fi
 done
 
+if [ "$1" = 'web' ]; then
 echo "Copying to server"
 scp -r $TARGET/* summatusmentis.com://home/jts/sites/blog/csense
+fi
+
+if [ "$1" = 'android' ]; then
+echo "Copying to Android project"
+cp -r $TARGET/* ~/programming/csense_trunk/app_templates/CitizenSense_Android/assets/www
+
+echo "Deploying to Android project"
+~/programming/csense_trunk/app_templates/CitizenSense_Android/cordova/BOOM
+fi
+
+if [ "$1" = 'ios' ]; then
+echo "Copying to iOS project"
+cp -r $TARGET/* ~/programming/csense_trunk/app_templates/CitizenSense_iOS/www
+
+echo "Deploying to iOS project"
+~/programming/csense_trunk/app_templates/CitizenSense_iOS/cordova/debug
+~/programming/csense_trunk/app_templates/CitizenSense_iOS/cordova/emulate
+fi

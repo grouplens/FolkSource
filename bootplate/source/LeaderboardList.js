@@ -1,10 +1,10 @@
 enyo.kind({
     name: "LeaderboardList",
-    kind: "enyo.FittableRows",
+    kind: "enyo.List",
+    style: "background-color: #254048;", 
+    classes: "list",
     components: [
-        {name: "list", style: "background-color: #254048;", kind: "enyo.List", count: 5, classes: "list", components: [
-            {name: "item", kind: "LeaderboardItem", classes: "campItem"}
-        ]}
+        {name: "item", kind: "LeaderboardItem", classes: "campItem"}
     ],
     handlers: {
         onSetupItem: "setupItem"
@@ -32,7 +32,11 @@ enyo.kind({
         return true;
     },
     refreshList: function () {
-        this.$.list.setCount(this.leaderboardArray.length);
-        this.$.list.refresh();
+        this.setCount(this.leaderboardArray.length);
+        this.refresh();
+        this.render();
+        /*this.$.list.setCount(this.leaderboardArray.length);
+        this.$.list.refresh();*/
+        //this.parent.$.lboard.resized();
     }
 });

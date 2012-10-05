@@ -8,6 +8,7 @@ enyo.depends(
     "CSenseMenuPane.js",
     "CampaignItem.js",
     "CampaignList.js",
+    "ComplexSensr.js",
     "CountButton.js",
     "Counter.js",
     "Data.js",
@@ -22,6 +23,7 @@ enyo.depends(
     "Sensr.js",
     "SimpleSensr.js",
     "TickerList.js",
+    "Timer.js",
     "Toolbar.js",
     "TryComplexSensr.js",
     "rok.geolocation.js"

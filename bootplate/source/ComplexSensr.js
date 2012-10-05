@@ -1,8 +1,9 @@
 enyo.kind({
-    name: "TryComplexSensr",
-    style: "background-color: #254048;",
+    name: "ComplexSensr",
+    style: "background-color: #254048; color: white; border-color: white; height: 100%;",
     published: {
-        complex: !1
+        complex: false,
+        data: ""
     },
     events: {
         onSubmisisonMade: "",
@@ -13,50 +14,64 @@ enyo.kind({
         onSenseOpened: "openNext",
         onPhotoOk: "photoOk",
         onDeviceReady: "setReady",
-        onGPSSet: "currentLocation",
+        //onGPSSet: "currentLocation",
         onDrawerOk: "openDrawer2",
         onRenderDrawer: "renderDrawer2"
     },
     components: [
         {kind: "enyo.Signals", onGPSSet: "currentLocation", onPinClicked: "chosenLocation", onPhotoData: "photoData", onButtonGroupChosen: "renderSubmitButton"},
+        {name: "formDiv", layoutKind: "enyo.FittableRowsLayout", components: []},
+        {name: "buttons", classes: "senseButtons", components: [
+            {kind: "onyx.Button", classes: "onyx-negative", content: "Cancel", ontap: "close", style: "clear: left;"},
+            {name: "submit", kind: "onyx.Button", classes: "onyx-affirmative", content: "Submit", ontap: "buildAndSendSubmission", style: "clear: right;"}
+        ]}
     ],
     create: function(a, b) {
         this.inherited(arguments);
-        /*this.recreate();
-        this.doRenderScroller();*/
+        if(this.complex) {
+            this.$.formDiv.createComponent(
+                {kind: "enyo.FittableRows", /*fit: true,*/ kind: "enyo.Scroller", vertical: "scroll", strategyKind: "TranslateScrollStrategy", name: "acc", components: [
+                    {content: "Questions about you",ontap: "activateFormDrawer",classes: "accordionHeader"},
+                    {name: "qs",kind: "onyx.Drawer", fit: true, open: false, layoutKind: "enyo.FittableRowsLayout", style: "white-space: nowrap; overflow: scroll; height: 100%;",components: [
+                        {kind: "enyo.Scroller", layoutKind: "enyo.FittableRowsLayout", vertical: "scroll", strategyKind: "TranslateScrollStrategy", name: "accordionItemContent", style: "height: 293px;", components: []} 
+                    ]}
+                ]},
+                {owner: this}
+            );
+        } else {
+            this.$.formDiv.createComponent(
+                {name: "qbody", fit: true, components: [
+                    {name: "imgDiv",classes: "imgDiv",components: [
+                        {name: "photoButton",kind: "onyx.Button",content: "Take Photo",style: "width: 100%;",ontap: "retakePhoto",classes: "onyx-affirmative"}
+                    ]}
+                ]}
+            );
+        }
+        this.render();
+        this.setTaskData(this.data);
     },
     rendered: function(inSender, inEvent) {
         this.inherited(arguments);
-        this.log();
         this.resized();
         this.reflow();
     },
-    recreate: function() {
-        this.log();
-        this.createComponent({name: "formDiv", /*classes: "enyo-fit",*/ components: []});
-        if(this.complex) {
-            this.$.formDiv.createComponent({/*kind: "enyo.FittableRows", fit: true, */name: "acc", components: []});
-            this.$.formDiv.$.acc.createComponent({content: "Questions about you",ontap: "activateFormDrawer",classes: "accordionHeader"}, {owner: this});
-            this.$.formDiv.$.acc.createComponent({name: "qs",kind: "onyx.Drawer",open: false, /*layoutKind: "enyo.FittableRowsLayout",*/ components: [],style: "white-space: nowrap; overflow: scroll;"});
-            this.$.formDiv.$.acc.$.qs.createComponent({kind: "enyo.Scroller",/* fit: true, layoutKind: "enyo.FittableRowsLayout", */vertical: "scroll", strategyKind: "TranslateScrollStrategy", name: "accordionItemContent", components: []}) 
-        } else {
-            this.$.formDiv.createComponent({name: "qbody", fit: true, components: []});
-            this.$.formDiv.$.qbody.createComponent({name: "imgDiv",classes: "imgDiv",components: []});
-            this.$.formDiv.$.qbody.$.imgDiv.createComponent({name: "photoButton",kind: "onyx.Button",content: "Take Photo",style: "width: 100%;",ontap: "retakePhoto",classes: "onyx-affirmative"}, {owner: this});
-        }
-        this.$.formDiv.createComponents([{fit: true},{kind: "onyx.Button", classes: "onyx-negative", content: "Cancel", ontap: "close", style: "width: 50%; bottom: 0px; clear: left;"},{name: "submit", kind: "onyx.Button", classes: "onyx-affirmative", content: "Submit", ontap: "buildAndSendSubmission", style: "width: 50%; bottom: 0px; clear: right;"}], {owner: this});
-    },
     activateFormDrawer: function(a, b) {
-        a.addRemoveClass("accordionHeaderHighlight", !this.$.formDiv.$.acc.$.qs.open), this.$.formDiv.$.acc.$.qs.setOpen(!this.$.formDiv.$.acc.$.qs.open);
+        a.addRemoveClass("accordionHeaderHighlight", !this.$.qs.open), this.$.qs.setOpen(!this.$.qs.open);
     },
     activateFormDrawer2: function(a, b) {
         this.waterfall("on2DrawerClick");
     },
     openDrawer2: function(a, b) {
-        return this.$.draw2.addRemoveClass("accordionHeaderHighlight", !this.$.formDiv.$.acc.$.qs1.open), this.$.formDiv.$.acc.$.qs1.setOpen(!this.$.formDiv.$.acc.$.qs1.open), !0;
+        this.$.draw2.reflow();
+        this.$.draw2.addRemoveClass("accordionHeaderHighlight", !this.$.qs1.open);
+        this.$.qs1.setOpen(!this.$.qs1.open);
+        return true;
     },
-    currentLocation: function(a, b) {
-        this.gps_location = b.prop;
+    currentLocation: function() {
+    //currentLocation: function(inSender, inEvent) {
+        /*this.log(inEvent);
+        this.gps_location = inEvent.prop;
+        this.log(this.gps_location);*/
     },
     chosenLocation: function(a, b) {
         this.chosen_location = b;
@@ -85,6 +100,7 @@ enyo.kind({
         this.$.submit.setDisabled(!1);
     },
     renderDrawer2: function(inSender, inEvent) {
+        this.$.draw2.reflow();
         this.$.draw2.render();
     },
     onPhotoFail: function(a) {
@@ -108,9 +124,8 @@ enyo.kind({
             this.$.formDiv.destroyClientControls();
             this.$.formDiv.destroy()
         }
-        this.recreate();
         if(this.complex)
-            questionBody.push(this.$.formDiv.$.acc.$.qs.$.accordionItemContent);
+            questionBody.push(this.$.accordionItemContent);
         else
             questionBody.push(this.$.formDiv.$.qbody);
 
@@ -123,29 +138,17 @@ enyo.kind({
                 if (d != -1) var e = type.charAt(d);
                 if (e != questionBody.length && this.complex) {
                     var f = "qs" + (e + 1);
-                    this.$.formDiv.$.acc.createComponent({
-                        name: "draw2",
-                        content: "Count Bicycles and/or Pedestrians",
-                        ontap: "activateFormDrawer2",
-                        classes: "accordionHeader"
-                    }, {
-                        owner: this
-                    });
-                    this.$.formDiv.$.acc.createComponent({
-                        name: f,
-                        kind: "onyx.Drawer",
-                        open: !1,
-                        components: [],
-                        style: "white-space: nowrap; overflow: hidden;"
-                    });
-                    this.$.formDiv.$.acc.$[f].createComponent({
-                        name: "accordionItemContent",
-                        components: []
-                    });
-                    /*this.$.formDiv.resized();
-                    this.$.formDiv.reflow();
-                    this.render();*/
-                    questionBody.push(this.$.formDiv.$.acc.$[f].$.accordionItemContent);
+                    this.$.formDiv.createComponent(
+                        {name: "draw2", content: "Count Bicycles and/or Pedestrians", ontap: "activateFormDrawer2", classes: "accordionHeader"},
+                        {owner: this}
+                    );
+                    this.$.formDiv.createComponent(
+                        {name: f, kind: "onyx.Drawer", open: !1, style: "white-space: nowrap; overflow: hidden;", components: [
+                            {name: "accordionItemContent2", components: []}
+                        ]},
+                        {owner: this}
+                    );
+                    questionBody.push(this.$.accordionItemContent2);
                 }
             }
             switch (type) {
@@ -180,6 +183,8 @@ enyo.kind({
             }
         }
         this.render();
+        this.$.accordionItemContent.resized();
+        this.$.accordionItemContent.reflow();
         /*this.$.formDiv.resized();
         this.$.formDiv.reflow();*/
     },
@@ -217,16 +222,19 @@ enyo.kind({
         if (!this.$.submit.disabled) {
             this.complex || this.fileEntry(this.$.imgDiv.$.myImage.src);
             if (this.imageOK ? !this.complex : this.complex) {
-                var a = {
-                    submission: {
-                        task_id: this.task.id,
-                        gps_location: "testy test",
-                        user_id: 5,
-                        img_path: "test",
-                        answers: []
-                    }
-                }, b = this.gps_location.latitude + "|" + this.gps_location.longitude;
-                a.submission.gps_location = b, a.submission.user_id = LocalStorage.get("user");
+                var a = {submission: {
+                            task_id: this.task.id,
+                            gps_location: "testy test",
+                            user_id: 5,
+                            img_path: "test",
+                            answers: []
+                            }
+                        };
+                var gps_location = Data.getLocationData();
+                var b = gps_location.latitude + "|" + gps_location.longitude;
+                a.submission.gps_location = b;
+                a.submission.user_id = LocalStorage.get("user");
+
                 for (i in this.task.questions) {
                     var c = this.task.questions[i];
                     type = c.type;
@@ -286,6 +294,29 @@ enyo.kind({
         this.bubble("onSubmissionMade");
     },
     testButtons: function(a, b) {
+        var controls = questionBody[0].$.groupbox.getControls();
+        var inName = a.getContent();
+        var b = true;
+        var p = true;
+        if(inName === "Bicycles") {
+            b = true;
+            p = false;
+        } else if (inName === "Pedestrians") {
+            b = false;
+            p = true;
+        }  else if (inName === "Both") {
+            p = true;
+            b = true;
+        }
+
+        for (var i in controls) {
+            var num = controls[i].name.split("_")[1];
+            this.$["checkbox_"+num].setDisabled(false);
+            if(controls[i].getContent() === "Helmet" && !b)
+                this.$["checkbox_"+num].setDisabled(true);
+            else if(controls[i].getContent() === "Assistive" && !p)
+                this.$["checkbox_"+num].setDisabled(true);
+        }
         enyo.Signals.send("onButtonGroupChosen", a);
     },
     newFormText: function(a) {
@@ -303,18 +334,13 @@ enyo.kind({
         }, {
             owner: questionBody[0]
         });
-        /*this.$.formDiv.resized();
-        this.$.formDiv.reflow();*/
-        /*questionBody[0].resized();
-        questionBody[0].reflow();
-        questionBody[0].render();*/
     },
     newFormExclusiveChoice: function(a) {
         var b = "input_" + a.id, c = a.options.split("|"), d = [];
         for (i in c) i == 0 ? d.push({
             content: c[i],
             active: !0,
-            ontap: "testButton"
+            ontap: "testButtons"
         }) : d.push({
             content: c[i],
             ontap: "testButtons"
@@ -326,11 +352,6 @@ enyo.kind({
         }, {
             owner: this
         });
-        /*this.$.formDiv.resized();
-        this.$.formDiv.reflow();*/
-        /*questionBody[0].resized();
-        questionBody[0].reflow();
-        questionBody[0].render();*/
     },
     newTime: function(a) {
         var b = new Date, c = b.toTimeString().split(" ")[0], d = "time_" + a.id;
@@ -341,11 +362,6 @@ enyo.kind({
             content: c,
             time: b.toTimeString()
         });
-        /*this.$.formDiv.resized();
-        this.$.formDiv.reflow();*/
-        /*questionBody[0].resized();
-        questionBody[0].reflow();
-        questionBody[0].render();*/
     },
     newFormMultipleChoice: function(a) {
         var b = a.options.split("|");
@@ -365,19 +381,13 @@ enyo.kind({
                 style: "float: left; clear: left;"
             }, {
                 owner: this
-            }), questionBody[0].$.groupbox.createComponent({
+            });
+            questionBody[0].$.groupbox.createComponent({
                 name: d,
                 content: b[i],
                 style: "float: left; clear: right;"
-            }), questionBody[0].$.groupbox.createComponent({
-                tag: "br"
             });
         }
-        /*this.$.formDiv.resized();
-        this.$.formDiv.reflow();*/
-        /*questionBody[0].resized();
-        questionBody[0].reflow();
-        questionBody[0].render();*/
     },
     newFormCounter: function(a) {
         var b = "name_" + a.id, c = "counter_" + a.id, d;
@@ -393,9 +403,6 @@ enyo.kind({
             title: a.question,
             style: "clear: both;"
         }); 
-        /*questionBody[1].resized();
-        questionBody[1].reflow();
-        questionBody[1].render();*/
         } else {
             questionBody[2].createComponent({
             name: c,
@@ -403,9 +410,6 @@ enyo.kind({
             title: a.question,
             style: "clear: both;"
         });
-        /*questionBody[2].resized();
-        questionBody[2].reflow();
-        questionBody[2].render();*/
         }
     },
     readFormText: function(a) {
@@ -429,10 +433,11 @@ enyo.kind({
         c = "counter_" + a.id;
         for (var d in questionBody) {
             var e = questionBody[d].$[c];
+            this.log(e);
             if (e === undefined) continue;
             out = e.getData();
-            //this.log(f);
         }
+        this.log(out);
 
         return out.join("|");
     },

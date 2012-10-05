@@ -2,11 +2,8 @@ enyo.kind({
     name: "CountButton",
     kind: "onyx.Button",
     classes: "tableButton",
-    events: {
-        onCountButtonTapped: ""
-    },
     handlers: {
-        ontap: "up"
+        ontap: "increment"
     },
     components: [{
         name: "num",
@@ -16,10 +13,18 @@ enyo.kind({
     create: function (a, b) {
         this.inherited(arguments);
     },
-    up: function () {
-        this.$.num.setContent(this.$.num.getContent() + 1);
-        this.doCountButtonTapped();
+    rendered: function (inSender, inEvent) {
     },
+    increment: function () {
+        //this.log(this);
+        this.$.num.setContent(this.$.num.getContent() + 1);
+        //this.render();
+    },
+    decrement: function() {
+        if(Number(this.$.num.getContent()) > 0) 
+            this.$.num.setContent(this.$.num.getContent() - 1);
+    },
+
     getCount: function () {
         return this.storage != undefined ? this.storage.join() : 0;
     }

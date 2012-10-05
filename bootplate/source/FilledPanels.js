@@ -9,45 +9,15 @@ enyo.kind({
         onLoaded: "drawMap",
         onDoObservation: "hidePopup"
     },
-    components: [{
-        name: "mapUp",
-        kind: "onyx.Popup",
-        style: "width: 80%; position: fixed; z-index: 2;",
-        classes: "onyx-popup",
-        centered: !0,
-        floating: !0,
-        modal: !0,
-        components: [{
-            name: "pview",
-            kind: "PinView"
-        }]
-    }, {
-        name: "leftButton",
-        kind: "onyx.Button",
-        content: "<",
-        slide: "prev",
-        ontap: "buttonTapHandler",
-        classes: "filledButtons",
-        disabled: !0
-    }, {
-        name: "panels",
-        kind: "Panels",
-        arrangerKind: "CarouselArranger",
-        onTransitionFinish: "transitionFinishHandler",
-        onTransitionStart: "transitionStartHandler",
-        classes: "filledPanels",
-        components: []
-    }, {
-        name: "rightButton",
-        kind: "onyx.Button",
-        content: ">",
-        slide: "next",
-        ontap: "buttonTapHandler",
-        classes: "filledButtons"
-    }, {
-        kind: "Signals",
-        onPinClicked: "popupTriggered"
-    }],
+    components: [
+        {name: "mapUp", kind: "onyx.Popup", style: "width: 80%; position: fixed; z-index: 2;", classes: "onyx-popup", centered: !0, floating: !0, modal: !0,components: [
+            {name: "pview", kind: "PinView"}]
+    },
+    {name: "leftButton", kind: "onyx.Button", content: "<", slide: "prev", ontap: "buttonTapHandler", classes: "filledButtons", disabled: !0},
+    {name: "panels", kind: "Panels", arrangerKind: "CarouselArranger", onTransitionFinish: "transitionFinishHandler", onTransitionStart: "transitionStartHandler",classes: "filledPanels", layoutKind: "enyo.FittableRowsLayout", components: []},
+    {name: "rightButton", kind: "onyx.Button", content: ">", slide: "next", ontap: "buttonTapHandler", classes: "filledButtons"}, 
+    {kind: "Signals", onPinClicked: "popupTriggered"}
+    ],
     create: function (a, b) {
         var c = Data.getURL() + "campaign.json",
             d = new enyo.Ajax({
@@ -61,24 +31,12 @@ enyo.kind({
     renderResponse: function (a, b) {
         this.campaignArray = b.campaigns;
         for (var c in this.campaignArray) {
-            var d = this.campaignArray[c],
-                e = "panel_" + d.id,
-                f = "item_" + d.id,
-                g = "map_" + d.id;
-            this.$.panels.createComponent({
-                name: e,
-                classes: "panelItem",
-                components: [{
-                    name: f,
-                    kind: "CampaignItem",
-                    title: "" + d.title,
-                    description: "" + d.description
-                }, {
-                    name: g,
-                    kind: "MapStraction",
-                    provider: "openlayers"
-                }]
-            }), this.render();
+            var d = this.campaignArray[c];
+            var e = "panel_" + d.id;
+            var f = "item_" + d.id;
+            var g = "map_" + d.id;
+            this.$.panels.createComponent({name: e, classes: "panelItem", layoutKind: "enyo.FittableRowsLayout", components: [{name: f, kind: "CampaignItem", title: "" + d.title, description: "" + d.description}, {name: g, fit: true, kind: "MapStraction", provider: "openlayers", style: "width: 100%; overflow: hidden;"}]});
+            this.render();
         }
     },
     buttonTapHandler: function (a, b) {

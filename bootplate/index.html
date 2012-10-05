@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Enyo Bootplate App</title>
+        <title>CitizenSense .beta.</title>
         <link rel="shortcut icon" href="assets/favicon.ico">
         <!-- -->
         <meta http-equiv="Content-Type" content="text/html; charset=utf8">
@@ -12,7 +12,7 @@
         <link href="build/app.css" rel="stylesheet">
         <!-- js -->
         <script src="build/enyo.js"></script>
-        <script src="cordova-1.8.1.js" type="text/javascript"></script>
+        <script type="text/javascript" charset="utf-8" src="cordova-2.0.0.js"></script>
         <script src="build/app.js" onerror="alert('No application build found, redirecting to debug.html.'), location='debug.html';"></script>
 
         <!-- <script src='OpenLayers-2.12/OpenLayers.mobile.js'></script> -->
@@ -24,14 +24,8 @@
     <body class="enyo-unselectable">
         <script>
             enyo.dispatcher.listen(document, "deviceready");
-			function onStart ( touchEvent ) {
-			  if(enyo.platform.android) {
-                //touchEvent.stopPropagation();
-			    touchEvent.preventDefault();
-                return true;
-			  }
-			}
-            new App().renderInto(document.body);
+            new FilledPanels().renderInto(document.body);
+            //new App({fit: true}).renderInto(document.body);
         </script>
     </body>
 </html>

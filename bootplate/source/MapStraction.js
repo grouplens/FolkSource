@@ -1,17 +1,13 @@
 enyo.kind({
     name: "MapStraction",
     classes: "mapItem hideMap",
-    //kind: "enyo.FittableRows",
-    style: "height: 450px; width: 450px; overflow: hidden; z-index: 5;",
+    style: "overflow: hidden; z-index: 5;",
     published: {
         provider: "googlev3",
         gpsTimeout: "10000"
     },
     components: [
         {name: "gps", kind: "rok.geolocation", watch: !0, enableHighAccuracy: !0,timeout: this.gpsTimeout, maximumAge: "3000", onSuccess: "locSuccess", onError: "locError"},
-        /*{kind: "enyo.FittableColumns", fit: true, components: [
-            {name: "map", fit: true}
-        ]}*/
     ],
     events: {
         onLoaded: "",
@@ -33,25 +29,23 @@ enyo.kind({
         this.notShowing = true;
     },
     rendered: function () {
-        //this.log(this.$.map.id);
         this.straction = new mxn.Mapstraction(this.id, this.provider);
-        //this.straction = new mxn.Mapstraction(this.$.map.id, this.provider);
         this.straction.addControls({zoom: "mobile"});
         this.straction.load.addHandler(enyo.bind(this, "makeBubbleLoad")), this.straction.changeZoom.addHandler(enyo.bind(this, "makeFilter")), this.straction.endPan.addHandler(enyo.bind(this, "makeFilter")), this.inherited(arguments), this.$.gps.getPosition();
     },
     locSuccess: function (a, b) {
-        this.myLocation = b.coords;
-        enyo.Signals.send("onGPSSet", {prop: this.myLocation});
-        var marker = new mxn.Marker(new mxn.LatLonPoint(b.coords.longitude, b.coords.latitude));
-        this.log(marker);
-        marker.setIcon('assets/myLoc.gif', 32, 0);
-        this.straction.addMarker(marker, true);
+		Data.setLocationData(b.coords);
+        /*this.myLocation = b.coords;
+		this.log(this.myLocation);
+        enyo.Signals.send("onGPSSet", {prop: this.myLocation});*/
         if(!this.panZoomed) {
             this.centerMap();
         }
         return true;
     },
-    locError: function (a, b) {},
+    locError: function (a, b) {
+		this.log();
+	},
     checkMap: function (a) {
         this.straction.markers.length !== a.split("|").length && (this.locPlot(a), this.makeFilter());
     },
@@ -82,7 +76,7 @@ enyo.kind({
             for (x in this.locations) {
                 var a = this.locations[x].split(",");
                 var b = new mxn.Marker(new mxn.LatLonPoint(a[1], a[0]));
-                b.addData({hover: !1});
+                b.addData({hover: false});
                 b.setAttribute("lat", a[1]);
                 b.setAttribute("lon", a[0]);
                 b.click.addHandler(function (a, b) {enyo.Signals.send("onPinClicked", b.location);});
@@ -91,8 +85,9 @@ enyo.kind({
         }
     },
     centerMap: function () {
-        var a = new mxn.LatLonPoint(this.myLocation.latitude, this.myLocation.longitude);
-        this.straction.setCenterAndZoom(a, 15);
+		var myLocation = Data.getLocationData();
+		var a = new mxn.LatLonPoint(myLocation.latitude, myLocation.longitude);
+		this.straction.setCenterAndZoom(a, 15);
     },
     makeBubbleClick: function (a, b) {
         enyo.Signals.send("onPinClicked", b.location);

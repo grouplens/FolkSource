@@ -4,6 +4,10 @@ enyo.kind({
     components: [
         {kind: "enyo.Signals", ondeviceready: "deviceReady"}, 
         {kind: "CSenseMenuPane", fit: true}
-        //{kind: "BikeCounter"}
-    ]
+        //{kind: "Timer", fit: true}
+    ],
+    create: function(inSender, inEvent) {
+        this.inherited(arguments);
+        LocalStorage.remove("loc");
+    }
 });
