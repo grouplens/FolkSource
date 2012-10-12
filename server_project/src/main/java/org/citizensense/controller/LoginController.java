@@ -1,5 +1,6 @@
 package org.citizensense.controller;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
@@ -59,12 +60,19 @@ public class LoginController implements ModelDriven<User>{
 //				return doing nothing
 //			else
 //				store user in session
+//			Cookie c = new Cookie("data", "points:" + u.getPoints() + "|uid:" + u.getId());
+//			response.addHeader("Set-Cookie", "points="+u.getPoints()+";uid="+ u.getId());
+//			response.addCookie(c);
 			response.addHeader("Access-Control-Allow-Origin", "*");
-			response.addHeader("Access-Control-Expose-Headers", "points");
-			response.addHeader("Access-Control-Expose-Headers", "uid");
+			response.addHeader("Access-Control-Expose-Headers", "X-Points");
+			response.addHeader("Access-Control-Expose-Headers", "X-Uid");
+			
+			
+			response.addHeader("Access-Control-Allow-Headers", "X-Points");
+			response.addHeader("Access-Control-Allow-Headers", "X-Uid");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.addIntHeader("points", u.getPoints());
-			response.addIntHeader("uid", u.getId());
+			response.addHeader("X-Points", u.getPoints().toString());
+			response.addHeader("X-Uid", u.getId().toString());
 			return "login_success";
 		} else {
 			// bad password
