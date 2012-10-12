@@ -60,6 +60,8 @@ public class LoginController implements ModelDriven<User>{
 //			else
 //				store user in session
 			response.addHeader("Access-Control-Allow-Origin", "*");
+			response.addHeader("Access-Control-Expose-Headers", "points");
+			response.addHeader("Access-Control-Expose-Headers", "uid");
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.addIntHeader("points", u.getPoints());
 			response.addIntHeader("uid", u.getId());

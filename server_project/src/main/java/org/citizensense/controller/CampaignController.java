@@ -26,6 +26,7 @@ public class CampaignController implements ModelDriven<DtoContainer<Campaign>>{
 	
 	public String show() {
 		HttpServletResponse res = ServletActionContext.getResponse();
+		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "ugly.cs.umn.edu:8080");
 		//res.addHeader("Access-Control-Allow-Methods", "GET");
 		for (Campaign c : CampaignService.getCampaigns())
@@ -50,6 +51,7 @@ public class CampaignController implements ModelDriven<DtoContainer<Campaign>>{
 		//list = CampaignService.getCampaigns();
 		//return new DefaultHttpHeaders("index").disableCaching();
 		HttpServletResponse res = ServletActionContext.getResponse();
+		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "*");
 		content = new DtoContainer<Campaign>(Campaign.class, true);
 		content.set(CampaignService.getCampaigns());
@@ -59,6 +61,7 @@ public class CampaignController implements ModelDriven<DtoContainer<Campaign>>{
 	public HttpHeaders create()
 	{
 		HttpServletResponse res = ServletActionContext.getResponse();
+		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "*");
 		CampaignService.save(content.getSingle());
 		return new DefaultHttpHeaders("create");
