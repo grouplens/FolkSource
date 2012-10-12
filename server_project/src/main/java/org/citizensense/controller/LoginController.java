@@ -63,6 +63,7 @@ public class LoginController implements ModelDriven<User>{
 //			Cookie c = new Cookie("data", "points:" + u.getPoints() + "|uid:" + u.getId());
 //			response.addHeader("Set-Cookie", "points="+u.getPoints()+";uid="+ u.getId());
 //			response.addCookie(c);
+			response.addHeader("Allow", "*");
 			response.addHeader("Access-Control-Allow-Origin", "*");
 			response.addHeader("Access-Control-Expose-Headers", "X-Points");
 			response.addHeader("Access-Control-Expose-Headers", "X-Uid");
