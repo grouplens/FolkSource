@@ -38,6 +38,7 @@ public class SubmissionService {
 
 	public static User getSubUser(Submission submission) {
 		Session session = HibernateUtil.getSession(false);
+		System.out.println("CITIZENSENSE - " + submission.getUser_id());
 		List<User> users = session.createQuery("from User where id=" + submission.getUser_id()).list();
 		return users.get(0);
 	}
