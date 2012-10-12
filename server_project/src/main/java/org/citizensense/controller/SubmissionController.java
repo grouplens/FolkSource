@@ -60,11 +60,24 @@ public class SubmissionController implements ModelDriven<DtoContainer<Submission
 	}
 	public String create() {
 		HttpServletResponse res = ServletActionContext.getResponse();
-		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "*");
 		res.addIntHeader("points", SubmissionService.getSubUser(content.getSingle()).getPoints());
 		SubmissionService.save(content.getSingle());
 		return "create";//new DefaultHttpHeaders("create");
+	}
+	
+	/*
+	 * REVISIT THIS WHEN WE DEPLOY TO REAL DEVICES, NEEDED FOR NOW ON iOS
+	 */
+	public String options() {
+		HttpServletResponse res = ServletActionContext.getResponse();
+		res.addHeader("Allow", "*");
+		res.addHeader("Access-Control-Allow-Origin", "*");
+//		res.addHeader("Access-Control-Allow-Methods", "GET, POST");
+		res.addHeader("Access-Control-Allow-Headers", "points");
+		res.addHeader("Access-Control-Allow-Headers", "uid");
+		res.addHeader("Access-Control-Allow-Headers", "Content-Type");
+		return "options";
 	}
 	
 //	 public String create() {
