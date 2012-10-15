@@ -81,4 +81,17 @@ public class LoginController implements ModelDriven<User>{
 			return "login_wrong_password";
 		}
 	}
+	
+	public String options() {
+		HttpServletResponse res = ServletActionContext.getResponse();
+		res.addHeader("Allow", "*");
+		res.addHeader("Access-Control-Allow-Origin", "*");
+		res.addHeader("Access-Control-Expose-Headers", "points");
+		res.addHeader("Access-Control-Expose-Headers", "uid");
+//		res.addHeader("Access-Control-Allow-Methods", "GET, POST");
+		res.addHeader("Access-Control-Allow-Headers", "points");
+		res.addHeader("Access-Control-Allow-Headers", "uid");
+		res.addHeader("Access-Control-Allow-Headers", "Content-Type");
+		return "options";
+	}
 }
