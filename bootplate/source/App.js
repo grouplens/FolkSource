@@ -8,6 +8,8 @@ enyo.kind({
     ],
     create: function(inSender, inEvent) {
         this.inherited(arguments);
+		this.log(LocalStorage.get("user"));
+		this.log(LocalStorage.get("points"));
         LocalStorage.remove("loc");
     }
 });

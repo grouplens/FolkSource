@@ -19,7 +19,8 @@ enyo.kind({
         style: "padding-top: 4px"
     }],
     create: function () {
-        this.inherited(arguments), this.headerChanged();
+        this.inherited(arguments);
+		this.headerChanged();
     },
     headerChanged: function () {
         this.$.header.setContent(this.getHeader());

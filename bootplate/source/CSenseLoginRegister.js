@@ -154,7 +154,9 @@ enyo.kind({
             this.register && (a = "user?", a += "email=" + this.$.email.getValue() + "&"), a += "name=" + this.$.username.getValue() + "&", a += "password=" + this.$.password.getValue();
             var b = (new enyo.Ajax({
                 method: "POST",
-                url: "http://ugly.cs.umn.edu:8080/csense/" + a,
+                url: Data.getURL() + a,
+				headers: {"Cache-Control": "no-cache"},
+				cacheBust: true,
                 handleAs: "text"
             })).go().response(this, "handleResponse");
         }
@@ -162,10 +164,20 @@ enyo.kind({
     handleResponse: function (a, b) {
         if (a.xhr.status === 200) {
             this.log("WEEE");
-            var c = a.xhr.getResponseHeader("points"),
-                d = a.xhr.getResponseHeader("uid");
-            LocalStorage.set("points", c), LocalStorage.set("user", d), this.$.memoryBox.getValue() && LocalStorage.set("remember", !0), this.bubble("onSuccessCode");
-        } else this.log(JSON.stringify(a)), this.log(a.xhr.status), this.log("BOOO"), this.doFailureCode();
+			this.log(a.xhr.getAllResponseHeaders());
+            var c = a.xhr.getResponseHeader("X-Points");
+            var d = a.xhr.getResponseHeader("X-Uid");
+            LocalStorage.set("points", c);
+			LocalStorage.set("user", d);
+			if(this.$.memoryBox.getValue())
+				LocalStorage.set("remember", !0);
+			this.bubble("onSuccessCode");
+        } else {
+			this.log(JSON.stringify(a));
+			this.log(a.xhr.status);
+			this.log("BOOO");
+			this.doFailureCode();
+		}
     },
     emailRegexCheck: function () {
         var a = /^\w+([\.\+]\w+)*@\w+(\.\w+)*(\.\w{2,})$/;

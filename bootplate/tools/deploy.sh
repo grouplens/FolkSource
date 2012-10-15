@@ -64,6 +64,11 @@ echo "Copying to server"
 scp -r $TARGET/* summatusmentis.com://home/jts/sites/blog/csense
 fi
 
+if [ "$1" = 'lweb' ]; then
+echo "Copying to local server"
+cp -R $TARGET/* ~/Sites
+fi
+
 if [ "$1" = 'android' ]; then
 echo "Copying to Android project"
 cp -r $TARGET/* ~/programming/csense_trunk/app_templates/CitizenSense_Android/assets/www

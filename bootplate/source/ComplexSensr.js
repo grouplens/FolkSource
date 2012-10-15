@@ -285,7 +285,16 @@ enyo.kind({
         }
     },
     handlePostResponse: function(a, b) {
-        this.log("SERVER RESPONSE CAME BACK"), this.bubble("onSubmissionMade"), this.camComplete = !1, this.$.submit.setDisabled(!0), this.chosen_location = undefined, LocalStorage.remove("image"), this.imageOK = !1, !this.complex && this.$.imgDiv.getComponents().length > 0 && this.$.imgDiv.destroyComponents();
+        this.log("SERVER RESPONSE CAME BACK");
+		this.log(JSON.stringify(a.xhr.responseText));
+		this.bubble("onSubmissionMade");
+		this.camComplete = !1;
+		this.$.submit.setDisabled(!0);
+		this.chosen_location = undefined;
+		LocalStorage.remove("image");
+		this.imageOK = !1;
+		if(!this.complex && this.$.imgDiv.getComponents().length > 0)
+			this.$.imgDiv.destroyComponents();
     },
     imageSubmission: function(a, b) {
         this.log(JSON.stringify(a)), this.log(JSON.stringify(b));

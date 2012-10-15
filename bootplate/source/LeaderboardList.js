@@ -20,8 +20,8 @@ enyo.kind({
         this.inherited(arguments);
     },
     renderResponse: function (inSender, inEvent) {
-        this.leaderboardArray = inEvent.leaderboardEntrys;
-        this.refreshList();
+		this.leaderboardArray = inEvent.leaderboardEntrys;
+		this.refreshList();
     },
     setupItem: function (inSender, inEvent) {
         this.$.item.setIndex(inEvent.index);
