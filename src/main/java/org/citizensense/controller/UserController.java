@@ -114,15 +114,28 @@ public class UserController implements ModelDriven<User> {
 
 			UserService.save(user);
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.addIntHeader("points", 0);
+			response.addIntHeader("X-Points", 0);
 			//may not work
-			response.addIntHeader("uid", user.getId());
+			response.addIntHeader("X-Uid", user.getId());
 			return "register_success";
 		} else {
 			// user name does exist, couldn't register
 			response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
 			return "register_fail";
 		}
+	}
+	
+	public String options() {
+		HttpServletResponse res = ServletActionContext.getResponse();
+		res.addHeader("Allow", "*");
+		res.addHeader("Access-Control-Allow-Origin", "*");
+		res.addHeader("Access-Control-Expose-Headers", "X-Points");
+		res.addHeader("Access-Control-Expose-Headers", "X-Uid");
+//		res.addHeader("Access-Control-Allow-Methods", "GET, POST");
+		res.addHeader("Access-Control-Allow-Headers", "X-Points");
+		res.addHeader("Access-Control-Allow-Headers", "X-Uid");
+		res.addHeader("Access-Control-Allow-Headers", "Content-Type");
+		return "success";
 	}
 	
 
