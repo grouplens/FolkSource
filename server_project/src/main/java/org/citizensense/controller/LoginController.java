@@ -73,7 +73,7 @@ public class LoginController implements ModelDriven<User>{
 			response.addHeader("Access-Control-Allow-Headers", "X-Points");
 			response.addHeader("Access-Control-Allow-Headers", "X-Uid");
 			response.addHeader("Access-Control-Allow-Headers", "Cache-Control");
-//			response.addHeader("Cache-Control", "no-cache");
+			response.addHeader("Cache-Control", "no-cache");
 			response.setStatus(HttpServletResponse.SC_OK);
 			response.addHeader("X-Points", u.getPoints().toString());
 			response.addHeader("X-Uid", u.getId().toString());
@@ -98,7 +98,7 @@ public class LoginController implements ModelDriven<User>{
 		res.addHeader("Access-Control-Allow-Headers", "X-Uid");
 		res.addHeader("Access-Control-Allow-Headers", "Content-Type");
 		res.addHeader("Access-Control-Allow-Headers", "Cache-Control");
-//		res.addHeader("Cache-Control", "no-cache");
+		res.addHeader("Cache-Control", "no-cache");
 		return "options_success";
 	}
 }
