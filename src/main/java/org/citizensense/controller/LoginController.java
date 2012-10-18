@@ -67,6 +67,7 @@ public class LoginController implements ModelDriven<User>{
 			response.addHeader("Access-Control-Allow-Origin", "*");
 			response.addHeader("Access-Control-Expose-Headers", "X-Points");
 			response.addHeader("Access-Control-Expose-Headers", "X-Uid");
+			response.addHeader("Access-Control-Expose-Headers", "Cache-Control");
 			
 			
 			response.addHeader("Access-Control-Allow-Headers", "X-Points");
