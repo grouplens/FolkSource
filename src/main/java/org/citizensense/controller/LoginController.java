@@ -90,6 +90,8 @@ public class LoginController implements ModelDriven<User>{
 		res.addHeader("Access-Control-Allow-Origin", "*");
 		res.addHeader("Access-Control-Expose-Headers", "X-Points");
 		res.addHeader("Access-Control-Expose-Headers", "X-Uid");
+		res.addHeader("Access-Control-Expose-Headers", "Cache-Control");
+		res.addHeader("Access-Control-Expose-Headers", "Content-Type");
 //		res.addHeader("Access-Control-Allow-Methods", "GET, POST");
 		res.addHeader("Access-Control-Allow-Headers", "X-Points");
 		res.addHeader("Access-Control-Allow-Headers", "X-Uid");
