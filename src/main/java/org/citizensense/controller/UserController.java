@@ -111,6 +111,7 @@ public class UserController implements ModelDriven<User> {
 					rng);
 			user.setPassword(pw.getPasswordHash());
 			user.setSalt(pw.getSalt());
+			user.setPoints(0);
 
 			UserService.save(user);
 			response.setStatus(HttpServletResponse.SC_OK);
