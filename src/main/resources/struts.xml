@@ -80,6 +80,8 @@
 			
 			<result name="post_submission_success">/post_submission_success.jsp</result>
 			<result name="post_submission_fail">/post_submission_fail.jsp</result>
+			
+			<result name="options_success">/options_success.jsp</result>
 			<!-- The following results, excluding 'replay' and 'ambiguous', match 
 				the definitions in the GlobalResult enum. -->
 			<!-- <result name="ok" type="modelDrivenDto"> <param name="status">200</param> 

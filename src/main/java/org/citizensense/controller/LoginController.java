@@ -96,6 +96,6 @@ public class LoginController implements ModelDriven<User>{
 		res.addHeader("Access-Control-Allow-Headers", "Content-Type");
 		res.addHeader("Access-Control-Allow-Headers", "Cache-Control");
 //		res.addHeader("Cache-Control", "no-cache");
-		return "options";
+		return "options_success";
 	}
 }

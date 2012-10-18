@@ -137,7 +137,7 @@ public class UserController implements ModelDriven<User> {
 		res.addHeader("Access-Control-Allow-Headers", "X-Uid");
 		res.addHeader("Access-Control-Allow-Headers", "Content-Type");
 		res.addHeader("Access-Control-Allow-Headers", "Cache-Control");
-		return "success";
+		return "options_success";
 	}
 	
 
