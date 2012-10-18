@@ -81,7 +81,7 @@ public class SubmissionController implements ModelDriven<DtoContainer<Submission
 		res.addHeader("Access-Control-Allow-Headers", "X-Points");
 		res.addHeader("Access-Control-Allow-Headers", "X-Uid");
 		res.addHeader("Access-Control-Allow-Headers", "Content-Type");
-		return "options";
+		return "options_success";
 	}
 	
 //	 public String create() {
