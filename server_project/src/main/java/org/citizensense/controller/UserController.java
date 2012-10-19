@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
@@ -100,6 +101,7 @@ public class UserController implements ModelDriven<User> {
 
 	public String create() {// deal with register
 		HttpServletResponse response = ServletActionContext.getResponse();
+		HttpServletRequest req = ServletActionContext.getRequest();
 		response.addHeader("Access-Control-Allow-Origin", "*");
 		User u = UserService.getUserByName(user.getName());
 		if (u == null) {// user name doesn't exist, could register
@@ -118,6 +120,8 @@ public class UserController implements ModelDriven<User> {
 //			response.addIntHeader("X-Points", 0);
 			//may not work
 //			response.addIntHeader("X-Uid", user.getId());
+			req.setAttribute("uid", user.getId());
+			req.setAttribute("points", user.getPoints());
 			return "register_success";
 		} else {
 			// user name does exist, couldn't register
