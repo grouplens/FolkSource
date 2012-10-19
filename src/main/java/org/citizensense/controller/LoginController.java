@@ -75,8 +75,9 @@ public class LoginController implements ModelDriven<User>{
 			response.addHeader("Access-Control-Allow-Headers", "Cache-Control");
 			response.addHeader("Cache-Control", "no-cache");
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.addHeader("X-Points", u.getPoints().toString());
-			response.addHeader("X-Uid", u.getId().toString());
+			System.out.println("CITIZENSENSE - p: " + u.getPoints() + " id: " + u.getId());
+			response.addIntHeader("X-Points", u.getPoints());
+			response.addIntHeader("X-Uid", u.getId());
 			return "login_success";
 		} else {
 			// bad password
