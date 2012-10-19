@@ -1,6 +1,7 @@
 package org.citizensense.controller;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
@@ -65,19 +66,22 @@ public class LoginController implements ModelDriven<User>{
 //			response.addCookie(c);
 			response.addHeader("Allow", "*");
 			response.addHeader("Access-Control-Allow-Origin", "*");
-			response.addHeader("Access-Control-Expose-Headers", "X-Points");
-			response.addHeader("Access-Control-Expose-Headers", "X-Uid");
+//			response.addHeader("Access-Control-Expose-Headers", "X-Points");
+//			response.addHeader("Access-Control-Expose-Headers", "X-Uid");
 			response.addHeader("Access-Control-Expose-Headers", "Cache-Control");
 			
 			
-			response.addHeader("Access-Control-Allow-Headers", "X-Points");
-			response.addHeader("Access-Control-Allow-Headers", "X-Uid");
+//			response.addHeader("Access-Control-Allow-Headers", "X-Points");
+//			response.addHeader("Access-Control-Allow-Headers", "X-Uid");
 			response.addHeader("Access-Control-Allow-Headers", "Cache-Control");
 			response.addHeader("Cache-Control", "no-cache");
 			response.setStatus(HttpServletResponse.SC_OK);
 			System.out.println("CITIZENSENSE - p: " + u.getPoints() + " id: " + u.getId());
-			response.addIntHeader("X-Points", u.getPoints());
-			response.addIntHeader("X-Uid", u.getId());
+//			response.addIntHeader("X-Points", u.getPoints());
+//			response.addIntHeader("X-Uid", u.getId());
+			HttpServletRequest req = ServletActionContext.getRequest();
+			req.setAttribute("uid", u.getId());
+			req.setAttribute("points", u.getPoints());
 			return "login_success";
 		} else {
 			// bad password
@@ -90,14 +94,14 @@ public class LoginController implements ModelDriven<User>{
 		HttpServletResponse res = ServletActionContext.getResponse();
 		res.addHeader("Allow", "*");
 		res.addHeader("Access-Control-Allow-Origin", "*");
-		res.addHeader("Access-Control-Expose-Headers", "X-Points");
-		res.addHeader("Access-Control-Expose-Headers", "X-Uid");
+//		res.addHeader("Access-Control-Expose-Headers", "X-Points");
+//		res.addHeader("Access-Control-Expose-Headers", "X-Uid");
 		res.addHeader("Access-Control-Expose-Headers", "Cache-Control");
-		res.addHeader("Access-Control-Expose-Headers", "Content-Type");
+//		res.addHeader("Access-Control-Expose-Headers", "Content-Type");
 //		res.addHeader("Access-Control-Allow-Methods", "GET, POST");
-		res.addHeader("Access-Control-Allow-Headers", "X-Points");
-		res.addHeader("Access-Control-Allow-Headers", "X-Uid");
-		res.addHeader("Access-Control-Allow-Headers", "Content-Type");
+//		res.addHeader("Access-Control-Allow-Headers", "X-Points");
+//		res.addHeader("Access-Control-Allow-Headers", "X-Uid");
+//		res.addHeader("Access-Control-Allow-Headers", "Content-Type");
 		res.addHeader("Access-Control-Allow-Headers", "Cache-Control");
 		res.addHeader("Cache-Control", "no-cache");
 		return "options_success";
