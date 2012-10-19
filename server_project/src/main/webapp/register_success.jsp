@@ -1,13 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@taglib uri="/struts-tags" prefix="s"%>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Success Page</title>
-</head>
-<body>
-<h3>Register Success!</h3>
-</body>
-</html>
+<%@page import="net.sf.json.JSONObject"%>
+
+<%response.setContentType("application/json");%>
+<%
+JSONObject js = new JSONObject();
+js.put("uid", request.getAttribute("uid"));
+js.put("points", request.getAttribute("points"));
+response.getWriter().write(js.toString());
+// out.print("{\"uid:\"" + request.getAttribute("uid") + ",");
+// out.print("\"points:\"" + request.getAttribute("points")+"}");
+%>
