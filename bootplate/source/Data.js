@@ -4,7 +4,7 @@ enyo.kind({
     statics: {
         getURL: function () {
             return "http://ugly.cs.umn.edu:8080/csense/";
-            //return "http://192.168.0.3.xip.io:8080/csense/";
+            //return "http://134.84.74.200.xip.io:8080/csense/";
         },
         getUserName: function (a) {
             var b = new enyo.Ajax({

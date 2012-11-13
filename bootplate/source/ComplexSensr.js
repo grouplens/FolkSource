@@ -59,7 +59,7 @@ enyo.kind({
         a.addRemoveClass("accordionHeaderHighlight", !this.$.qs.open), this.$.qs.setOpen(!this.$.qs.open);
     },
     activateFormDrawer2: function(a, b) {
-        this.waterfall("on2DrawerClick");
+        this.waterfall("on2DrawerClick", {name: "ComplexSensr"});
     },
     openDrawer2: function(a, b) {
         this.$.draw2.reflow();
@@ -94,7 +94,11 @@ enyo.kind({
             name: "myImage",
             kind: "enyo.Image",
             src: "./assets/leaf-2.jpg"
-        }), this.$.formDiv.$.qbody.$.imgDiv.render(), this.$.submit.setDisabled(!1), this.camComplete = !0, enyo.Signals.send("onPhotoData", a);
+        });
+		this.$.formDiv.$.qbody.$.imgDiv.render();
+		this.$.submit.setDisabled(false);
+		this.camComplete = true;
+		enyo.Signals.send("onPhotoData", a);
     },
     renderSubmitButton: function(a, b) {
         this.$.submit.setDisabled(!1);
@@ -153,25 +157,16 @@ enyo.kind({
             }
             switch (type) {
                 case "text":
-                    questionBody[0].createComponent({
-                    name: c,
-                    style: "clear: both;",
-                    content: b.question
-                }), this.newFormText(b);
+                    questionBody[0].createComponent({name: c, style: "clear: both;", content: b.question});
+					this.newFormText(b);
                 break;
                 case "exclusive_multiple_choice":
-                    questionBody[0].createComponent({
-                    name: c,
-                    style: "clear: both;",
-                    content: b.question
-                }), this.newFormExclusiveChoice(b);
+                    questionBody[0].createComponent({name: c, style: "clear: both;", content: b.question});
+					this.newFormExclusiveChoice(b);
                 break;
                 case "multiple_choice":
-                    questionBody[0].createComponent({
-                    name: c,
-                    style: "clear: both;",
-                    content: b.question
-                }), this.newFormMultipleChoice(b);
+                    questionBody[0].createComponent({name: c, style: "clear: both;", content: b.question});
+					this.newFormMultipleChoice(b);
                 break;
                 case "counter":
                     this.newFormCounter(b);

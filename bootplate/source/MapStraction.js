@@ -1,7 +1,7 @@
 enyo.kind({
     name: "MapStraction",
     classes: "mapItem hideMap",
-    style: "overflow: hidden; z-index: 5;",
+    //style: "overflow: hidden; z-index: 5;",
     published: {
         provider: "googlev3",
         gpsTimeout: "10000"
@@ -31,7 +31,11 @@ enyo.kind({
     rendered: function () {
         this.straction = new mxn.Mapstraction(this.id, this.provider);
         this.straction.addControls({zoom: "mobile"});
-        this.straction.load.addHandler(enyo.bind(this, "makeBubbleLoad")), this.straction.changeZoom.addHandler(enyo.bind(this, "makeFilter")), this.straction.endPan.addHandler(enyo.bind(this, "makeFilter")), this.inherited(arguments), this.$.gps.getPosition();
+        this.straction.load.addHandler(enyo.bind(this, "makeBubbleLoad"));
+		this.straction.changeZoom.addHandler(enyo.bind(this, "makeFilter"));
+		this.straction.endPan.addHandler(enyo.bind(this, "makeFilter"));
+		this.inherited(arguments);
+		this.$.gps.getPosition();
     },
     locSuccess: function (a, b) {
 		Data.setLocationData(b.coords);
@@ -93,6 +97,7 @@ enyo.kind({
         enyo.Signals.send("onPinClicked", b.location);
     },
     makeBubbleLoad: function () {
-        loaded = !0, this.doLoaded();
+        loaded = !0;
+		this.doLoaded();
     }
 });

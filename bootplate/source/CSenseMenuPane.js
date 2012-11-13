@@ -42,18 +42,7 @@ enyo.kind({
     },
     renderScroller: function () {
         this.log();
-        /*this.reflow();
-        this.$.sensr.render();
-        this.resized();
-        this.$.sense.resized();
-        this.$.sensr.resized();
-        this.reflow();
-        this.$.sense.reflow();
-        this.$.sensr.reflow();
-        this.render();
-        this.$.sense.render();
-        this.$.sensr.render();*/
-    },
+	},
     openSense: function (a, b) {
         var c = b.originator;
         var complex = false;
@@ -67,10 +56,6 @@ enyo.kind({
             this.$.sensr.destroy();
 
         this.$.sense.createComponent({name: "sensr", kind: "ComplexSensr", fit: true, complex: complex, data: c, classes: "content"}, {owner: this});
-        //this.$.sensr.setTaskData(c);
-        /*this.$.sensr.resized();
-        this.$.sensr.reflow();
-        this.$.sensr.render();*/
         this.$.menupane.selectView("sense");
         return true;
     },

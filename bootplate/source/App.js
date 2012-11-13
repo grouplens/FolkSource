@@ -4,7 +4,7 @@ enyo.kind({
     components: [
         {kind: "enyo.Signals", ondeviceready: "deviceReady"}, 
         {kind: "CSenseMenuPane", fit: true}
-        //{kind: "Timer", fit: true}
+        //{kind: "Test", fit: true}
     ],
     create: function(inSender, inEvent) {
         this.inherited(arguments);

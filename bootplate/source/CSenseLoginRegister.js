@@ -34,7 +34,17 @@ enyo.kind({
         style: "float: left;"
     }],
     create: function () {
-        this.inherited(arguments), this.register ? (this.$.radioButton.setActive(!1), this.$.radioButton2.setActive(!0), this.setupRegister()) : this.setupLogin();
+        this.inherited(arguments);
+		/*if(LocalStorage.get("remember") == undefined) {
+			LocalStorage.remove("uid");
+			LocalStorage.remove("points");
+		}*/
+		if(this.register) {
+			this.$.radioButton.setActive(false);
+			this.$.radioButton2.setActive(true);
+			this.setupRegister()
+		} else 
+			this.setupLogin();
     },
     rendered: function () {
         this.inherited(arguments);
@@ -162,15 +172,16 @@ enyo.kind({
         }
     },
     handleResponse: function (a, b) {
+		this.log(JSON.parse(a.xhr.responseText));
         if (a.xhr.status === 200) {
+			var incoming = JSON.parse(a.xhr.responseText);
+			this.log(incoming.points);
+			this.log(incoming.uid);
             this.log("WEEE");
-			this.log(a.xhr.getAllResponseHeaders());
-            var c = a.xhr.getResponseHeader("X-Points");
-            var d = a.xhr.getResponseHeader("X-Uid");
-            LocalStorage.set("points", c);
-			LocalStorage.set("user", d);
+            LocalStorage.set("points", incoming.points.toString());
+			LocalStorage.set("user", incoming.uid.toString());
 			if(this.$.memoryBox.getValue())
-				LocalStorage.set("remember", !0);
+				LocalStorage.set("remember", true);
 			this.bubble("onSuccessCode");
         } else {
 			this.log(JSON.stringify(a));

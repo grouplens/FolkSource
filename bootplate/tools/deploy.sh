@@ -83,5 +83,10 @@ cp -r $TARGET/* ~/programming/csense_trunk/app_templates/CitizenSense_iOS/www
 
 echo "Deploying to iOS project"
 ~/programming/csense_trunk/app_templates/CitizenSense_iOS/cordova/debug
-~/programming/csense_trunk/app_templates/CitizenSense_iOS/cordova/emulate
+#if [ -z "$2" ]; then
+	#echo "Newest version"
+	#~/programming/csense_trunk/app_templates/CitizenSense_iOS/cordova/emulate "6.0"
+#else
+	~/programming/csense_trunk/app_templates/CitizenSense_iOS/cordova/emulate $2
+#fi
 fi

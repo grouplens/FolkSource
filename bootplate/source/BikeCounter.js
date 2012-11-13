@@ -175,7 +175,7 @@ enyo.kind({
     popdown: function(inSender, inEvent) {
         this.$.popup.hide();
     },
-    build: function(a, b) {
+    build: function(inSender, inEvent) {
         var rows = this.$.tabula.children;
         this.reset();
         for (var i in rows) {
@@ -238,9 +238,9 @@ enyo.kind({
             }
         }
         this.render();
-        /*if(this.parent.parent.parent.getOpen())
-            this.doDrawerOk();*/
-        this.doDrawerOk();
+        if(this.parent.parent.parent.getOpen() && inEvent == undefined)
+            this.doDrawerOk();
+		this.doDrawerOk();
         return true;
     },
     fixIt: function(a, b) {
