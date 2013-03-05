@@ -2,6 +2,7 @@ enyo.kind({
     name: "MapStraction",
     classes: "mapItem hideMap",
     //style: "overflow: hidden; z-index: 5;",
+	fit: true,
     published: {
         provider: "googlev3",
         gpsTimeout: "10000"
@@ -29,22 +30,21 @@ enyo.kind({
         this.notShowing = true;
     },
     rendered: function () {
+		this.log(this.id);
+		this.log(this.provider);
+		this.inherited(arguments);
         this.straction = new mxn.Mapstraction(this.id, this.provider);
         this.straction.addControls({zoom: "mobile"});
         this.straction.load.addHandler(enyo.bind(this, "makeBubbleLoad"));
 		this.straction.changeZoom.addHandler(enyo.bind(this, "makeFilter"));
 		this.straction.endPan.addHandler(enyo.bind(this, "makeFilter"));
-		this.inherited(arguments);
 		this.$.gps.getPosition();
     },
     locSuccess: function (a, b) {
 		Data.setLocationData(b.coords);
-        /*this.myLocation = b.coords;
-		this.log(this.myLocation);
-        enyo.Signals.send("onGPSSet", {prop: this.myLocation});*/
-        if(!this.panZoomed) {
+        //if(!this.panZoomed) {
             this.centerMap();
-        }
+        //}
         return true;
     },
     locError: function (a, b) {
@@ -89,11 +89,14 @@ enyo.kind({
         }
     },
     centerMap: function () {
-		var myLocation = Data.getLocationData();
-		var a = new mxn.LatLonPoint(myLocation.latitude, myLocation.longitude);
-		this.straction.setCenterAndZoom(a, 15);
+		//if(Data.getIsReady()) {
+			var myLocation = Data.getLocationData();
+			var pt = new mxn.LatLonPoint(myLocation.latitude, myLocation.longitude);
+			this.straction.setCenterAndZoom(pt, 15);
+		//}
     },
     makeBubbleClick: function (a, b) {
+		this.log();
         enyo.Signals.send("onPinClicked", b.location);
     },
     makeBubbleLoad: function () {

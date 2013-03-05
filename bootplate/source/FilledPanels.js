@@ -10,19 +10,23 @@ enyo.kind({
         onDoObservation: "hidePopup"
     },
     components: [
-        {name: "mapUp", kind: "onyx.Popup", style: "width: 80%; position: fixed; z-index: 2;", classes: "onyx-popup", centered: !0, floating: !0, modal: !0,components: [
-            {name: "pview", kind: "PinView"}]
-    	},
+        {name: "mapUp", kind: "onyx.Popup", style: "width: 80%; position: fixed; z-index: 2;", classes: "onyx-popup", centered: true, floating: true, modal: true, components: [
+			//{name: "spin", kind: "onyx.Spinner"},
+            {name: "pview", kind: "PinView", classes: "mapHide"}
+		]},
 		{name: "leftButton", kind: "onyx.Button", content: "<", slide: "prev", ontap: "buttonTapHandler", classes: "filledButtons", disabled: !0},
     	{name: "panels", kind: "Panels", arrangerKind: "CarouselArranger", onTransitionFinish: "transitionFinishHandler", onTransitionStart: "transitionStartHandler",classes: "filledPanels", layoutKind: "enyo.FittableColumnsLayout", components: []},
     	{name: "rightButton", kind: "onyx.Button", content: ">", slide: "next", ontap: "buttonTapHandler", classes: "filledButtons"}, 
     	{kind: "Signals", onPinClicked: "popupTriggered"}
     ],
     create: function (a, b) {
+		this.inherited(arguments);
+		//this.$.spinnerUp.show();
+		//this.$.mapUp.show();
         var c = Data.getURL() + "campaign.json";
         var d = new enyo.Ajax({method: "GET", cacheBust: false, url: c, handleAs: "json"});
         d.response(this, "renderResponse");
-		d.go(); this.inherited(arguments);
+		d.go(); 
 		this.$.panels.$.animator.setDuration(350);
     },
     renderResponse: function (a, b) {
@@ -32,7 +36,11 @@ enyo.kind({
             var e = "panel_" + d.id;
             var f = "item_" + d.id;
             var g = "map_" + d.id;
-            this.$.panels.createComponent({name: e, classes: "panelItem", fit: true, kind: "enyo.FittableRows", components: [{name: f, kind: "CampaignItem", title: "" + d.title, description: "" + d.description},{name: g, fit: true, kind: "MapStraction", layoutKind: "enyo.FittableRowsLayout", provider: "openlayers", style: "height: 100%;" /*overflow: hidden;"*/}]});
+            this.$.panels.createComponent(
+				{name: e, classes: "panelItem", fit: true, kind: "enyo.FittableRows", components: [
+						{name: f, kind: "CampaignItem", title: "" + d.title, description: "" + d.description},
+						{name: g, fit: true, kind: "MapStraction", /*layoutKind: "enyo.FittableColumnsLayout", */provider: "openlayers", style: "height: 100%; width: 100%;" /*overflow: hidden;"*/}
+				]});
             this.render();
         }
     },
@@ -83,12 +91,17 @@ enyo.kind({
         return !0;
     },
     popupTriggered: function (a, b) {
-        var c = b.lat + " : " + b.lon,
-            d = this.$.panels.getIndex(),
-            e;
-        this.campaignArray[d].tasks.length === 1 && (e = this.campaignArray[d].tasks[0].instructions);
-        var f = "50";
-        return this.$.pview.setContent(e, f), this.$.mapUp.resized(), this.$.mapUp.show(), !0;
+		this.log();
+        var c = b.lat + " : " + b.lon;
+        var d = this.$.panels.getIndex();
+        var e;
+		if(this.campaignArray[d].tasks.length === 1)
+			(e = this.campaignArray[d].tasks[0].instructions);
+        var f = "1";
+		this.$.pview.setContent(e, f); 
+		this.$.mapUp.resized(); 
+		this.$.mapUp.show(); 
+        return true;
     },
     hidePopup: function () {
         this.$.mapUp.hide();

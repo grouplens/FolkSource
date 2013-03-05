@@ -117,6 +117,12 @@ enyo.kind({
         },
         getLocationData: function() {
             return LocalStorage.get("loc");
-        }
+        },
+		setIsReady: function(ready) {
+			LocalStorage.set("ready", ready);
+		},
+		getIsReady: function() {
+			return LocalStorage.get("ready");
+		}
     }
 });

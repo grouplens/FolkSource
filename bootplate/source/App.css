@@ -4,6 +4,7 @@
 	Put anything you reference with "url(../source)" in ../assets/
 	This way, you can minify your application, and just remove the "source" folder for production
 */
+<<<<<<< HEAD
 #app {
     top: 0;
     left: 0;
@@ -237,9 +238,36 @@ table, tr, td {
 	width: 100%;
 	left: 0;
 	bottom: 0;
+	padding: 0px 0px 0px 0px;
+	height: 49pt;
 }
-.ios-navbar > button {
-	padding: 0px 0px;
+.ios-navbar {
+	height: 49pt;
+}
+.ios-navbar button {
+	height: 49pt !important;
+	min-width: 20% !important;
+	padding: 0 0 0 0;
+	margin: 0 0 0 0;
+}
+.ios-navbutton {
+	height: 49pt;
+	padding: 0 0;
+	color: white;
+	font-size: 8pt;
+}
+.ios-navbutton * {
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	clear: both;
 }
 .android-navbar {
 }
+=======
+.nice-padding {
+	padding: 15px;
+}
+>>>>>>> 5d1a779a62aad5b37f32b0cdcb9baaf98229e0ac

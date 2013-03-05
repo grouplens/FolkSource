@@ -19,8 +19,8 @@ enyo.depends(
     "MapStraction.js",
     "menupane",
     "mxn/source",
-	"NavBar.js",
     "PinView.js",
+	"PullOut.js",
     "Sensr.js",
     "SimpleSensr.js",
 	"Test.js",
@@ -28,5 +28,6 @@ enyo.depends(
     "Timer.js",
     "Toolbar.js",
     "TryComplexSensr.js",
-    "rok.geolocation.js"
+    "rok.geolocation.js",
+	"widgets"
 );
