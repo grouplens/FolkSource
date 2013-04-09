@@ -172,23 +172,23 @@ enyo.kind({
         }
     },
     handleResponse: function (a, b) {
-		this.log(JSON.parse(a.xhr.responseText));
+	this.log(a.xhr);
         if (a.xhr.status === 200) {
-			var incoming = JSON.parse(a.xhr.responseText);
-			this.log(incoming.points);
-			this.log(incoming.uid);
-            this.log("WEEE");
-            LocalStorage.set("points", incoming.points.toString());
-			LocalStorage.set("user", incoming.uid.toString());
-			if(this.$.memoryBox.getValue())
-				LocalStorage.set("remember", true);
-			this.bubble("onSuccessCode");
-        } else {
-			this.log(JSON.stringify(a));
-			this.log(a.xhr.status);
-			this.log("BOOO");
-			this.doFailureCode();
-		}
+	    var incoming = JSON.parse(a.xhr.responseText);
+	    this.log(incoming.points);
+	    this.log(incoming.uid);
+	    this.log("WEEE");
+	    LocalStorage.set("points", incoming.points.toString());
+	    LocalStorage.set("user", incoming.uid.toString());
+	    if(this.$.memoryBox.getValue())
+		LocalStorage.set("remember", true);
+	    this.bubble("onSuccessCode");
+	} else {
+	    this.log(JSON.stringify(a));
+	    this.log(a.xhr.status);
+	    this.log("BOOO");
+	    this.doFailureCode();
+	}
     },
     emailRegexCheck: function () {
         var a = /^\w+([\.\+]\w+)*@\w+(\.\w+)*(\.\w{2,})$/;

@@ -4,7 +4,6 @@
 	Put anything you reference with "url(../source)" in ../assets/
 	This way, you can minify your application, and just remove the "source" folder for production
 */
-<<<<<<< HEAD
 #app {
     top: 0;
     left: 0;
@@ -180,6 +179,12 @@ table, tr, td {
 	background-color: #0B333E;
 }
 
+.center {
+    clear: both;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
 
 
 /* ../source/menupane/style.css */
@@ -266,8 +271,6 @@ table, tr, td {
 }
 .android-navbar {
 }
-=======
 .nice-padding {
 	padding: 15px;
 }
->>>>>>> 5d1a779a62aad5b37f32b0cdcb9baaf98229e0ac

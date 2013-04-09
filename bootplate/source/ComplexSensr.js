@@ -28,6 +28,14 @@ enyo.kind({
     ],
     create: function(a, b) {
         this.inherited(arguments);
+	this.recreate();
+        this.render();
+        this.setTaskData(this.data);
+    },
+    recreate: function() {
+	this.log(this.$.formDiv);
+	if(this.$.formDiv === undefined) 
+	    this.createComponent({name: "formDiv", layoutKind: "enyo.FittableRowsLayout", components: []});
         if(this.complex) {
             this.$.formDiv.createComponent(
                 {kind: "enyo.FittableRows", /*fit: true,*/ kind: "enyo.Scroller", vertical: "scroll", strategyKind: "TranslateScrollStrategy", name: "acc", components: [
@@ -39,16 +47,17 @@ enyo.kind({
                 {owner: this}
             );
         } else {
+	    this.log("building formDiv");
+	    this.imageOK = true; //fix this later
             this.$.formDiv.createComponent(
                 {name: "qbody", fit: true, components: [
-                    {name: "imgDiv",classes: "imgDiv",components: [
+		    //THIS NEEDS TO BE A TYPE OF QUESTION
+                    /*{name: "imgDiv",classes: "imgDiv",components: [
                         {name: "photoButton",kind: "onyx.Button",content: "Take Photo",style: "width: 100%;",ontap: "retakePhoto",classes: "onyx-affirmative"}
-                    ]}
+                    ]}*/
                 ]}
             );
         }
-        this.render();
-        this.setTaskData(this.data);
     },
     rendered: function(inSender, inEvent) {
         this.inherited(arguments);
@@ -127,11 +136,14 @@ enyo.kind({
         if(this.$.formDiv != undefined && this.$.formDiv.getComponents().length > 0 ) {
             this.$.formDiv.destroyClientControls();
             this.$.formDiv.destroy()
+	    this.recreate();
         }
         if(this.complex)
             questionBody.push(this.$.accordionItemContent);
-        else
+        else {
+	    this.log(this.$);
             questionBody.push(this.$.formDiv.$.qbody);
+	}
 
         for (i in this.task.questions) {
             var b = this.task.questions[i], c = "name_" + b.id;
@@ -178,8 +190,11 @@ enyo.kind({
             }
         }
         this.render();
-        this.$.accordionItemContent.resized();
-        this.$.accordionItemContent.reflow();
+	this.log(this.$);
+	if(this.complex) {
+	    this.$.accordionItemContent.resized();
+	    this.$.accordionItemContent.reflow();
+	}
         /*this.$.formDiv.resized();
         this.$.formDiv.reflow();*/
     },
@@ -215,7 +230,8 @@ enyo.kind({
     },
     buildAndSendSubmission: function() {
         if (!this.$.submit.disabled) {
-            this.complex || this.fileEntry(this.$.imgDiv.$.myImage.src);
+            //this.complex || this.fileEntry(this.$.imgDiv.$.myImage.src);
+	    this.log(this.imageOK ? !this.complex : this.complex);
             if (this.imageOK ? !this.complex : this.complex) {
                 var a = {submission: {
                             task_id: this.task.id,
@@ -298,29 +314,33 @@ enyo.kind({
         this.bubble("onSubmissionMade");
     },
     testButtons: function(a, b) {
-        var controls = questionBody[0].$.groupbox.getControls();
-        var inName = a.getContent();
-        var b = true;
-        var p = true;
-        if(inName === "Bicycles") {
-            b = true;
-            p = false;
-        } else if (inName === "Pedestrians") {
-            b = false;
-            p = true;
-        }  else if (inName === "Both") {
-            p = true;
-            b = true;
-        }
+	this.log(questionBody[0].$);
+	if(this.complex) {
+	    this.log();
+	    var controls = questionBody[0].$.groupbox.getControls();
+	    var inName = a.getContent();
+	    var b = true;
+	    var p = true;
+	    if(inName === "Bicycles") {
+		b = true;
+		p = false;
+	    } else if (inName === "Pedestrians") {
+		b = false;
+		p = true;
+	    }  else if (inName === "Both") {
+		p = true;
+		b = true;
+	    }
 
-        for (var i in controls) {
-            var num = controls[i].name.split("_")[1];
-            this.$["checkbox_"+num].setDisabled(false);
-            if(controls[i].getContent() === "Helmet" && !b)
+	    for (var i in controls) {
+		var num = controls[i].name.split("_")[1];
+		this.$["checkbox_"+num].setDisabled(false);
+		if(controls[i].getContent() === "Helmet" && !b)
                 this.$["checkbox_"+num].setDisabled(true);
             else if(controls[i].getContent() === "Assistive" && !p)
                 this.$["checkbox_"+num].setDisabled(true);
-        }
+	    }
+	}
         enyo.Signals.send("onButtonGroupChosen", a);
     },
     newFormText: function(a) {
@@ -329,7 +349,8 @@ enyo.kind({
             name: b,
             style: "clear: both;",
             kind: "onyx.InputDecorator",
-            classes: "onyx-input-decorator",
+            classes: "onyx-input-decorator center",
+	    style: "outline-color: white; border-color: white;",
             components: [ {
                 name: c,
                 kind: "onyx.Input",
@@ -352,6 +373,7 @@ enyo.kind({
         questionBody[0].createComponent({
             name: b,
             kind: "onyx.RadioGroup",
+	    classes: "center",
             components: d
         }, {
             owner: this
@@ -364,6 +386,7 @@ enyo.kind({
         }), questionBody[0].createComponent({
             name: d,
             content: c,
+	    classes: "center",
             time: b.toTimeString()
         });
     },
@@ -371,6 +394,7 @@ enyo.kind({
         var b = a.options.split("|");
         questionBody[0].createComponent({
             name: "groupbox",
+	    classes: "center;",
             kind: "onyx.Groupbox",
             components: []
         }, {

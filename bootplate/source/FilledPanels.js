@@ -32,47 +32,55 @@ enyo.kind({
     renderResponse: function (a, b) {
         this.campaignArray = b.campaigns;
         for (var c in this.campaignArray) {
-            var d = this.campaignArray[c];
-            var e = "panel_" + d.id;
-            var f = "item_" + d.id;
-            var g = "map_" + d.id;
-            this.$.panels.createComponent(
-				{name: e, classes: "panelItem", fit: true, kind: "enyo.FittableRows", components: [
-						{name: f, kind: "CampaignItem", title: "" + d.title, description: "" + d.description},
-						{name: g, fit: true, kind: "MapStraction", /*layoutKind: "enyo.FittableColumnsLayout", */provider: "openlayers", style: "height: 100%; width: 100%;" /*overflow: hidden;"*/}
-				]});
-            this.render();
+            var currentCampaign = this.campaignArray[c];
+            var e = "panel_" + currentCampaign.id;
+            var f = "item_" + currentCampaign.id;
+            var g = "map_" + currentCampaign.id;
+	    var date = Date.parse(new Date());
+	    var endDate = Date.parse(currentCampaign.end_date_string);
+	    var startDate = Date.parse(currentCampaign.start_date_string);
+	    if(endDate >= date || date < startDate) { // "closed" campaigns shouldn't show up
+		this.$.panels.createComponent(
+		    {name: e, classes: "panelItem", fit: true, kind: "enyo.FittableRows", components: [
+			{name: f, kind: "CampaignItem", title: "" + currentCampaign.title, description: "" + currentCampaign.description},
+			{name: g, fit: true, kind: "NewMap", /*layoutKind: "enyo.FittableColumnsLayout", */provider: "openlayers", style: "height: 100%; width: 100%;" /*overflow: hidden;"*/}
+			//{name: g, fit: true, kind: "MapStraction", /*layoutKind: "enyo.FittableColumnsLayout", */provider: "openlayers", style: "height: 100%; width: 100%;" /*overflow: hidden;"*/}
+		]});
+	    }
+	    this.render();
+	    this.checkSides(); // make sure the arrow buttons work
         }
     },
     buttonTapHandler: function (a, b) {
         if(a.slide === "prev")
-			this.$.panels.previous();
-		else if(a.slide === "next")
-			this.$.panels.next();
-		else 
-			this.$.panels.snapTo(a.slide);
+	    this.$.panels.previous();
+	else if(a.slide === "next")
+	    this.$.panels.next();
+	else 
+	    this.$.panels.snapTo(a.slide);
     },
     transitionFinishHandler: function (a, b) {
         var c = this.$.panels.getIndex();
-        this.waterfall("onSnapped", undefined, c), this.checkSides();
+        this.waterfall("onSnapped", undefined, c);
+       	this.checkSides();
     },
     transitionStartHandler: function (a, b) {
         var c = this.$.panels.getIndex();
         this.waterfall("onSnapping", undefined, c);
     },
     checkSides: function () {
-        var a = this.$.panels.getIndex();
+        var index = this.$.panels.getIndex();
         var size = this.$.panels.getPanels().length;
+	var adjSize = size - 1; //adjust for counting at 0 vs. 1
         if(size == 1) {
             this.$.rightButton.setDisabled(true);
             this.$.leftButton.setDisabled(true);
         } else {
             if (this.campaignArray != undefined) {
-                var b = this.campaignArray.length - 1;
-                if (a == 0) {
+                if (index == 0) {
                     this.$.rightButton.setDisabled(false);
                     this.$.leftButton.setDisabled(true);
-                } else if (a == b) {
+                } else if (index == adjSize) {
                     this.$.rightButton.setDisabled(true);
                     this.$.leftButton.setDisabled(false);
                 }

@@ -16,18 +16,14 @@ enyo.depends(
     "LeaderboardItem.js",
     "LeaderboardList.js",
     "LocalStorage.js",
-    "MapStraction.js",
     "menupane",
-    "mxn/source",
+    "NewMap.js",
     "PinView.js",
-	"PullOut.js",
     "Sensr.js",
     "SimpleSensr.js",
-	"Test.js",
     "TickerList.js",
     "Timer.js",
     "Toolbar.js",
     "TryComplexSensr.js",
-    "rok.geolocation.js",
-	"widgets"
+    "rok.geolocation.js"
 );
