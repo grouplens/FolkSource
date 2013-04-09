@@ -20,14 +20,13 @@ enyo.kind({
     	{kind: "Signals", onPinClicked: "popupTriggered"}
     ],
     create: function (a, b) {
-		this.inherited(arguments);
-		//this.$.spinnerUp.show();
-		//this.$.mapUp.show();
-        var c = Data.getURL() + "campaign.json";
-        var d = new enyo.Ajax({method: "GET", cacheBust: false, url: c, handleAs: "json"});
-        d.response(this, "renderResponse");
-		d.go(); 
-		this.$.panels.$.animator.setDuration(350);
+	this.inherited(arguments);
+	//this.$.spinnerUp.show();
+	//this.$.mapUp.show();
+	var c = Data.getURL() + "campaign.json";
+	var d = new enyo.Ajax({method: "GET", cacheBust: false, url: c, handleAs: "json"});
+	d.go(); 
+	this.$.panels.$.animator.setDuration(350);
     },
     renderResponse: function (a, b) {
         this.campaignArray = b.campaigns;
@@ -36,16 +35,27 @@ enyo.kind({
             var e = "panel_" + currentCampaign.id;
             var f = "item_" + currentCampaign.id;
             var g = "map_" + currentCampaign.id;
+	    /*
+	     * This block below is needed because not all browsers parse dates
+	     * the same way. This should be mostly browser compatible.
+	     */
 	    var date = Date.parse(new Date());
-	    var endDate = Date.parse(currentCampaign.end_date_string);
-	    var startDate = Date.parse(currentCampaign.start_date_string);
-	    if(endDate >= date || date < startDate) { // "closed" campaigns shouldn't show up
+	    var st = currentCampaign.start_date_string.split(/[- :]/);
+	    var en = currentCampaign.end_date_string.split(/[- :]/);
+	    var startDate = Date.parse(new Date(st[0], st[1]-1, st[2], st[3], st[4], st[5]));
+	    var endDate = Date.parse(new Date(en[0], en[1]-1, en[2], en[3], en[4], en[5]));
+
+	    if(endDate >= date) { // "closed" campaigns shouldn't show up
 		this.$.panels.createComponent(
 		    {name: e, classes: "panelItem", fit: true, kind: "enyo.FittableRows", components: [
 			{name: f, kind: "CampaignItem", title: "" + currentCampaign.title, description: "" + currentCampaign.description},
 			{name: g, fit: true, kind: "NewMap", /*layoutKind: "enyo.FittableColumnsLayout", */provider: "openlayers", style: "height: 100%; width: 100%;" /*overflow: hidden;"*/}
 			//{name: g, fit: true, kind: "MapStraction", /*layoutKind: "enyo.FittableColumnsLayout", */provider: "openlayers", style: "height: 100%; width: 100%;" /*overflow: hidden;"*/}
 		]});
+		if(date < startDate) { // setup structure for disallowing campaigns to show up/be used before they're "open"
+		    this.log(this.$.panels.$[e]);
+		    this.$.panels.$[e].running = false;
+		}
 	    }
 	    this.render();
 	    this.checkSides(); // make sure the arrow buttons work
