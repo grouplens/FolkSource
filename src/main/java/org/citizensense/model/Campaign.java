@@ -13,6 +13,8 @@ public class Campaign extends Dto{
 	public String location;
 	public Date start_date;
 	public Date end_date;
+	public String start_date_string;
+	public String end_date_string;
 	//private String times; //figure out if this is actually how we want to represent this
 	public Integer owner_id;
 	public Integer task_id;
@@ -52,12 +54,26 @@ public class Campaign extends Dto{
 	}
 	public void setStart_date(Date start_date) {
 		this.start_date = start_date;
+		this.setStart_date_string(start_date);
 	}
 	public Date getEnd_date() {
 		return end_date;
 	}
 	public void setEnd_date(Date end_date) {
 		this.end_date = end_date;
+		this.setEnd_date_string(end_date);
+	}
+	public String getStart_date_string() {
+		return this.start_date_string;
+	}
+	public void setStart_date_string(Date d) {
+		this.start_date_string = d.toString();
+	}
+	public String getEnd_date_string() {
+		return this.end_date_string;
+	}
+	public void setEnd_date_string(Date d) {
+		this.end_date_string = d.toString();
 	}
 //	public User getOwner() {
 //		return owner;
