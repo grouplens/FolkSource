@@ -16,6 +16,7 @@ public class Task extends Dto{
 
 	public Submission[] submissions;
 	public Question[] questions;
+	public Location[] locations;
 	
 	//	public Location getLocation() {
 //		return loc;
@@ -24,6 +25,14 @@ public class Task extends Dto{
 //	public void setLocation(Location loc) {
 //		this.loc = loc;
 //	}
+	
+	public Location[] getLocations() {
+		return locations;
+	}
+	
+	public void setLocations(Location[] locations) {
+		this.locations = locations;
+	}
 
 	public String getName() {
 		return name;
