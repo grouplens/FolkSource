@@ -25,5 +25,7 @@
 		</bag>
 		<property name="timestamp" />
 		<property name="img_path" />
+		<property name="processed" />
+		<property name="in_range" />
 	</class>
 </hibernate-mapping>

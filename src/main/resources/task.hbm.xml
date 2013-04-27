@@ -8,11 +8,27 @@
 		</id>
 		<property name="instructions" />
 		<property name="required" />
+				<!-- name="submissions
+				this is the name of the private field
+				int the object (Class) that this is
+				the mapping file for.
+			column="task_id"
+				this is the column in the submissions
+				table that we want to match.
+				i.e. we want to match this column with
+				our task id in task.
+			class="Submission"
+				This is the class that is mapped to
+				the table that contains the column. -->
 		<bag name="submissions" lazy="false">
 			<key column="task_id" />
 <!-- 			<index column="task_id" /> -->
 			<one-to-many class="Submission" />
 		</bag>
+		<bag name="locations" lazy="false" >
+			<key column="task_id" />
+			<one-to-many class="Locations" />
+		</bag>		
 		<bag name="questions" lazy="false">
 			<key column="task_id" />
 			<one-to-many class="Question" />

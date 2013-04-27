@@ -19,5 +19,6 @@
 	<property name="badges" />
 	<property name="findpwid" />
 	<property name="findpwtime" />
+	<property name="reputation" />
 </class>
 </hibernate-mapping>

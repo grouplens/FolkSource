@@ -15,6 +15,24 @@ public class Submission extends Dto {
 	public Answer[] answers;
 	public Date timestamp;
 	public String img_path;
+	public Boolean  processed;
+	public Boolean in_range;
+	
+	public Boolean getProcessed() {
+		return processed;
+	}
+	
+	public void setProcessed(Boolean processed) {
+		this.processed = processed;
+	}
+	
+	public Boolean getInRange() {
+		return in_range;
+	}
+	
+	public void setInRange(Boolean in_range) {
+		this.in_range = in_range;
+	}	
 
 	public Integer getId() {
 		return id;

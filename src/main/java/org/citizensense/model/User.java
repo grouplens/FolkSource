@@ -21,6 +21,15 @@ public class User extends Dto{
 	private String findpwid;
 	/** The time user reports forget password.*/
 	private String findpwtime;
+	private Double reputation;
+	
+	public Double getReputation() {
+		return reputation;
+	}
+	
+	public void setReputation(Double reputation) {
+		this.reputation = reputation;
+	}
 
 	public Integer getId() {
 		return Id;
