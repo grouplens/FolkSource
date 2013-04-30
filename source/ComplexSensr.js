@@ -38,7 +38,7 @@ enyo.kind({
 	    this.createComponent({name: "formDiv", layoutKind: "enyo.FittableRowsLayout", components: []});
         if(this.complex) {
             this.$.formDiv.createComponent(
-                {kind: "enyo.FittableRows", /*fit: true,*/ kind: "enyo.Scroller", vertical: "scroll", strategyKind: "TranslateScrollStrategy", name: "acc", components: [
+                {kind: "enyo.FittableRows", /*fit: true,*/ kind: "enyo.Scroller", vertical: "scroll", strategyKind: "TranslateScrollStrategy", name: "acc", style: " width: 100%;", components: [
                     {content: "Questions about you",ontap: "activateFormDrawer",classes: "accordionHeader"},
                     {name: "qs",kind: "onyx.Drawer", fit: true, open: false, layoutKind: "enyo.FittableRowsLayout", style: "white-space: nowrap; overflow: scroll; height: 100%;",components: [
                         {kind: "enyo.Scroller", layoutKind: "enyo.FittableRowsLayout", vertical: "scroll", strategyKind: "TranslateScrollStrategy", name: "accordionItemContent", style: "height: 293px;", components: []} 
@@ -264,24 +264,46 @@ enyo.kind({
                     switch (type) {
                         case "text":
                             g.answer = this.readFormText(c);
+			    a.submission.answers.push(g);
                         break;
                         case "exclusive_multiple_choice":
                             g.answer = this.readFormExclusiveChoice(c);
+			    a.submission.answers.push(g);
                         break;
                         case "multiple_choice":
                             g.answer = this.readFormMultipleChoice(c);
+			    a.submission.answers.push(g);
                         break;
                         case "counter":
-                            g.answer = this.readFormCounter(c);
-                        break;
-                        case "cur_time":
-                            g.answer = this.readTime(c);
-                        break;
+			    //var tmp = this.readFormCounter(c);
+			    var array = this.readFormCounter(c).split("|");
+			    for (x in array) {
+				var ans = {
+				    answer: "BOOM",
+				    type: c.type,
+				    q_id: c.id,
+				    sub_id: 0
+				}
+				var again = array[x].split(",");
+				again.splice(0,1);
+				this.log(again[0]);
+				var date = new Date()
+				date.setTime(again[0]);
+				this.log(date);
+				again[0]=date;
+				ans.answer=again.join(",");
+				a.submission.answers.push(ans);
+			    }
+			break;
+			case "cur_time":
+			    g.answer = this.readTime(c);
+			    a.submission.answers.push(g);
+			break;
                         default:
                             continue;
                     }
-                    a.submission.answers.push(g);
                 }
+
                 this.log("SENDING TO SERVER: " + JSON.stringify(a));
                 var h = Data.getURL() + "submission.json", j = new enyo.Ajax({
                     contentType: "application/json",
@@ -471,6 +493,7 @@ enyo.kind({
     },
     readTime: function(a) {
         var b = "time_" + a.id;
-        return questionBody[0].$[b].time;
+	var ret = questionBody[0].$[b].time;
+        return ret;
     }
 });

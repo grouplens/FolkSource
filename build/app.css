@@ -1,5 +1,5 @@
 
-/* /home/reviewdaemon/hudson/trunk/agent/workspace/Enyo-github-build/bootplate/enyo/../lib/layout/fittable/source/FittableLayout.css */
+/* /Users/jts/programming/csense_trunk/bootplate_22/enyo/../lib/layout/fittable/source/FittableLayout.css */
 
 .enyo-fittable-rows-layout {
 	position: relative;
@@ -71,7 +71,7 @@
 	margin-bottom: 0 !important;
 }
 
-/* /home/reviewdaemon/hudson/trunk/agent/workspace/Enyo-github-build/bootplate/enyo/../lib/layout/list/source/List.css */
+/* /Users/jts/programming/csense_trunk/bootplate_22/enyo/../lib/layout/list/source/List.css */
 
 .enyo-list {
 	position: relative;
@@ -123,7 +123,7 @@
 	transition: top 0.1s linear, left 0.1s linear;
 }
 
-/* /home/reviewdaemon/hudson/trunk/agent/workspace/Enyo-github-build/bootplate/enyo/../lib/layout/list/source/PulldownList.css */
+/* /Users/jts/programming/csense_trunk/bootplate_22/enyo/../lib/layout/list/source/PulldownList.css */
 
 .enyo-list-pulldown {
 	position: absolute;
@@ -186,7 +186,7 @@
 	-ms-transform: rotate(180deg);
 }
 
-/* /home/reviewdaemon/hudson/trunk/agent/workspace/Enyo-github-build/bootplate/enyo/../lib/layout/panels/source/arrangers/Arranger.css */
+/* /Users/jts/programming/csense_trunk/bootplate_22/enyo/../lib/layout/panels/source/arrangers/Arranger.css */
 
 .enyo-arranger {
 	position: relative;
@@ -215,7 +215,7 @@
 }
 
 
-/* /home/reviewdaemon/hudson/trunk/agent/workspace/Enyo-github-build/bootplate/enyo/../lib/layout/panels/source/Panels.css */
+/* /Users/jts/programming/csense_trunk/bootplate_22/enyo/../lib/layout/panels/source/Panels.css */
 
 .enyo-panels {
 }
@@ -230,7 +230,7 @@
 	}
 }
 
-/* /home/reviewdaemon/hudson/trunk/agent/workspace/Enyo-github-build/bootplate/enyo/../lib/layout/tree/source/Node.css */
+/* /Users/jts/programming/csense_trunk/bootplate_22/enyo/../lib/layout/tree/source/Node.css */
 
 .enyo-node {
 	cursor: default;
@@ -264,7 +264,7 @@
 }
 
 
-/* /home/reviewdaemon/hudson/trunk/agent/workspace/Enyo-github-build/bootplate/enyo/../lib/layout/imageview/source/ImageViewPin.css */
+/* /Users/jts/programming/csense_trunk/bootplate_22/enyo/../lib/layout/imageview/source/ImageViewPin.css */
 
 
 .pinDebug {
@@ -272,7 +272,7 @@
 	border:1px solid yellow;
 }
 
-/* /home/reviewdaemon/hudson/trunk/agent/workspace/Enyo-github-build/bootplate/enyo/../lib/onyx/css/onyx.less */
+/* /Users/jts/programming/csense_trunk/bootplate_22/enyo/../lib/onyx/css/onyx.less */
 
 /* Onyx default parameters defined here */
 /* Fonts */
@@ -1423,10 +1423,280 @@
 
 /* source/App.css */
 
+/* ../source/App.css */
+
 /*
 	Put anything you reference with "url(../source)" in ../assets/
 	This way, you can minify your application, and just remove the "source" folder for production
 */
+#app {
+    top: 0;
+    left: 0;
+}
+
+/*These next 2 hide the Google links in our maps */
+.gmnoprint img {
+    display: none;
+}
+.terms-of-use-link {
+    display: none;
+}
+.hideMap {
+    display: none;
+}
+.mapItem span {
+    display: none;
+}
+/* END */
+
+.imgDiv {
+    width: 100%;
+    height: 15%;
+}
+
+.imgDiv img {
+    width: 100%;
+    height: 100%;
+}
+.enyo-google-map-map {
+    height:500px;
+}
+
+.campTitle {
+    color: #9A7A34;
+    display:inline;
+    padding: 0.5%;
+}
+.leaderTable {
+    display: table-cell; 
+    text-align: center; 
+    width: 50%;
+}
+.leaderUser {
+    color: #9A7A34;
+    font-weight: bold;
+}
+.leaderPoints {
+    color: #CC7967;
+    font-style: italic;
+}
+.campLoc {
+    font-style: italic;
+    font-size: 0.75em;
+    display: clear;
+    padding: 1%;
+}
+.campDesc {
+    font-weight: bold;
+    font-size: 0.65em;
+    color: #CC7967;
+    display: clear;
+    overflow-y: hidden;
+}
+.campItem {
+    padding: 20px;
+}
+.leaderItem {
+    height: 100%;
+    width: 100%;
+    display: table;
+}
+.toolbar {
+    background-color: #641F11;
+    color: #5C9DAF;
+}
+.mapItem {
+	position: absolute;
+	width: 100%;
+	/*min-width: 1000px;*/
+	/*width: 100%;*/
+    /*height: 80%;*/
+    //clear: both;
+}
+.panelItem {
+    height: 100%;
+    /*width: 100%;*/
+	background-color: #235260;
+}
+.filledPanels {
+    height: 100%;
+    width: 90%;
+    float: left;
+}
+.filledButtons {
+    background-color: #0B333E;
+    color: #CCAD67;
+    width: 5%;
+    float: left;
+    height: 100%;
+    padding: 0 0;
+}
+
+.bikeTable {
+    display: table;
+    width: 100%;
+}
+.tableChild {
+    opacity: 0.6;
+}
+.tablePed {
+    background-color: lightblue;
+}
+.tableBike {
+    background-color: lightgreen;
+}
+.tablePed > button {
+    background-color: lightblue;
+}
+.tableBike > button {
+    background-color: lightgreen;
+}
+.tableHide {
+    display: none;
+}
+.tableHide * {
+    display: none;
+}
+.tableCell {
+    text-align: center;
+    width: 24.5%;
+}
+.ageTitle {
+    width: 2%;
+}
+.tableButton {
+    /*width: 80%;*/
+    padding: 4px 4px;
+}
+table, tr, td {
+    border-width: 0px;
+}
+.senseButtons {
+    position: absolute;
+    display: inline;
+    width: 100%;
+    bottom: 0px;
+}
+.senseButtons > button{
+    width: 50%;
+}
+
+/* BORROWED FROM THE ACCORDION EXAMPLES */
+.accordionHeader {
+    background-image: url(../assets/arrow.png);
+    background-repeat: repeat-y;
+    height: 40px;
+	position: relative;
+	vertical-align: middle;
+	font-size: 14px;
+	font-weight: bold;
+	color: #FFF;
+	padding-left: 50px;
+	background-color: #152737;
+}
+.accordionHeaderHighlight {
+    background-position: 0px 40px;
+}
+.accordionContent div {
+    background-position: 0px 40px;
+	position: relative;
+	color: white;
+	background-color: #0B333E;
+}
+
+.center {
+    clear: both;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* ../source/menupane/style.css */
+
+/* menupane style.css */
+
+.menu-header,
+.menu-item {
+  height: 40px;
+  width: 284px;
+  /* width: 100%; */
+  color: white;
+  padding: 16px 0 0 16px;
+}
+
+.menu-header > *,
+.menu-item > * {
+  display: inline-block;
+}
+
+.menupane-menu .menu-header,
+.menupane-menu .menu-item {
+  padding-right: 60px;
+}
+
+.menupane-menu-secondary .menu-header,
+.menupane-menu-secondary .menu-item {
+  padding-left: 76px;
+}
+
+.menu-header {
+	background-color: #641F11;
+    color: #5C9DAF;
+}
+
+.menu-item {
+	background-color: #5C9DAF;
+	color: #641F11;
+}
+
+.menupane-pane {
+  background-color: rgb(192, 192, 192);
+  box-shadow: 0px 0px 5px 6px rgba( 32, 32, 32, 0.5);
+}
+
+.content {
+  /*padding-top: 5%;
+  height: 100%;*/
+}
+.onyx-groupbox > .onyx-input-decorator {
+    border-color: white;
+}
+
+.ios-navbar {
+	position: absolute;
+	width: 100%;
+	left: 0;
+	bottom: 0;
+	padding: 0px 0px 0px 0px;
+	height: 49pt;
+}
+.ios-navbar {
+	height: 49pt;
+}
+.ios-navbar button {
+	height: 49pt !important;
+	min-width: 20% !important;
+	padding: 0 0 0 0;
+	margin: 0 0 0 0;
+}
+.ios-navbutton {
+	height: 49pt;
+	padding: 0 0;
+	color: white;
+	font-size: 8pt;
+}
+.ios-navbutton * {
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	clear: both;
+}
+.android-navbar {
+}
 .nice-padding {
 	padding: 15px;
 }
+
