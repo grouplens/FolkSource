@@ -5286,6 +5286,7 @@ kind: "enyo.Scroller",
 vertical: "scroll",
 strategyKind: "TranslateScrollStrategy",
 name: "acc",
+style: " width: 100%;",
 components: [ {
 content: "Questions about you",
 ontap: "activateFormDrawer",
@@ -5497,35 +5498,45 @@ sub_id: 0
 };
 switch (type) {
 case "text":
-a.answer = this.readFormText(r);
+a.answer = this.readFormText(r), e.submission.answers.push(a);
 break;
 case "exclusive_multiple_choice":
-a.answer = this.readFormExclusiveChoice(r);
+a.answer = this.readFormExclusiveChoice(r), e.submission.answers.push(a);
 break;
 case "multiple_choice":
-a.answer = this.readFormMultipleChoice(r);
+a.answer = this.readFormMultipleChoice(r), e.submission.answers.push(a);
 break;
 case "counter":
-a.answer = this.readFormCounter(r);
+var f = this.readFormCounter(r).split("|");
+for (x in f) {
+var l = {
+answer: "BOOM",
+type: r.type,
+q_id: r.id,
+sub_id: 0
+}, c = f[x].split(",");
+c.splice(0, 1), this.log(c[0]);
+var h = new Date;
+h.setTime(c[0]), this.log(h), c[0] = h, l.answer = c.join(","), e.submission.answers.push(l);
+}
 break;
 case "cur_time":
-a.answer = this.readTime(r);
+a.answer = this.readTime(r), e.submission.answers.push(a);
 break;
 default:
 continue;
 }
-e.submission.answers.push(a);
 }
 this.log("SENDING TO SERVER: " + JSON.stringify(e));
-var f = Data.getURL() + "submission.json", l = new enyo.Ajax({
+var p = Data.getURL() + "submission.json", d = new enyo.Ajax({
 contentType: "application/json",
 method: "POST",
-url: f,
+url: p,
 postBody: JSON.stringify(e),
 cacheBust: !1,
 handleAs: "json"
 });
-l.response(this, "handlePostResponse"), l.go();
+d.response(this, "handlePostResponse"), d.go();
 }
 }
 },
@@ -5671,8 +5682,8 @@ t = r.getData();
 return this.log(t), t.join("|");
 },
 readTime: function(e) {
-var t = "time_" + e.id;
-return questionBody[0].$[t].time;
+var t = "time_" + e.id, n = questionBody[0].$[t].time;
+return n;
 }
 });
 
