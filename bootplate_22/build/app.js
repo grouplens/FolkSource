@@ -1,7 +1,7 @@
 
 // minifier: path aliases
 
-enyo.path.addPaths({layout: "/home/reviewdaemon/hudson/trunk/agent/workspace/Enyo-github-build/bootplate/enyo/../lib/layout/", onyx: "/home/reviewdaemon/hudson/trunk/agent/workspace/Enyo-github-build/bootplate/enyo/../lib/onyx/", onyx: "/home/reviewdaemon/hudson/trunk/agent/workspace/Enyo-github-build/bootplate/enyo/../lib/onyx/source/"});
+enyo.path.addPaths({layout: "/Users/jts/programming/csense_trunk/bootplate_22/enyo/../lib/layout/", onyx: "/Users/jts/programming/csense_trunk/bootplate_22/enyo/../lib/onyx/", onyx: "/Users/jts/programming/csense_trunk/bootplate_22/enyo/../lib/onyx/source/", menupane: "source/menupane/"});
 
 // FittableLayout.js
 
@@ -4420,28 +4420,3124 @@ this.setShowing(!1);
 
 enyo.kind({
 name: "App",
-kind: "FittableRows",
-fit: !0,
+kind: "enyo.FittableRows",
 components: [ {
-kind: "onyx.Toolbar",
-content: "Hello World"
+kind: "enyo.Signals",
+ondeviceready: "deviceReady"
 }, {
-kind: "enyo.Scroller",
+kind: "CSenseMenuPane",
+fit: !0
+} ],
+create: function(e, t) {
+this.inherited(arguments), this.log(LocalStorage.get("user")), this.log(LocalStorage.get("points")), LocalStorage.remove("loc");
+},
+deviceReady: function(e, t) {
+Data.setIsReady(!0), this.log(Data.getIsReady());
+}
+});
+
+// BikeCounter.js
+
+enyo.kind({
+name: "BikeCounter",
+kind: "enyo.Control",
 fit: !0,
+published: {
+type: "bikes"
+},
 components: [ {
-name: "main",
-classes: "nice-padding",
-allowHtml: !0
+kind: "enyo.Signals",
+onButtonGroupChosen: "fixIt",
+onDataRemove: "removeItem"
+}, {
+kind: "enyo.FittableRows",
+components: [ {
+name: "timer",
+kind: "Timer",
+length: 72e5,
+resetInterval: 9e5
+}, {
+kind: "onyx.Button",
+content: "Undo",
+ontap: "popup"
+}, {
+name: "cont",
+kind: "enyo.FittableRows",
+fit: !0,
+classes: "bikeTable",
+components: [ {
+name: "tabula",
+tag: "table",
+style: "width: 100%; border-width: 0px;",
+components: [ {
+tag: "tr",
+components: [ {
+tag: "td"
+}, {
+tag: "td",
+classes: "tableCell tableBike",
+colspan: 1,
+components: [ {
+kind: "enyo.Image",
+src: "assets/man_small.png"
 } ]
 }, {
-kind: "onyx.Toolbar",
+tag: "td",
+classes: "tableCell tableBike",
+components: [ {
+kind: "enyo.Image",
+src: "assets/woman_small.png"
+} ]
+}, {
+tag: "td",
+classes: "tableCell tablePed",
+components: [ {
+kind: "enyo.Image",
+src: "assets/man_small.png"
+} ]
+}, {
+tag: "td",
+classes: "tableCell tablePed",
+components: [ {
+kind: "enyo.Image",
+src: "assets/woman_small.png"
+} ]
+} ]
+}, {
+tag: "tr",
+components: [ {
+name: "adultTitle",
+classes: "ageTitle",
+tag: "td",
+components: [ {
+kind: "enyo.Image",
+src: "assets/adult_small.png"
+} ]
+}, {
+tag: "td",
+classes: "tableBike tableCell",
+components: [ {
+kind: "CountButton",
+components: [ {
+kind: "onyx.Icon",
+src: "assets/helmet_small.png"
+} ]
+} ]
+}, {
+tag: "td",
+classes: "tableBike tableCell",
+components: [ {
+kind: "CountButton",
+components: [ {
+kind: "onyx.Icon",
+src: "assets/helmet_small.png"
+} ]
+} ]
+}, {
+tag: "td",
+classes: "tablePed tableCell",
+components: [ {
+kind: "CountButton",
+components: [ {
+kind: "onyx.Icon",
+src: "assets/assistive2_small.png"
+} ]
+} ]
+}, {
+tag: "td",
+classes: "tablePed tableCell",
+components: [ {
+kind: "CountButton",
+components: [ {
+kind: "onyx.Icon",
+src: "assets/assistive2_small.png"
+} ]
+} ]
+} ]
+}, {
+tag: "tr",
+components: [ {
+tag: "td",
+classes: "tableBike tableCell",
+components: [ {
+kind: "CountButton",
+components: [ {
+kind: "onyx.Icon",
+src: "assets/bike_small.png"
+} ]
+} ]
+}, {
+tag: "td",
+classes: "tableBike tableCell",
+components: [ {
+kind: "CountButton",
+components: [ {
+kind: "onyx.Icon",
+src: "assets/bike_small.png"
+} ]
+} ]
+}, {
+tag: "td",
+classes: "tablePed tableCell",
+components: [ {
+kind: "CountButton",
+components: [ {
+kind: "onyx.Icon",
+src: "assets/ped_small.png"
+} ]
+} ]
+}, {
+tag: "td",
+classes: "tablePed tableCell",
+components: [ {
+kind: "CountButton",
+components: [ {
+kind: "onyx.Icon",
+src: "assets/ped_small.png"
+} ]
+} ]
+} ]
+}, {
+tag: "tr",
+components: [ {
+name: "kidTitle",
+tag: "td",
+classes: "ageTitle",
+components: [ {
+kind: "enyo.Image",
+src: "assets/child_small.png"
+} ]
+}, {
+tag: "td",
+classes: "tableBike tableChild tableCell",
+components: [ {
+kind: "CountButton",
+components: [ {
+kind: "onyx.Icon",
+src: "assets/helmet_small.png"
+} ]
+} ]
+}, {
+tag: "td",
+classes: "tableBike tableChild tableCell",
+components: [ {
+kind: "CountButton",
+components: [ {
+kind: "onyx.Icon",
+src: "assets/helmet_small.png"
+} ]
+} ]
+}, {
+tag: "td",
+classes: "tablePed tableChild tableCell",
+components: [ {
+kind: "CountButton",
+components: [ {
+kind: "onyx.Icon",
+src: "assets/assistive2_small.png"
+} ]
+} ]
+}, {
+tag: "td",
+classes: "tablePed tableChild tableCell",
+components: [ {
+kind: "CountButton",
+components: [ {
+kind: "onyx.Icon",
+src: "assets/assistive2_small.png"
+} ]
+} ]
+} ]
+}, {
+tag: "tr",
+components: [ {
+tag: "td",
+classes: "tableBike tableChild tableCell",
+components: [ {
+kind: "CountButton",
+components: [ {
+kind: "onyx.Icon",
+src: "assets/bike_small.png"
+} ]
+} ]
+}, {
+tag: "td",
+classes: "tableBike tableChild tableCell",
+components: [ {
+kind: "CountButton",
+components: [ {
+kind: "onyx.Icon",
+src: "assets/bike_small.png"
+} ]
+} ]
+}, {
+tag: "td",
+classes: "tablePed tableChild tableCell",
+components: [ {
+kind: "CountButton",
+components: [ {
+kind: "onyx.Icon",
+src: "assets/ped_small.png"
+} ]
+} ]
+}, {
+tag: "td",
+classes: "tablePed tableChild tableCell",
+components: [ {
+kind: "CountButton",
+components: [ {
+kind: "onyx.Icon",
+src: "assets/ped_small.png"
+} ]
+} ]
+} ]
+} ]
+}, {
+name: "popup",
+kind: "onyx.Popup",
+scrim: !0,
+scrimWhenModal: !1,
+centered: !0,
+modal: !0,
+autoDismiss: !0,
+floating: !0,
+style: "width: 80%; height: 80%;",
 components: [ {
 kind: "onyx.Button",
-content: "Tap me",
-ontap: "helloWorldTap"
+content: "Close",
+ontap: "popdown",
+style: "width: 100%; clear: both;"
+}, {
+name: "ticker",
+fit: !0,
+style: "clear: both;",
+kind: "TickerList"
+} ]
+} ]
 } ]
 } ],
-helloWorldTap: function(e, t) {
-this.$.main.addContent("The button was tapped.<br/>");
+events: {
+onTimer: "",
+onStartTimer: "",
+onDrawerOk: ""
+},
+handlers: {
+on2DrawerClick: "build",
+ontap: "storeCountData",
+onDataRemove: "removeItem"
+},
+create: function(e, t) {
+this.inherited(arguments), this.$.tabula.setAttribute("border-width", 0), this.$.adultTitle.setAttribute("rowspan", 2), this.$.kidTitle.setAttribute("rowspan", 2), this.gender = !1, this.age = !1, this.bike = !0, this.ped = !0, this.assisted = !1, this.helmet = !1, LocalStorage.set("dataArray", []), LocalStorage.remove("countData");
+},
+reset: function() {
+var e = this.$.tabula.children;
+for (var t in e) {
+var n = e[t].children;
+for (var r in n) n[r].addRemoveClass("tableHide", !1), n[r].applyStyle("visibility", null);
+}
+},
+popup: function(e, t) {
+this.$.popup.resized(), this.$.popup.render(), this.$.popup.show();
+},
+popdown: function(e, t) {
+this.$.popup.hide();
+},
+build: function(e, t) {
+var n = this.$.tabula.children;
+this.reset();
+for (var r in n) {
+var i = n[r].children;
+for (var s in i) {
+if (this.gender && r == 0) {
+if (this.age ? s > 0 : !0) !this.bike && this.ped && s <= 2 && i[s].addRemoveClass("tableHide", !this.bike), this.bike && !this.ped && s >= 3 && i[s].addRemoveClass("tableHide", !this.ped);
+} else if ((r == 1 || r == 3) && s > 0) this.bike && !this.ped && s > 2 ? i[s].addRemoveClass("tableHide", this.bike) : !this.bike && this.ped && s < 3 ? i[s].addRemoveClass("tableHide", this.ped) : (this.age && (!this.bike && this.ped && s < 3 && !this.assisted && i[s].addRemoveClass("tableHide", !this.bike), this.bike && !this.ped && !this.helmet && i[s].addRemoveClass("tableHide", !this.ped)), this.assisted ? !this.helmet && !this.ped && s < 3 && (this.bike ? i[s].applyStyle("visibility", "hidden") : i[s].addRemoveClass("tableHide", !this.bike)) : (this.helmet || i[s].addRemoveClass("tableHide", !this.helmet), s > 2 && this.bike && i[s].addRemoveClass("tableHide", !this.assisted))); else if (r == 2 || r == 4) !this.bike && this.ped && s < 2 && i[s].addRemoveClass("tableHide", !this.bike), this.bike && !this.ped && s >= 2 && i[s].addRemoveClass("tableHide", !this.ped);
+this.gender || (r == 0 ? i[s].addRemoveClass("tableHide", !this.gender) : (s == 1 || s == 3) && r >= 1 && i[s].addRemoveClass("tableHide", !this.gender)), this.age || ((r <= 1 || r == 3) && s == 0 || r >= 3) && i[s].addRemoveClass("tableHide", !this.age);
+}
+}
+return this.render(), this.parent.parent.parent.getOpen() && t == undefined && this.doDrawerOk(), this.doDrawerOk(), !0;
+},
+fixIt: function(e, t) {
+var n, r, i;
+t.name.indexOf("checkbox") != -1 && (n = t.name.split("_")[1], r = t.parent.$["content_" + n].getContent(), i = t.getValue()), t.name.indexOf("radioButton") != -1 && (r = t.content), this.log(r);
+switch (r) {
+case "Age":
+this.age = i;
+break;
+case "Gender":
+this.gender = i;
+break;
+case "Assistive":
+this.assisted = i;
+break;
+case "Helmet":
+this.helmet = i;
+break;
+case "Both":
+this.bike = !0, this.ped = !0;
+break;
+case "Bicycles":
+this.bike = !0, this.ped = !1;
+break;
+case "Pedestrians":
+this.bike = !1, this.ped = !0;
+}
+this.build(), this.reflow(), this.render();
+},
+getData: function() {
+return LocalStorage.get("countData");
+},
+storeCountData: function(e, t) {
+var n = t.originator.kind.toString(), r, i, s, o, u, a, f;
+n === "onyx.Icon" && (u = t.originator.parent, r = t.originator.parent.parent.name, o = t.originator.parent.parent.parent.parent.children, i = t.originator.parent.parent.parent.children, s = t.originator.parent.parent.parent.name), n === "CountButton" && (u = t.originator, r = t.originator.parent.name, o = t.originator.parent.parent.parent.children, i = t.originator.parent.parent.children, s = t.originator.parent.parent.name);
+if (u != undefined && u.kind.toString() === "CountButton") {
+for (var l in i) i[l].name === r && (f = l);
+for (var c in o) o[c].name === s && (a = c);
+return tmp = Data.getBikeData(a, f, this.age, this.gender, this.helmet, this.assisted, this.bike, this.ped), tmp.unshift((new Date).getTime()), tmp.unshift(r), Data.countAdd(tmp), this.$.ticker.refreshList(), !0;
+}
+},
+removeItem: function(e, t) {
+this.$[t.name].children[0].decrement();
+}
+});
+
+// CSenseLoginRegister.js
+
+enyo.kind({
+name: "CSenseLoginRegister",
+classes: "background",
+published: {
+register: !1
+},
+events: [],
+components: [ {
+name: "rbox",
+kind: "onyx.RadioGroup",
+style: "width: 100%;",
+components: [ {
+content: "Login",
+active: !0,
+classes: "onyx-radiobutton",
+ontap: "setupLogin"
+}, {
+content: "Register",
+classes: "onyx-radiobutton",
+ontap: "setupRegister"
+} ]
+}, {
+name: "gbox",
+kind: "onyx.Groupbox",
+components: []
+}, {
+name: "memoryBox",
+kind: "onyx.Checkbox",
+style: "clear: left; float: left;",
+ontap: "remember"
+}, {
+name: "text",
+content: "Remember Me",
+style: "float: left;"
+} ],
+create: function() {
+this.inherited(arguments), this.register ? (this.$.radioButton.setActive(!1), this.$.radioButton2.setActive(!0), this.setupRegister()) : this.setupLogin();
+},
+rendered: function() {
+this.inherited(arguments);
+},
+setupLogin: function() {
+this.register = !1, this.$.gbox.destroyClientControls(), this.$.gbox.createComponent({
+name: "gboxhead",
+kind: "onyx.GroupboxHeader",
+content: "Login"
+}, {
+owner: this
+}), this.$.gbox.createComponent({
+name: "gboxcomp",
+components: [ {
+name: "userdec",
+kind: "onyx.InputDecorator",
+classes: "onyx-input-decorator",
+components: [ {
+name: "username",
+kind: "onyx.Input",
+placeholder: "Username",
+defaultFocus: !0,
+type: "email",
+style: "width: 100%;",
+classes: "onyx-input",
+onkeyup: "checkFields"
+} ]
+}, {
+name: "passdec",
+kind: "onyx.InputDecorator",
+classes: "onyx-input-decorator",
+components: [ {
+name: "password",
+kind: "onyx.Input",
+placeholder: "Password",
+type: "password",
+style: "width: 100%;",
+classes: "onyx-input",
+onkeyup: "checkFields"
+} ]
+}, {
+name: "logButton",
+kind: "onyx.Button",
+content: "Login",
+style: "clear: both;",
+ontap: "buildURL"
+} ]
+}, {
+owner: this
+}), this.$.gbox.render();
+},
+setupRegister: function() {
+this.register = !0, this.$.gbox.destroyClientControls(), this.$.gbox.createComponent({
+name: "gboxhead",
+kind: "onyx.GroupboxHeader",
+content: "Register"
+}, {
+owner: this
+}), this.$.gbox.createComponent({
+name: "gboxcomp",
+components: [ {
+name: "emaildec",
+kind: "onyx.InputDecorator",
+classes: "onyx-input-decorator",
+components: [ {
+name: "email",
+kind: "onyx.Input",
+placeholder: "E-Mail",
+defaultFocus: !0,
+style: "width: 100%;",
+classes: "onyx-input",
+onkeyup: "emailRegexCheck"
+} ]
+}, {
+name: "userdec",
+kind: "onyx.InputDecorator",
+classes: "onyx-input-decorator",
+components: [ {
+name: "username",
+kind: "onyx.Input",
+placeholder: "Username",
+type: "email",
+style: "width: 100%;",
+classes: "onyx-input",
+onkeyup: "checkFields"
+} ]
+}, {
+name: "passdec",
+kind: "onyx.InputDecorator",
+classes: "onyx-input-decorator",
+components: [ {
+name: "password",
+kind: "onyx.Input",
+placeholder: "Password",
+type: "password",
+style: "width: 100%;",
+classes: "onyx-input",
+onkeyup: "checkFields"
+} ]
+}, {
+name: "logButton",
+kind: "onyx.Button",
+content: "Register",
+disabled: !0,
+style: "clear: both;",
+ontap: "buildURL"
+} ]
+}, {
+owner: this
+}), this.$.gbox.render();
+},
+buildURL: function() {
+this.log();
+if (this.checkFields()) {
+this.$.logButton.setDisabled(!1);
+var e = "login?";
+this.register && (e = "user?", e += "email=" + this.$.email.getValue() + "&"), e += "name=" + this.$.username.getValue() + "&", e += "password=" + this.$.password.getValue();
+var t = (new enyo.Ajax({
+method: "POST",
+url: Data.getURL() + e,
+headers: {
+"Cache-Control": "no-cache"
+},
+cacheBust: !0,
+handleAs: "text"
+})).go().response(this, "handleResponse");
+}
+},
+handleResponse: function(e, t) {
+this.log(e.xhr);
+if (e.xhr.status === 200) {
+var n = JSON.parse(e.xhr.responseText);
+this.log(n.points), this.log(n.uid), this.log("WEEE"), LocalStorage.set("points", n.points.toString()), LocalStorage.set("user", n.uid.toString()), this.$.memoryBox.getValue() && LocalStorage.set("remember", !0), this.bubble("onSuccessCode");
+} else this.log(JSON.stringify(e)), this.log(e.xhr.status), this.log("BOOO"), this.doFailureCode();
+},
+emailRegexCheck: function() {
+var e = /^\w+([\.\+]\w+)*@\w+(\.\w+)*(\.\w{2,})$/;
+return e.test(this.$.email.getValue()) ? (this.$.email.applyStyle("color", "black"), !0) : (this.$.email.applyStyle("color", "red"), !1);
+},
+checkUsernameExists: function() {
+return this.$.username.getValue() === "" ? !1 : !0;
+},
+checkPasswordExists: function() {
+return this.$.password.getValue() === "" ? !1 : !0;
+},
+checkFields: function() {
+return this.checkUsernameExists() && this.checkPasswordExists() ? this.register && this.emailRegexCheck ? (this.$.logButton.setDisabled(!1), !0) : (this.$.logButton.setDisabled(!1), !0) : !1;
+}
+});
+
+// CSenseMenuPane.js
+
+enyo.kind({
+name: "CSenseMenuPane",
+kind: "enyo.FittableRows",
+handlers: {
+onSuccessCode: "unPop",
+onFailureCode: "rePop",
+onPlaceChosen: "openSense",
+onSubmissionMade: "closeSense",
+onRenderScroller: "renderScroller"
+},
+events: {
+onSenseOpened: ""
+},
+components: [ {
+kind: "onyx.Popup",
+centered: !0,
+modal: !0,
+autoDismiss: !1,
+style: "position: fixed; z-index: 15;",
+components: [ {
+kind: "CSenseLoginRegister"
+} ]
+}, {
+name: "menupane",
+kind: "rwatkins.MenuPane",
+fit: !0,
+onViewChange: "viewChangedHandler",
+onMenuOpened: "menuOpenedHandler",
+onMenuClosed: "menuClosedHandler",
+menu: [ {
+content: "I want to see:",
+classes: "menu-header"
+}, {
+content: "Campaign List",
+view: "campList",
+classes: "menu-item"
+}, {
+name: "lb",
+content: "Leaderboard",
+view: "lboard",
+classes: "menu-item"
+} ],
+components: [ {
+name: "campList",
+layoutKind: "enyo.FittableRowsLayout",
+classes: "view enyo-fit",
+components: [ {
+kind: "Toolbar",
+header: "Campaign List",
+onToggleMenu: "toolbarToggleMenuHandler",
+onToggleSecondaryMenu: "toolbarToggleSecondaryMenuHandler",
+classes: "toolbar"
+}, {
+classes: "content",
+fit: !0,
+kind: "FilledPanels"
+} ]
+}, {
+name: "lboard",
+layoutKind: "enyo.FittableRowsLayout",
+classes: "view enyo-fit",
+components: [ {
+kind: "Toolbar",
+header: "Leaderboard",
+onToggleMenu: "toolbarToggleMenuHandler",
+onToggleSecondaryMenu: "toolbarToggleSecondaryMenuHandler",
+classes: "toolbar"
+}, {
+classes: "content",
+kind: "LeaderboardList",
+multiselect: !1
+} ]
+}, {
+name: "sense",
+layoutKind: "enyo.FittableRowsLayout",
+classes: "view enyo-fit",
+components: [ {
+kind: "Toolbar",
+onToggleMenu: "toolbarToggleMenuHandler",
+onToggleSecondaryMenu: "toolbarToggleSecondaryMenuHandler",
+classes: "toolbar"
+} ]
+} ]
+} ],
+unPop: function() {
+this.$.popup.setShowing(!1);
+},
+rePop: function() {
+this.$.popup.setShowing(!1), this.$.popup.setShowing(!0);
+},
+renderScroller: function() {
+this.log();
+},
+openSense: function(e, t) {
+var n = t.originator, r = !1;
+for (var i in n.tasks[0].questions) if (n.tasks[0].questions[i].type.indexOf("complex") != -1) {
+r = !0;
+break;
+}
+return this.$.sensr != undefined && this.$.sensr.destroy(), this.$.sense.createComponent({
+name: "sensr",
+kind: "ComplexSensr",
+fit: !0,
+complex: r,
+data: n,
+classes: "content"
+}, {
+owner: this
+}), this.$.menupane.selectView("sense"), !0;
+},
+closeSense: function(e, t) {
+return this.log(), this.$.menupane.selectView("campList"), !0;
+},
+create: function() {
+this.inherited(arguments), LocalStorage.get("user") === undefined && this.$.popup.show();
+},
+backKey: function() {
+this.curView != "campList" && this.$.menupane.selectView("campList");
+},
+viewChangedHandler: function(e, t) {
+var n = t.originator;
+n === "sense" && this.$.sensr.openNext(), this.curView === "lboard" && this.$.lboard.render();
+},
+menuOpenedHandler: function(e, t) {
+this.log();
+},
+menuClosedHandler: function(e, t) {
+this.log();
+},
+toolbarToggleMenuHandler: function(e, t) {
+this.log(), this.$.menupane.toggleMenu();
+}
+});
+
+// CampaignItem.js
+
+enyo.kind({
+name: "CampaignItem",
+watching: !1,
+index: "",
+classes: "campItem",
+layoutKind: "enyo.FittableRowsLayout",
+published: {
+title: "",
+description: ""
+},
+components: [ {
+name: "button",
+kind: "onyx.Button",
+content: "Watch",
+ontap: "buttonToggled"
+}, {
+name: "title",
+content: "title",
+classes: "campTitle"
+}, {
+name: "description",
+tag: "p",
+content: "desc",
+classes: "campDesc"
+} ],
+events: {
+onStartWatching: "",
+onStopWatching: ""
+},
+create: function(e, t) {
+this.inherited(arguments), this.$.title.setContent(this.title), this.$.description.setContent(this.description), this.render();
+},
+buttonToggled: function(e, t) {
+var n = t.index;
+this.watching = !this.watching, this.$.button.addRemoveClass("active", this.watching), this.watching ? (this.$.button.applyStyle("background-color", "green"), this.$.button.applyStyle("color", "white"), this.doStartWatching()) : (this.$.button.applyStyle("background-color", null), this.$.button.applyStyle("color", null), this.doStopWatching());
+},
+setIndex: function(e) {
+this.log("setting index " + e), this.index = e;
+}
+});
+
+// CampaignList.js
+
+enyo.kind({
+name: "CampaignList",
+kind: "List",
+style: "overflow: hidden; height: 100%;",
+classes: "list",
+components: [ {
+name: "item",
+kind: "CampaignItem",
+classes: "campItem",
+ontap: "refreshItem"
+}, {
+name: "divider",
+classes: "divider"
+} ],
+handlers: {
+onWatchToggled: "refreshItem",
+onSetupRow: "setupRow"
+},
+events: {
+onChooseCampaign: ""
+},
+create: function(e) {
+this.inherited(arguments), this.log();
+var t = Data.getURL() + "campaign.xml", n = new enyo.XmlpRequest({
+url: t
+});
+n.response(this, "renderResponse"), n.go();
+},
+rendered: function() {
+this.log(), this.inherited(arguments);
+},
+renderResponse: function(e, t) {
+this.log(t.list), this.campaignArray = t.list["org.citizensense.model.Campaign"];
+for (var n in this.campaignArray) n.watching = !1;
+this.refreshList();
+},
+setupRow: function(e, t) {
+var n = t.index;
+this.$.item.setIndex(n), this.$.item.$.Title.setContent(this.campaignArray[n].title), this.$.item.$.Description.setContent(this.campaignArray[n].description), this.campaignArray[n].watching ? this.$.item.applyStyle("background-color", "green") : this.$.item.applyStyle("background-color", "clear");
+},
+refreshList: function() {
+this.log(), this.setRows(this.campaignArray.length), this.refresh();
+},
+refreshItem: function(e, t, n) {
+this.log(t.originator.index);
+var r = t.originator.index;
+this.log("rendering row " + r), this.render(), this.campaignArray[r].watching = this.campaignArray[r].watching === !0 ? !1 : !0;
+},
+campChosen: function() {
+this.doOnChooseCampaign();
+}
+});
+
+// ComplexSensr.js
+
+enyo.kind({
+name: "ComplexSensr",
+style: "background-color: #254048; color: white; border-color: white; height: 100%;",
+published: {
+complex: !1,
+data: ""
+},
+events: {
+onSubmisisonMade: "",
+on2DrawerClick: "",
+onRenderScroller: ""
+},
+handlers: {
+onSenseOpened: "openNext",
+onPhotoOk: "photoOk",
+onDeviceReady: "setReady",
+onDrawerOk: "openDrawer2",
+onRenderDrawer: "renderDrawer2"
+},
+components: [ {
+kind: "enyo.Signals",
+onGPSSet: "currentLocation",
+onPinClicked: "chosenLocation",
+onPhotoData: "photoData",
+onButtonGroupChosen: "renderSubmitButton"
+}, {
+name: "formDiv",
+layoutKind: "enyo.FittableRowsLayout",
+components: []
+}, {
+name: "buttons",
+classes: "senseButtons",
+components: [ {
+kind: "onyx.Button",
+classes: "onyx-negative",
+content: "Cancel",
+ontap: "close",
+style: "clear: left;"
+}, {
+name: "submit",
+kind: "onyx.Button",
+classes: "onyx-affirmative",
+content: "Submit",
+ontap: "buildAndSendSubmission",
+style: "clear: right;"
+} ]
+} ],
+create: function(e, t) {
+this.inherited(arguments), this.recreate(), this.render(), this.setTaskData(this.data);
+},
+recreate: function() {
+this.log(this.$.formDiv), this.$.formDiv === undefined && this.createComponent({
+name: "formDiv",
+layoutKind: "enyo.FittableRowsLayout",
+components: []
+}), this.complex ? this.$.formDiv.createComponent({
+kind: "enyo.FittableRows",
+kind: "enyo.Scroller",
+vertical: "scroll",
+strategyKind: "TranslateScrollStrategy",
+name: "acc",
+components: [ {
+content: "Questions about you",
+ontap: "activateFormDrawer",
+classes: "accordionHeader"
+}, {
+name: "qs",
+kind: "onyx.Drawer",
+fit: !0,
+open: !1,
+layoutKind: "enyo.FittableRowsLayout",
+style: "white-space: nowrap; overflow: scroll; height: 100%;",
+components: [ {
+kind: "enyo.Scroller",
+layoutKind: "enyo.FittableRowsLayout",
+vertical: "scroll",
+strategyKind: "TranslateScrollStrategy",
+name: "accordionItemContent",
+style: "height: 293px;",
+components: []
+} ]
+} ]
+}, {
+owner: this
+}) : (this.log("building formDiv"), this.imageOK = !0, this.$.formDiv.createComponent({
+name: "qbody",
+fit: !0,
+components: []
+}));
+},
+rendered: function(e, t) {
+this.inherited(arguments), this.resized(), this.reflow();
+},
+activateFormDrawer: function(e, t) {
+e.addRemoveClass("accordionHeaderHighlight", !this.$.qs.open), this.$.qs.setOpen(!this.$.qs.open);
+},
+activateFormDrawer2: function(e, t) {
+this.waterfall("on2DrawerClick", {
+name: "ComplexSensr"
+});
+},
+openDrawer2: function(e, t) {
+return this.$.draw2.reflow(), this.$.draw2.addRemoveClass("accordionHeaderHighlight", !this.$.qs1.open), this.$.qs1.setOpen(!this.$.qs1.open), !0;
+},
+currentLocation: function() {},
+chosenLocation: function(e, t) {
+this.chosen_location = t;
+},
+photoData: function(e, t) {
+LocalStorage.set("image", JSON.stringify(t));
+},
+takePhoto: function() {
+this.log();
+var e = this.$, t = {
+quality: 25,
+destinationType: Camera.DestinationType.FILE_URI,
+EncodingType: Camera.EncodingType.JPEG
+};
+navigator.camera.getPicture(enyo.bind(e, this.onPhotoSuccess), enyo.bind(e, this.onPhotoFail), t);
+},
+onPhotoSuccess: function(e) {
+var t = e;
+this.$.formDiv.$.qbody.$.imgDiv.createComponent({
+name: "myImage",
+kind: "enyo.Image",
+src: "./assets/leaf-2.jpg"
+}), this.$.formDiv.$.qbody.$.imgDiv.render(), this.$.submit.setDisabled(!1), this.camComplete = !0, enyo.Signals.send("onPhotoData", e);
+},
+renderSubmitButton: function(e, t) {
+this.$.submit.setDisabled(!1);
+},
+renderDrawer2: function(e, t) {
+this.$.draw2.reflow(), this.$.draw2.render();
+},
+onPhotoFail: function(e) {
+console.log(e);
+},
+retakePhoto: function() {
+!this.complex && this.$.formDiv.$.qbody.$.imgDiv.getComponents().length > 0 && this.$.formDiv.$.qbody.$.imgDiv.destroyComponents(), this.onPhotoSuccess();
+},
+viewChanged: function(e, t) {},
+openNext: function() {
+return !this.complex, !0;
+},
+photoOk: function() {
+return this.log(), !0;
+},
+setTaskData: function(e) {
+this.task = e.tasks[0], this.campTitle = e.title, questionBody = [], this.$.formDiv != undefined && this.$.formDiv.getComponents().length > 0 && (this.$.formDiv.destroyClientControls(), this.$.formDiv.destroy(), this.recreate()), this.complex ? questionBody.push(this.$.accordionItemContent) : (this.log(this.$), questionBody.push(this.$.formDiv.$.qbody));
+for (i in this.task.questions) {
+var t = this.task.questions[i], n = "name_" + t.id;
+type = t.type;
+if (type.indexOf("complex") != -1) {
+type = "counter";
+var r = type.search(/\d/), s = 0;
+if (r != -1) var s = type.charAt(r);
+if (s != questionBody.length && this.complex) {
+var o = "qs" + (s + 1);
+this.$.formDiv.createComponent({
+name: "draw2",
+content: "Count Bicycles and/or Pedestrians",
+ontap: "activateFormDrawer2",
+classes: "accordionHeader"
+}, {
+owner: this
+}), this.$.formDiv.createComponent({
+name: o,
+kind: "onyx.Drawer",
+open: !1,
+style: "white-space: nowrap; overflow: hidden;",
+components: [ {
+name: "accordionItemContent2",
+components: []
+} ]
+}, {
+owner: this
+}), questionBody.push(this.$.accordionItemContent2);
+}
+}
+switch (type) {
+case "text":
+questionBody[0].createComponent({
+name: n,
+style: "clear: both;",
+content: t.question
+}), this.newFormText(t);
+break;
+case "exclusive_multiple_choice":
+questionBody[0].createComponent({
+name: n,
+style: "clear: both;",
+content: t.question
+}), this.newFormExclusiveChoice(t);
+break;
+case "multiple_choice":
+questionBody[0].createComponent({
+name: n,
+style: "clear: both;",
+content: t.question
+}), this.newFormMultipleChoice(t);
+break;
+case "counter":
+this.newFormCounter(t);
+break;
+case "cur_time":
+this.newTime(t);
+break;
+default:
+}
+}
+this.render(), this.log(this.$), this.complex && (this.$.accordionItemContent.resized(), this.$.accordionItemContent.reflow());
+},
+fileEntry: function(e) {
+window.resolveLocalFileSystemURI(e, this.getImageData, null);
+},
+getImageData: function(e) {
+read = new FileReader, console.log(e), read.onloadend = function(e) {
+console.log(e.target.result);
+};
+var t = read.readAsDataURL(e);
+console.log(t);
+},
+makeImageSend: function(e, t) {
+var n = btoa(this.utf8_encode(t));
+this.$.senses.createComponent({
+kind: "enyo.Image",
+src: "data:image/jpeg;base64," + n
+});
+var r = "image?", i = new Date, s = (i.getMonth() + 1).toString();
+while (s.length < 2) s = "0" + s;
+var o = i.getDate().toString();
+while (o.length < 2) o = "0" + o;
+var u = i.getFullYear().toString() + s.toString() + o.toString() + "_" + i.getHours().toString() + i.getMinutes().toString() + i.getSeconds().toString();
+r += "userName=" + Data.getUserName(LocalStorage.get("user")) + "&", r += "imageFileName=" + this.campTitle.replace(/ /g, "%20") + "_" + u + ".jpg&";
+var a = Data.getURL() + r, f = new enyo.Ajax({
+method: "POST",
+url: a,
+contentType: "image/jpeg"
+});
+f.response(this, "imageSubmission");
+},
+buildAndSendSubmission: function() {
+if (!this.$.submit.disabled) {
+this.log(this.imageOK ? !this.complex : this.complex);
+if (this.imageOK ? !this.complex : this.complex) {
+var e = {
+submission: {
+task_id: this.task.id,
+gps_location: "testy test",
+user_id: 5,
+img_path: "test",
+answers: []
+}
+}, t = Data.getLocationData(), n = t.latitude + "|" + t.longitude;
+e.submission.gps_location = n, e.submission.user_id = LocalStorage.get("user");
+for (i in this.task.questions) {
+var r = this.task.questions[i];
+type = r.type;
+if (type.indexOf("complex") != -1) {
+type = "counter";
+var s = type.search(/\d/), o = 0;
+if (s != -1) var o = type.charAt(s);
+if (o != questionBody.length && this.complex) var u = "qs" + (o + 1);
+}
+var a = {
+answer: "BOOM",
+type: r.type,
+q_id: r.id,
+sub_id: 0
+};
+switch (type) {
+case "text":
+a.answer = this.readFormText(r);
+break;
+case "exclusive_multiple_choice":
+a.answer = this.readFormExclusiveChoice(r);
+break;
+case "multiple_choice":
+a.answer = this.readFormMultipleChoice(r);
+break;
+case "counter":
+a.answer = this.readFormCounter(r);
+break;
+case "cur_time":
+a.answer = this.readTime(r);
+break;
+default:
+continue;
+}
+e.submission.answers.push(a);
+}
+this.log("SENDING TO SERVER: " + JSON.stringify(e));
+var f = Data.getURL() + "submission.json", l = new enyo.Ajax({
+contentType: "application/json",
+method: "POST",
+url: f,
+postBody: JSON.stringify(e),
+cacheBust: !1,
+handleAs: "json"
+});
+l.response(this, "handlePostResponse"), l.go();
+}
+}
+},
+handlePostResponse: function(e, t) {
+this.log("SERVER RESPONSE CAME BACK"), this.log(JSON.stringify(e.xhr.responseText)), this.bubble("onSubmissionMade"), this.camComplete = !1, this.$.submit.setDisabled(!0), this.chosen_location = undefined, LocalStorage.remove("image"), this.imageOK = !1, !this.complex && this.$.imgDiv.getComponents().length > 0 && this.$.imgDiv.destroyComponents();
+},
+imageSubmission: function(e, t) {
+this.log(JSON.stringify(e)), this.log(JSON.stringify(t));
+},
+close: function() {
+this.bubble("onSubmissionMade");
+},
+testButtons: function(e, t) {
+this.log(questionBody[0].$);
+if (this.complex) {
+this.log();
+var n = questionBody[0].$.groupbox.getControls(), r = e.getContent(), t = !0, i = !0;
+r === "Bicycles" ? (t = !0, i = !1) : r === "Pedestrians" ? (t = !1, i = !0) : r === "Both" && (i = !0, t = !0);
+for (var s in n) {
+var o = n[s].name.split("_")[1];
+this.$["checkbox_" + o].setDisabled(!1), n[s].getContent() === "Helmet" && !t ? this.$["checkbox_" + o].setDisabled(!0) : n[s].getContent() === "Assistive" && !i && this.$["checkbox_" + o].setDisabled(!0);
+}
+}
+enyo.Signals.send("onButtonGroupChosen", e);
+},
+newFormText: function(e) {
+var t = "inputDec_" + e.id, n = "input_" + e.id;
+questionBody[0].createComponent({
+name: t,
+style: "clear: both;",
+kind: "onyx.InputDecorator",
+classes: "onyx-input-decorator center",
+style: "outline-color: white; border-color: white;",
+components: [ {
+name: n,
+kind: "onyx.Input",
+classes: "onyx-input"
+} ]
+}, {
+owner: questionBody[0]
+});
+},
+newFormExclusiveChoice: function(e) {
+var t = "input_" + e.id, n = e.options.split("|"), r = [];
+for (i in n) i == 0 ? r.push({
+content: n[i],
+active: !0,
+ontap: "testButtons"
+}) : r.push({
+content: n[i],
+ontap: "testButtons"
+});
+questionBody[0].createComponent({
+name: t,
+kind: "onyx.RadioGroup",
+classes: "center",
+components: r
+}, {
+owner: this
+});
+},
+newTime: function(e) {
+var t = new Date, n = t.toTimeString().split(" ")[0], r = "time_" + e.id;
+questionBody[0].createComponent({
+content: e.question
+}), questionBody[0].createComponent({
+name: r,
+content: n,
+classes: "center",
+time: t.toTimeString()
+});
+},
+newFormMultipleChoice: function(e) {
+var t = e.options.split("|");
+questionBody[0].createComponent({
+name: "groupbox",
+classes: "center;",
+kind: "onyx.Groupbox",
+components: []
+}, {
+owner: questionBody[0]
+});
+for (i in t) {
+var n = "checkbox_" + i, r = "content_" + i, s = [];
+questionBody[0].$.groupbox.createComponent({
+name: n,
+kind: "onyx.Checkbox",
+onchange: "testButtons",
+style: "float: left; clear: left;"
+}, {
+owner: this
+}), questionBody[0].$.groupbox.createComponent({
+name: r,
+content: t[i],
+style: "float: left; clear: right;"
+});
+}
+},
+newFormCounter: function(e) {
+var t = "name_" + e.id, n = "counter_" + e.id, r;
+for (x in this.task.questions) if (this.task.questions[x].type === "exclusive_multiple_choice") {
+r = this.task.questions[x].id.toString();
+break;
+}
+var i = "input_" + r;
+e.type.split("_")[1].indexOf("2") === -1 ? questionBody[1].createComponent({
+name: n,
+kind: "BikeCounter",
+title: e.question,
+style: "clear: both;"
+}) : questionBody[2].createComponent({
+name: n,
+kind: "BikeCounter",
+title: e.question,
+style: "clear: both;"
+});
+},
+readFormText: function(e) {
+var t = "input_" + e.id;
+return questionBody[0].$[t].getValue();
+},
+readFormExclusiveChoice: function(e) {
+var t = "input_" + e.id, n = this.$[t].children;
+for (x in n) if (n[x].hasClass("active")) return n[x].getContent();
+},
+readFormMultipleChoice: function(e) {
+var t = [];
+for (i in e.options.split("|")) {
+var n = "checkbox_" + i, r = "content_" + i;
+this.$[n].getValue() && t.push(questionBody[0].$.groupbox.$[r].getContent());
+}
+return t.join("|");
+},
+readFormCounter: function(e) {
+var t;
+c = "counter_" + e.id;
+for (var n in questionBody) {
+var r = questionBody[n].$[c];
+this.log(r);
+if (r === undefined) continue;
+t = r.getData();
+}
+return this.log(t), t.join("|");
+},
+readTime: function(e) {
+var t = "time_" + e.id;
+return questionBody[0].$[t].time;
+}
+});
+
+// CountButton.js
+
+enyo.kind({
+name: "CountButton",
+kind: "onyx.Button",
+classes: "tableButton",
+handlers: {
+ontap: "increment"
+},
+components: [ {
+name: "num",
+content: 0,
+style: "height: 100%; float: right; clear: right;"
+} ],
+create: function(e, t) {
+this.inherited(arguments);
+},
+rendered: function(e, t) {},
+increment: function() {
+this.$.num.setContent(this.$.num.getContent() + 1);
+},
+decrement: function() {
+Number(this.$.num.getContent()) > 0 && this.$.num.setContent(this.$.num.getContent() - 1);
+},
+getCount: function() {
+return this.storage != undefined ? this.storage.join() : 0;
+}
+});
+
+// Counter.js
+
+enyo.kind({
+name: "Counter",
+kind: "enyo.Control",
+published: {
+title: "Counter"
+},
+handlers: {
+onFifteenMinutes: "timerChanged",
+onStartTimer: "timerStarted"
+},
+components: [ {
+name: "titl",
+content: this.title,
+style: "clear: both;"
+}, {
+name: "cols",
+kind: "enyo.FittableColumns",
+components: [ {
+name: "num",
+fit: !0,
+content: 0,
+style: "float: left;"
+}, {
+name: "pos",
+kind: "onyx.Button",
+content: "+",
+classes: "onyx-affirmative",
+ontap: "up",
+disabled: !0,
+style: "float: left;"
+} ]
+} ],
+create: function(e, t) {
+this.inherited(arguments), this.$.titl.setContent(this.title);
+},
+timerStarted: function(e, t) {
+return this.storage = [], this.$.pos.setDisabled(!1), !0;
+},
+timerChanged: function(e, t) {
+return this.storage.push(this.getCount), this.$.num.setContent(0), this.$.neg.setDisabled(!0), !0;
+},
+up: function() {
+this.$.pos.getDisabled() || (this.$.num.setContent(this.$.num.getContent() + 1), this.$.num.getContent != 0 && this.$.neg.setDisabled(!1));
+},
+down: function() {
+this.$.num.getContent() > 0 ? (this.$.num.setContent(this.$.num.getContent() - 1), this.$.num.getContent() === 0 && this.$.neg.setDisabled(!0)) : this.$.neg.setDisabled(!0);
+},
+getCount: function() {
+return this.storage != undefined ? this.storage.join() : 0;
+}
+});
+
+// Data.js
+
+enyo.kind({
+name: "Data",
+kind: "enyo.Control",
+statics: {
+getURL: function() {
+return "http://ugly.cs.umn.edu:8080/csense/";
+},
+getUserName: function(e) {
+var t = new enyo.Ajax({
+contentType: "application/json",
+sync: !0,
+url: Data.getURL() + "leaderboard.json"
+});
+t.response(this, function(e, t) {
+this.users = t.leaderboardEntrys;
+}), t.go();
+for (x in this.users) if (this.users[x].id == e) return this.log(e), this.users[x].name;
+},
+getBikeData: function(e, t, n, r, i, s, o, u) {
+var a = [], f;
+if (n) {
+if (e == 2 || e == 4) r && (t == 1 || t == 3 ? a.push("male") : a.push("female"), e <= 3 ? a.push("adult") : a.push("child"), t <= 2 ? (a.push("cyclist"), i && a.unshift("helmeted")) : (a.push("pedestrian"), s && a.unshift("assisted"))); else if (e == 3 || e == 5) t == 0 || t == 2 ? a.push("male") : a.push("female"), e <= 3 ? a.push("adult") : a.push("child"), t <= 1 ? a.push("cyclist") : a.push("pedestrian");
+} else r ? (t == 0 || t == 2 ? a.push("male") : a.push("female"), i && (e == 2 || e == 4) && a.unshift("helmeted"), s && (e == 2 || e == 4) && a.unshift("assisted"), t <= 1 ? a.push("cyclist") : a.push("pedestrian")) : t <= 1 ? a.push("cyclist") : a.push("pedestrian");
+return console.log(), a;
+},
+countAdd: function(e) {
+var t = LocalStorage.get("countData");
+t == undefined && (t = []), t.unshift(e), LocalStorage.set("countData", t);
+},
+countRemove: function(e) {
+var t = LocalStorage.get("countData");
+t.splice(e, 1), LocalStorage.set("countData", t);
+},
+countGetAtIndex: function(e) {
+return (ret = LocalStorage.get("countData")) ? ret[e] : -1;
+},
+countSize: function() {
+return LocalStorage.get("countData").length;
+},
+setLocationData: function(e) {
+LocalStorage.set("loc", e);
+},
+getLocationData: function() {
+return LocalStorage.get("loc");
+},
+setIsReady: function(e) {
+LocalStorage.set("ready", e);
+},
+getIsReady: function() {
+return LocalStorage.get("ready");
+}
+}
+});
+
+// FilledPanels.js
+
+enyo.kind({
+name: "FilledPanels",
+style: "z-index: -14;",
+events: {
+onSnapped: "",
+onPlaceChosen: ""
+},
+handlers: {
+onLoaded: "drawMap",
+onDoObservation: "hidePopup"
+},
+components: [ {
+name: "mapUp",
+kind: "onyx.Popup",
+style: "width: 80%; position: fixed; z-index: 2;",
+classes: "onyx-popup",
+centered: !0,
+floating: !0,
+modal: !0,
+components: [ {
+name: "pview",
+kind: "PinView",
+classes: "mapHide"
+} ]
+}, {
+name: "leftButton",
+kind: "onyx.Button",
+content: "<",
+slide: "prev",
+ontap: "buttonTapHandler",
+classes: "filledButtons",
+disabled: !0
+}, {
+name: "panels",
+kind: "Panels",
+arrangerKind: "CarouselArranger",
+onTransitionFinish: "transitionFinishHandler",
+onTransitionStart: "transitionStartHandler",
+classes: "filledPanels",
+layoutKind: "enyo.FittableColumnsLayout",
+components: []
+}, {
+name: "rightButton",
+kind: "onyx.Button",
+content: ">",
+slide: "next",
+ontap: "buttonTapHandler",
+classes: "filledButtons"
+}, {
+kind: "Signals",
+onPinClicked: "popupTriggered"
+} ],
+create: function(e, t) {
+this.inherited(arguments);
+var n = Data.getURL() + "campaign.json", r = new enyo.Ajax({
+method: "GET",
+cacheBust: !1,
+url: n,
+handleAs: "json"
+});
+r.go().response(this, "renderResponse"), this.$.panels.$.animator.setDuration(350);
+},
+renderResponse: function(e, t) {
+this.campaignArray = t.campaigns;
+for (var n in this.campaignArray) {
+var r = this.campaignArray[n], i = "panel_" + r.id, s = "item_" + r.id, o = "map_" + r.id, u = Date.parse(new Date), a = r.start_date_string.split(/[- :]/), f = r.end_date_string.split(/[- :]/), l = Date.parse(new Date(a[0], a[1] - 1, a[2], a[3], a[4], a[5])), c = Date.parse(new Date(f[0], f[1] - 1, f[2], f[3], f[4], f[5]));
+c >= u && (this.$.panels.createComponent({
+name: i,
+classes: "panelItem",
+fit: !0,
+kind: "enyo.FittableRows",
+components: [ {
+name: s,
+kind: "CampaignItem",
+title: "" + r.title,
+description: "" + r.description
+}, {
+name: o,
+fit: !0,
+kind: "NewMap",
+provider: "openlayers",
+style: "height: 100%; width: 100%;"
+} ]
+}), u < l && (this.log(this.$.panels.$[i]), this.$.panels.$[i].running = !1)), this.render(), this.checkSides();
+}
+},
+buttonTapHandler: function(e, t) {
+e.slide === "prev" ? this.$.panels.previous() : e.slide === "next" ? this.$.panels.next() : this.$.panels.snapTo(e.slide);
+},
+transitionFinishHandler: function(e, t) {
+var n = this.$.panels.getIndex();
+this.waterfall("onSnapped", undefined, n), this.checkSides();
+},
+transitionStartHandler: function(e, t) {
+var n = this.$.panels.getIndex();
+this.waterfall("onSnapping", undefined, n);
+},
+checkSides: function() {
+var e = this.$.panels.getIndex(), t = this.$.panels.getPanels().length, n = t - 1;
+t == 1 ? (this.$.rightButton.setDisabled(!0), this.$.leftButton.setDisabled(!0)) : this.campaignArray != undefined && (e == 0 ? (this.$.rightButton.setDisabled(!1), this.$.leftButton.setDisabled(!0)) : e == n && (this.$.rightButton.setDisabled(!0), this.$.leftButton.setDisabled(!1)));
+},
+drawMap: function(e, t) {
+var n = this.$.panels.getPanels(), r = 0, i, s = t.originator.name.split("_")[1];
+for (x in n) {
+var o = n[x].name.split("_")[1];
+o === s && (i = this.campaignArray[x].location, this.$.panels.$["map_" + o].checkMap(i));
+}
+return !0;
+},
+popupTriggered: function(e, t) {
+this.log();
+var n = t.lat + " : " + t.lon, r = this.$.panels.getIndex(), i;
+this.campaignArray[r].tasks.length === 1 && (i = this.campaignArray[r].tasks[0].instructions);
+var s = "1";
+return this.$.pview.setContent(i, s), this.$.mapUp.resized(), this.$.mapUp.show(), !0;
+},
+hidePopup: function() {
+this.$.mapUp.hide();
+var e = this.campaignArray[this.$.panels.getIndex()];
+return this.bubble("onPlaceChosen", undefined, e), !0;
+}
+});
+
+// LeaderboardItem.js
+
+enyo.kind({
+name: "LeaderboardItem",
+classes: "leaderItem",
+index: "",
+components: [ {
+name: "User",
+content: "user",
+classes: "leaderTable leaderUser"
+}, {
+name: "Points",
+content: "points",
+classes: "leaderTable leaderPoints"
+} ],
+create: function(e, t) {
+this.inherited(arguments);
+},
+setIndex: function(e) {
+this.index = e;
+}
+});
+
+// LeaderboardList.js
+
+enyo.kind({
+name: "LeaderboardList",
+kind: "enyo.List",
+style: "background-color: #254048;",
+classes: "list",
+components: [ {
+name: "item",
+kind: "LeaderboardItem",
+classes: "campItem"
+} ],
+handlers: {
+onSetupItem: "setupItem"
+},
+create: function(e) {
+var t = Data.getURL() + "leaderboard.json", n = new enyo.Ajax({
+method: "GET",
+cacheBust: !1,
+url: t,
+handleAs: "json"
+});
+n.response(this, "renderResponse"), n.go(), this.inherited(arguments);
+},
+rendered: function() {
+this.inherited(arguments);
+},
+renderResponse: function(e, t) {
+this.leaderboardArray = t.leaderboardEntrys, this.refreshList();
+},
+setupItem: function(e, t) {
+return this.$.item.setIndex(t.index), this.leaderboardArray != undefined && (this.$.item.$.User.setContent(this.leaderboardArray[t.index].name), this.$.item.$.Points.setContent(this.leaderboardArray[t.index].points)), !0;
+},
+refreshList: function() {
+this.setCount(this.leaderboardArray.length), this.refresh(), this.render();
+}
+});
+
+// LocalStorage.js
+
+enyo.kind({
+name: "LocalStorage",
+kind: "Component",
+statics: {
+set: function(e, t) {
+typeof e == "string" && (typeof t == "object" ? localStorage.setItem(e, JSON.stringify(t)) : typeof t == "string" && localStorage.setItem(e, t));
+},
+get: function(e) {
+var t;
+typeof e == "string" && (t = localStorage.getItem(e));
+if (typeof t == "string") return JSON.parse(t);
+if (typeof t == "object" && t !== null) throw enyo.log("OBJECT: " + t), "ERROR [Storage.get]: getItem returned an object. Should be a string.";
+typeof t != "undefined" && t !== null;
+},
+remove: function(e) {
+if (typeof e != "string") throw "ERROR [Storage.remove]: 'name' was not a String.";
+localStorage.removeItem(e);
+},
+__getSize: function() {
+var e, t = 0;
+for (e = 0; e < localStorage.length; e++) t += localStorage.getItem(localStorage.key()).length;
+return t;
+}
+}
+});
+
+// MenuPane.js
+
+enyo.kind({
+name: "rwatkins.MenuPane",
+published: {
+menu: "",
+secondarymenu: "",
+view: ""
+},
+events: {
+onViewChange: "",
+onMenuOpen: "",
+onMenuClose: "",
+onSecondaryMenuOpen: "",
+onSecondaryMenuClose: ""
+},
+classes: "menu-pane",
+style: "overflow: hidden;",
+position: {
+menu: {
+min: 0,
+max: 85
+},
+secondarymenu: {
+min: -85,
+max: 0
+}
+},
+controlParentName: "pane",
+components: [ {
+name: "menu",
+classes: "enyo-fit menupane-menu",
+ontap: "menuTapHandler"
+}, {
+name: "secondarymenu",
+classes: "enyo-fit menupane-menu-secondary",
+showing: !1,
+ontap: "menuTapHandler"
+}, {
+name: "pane",
+kind: "enyo.Slideable",
+classes: "menupane-pane",
+value: 0,
+min: 0,
+max: 85,
+unit: "%",
+draggable: !1,
+style: "width: 100%; height: 100%;",
+onAnimateFinish: "paneAnimateFinishHandler"
+} ],
+selectView: function(e) {
+var t = this.getClientControls();
+enyo.forEach(t, function(t) {
+t.name == e ? t.show() : t.hide();
+}, this), this.doViewChange();
+},
+toggleMenu: function(e, t, n) {
+this.$.menu.setShowing(!n), this.$.secondarymenu.setShowing(n), this.$.pane.setMax(n ? this.position.secondarymenu.max : this.position.menu.max), this.$.pane.setMin(n ? this.position.secondarymenu.min : this.position.menu.min), this.$.pane.toggleMinMax();
+},
+toggleSecondaryMenu: function(e, t) {
+this.toggleMenu(e, t, !0);
+},
+create: function() {
+this.inherited(arguments), this.$.pane.$.animator.setDuration(250);
+var e = this.getClientControls();
+enyo.forEach(e, function(e) {
+e.hide();
+}, this), e && e[0] && this.setView(e[0].name);
+},
+initComponents: function() {
+this.inherited(arguments), this.$.menu.createComponents(this.menu, {
+owner: this
+}), this.$.secondarymenu.createComponents(this.secondarymenu, {
+owner: this
+});
+},
+menuTapHandler: function(e, t) {
+e.name == "secondarymenu" ? (this.$.pane.setMax(this.position.secondarymenu.max), this.$.pane.setMin(this.position.secondarymenu.min)) : (this.$.pane.setMax(this.position.menu.max), this.$.pane.setMin(this.position.menu.min));
+var n = enyo.bind(this, function(e) {
+return e.view ? e.view : e == this.$.menu || e == this.$.secondarymenu ? null : n(e.parent);
+}), r = n(t.originator);
+r && (this.getView() == r ? this.$.pane["animateTo" + (e.name == "secondarymenu" ? "Max" : "Min")]() : (this.$.pane.$.animator.setDuration(200), this.$.pane.animateTo(e.name == "secondarymenu" ? -100 : 100), this.toview = r));
+},
+viewChanged: function(e) {
+this.selectView(this.getView());
+},
+paneAnimateFinishHandler: function(e) {
+var t = e.getValue();
+Math.abs(t) == 100 ? (this.toview && (this.setView(this.toview), this.toview = null), setTimeout(enyo.bind(this, function() {
+this.$.pane.$.animator.setDuration(250), t < 0 ? e.animateToMax() : e.animateToMin();
+}), 1)) : this.$.menu.getShowing() ? e.getValue() == this.position.menu.max ? this.doMenuOpen() : this.doMenuClose() : e.getValue() == this.position.secondarymenu.min ? this.doSecondaryMenuOpen() : this.doSecondaryMenuClose();
+}
+});
+
+// Toolbar.js
+
+enyo.kind({
+name: "Toolbar",
+kind: "onyx.Toolbar",
+published: {
+header: ""
+},
+events: {
+onHeader: "",
+onToggleMenu: "",
+onToggleSecondaryMenu: ""
+},
+components: [ {
+kind: "onyx.Grabber",
+ontap: "doToggleMenu",
+style: "float: left;"
+}, {
+name: "header",
+content: "",
+ontap: "doHeader",
+style: "padding-top: 4px"
+} ],
+create: function() {
+this.inherited(arguments), this.headerChanged();
+},
+headerChanged: function() {
+this.$.header.setContent(this.getHeader());
+}
+});
+
+// NewMap.js
+
+enyo.kind({
+name: "NewMap",
+fit: !0,
+published: {
+gpsTimeout: "10000"
+},
+components: [ {
+name: "gps",
+kind: "rok.geolocation",
+watch: !0,
+enableHighAccuracy: !0,
+timeout: this.gpsTimeout,
+maximumAge: "3000",
+onSuccess: "locSuccess",
+onError: "locError"
+}, {
+name: "obsButton",
+kind: "onyx.Button",
+content: "Make an Observation",
+ontap: "makeButtonBubbleClick",
+style: "clear: both; width: 100%;"
+}, {
+name: "mapCont",
+style: "height: 100%;"
+} ],
+events: {
+onLoaded: "",
+onPinClicked: "",
+onGPSSet: ""
+},
+eventStarted: !1,
+handlers: {
+onSnapping: "toggleVisible",
+onSnapped: "toggleVisible"
+},
+create: function(e) {
+this.inherited(arguments), this.$.gps.setTimeout(this.gpsTimeout), userMoved = !1, loaded = !1, this.panZoomed = !1, this.firstTime = !0, this.notShowing = !0, this.locSuc = !1, this.loaded = !1;
+},
+rendered: function() {
+this.inherited(arguments), this.$.gps.getPosition(), this.straction = new OpenLayers.Map(this.$.mapCont.id);
+var e = this.straction.getControlsBy("displayClass", "olControlAttribution");
+this.straction.removeControl(e[0]);
+var t = new OpenLayers.Layer.OSM("OSM", null, {
+transitionEffect: "resize"
+});
+this.pointsLayer = new OpenLayers.Layer.Vector("points", {
+styleMap: new OpenLayers.StyleMap({
+externalGraphic: "assets/pin2.png",
+graphicOpacity: 1,
+graphicHeight: 44,
+graphicWidth: 44
+}),
+projection: "EPSG:900913"
+}), this.straction.addLayers([ t, this.pointsLayer ]), this.select = new OpenLayers.Control.SelectFeature(this.pointsLayer, {
+autoActivate: !0,
+onSelect: enyo.bind(this, this.makeBubbleClick)
+});
+var n = new OpenLayers.Control.TouchNavigation({
+dragPanOptions: {
+enableKinetic: !0
+}
+}), r = new OpenLayers.Control.Zoom;
+this.straction.addControls([ n, r, this.select ]), this.straction.events.register("zoomend", this.straction, this.makeFilter()), this.straction.events.register("moveend", this.straction, this.makeFilter());
+},
+mapLoaded: function() {
+this.loaded = !0, this.log(this.loaded), this.doLoaded();
+},
+locSuccess: function(e, t) {
+return Data.setLocationData(t.coords), this.locSuc = !0, this.locSuc && !this.loaded && !this.panZoomed && this.centerMap(), !0;
+},
+locError: function(e, t) {
+this.log();
+},
+checkMap: function(e) {
+this.locPlot(e);
+},
+locPlot: function(e) {
+this.locations = e;
+var t = /-\d+\.\d+,\d+\.\d+/;
+this.locations.match(t) != null && (this.locations = this.locations.split("|"), this.addMarkers(), this.$.obsButton.addStyles("display: none;"));
+},
+inside: function(e) {
+var t = this.straction.getBounds().getNorthEast(), n = this.straction.getBounds().getSouthWest();
+return e[1] <= t.lat && e[1] >= n.lat && e[0] <= t.lon && e[0] >= n.lon ? !0 : !1;
+},
+toggleVisible: function(e, t) {
+var n = this.parent.parent.getIndex(), r = this.id.split("_"), i = r[r.length - 1], s = this.parent.parent.getPanels()[n].id.split("_"), o = s[s.length - 1];
+return this.addRemoveClass("hideMap", i !== o), !0;
+},
+makeFilter: function() {
+this.loaded && (this.panZoomed = !0), this.addMarkers();
+},
+addMarkers: function() {
+if (this.locations instanceof Array) {
+this.pointsLayer.removeAllFeatures();
+for (x in this.locations) {
+var e = this.locations[x].split(","), t = this.convertXYToLonLat(e[0], e[1]), n = new OpenLayers.Geometry.Point(t.lon, t.lat);
+this.pointsLayer.addFeatures([ new OpenLayers.Feature.Vector(n) ]);
+}
+this.pointsLayer.refresh(), this.pointsLayer.display(), this.straction.addLayer(this.pointsLayer);
+}
+},
+centerMap: function() {
+var e = Data.getLocationData(), t = this.convertCoordsToLonLat(e);
+this.straction.setCenter(t, 15), this.loaded || this.mapLoaded();
+},
+makeBubbleClick: function(e) {
+var t = this.convertLonLatToCoords(e.geometry);
+enyo.Signals.send("onPinClicked", t);
+},
+makeButtonBubbleClick: function(e, t) {
+var n = this.convertCoordsToLonLat(Data.getLocationData());
+enyo.Signals.send("onPinClicked", n);
+},
+makeBubbleLoad: function() {
+loaded = !0, this.doLoaded();
+},
+convertLonLatToCoords: function(e) {
+var t = new OpenLayers.LonLat(Number(e.x), Number(e.y)), n = new OpenLayers.Projection("EPSG:4326"), r = this.straction.getProjectionObject();
+return t.transform(r, n), t;
+},
+convertCoordsToLonLat: function(e) {
+var t = new OpenLayers.LonLat(Number(e.longitude), Number(e.latitude)), n = new OpenLayers.Projection("EPSG:4326"), r = this.straction.getProjectionObject();
+return t.transform(n, r), t;
+},
+convertXYToLonLat: function(e, t) {
+var n = new OpenLayers.LonLat(Number(e), Number(t)), r = new OpenLayers.Projection("EPSG:4326"), i = this.straction.getProjectionObject();
+return n.transform(r, i), n;
+}
+});
+
+// PinView.js
+
+enyo.kind({
+name: "PinView",
+kind: "enyo.Control",
+published: {
+value: "1",
+description: "temp description"
+},
+components: [ {
+name: "taskDesc",
+tag: "div",
+content: "test"
+}, {
+name: "taskValue",
+content: "testval"
+}, {
+name: "button",
+kind: "onyx.Button",
+content: "Do It!",
+ontap: "buttonHit"
+} ],
+events: {
+onDoObservation: ""
+},
+create: function(e, t) {
+this.inherited(arguments), this.$.taskDesc.content = this.description, this.$.taskValue.content = this.value;
+},
+setContent: function(e, t) {
+this.$.taskDesc.setContent(e), this.$.taskValue.setContent("You earn: " + t + " points"), this.$.taskDesc.resized(), this.$.taskValue.resized(), this.resized();
+},
+buttonHit: function(e, t) {
+return this.doDoObservation(), !0;
+},
+setIndex: function(e) {
+this.index = e;
+}
+});
+
+// Sensr.js
+
+enyo.kind({
+name: "Sensr",
+kind: "enyo.Control",
+style: "min-height: 100%;",
+published: {},
+events: {
+onSubmisisonMade: ""
+},
+handlers: {
+onSenseOpened: "openNext",
+onPhotoOk: "photoOk"
+},
+components: [ {
+kind: "Accordion",
+style: "min-height: 100%;",
+headerHeight: 40,
+onViewChange: "viewChanged",
+components: [ {
+kind: "AccordionItem",
+headerTitle: "Senses",
+contentComponents: [ {
+kind: "onyx.Button",
+content: "-",
+style: "float: left;",
+classes: "onyx-negative",
+ontap: "retakePhoto"
+}, {
+kind: "onyx.Button",
+content: "+",
+style: "float: right;",
+classes: "onyx-affirmative",
+ontap: "photoOk"
+} ],
+photoOk: function(e, t) {
+this.bubble("onPhotoOk");
+},
+retakePhoto: function() {}
+}, {
+name: "qs",
+kind: "AccordionItem",
+headerTitle: "Questions",
+contentComponents: [ {
+name: "qbody",
+components: []
+} ]
+} ]
+}, {
+kind: "onyx.Button",
+classes: "onyx-negative",
+content: "Cancel",
+ontap: "close",
+style: "width: 50%;"
+}, {
+name: "submit",
+kind: "onyx.Button",
+classes: "onyx-affirmative",
+content: "Submit",
+ontap: "buildAndSendSubmission",
+disabled: !0,
+style: "width: 50%;"
+} ],
+create: function(e, t) {
+this.inherited(arguments);
+},
+viewChanged: function(e, t) {},
+openNext: function() {
+var e = this.$.accordion.getItems(), t = this.$.accordion.getActiveView();
+return this.log(this.$.accordion.getActiveView()), t === !1 && this.$.accordion.toggleItem(e[0]), !0;
+},
+photoOk: function() {
+var e = this.$.accordion.getActiveView(), t = this.$.accordion.getItems();
+for (x in t) if (t[x] === e) {
+var n = ++x;
+this.$.accordion.toggleItem(t[n]), e.$.accordionItemHeader.addStyles("background-color: green;"), this.camComplete = !0, this.$.submit.setDisabled(!1);
+}
+return !0;
+},
+setTaskData: function(e) {
+this.task = e, this.$.qs.$.qbody.getComponents().length > 0 && this.$.qs.$.qbody.destroyComponents();
+for (i in this.task.questions) {
+var t = this.task.questions[i], n = "name_" + t.id;
+this.$.qs.$.qbody.createComponent({
+name: n,
+content: t.question
+});
+switch (t.type) {
+case "text":
+this.newFormText(t);
+break;
+case "exclusive_multiple_choice":
+this.newFormExclusiveChoice(t);
+break;
+case "multiple_choice":
+this.newFormMultipleChoice(t);
+break;
+case "counter":
+this.newFormCounter(t);
+break;
+default:
+}
+this.$.qs.$.qbody.createComponent({
+tag: "hr"
+});
+}
+this.$.qs.render();
+},
+buildAndSendSubmission: function() {
+var e = {
+submission: {
+task_id: this.task.id,
+gps_location: "testy test",
+user_id: 5,
+img_path: "test",
+answers: []
+}
+};
+e.submission.user_id = LocalStorage.get("user");
+for (i in this.task.questions) {
+var t = this.task.questions[i], n = {
+answer: "BOOM",
+type: t.type,
+q_id: t.id,
+sub_id: 0
+};
+switch (t.type) {
+case "text":
+n.answer = this.readFormText(t);
+break;
+case "exclusive_multiple_choice":
+n.answer = this.readFormExclusiveChoice(t);
+break;
+case "multiple_choice":
+n.answer = this.readFormMultipleChoice(t);
+break;
+case "counter":
+n.answer = this.readFormCounter(t);
+break;
+default:
+}
+e.submission.answers.push(n);
+}
+this.log("SENDING TO SERVER: " + JSON.stringify(e));
+var r = Data.getURL() + "submission.json", s = new enyo.Ajax({
+contentType: "application/json",
+method: "POST",
+url: r,
+postBody: JSON.stringify(e)
+});
+s.response(this, "handlePostResponse"), s.go();
+},
+handlePostResponse: function(e, t) {
+this.log("SERVER RESPONSE CAME BACK"), this.bubble("onSubmissionMade");
+},
+close: function() {
+this.bubble("onSubmissionMade");
+},
+newFormText: function(e) {
+var t = "inputDec_" + e.id, n = "input_" + e.id;
+this.$.qs.$.qbody.createComponent({
+name: t,
+kind: "onyx.InputDecorator",
+classes: "onyx-input-decorator",
+components: [ {
+name: n,
+kind: "onyx.Input",
+classes: "onyx-input",
+defaultFocus: !0
+} ]
+});
+},
+newFormExclusiveChoice: function(e) {
+var t = "input_" + e.id, n = e.options.split("|"), r = [];
+for (i in n) r.push({
+content: n[i]
+});
+this.$.qs.$.qbody.createComponent({
+name: t,
+kind: "onyx.RadioGroup",
+components: r
+});
+},
+newFormMultipleChoice: function(e) {
+var t = e.options.split("|");
+this.$.qs.$.qbody.createComponent({
+name: "groupbox",
+kind: "onyx.Groupbox",
+components: []
+});
+for (i in t) {
+var n = "checkbox_" + i, r = "content_" + i, s = [];
+this.$.qs.$.qbody.$.groupbox.createComponent({
+name: n,
+kind: "onyx.Checkbox",
+style: "float: left; clear: left;"
+}), this.$.qs.$.qbody.$.groupbox.createComponent({
+name: r,
+content: t[i],
+style: "float: left; clear: right;"
+}), this.$.qs.$.qbody.$.groupbox.createComponent({
+tag: "br"
+});
+}
+},
+newFormCounter: function(e) {
+var t = "counter_" + e.id;
+this.$.qs.$.qbody.createComponent({
+name: t,
+kind: "Counter",
+title: e.question
+});
+},
+readFormText: function(e) {
+var t = "input_" + e.id;
+return this.$.qs.$.qbody.$[t].getValue();
+},
+readFormExclusiveChoice: function(e) {
+var t = e.options.split("|"), n = "input_" + e.id, r = this.$.qs.$.qbody.$[n].children;
+for (x in r) if (r[x].hasClass("active")) return r[x].getContent();
+},
+readFormMultipleChoice: function(e) {
+var t = [];
+this.log(this.$.qs.$.qbody.$.groupbox.$);
+for (i in e.options.split("|")) {
+var n = "checkbox_" + i, r = "content_" + i;
+this.$.qs.$.qbody.$.groupbox.$[n].getValue() && t.push(this.$.qs.$.qbody.$.groupbox.$[r].getContent());
+}
+return t.join("|");
+},
+readFormCounter: function(e) {
+var t = "counter_" + e.id;
+return this.$.qs.$.qbody.$[t].getCount();
+}
+});
+
+// SimpleSensr.js
+
+enyo.kind({
+name: "SimpleSensr",
+kind: "enyo.Control",
+style: "min-height: 100%;",
+published: {
+complex: !1
+},
+events: {
+onSubmisisonMade: ""
+},
+handlers: {
+onSenseOpened: "openNext",
+onPhotoOk: "photoOk",
+onDeviceReady: "setReady",
+onGPSSet: "currentLocation"
+},
+components: [ {
+kind: "enyo.Signals",
+onGPSSet: "currentLocation",
+onPinClicked: "chosenLocation",
+onPhotoData: "photoData"
+}, {
+name: "senses",
+components: [ {
+name: "imgDiv",
+classes: "imgDiv",
+components: []
+}, {
+name: "photoButton",
+kind: "onyx.Button",
+content: "Take Photo",
+style: "width: 100%;",
+ontap: "retakePhoto",
+classes: "onyx-affirmative"
+} ]
+}, {
+tag: "hr",
+style: "clear: both;"
+}, {
+name: "qs",
+style: "clear: both;",
+components: [ {
+name: "qbody",
+components: []
+} ]
+}, {
+kind: "onyx.Button",
+classes: "onyx-negative",
+content: "Cancel",
+ontap: "close",
+style: "width: 50%;"
+}, {
+name: "submit",
+kind: "onyx.Button",
+classes: "onyx-affirmative",
+content: "Submit",
+ontap: "buildAndSendSubmission",
+disabled: !0,
+style: "width: 50%;"
+} ],
+create: function(e, t) {
+this.devReady = !1, this.inherited(arguments), !this.complex;
+},
+currentLocation: function(e, t) {
+this.gps_location = t.prop;
+},
+chosenLocation: function(e, t) {
+this.chosen_location = t;
+},
+photoData: function(e, t) {
+LocalStorage.set("image", JSON.stringify(t));
+},
+takePhoto: function() {
+this.log();
+var e = this.$, t = {
+quality: 25,
+destinationType: Camera.DestinationType.FILE_URI,
+EncodingType: Camera.EncodingType.JPEG
+};
+navigator.camera.getPicture(enyo.bind(e, this.onPhotoSuccess), enyo.bind(e, this.onPhotoFail), t);
+},
+onPhotoSuccess: function(e) {
+var t = e;
+this.$.imgDiv.createComponent({
+name: "myImage",
+kind: "enyo.Image",
+src: "./assets/leaf-2.jpg"
+}), this.$.imgDiv.render(), this.$.submit.setDisabled(!1), this.camComplete = !0, enyo.Signals.send("onPhotoData", e);
+},
+onPhotoFail: function(e) {
+console.log(e);
+},
+retakePhoto: function() {
+this.$.imgDiv.getComponents().length > 0 && this.$.imgDiv.destroyComponents(), this.onPhotoSuccess();
+},
+viewChanged: function(e, t) {},
+openNext: function() {
+return !0;
+},
+photoOk: function() {
+return this.log(), !0;
+},
+utf8_encode: function(e) {
+if (e === null || typeof e == "undefined") return "";
+var t = e + "", n = "", r, i, s = 0;
+r = i = 0, s = t.length;
+for (var o = 0; o < s; o++) {
+var u = t.charCodeAt(o), a = null;
+u < 128 ? i++ : u > 127 && u < 2048 ? a = String.fromCharCode(u >> 6 | 192) + String.fromCharCode(u & 63 | 128) : a = String.fromCharCode(u >> 12 | 224) + String.fromCharCode(u >> 6 & 63 | 128) + String.fromCharCode(u & 63 | 128), a !== null && (i > r && (n += t.slice(r, i)), n += a, r = i = o + 1);
+}
+return i > r && (n += t.slice(r, s)), n;
+},
+encodeAsBase64: function(e) {
+var t = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=", n, r, i, s, o, u, a, f, l = 0, c = 0, h = "", p = [];
+if (!e) return e;
+e = this.utf8_encode(e + "");
+do n = e.charCodeAt(l++), r = e.charCodeAt(l++), i = e.charCodeAt(l++), f = n << 16 | r << 8 | i, s = f >> 18 & 63, o = f >> 12 & 63, u = f >> 6 & 63, a = f & 63, p[c++] = t.charAt(s) + t.charAt(o) + t.charAt(u) + t.charAt(a); while (l < e.length);
+h = p.join("");
+var d = e.length % 3;
+return (d ? h.slice(0, d - 3) : h) + "===".slice(d || 3);
+},
+setTaskData: function(e) {
+this.task = e.tasks[0], this.campTitle = e.title, this.$.qbody.getComponents().length > 0 && this.$.qbody.destroyComponents();
+for (i in this.task.questions) {
+var t = this.task.questions[i], n = "name_" + t.id;
+this.$.qbody.createComponent({
+name: n,
+content: t.question
+});
+switch (t.type) {
+case "text":
+this.newFormText(t);
+break;
+case "exclusive_multiple_choice":
+this.newFormExclusiveChoice(t);
+break;
+case "multiple_choice":
+this.newFormMultipleChoice(t);
+break;
+case "counter":
+this.newFormCounter(t);
+break;
+default:
+}
+this.$.qbody.createComponent({
+tag: "hr"
+});
+}
+this.$.qs.render();
+},
+fileEntry: function(e) {
+window.resolveLocalFileSystemURI(e, this.getImageData, null);
+},
+getImageData: function(e) {
+read = new FileReader, console.log(e), read.onloadend = function(e) {
+console.log(e.target.result);
+};
+var t = read.readAsDataURL(e);
+console.log(t);
+},
+makeImageSend: function(e, t) {
+var n = btoa(this.utf8_encode(t));
+this.$.senses.createComponent({
+kind: "enyo.Image",
+src: "data:image/jpeg;base64," + n
+}), this.render();
+var r = "image?", i = new Date, s = (i.getMonth() + 1).toString();
+while (s.length < 2) s = "0" + s;
+var o = i.getDate().toString();
+while (o.length < 2) o = "0" + o;
+var u = i.getFullYear().toString() + s.toString() + o.toString() + "_" + i.getHours().toString() + i.getMinutes().toString() + i.getSeconds().toString();
+r += "userName=" + Data.getUserName(LocalStorage.get("user")) + "&", r += "imageFileName=" + this.campTitle.replace(/ /g, "%20") + "_" + u + ".jpg&";
+var a = Data.getURL() + r, f = new enyo.Ajax({
+method: "POST",
+url: a,
+contentType: "image/jpeg"
+});
+f.response(this, "imageSubmission");
+},
+buildAndSendSubmission: function() {
+if (!this.$.submit.disabled) {
+this.fileEntry(this.$.imgDiv.$.myImage.src);
+if (this.imageOK) {
+var e = {
+submission: {
+task_id: this.task.id,
+gps_location: "testy test",
+user_id: 5,
+img_path: "test",
+answers: []
+}
+}, t = this.gps_location.latitude + "|" + this.gps_location.longitude;
+e.submission.gps_location = t, e.submission.user_id = LocalStorage.get("user");
+for (i in this.task.questions) {
+var n = this.task.questions[i], r = {
+answer: "BOOM",
+type: n.type,
+q_id: n.id,
+sub_id: 0
+};
+switch (n.type) {
+case "text":
+r.answer = this.readFormText(n);
+break;
+case "exclusive_multiple_choice":
+r.answer = this.readFormExclusiveChoice(n);
+break;
+case "multiple_choice":
+r.answer = this.readFormMultipleChoice(n);
+break;
+case "counter":
+r.answer = this.readFormCounter(n);
+break;
+default:
+}
+e.submission.answers.push(r);
+}
+this.log("SENDING TO SERVER: " + JSON.stringify(e));
+var s = Data.getURL() + "submission.json", o = new enyo.Ajax({
+contentType: "application/json",
+method: "POST",
+url: s,
+postBody: JSON.stringify(e),
+handleAs: "json"
+});
+o.response(this, "handlePostResponse"), o.go();
+}
+}
+},
+handlePostResponse: function(e, t) {
+this.log("SERVER RESPONSE CAME BACK"), this.bubble("onSubmissionMade"), this.camComplete = !1, this.$.submit.setDisabled(!0), this.chosen_location = undefined, LocalStorage.remove("image"), this.imageOK = !1, this.$.imgDiv.getComponents().length > 0 && this.$.imgDiv.destroyComponents();
+},
+imageSubmission: function(e, t) {
+this.log(JSON.stringify(e)), this.log(JSON.stringify(t));
+},
+close: function() {
+this.bubble("onSubmissionMade");
+},
+setReady: function() {
+this.devReady = !0;
+},
+newFormText: function(e) {
+var t = "inputDec_" + e.id, n = "input_" + e.id;
+this.$.qbody.createComponent({
+name: t,
+kind: "onyx.InputDecorator",
+classes: "onyx-input-decorator",
+components: [ {
+name: n,
+kind: "onyx.Input",
+classes: "onyx-input",
+defaultFocus: !0
+} ]
+});
+},
+newFormExclusiveChoice: function(e) {
+var t = "input_" + e.id, n = e.options.split("|"), r = [];
+for (i in n) r.push({
+content: n[i]
+});
+this.$.qbody.createComponent({
+name: t,
+kind: "onyx.RadioGroup",
+components: r
+});
+},
+newFormMultipleChoice: function(e) {
+var t = e.options.split("|");
+this.$.qbody.createComponent({
+name: "groupbox",
+kind: "onyx.Groupbox",
+components: []
+});
+for (i in t) {
+var n = "checkbox_" + i, r = "content_" + i, s = [];
+this.$.qbody.$.groupbox.createComponent({
+name: n,
+kind: "onyx.Checkbox",
+style: "float: left; clear: left;"
+}), this.$.qbody.$.groupbox.createComponent({
+name: r,
+content: t[i],
+style: "float: left; clear: right;"
+}), this.$.qbody.$.groupbox.createComponent({
+tag: "br"
+});
+}
+},
+newFormCounter: function(e) {
+var t = "counter_" + e.id;
+this.$.qbody.createComponent({
+name: t,
+kind: "Counter",
+title: e.question
+});
+},
+readFormText: function(e) {
+var t = "input_" + e.id;
+return this.$.qbody.$[t].getValue();
+},
+readFormExclusiveChoice: function(e) {
+var t = e.options.split("|"), n = "input_" + e.id, r = this.$.qbody.$[n].children;
+for (x in r) if (r[x].hasClass("active")) return r[x].getContent();
+},
+readFormMultipleChoice: function(e) {
+var t = [];
+this.log(this.$.qbody.$.groupbox.$);
+for (i in e.options.split("|")) {
+var n = "checkbox_" + i, r = "content_" + i;
+this.$.qbody.$.groupbox.$[n].getValue() && t.push(this.$.qbody.$.groupbox.$[r].getContent());
+}
+return t.join("|");
+},
+readFormCounter: function(e) {
+var t = "counter_" + e.id;
+return this.$.qbody.$[t].getCount();
+}
+});
+
+// TickerList.js
+
+enyo.kind({
+name: "TickerList",
+kind: "enyo.FittableRows",
+fit: !0,
+components: [ {
+name: "ticker",
+kind: "enyo.List",
+count: 1,
+onSetupItem: "setupItem",
+style: "width: 100%; overflow: hidden;",
+components: [ {
+name: "entry",
+style: "float: left; height: 32px; clear: left;"
+}, {
+fit: !0
+}, {
+name: "xx",
+kind: "onyx.Icon",
+showing: !1,
+src: "assets/not_small.png",
+ontap: "removeData",
+style: "float: right; clear: right; color: red;"
+} ]
+} ],
+handlers: {
+onSetupItem: "setupItem"
+},
+events: {
+onRenderDrawer: ""
+},
+create: function(e) {
+LocalStorage.set("array", []), this.inherited(arguments);
+},
+rendered: function() {
+this.inherited(arguments);
+},
+buttonClick: function(e, t) {
+var n = [ 1, 2, 3 ];
+Data.countAdd(n), this.refreshList();
+},
+addToArray: function(e) {
+this.log(e);
+var t = LocalStorage.get("array");
+t.push(e), LocalStorage.set("array", t), this.refreshList();
+},
+removeData: function(e, t) {
+var n = Data.countGetAtIndex(t.index), r = n.shift();
+Data.countRemove(t.index), enyo.Signals.send("onDataRemove", {
+index: t.index,
+name: r
+}), this.refreshList();
+},
+getReversedIndex: function(e) {
+var t = LocalStorage.get("array");
+return t.length - 1 - e;
+},
+setupItem: function(e, t) {
+var n = Data.countGetAtIndex(t.index);
+n != -1 && (n.shift(), n.shift(), this.$.entry.setContent("1 " + n.join(" ")), this.$.xx.show());
+},
+refreshList: function() {
+Data.countSize() <= 10 && (this.$.ticker.setCount(Data.countSize()), this.$.ticker.refresh()), this.$.ticker.reset(), this.doRenderDrawer();
+},
+getData: function() {
+var e = LocalStorage.get("array");
+return e;
+}
+});
+
+// Timer.js
+
+enyo.kind({
+name: "Timer",
+kind: "enyo.Control",
+published: {
+title: "Counter",
+length: 1e4,
+resetInterval: 3e3
+},
+handlers: {
+onFifteenMinutes: "timerChanged",
+onStartTimer: "timerStarted"
+},
+components: [ {
+name: "timer",
+kind: "enyo.FittableColumns",
+components: [ {
+kind: "onyx.Button",
+content: "Start Counting!",
+style: "width: 50%;",
+ontap: "buttonClick"
+}, {
+name: "columnsDrawer",
+style: "white-space: nowrap; overflow: hidden;",
+orient: "h",
+kind: "onyx.Drawer",
+open: !1,
+components: [ {
+name: "counter",
+content: "00:00:00"
+} ]
+} ]
+} ],
+create: function(e, t) {
+this.inherited(arguments), this.started = !1, this.count = 0;
+},
+buttonClick: function(e, t) {
+this.started ? (clearInterval(this.job), this.$.button.setContent("Start Counting!")) : (this.job = setInterval(enyo.bind(this, "sendSeconds"), 1e3), this.$.button.setContent("Stop Counting!"), this.$.columnsDrawer.setOpen(!0)), this.started = !this.started;
+},
+startStopTimer: function(e, t) {
+this.waterfall("onStartTimer"), started ? this.$.button.setContent("Start Counting!") : (this.sendSeconds(), this.$.button.setContent("Stop Counting!"), this.$.columnsDrawer.setOpen(!0));
+},
+sendSeconds: function() {
+this.count * 1e3 % this.resetInterval === 0 && this.$.counter.setContent("00:00:00");
+if (this.count * 1e3 < this.length) {
+this.log();
+var e = this.$.counter.getContent(), t = e.split(":");
+if (Number(t[2]) === 59) {
+t[2] = "00";
+if (Number(t[1]) === 59) {
+t[1] = "00";
+var n = (Number(t[0]) + 1).toString();
+n.length < 2 && (n = "0" + n), t[0] = n;
+} else {
+var n = (Number(t[1]) + 1).toString();
+n.length < 2 && (n = "0" + n), t[1] = n;
+}
+} else {
+var n = (Number(t[2]) + 1).toString();
+n.length < 2 && (n = "0" + n), t[2] = n;
+}
+this.$.counter.setContent(t.join(":"));
+} else this.buttonClick();
+this.count++;
+}
+});
+
+// Toolbar.js
+
+enyo.kind({
+name: "Toolbar",
+kind: "onyx.Toolbar",
+published: {
+header: ""
+},
+events: {
+onHeader: "",
+onToggleMenu: ""
+},
+components: [ {
+kind: "onyx.Grabber",
+ontap: "doToggleMenu",
+style: "float: left;"
+}, {
+name: "header",
+content: "",
+ontap: "doHeader",
+style: "padding-top: 4px"
+} ],
+create: function() {
+this.inherited(arguments), this.headerChanged();
+},
+headerChanged: function() {
+this.$.header.setContent(this.getHeader());
+}
+});
+
+// TryComplexSensr.js
+
+enyo.kind({
+name: "TryComplexSensr",
+style: "background-color: #254048;",
+published: {
+complex: !1
+},
+events: {
+onSubmisisonMade: "",
+on2DrawerClick: "",
+onRenderScroller: ""
+},
+handlers: {
+onSenseOpened: "openNext",
+onPhotoOk: "photoOk",
+onDeviceReady: "setReady",
+onGPSSet: "currentLocation",
+onDrawerOk: "openDrawer2",
+onRenderDrawer: "renderDrawer2"
+},
+components: [ {
+kind: "enyo.Signals",
+onGPSSet: "currentLocation",
+onPinClicked: "chosenLocation",
+onPhotoData: "photoData",
+onButtonGroupChosen: "renderSubmitButton"
+} ],
+create: function(e, t) {
+this.inherited(arguments);
+},
+rendered: function(e, t) {
+this.inherited(arguments), this.log(), this.resized(), this.reflow();
+},
+recreate: function() {
+this.log(), this.createComponent({
+name: "formDiv",
+components: []
+}), this.complex ? (this.$.formDiv.createComponent({
+name: "acc",
+components: []
+}), this.$.formDiv.$.acc.createComponent({
+content: "Questions about you",
+ontap: "activateFormDrawer",
+classes: "accordionHeader"
+}, {
+owner: this
+}), this.$.formDiv.$.acc.createComponent({
+name: "qs",
+kind: "onyx.Drawer",
+open: !1,
+components: [],
+style: "white-space: nowrap; overflow: scroll;"
+}), this.$.formDiv.$.acc.$.qs.createComponent({
+kind: "enyo.Scroller",
+vertical: "scroll",
+strategyKind: "TranslateScrollStrategy",
+name: "accordionItemContent",
+components: []
+})) : (this.$.formDiv.createComponent({
+name: "qbody",
+fit: !0,
+components: []
+}), this.$.formDiv.$.qbody.createComponent({
+name: "imgDiv",
+classes: "imgDiv",
+components: []
+}), this.$.formDiv.$.qbody.$.imgDiv.createComponent({
+name: "photoButton",
+kind: "onyx.Button",
+content: "Take Photo",
+style: "width: 100%;",
+ontap: "retakePhoto",
+classes: "onyx-affirmative"
+}, {
+owner: this
+})), this.$.formDiv.createComponents([ {
+fit: !0
+}, {
+kind: "onyx.Button",
+classes: "onyx-negative",
+content: "Cancel",
+ontap: "close",
+style: "width: 50%; bottom: 0px; clear: left;"
+}, {
+name: "submit",
+kind: "onyx.Button",
+classes: "onyx-affirmative",
+content: "Submit",
+ontap: "buildAndSendSubmission",
+style: "width: 50%; bottom: 0px; clear: right;"
+} ], {
+owner: this
+});
+},
+activateFormDrawer: function(e, t) {
+e.addRemoveClass("accordionHeaderHighlight", !this.$.formDiv.$.acc.$.qs.open), this.$.formDiv.$.acc.$.qs.setOpen(!this.$.formDiv.$.acc.$.qs.open);
+},
+activateFormDrawer2: function(e, t) {
+this.waterfall("on2DrawerClick");
+},
+openDrawer2: function(e, t) {
+return this.$.draw2.addRemoveClass("accordionHeaderHighlight", !this.$.formDiv.$.acc.$.qs1.open), this.$.formDiv.$.acc.$.qs1.setOpen(!this.$.formDiv.$.acc.$.qs1.open), !0;
+},
+currentLocation: function(e, t) {
+this.gps_location = t.prop;
+},
+chosenLocation: function(e, t) {
+this.chosen_location = t;
+},
+photoData: function(e, t) {
+LocalStorage.set("image", JSON.stringify(t));
+},
+takePhoto: function() {
+this.log();
+var e = this.$, t = {
+quality: 25,
+destinationType: Camera.DestinationType.FILE_URI,
+EncodingType: Camera.EncodingType.JPEG
+};
+navigator.camera.getPicture(enyo.bind(e, this.onPhotoSuccess), enyo.bind(e, this.onPhotoFail), t);
+},
+onPhotoSuccess: function(e) {
+var t = e;
+this.$.formDiv.$.qbody.$.imgDiv.createComponent({
+name: "myImage",
+kind: "enyo.Image",
+src: "./assets/leaf-2.jpg"
+}), this.$.formDiv.$.qbody.$.imgDiv.render(), this.$.submit.setDisabled(!1), this.camComplete = !0, enyo.Signals.send("onPhotoData", e);
+},
+renderSubmitButton: function(e, t) {
+this.$.submit.setDisabled(!1);
+},
+renderDrawer2: function(e, t) {
+this.$.draw2.render();
+},
+onPhotoFail: function(e) {
+console.log(e);
+},
+retakePhoto: function() {
+!this.complex && this.$.formDiv.$.qbody.$.imgDiv.getComponents().length > 0 && this.$.formDiv.$.qbody.$.imgDiv.destroyComponents(), this.onPhotoSuccess();
+},
+viewChanged: function(e, t) {},
+openNext: function() {
+return !this.complex, !0;
+},
+photoOk: function() {
+return this.log(), !0;
+},
+setTaskData: function(e) {
+this.task = e.tasks[0], this.campTitle = e.title, questionBody = [], this.$.formDiv != undefined && this.$.formDiv.getComponents().length > 0 && (this.$.formDiv.destroyClientControls(), this.$.formDiv.destroy()), this.recreate(), this.complex ? questionBody.push(this.$.formDiv.$.acc.$.qs.$.accordionItemContent) : questionBody.push(this.$.formDiv.$.qbody);
+for (i in this.task.questions) {
+var t = this.task.questions[i], n = "name_" + t.id;
+type = t.type;
+if (type.indexOf("complex") != -1) {
+type = "counter";
+var r = type.search(/\d/), s = 0;
+if (r != -1) var s = type.charAt(r);
+if (s != questionBody.length && this.complex) {
+var o = "qs" + (s + 1);
+this.$.formDiv.$.acc.createComponent({
+name: "draw2",
+content: "Count Bicycles and/or Pedestrians",
+ontap: "activateFormDrawer2",
+classes: "accordionHeader"
+}, {
+owner: this
+}), this.$.formDiv.$.acc.createComponent({
+name: o,
+kind: "onyx.Drawer",
+open: !1,
+components: [],
+style: "white-space: nowrap; overflow: hidden;"
+}), this.$.formDiv.$.acc.$[o].createComponent({
+name: "accordionItemContent",
+components: []
+}), questionBody.push(this.$.formDiv.$.acc.$[o].$.accordionItemContent);
+}
+}
+switch (type) {
+case "text":
+questionBody[0].createComponent({
+name: n,
+style: "clear: both;",
+content: t.question
+}), this.newFormText(t);
+break;
+case "exclusive_multiple_choice":
+questionBody[0].createComponent({
+name: n,
+style: "clear: both;",
+content: t.question
+}), this.newFormExclusiveChoice(t);
+break;
+case "multiple_choice":
+questionBody[0].createComponent({
+name: n,
+style: "clear: both;",
+content: t.question
+}), this.newFormMultipleChoice(t);
+break;
+case "counter":
+this.newFormCounter(t);
+break;
+case "cur_time":
+this.newTime(t);
+break;
+default:
+}
+}
+this.render();
+},
+fileEntry: function(e) {
+window.resolveLocalFileSystemURI(e, this.getImageData, null);
+},
+getImageData: function(e) {
+read = new FileReader, console.log(e), read.onloadend = function(e) {
+console.log(e.target.result);
+};
+var t = read.readAsDataURL(e);
+console.log(t);
+},
+makeImageSend: function(e, t) {
+var n = btoa(this.utf8_encode(t));
+this.$.senses.createComponent({
+kind: "enyo.Image",
+src: "data:image/jpeg;base64," + n
+});
+var r = "image?", i = new Date, s = (i.getMonth() + 1).toString();
+while (s.length < 2) s = "0" + s;
+var o = i.getDate().toString();
+while (o.length < 2) o = "0" + o;
+var u = i.getFullYear().toString() + s.toString() + o.toString() + "_" + i.getHours().toString() + i.getMinutes().toString() + i.getSeconds().toString();
+r += "userName=" + Data.getUserName(LocalStorage.get("user")) + "&", r += "imageFileName=" + this.campTitle.replace(/ /g, "%20") + "_" + u + ".jpg&";
+var a = Data.getURL() + r, f = new enyo.Ajax({
+method: "POST",
+url: a,
+contentType: "image/jpeg"
+});
+f.response(this, "imageSubmission");
+},
+buildAndSendSubmission: function() {
+if (!this.$.submit.disabled) {
+this.complex || this.fileEntry(this.$.imgDiv.$.myImage.src);
+if (this.imageOK ? !this.complex : this.complex) {
+var e = {
+submission: {
+task_id: this.task.id,
+gps_location: "testy test",
+user_id: 5,
+img_path: "test",
+answers: []
+}
+}, t = this.gps_location.latitude + "|" + this.gps_location.longitude;
+e.submission.gps_location = t, e.submission.user_id = LocalStorage.get("user");
+for (i in this.task.questions) {
+var n = this.task.questions[i];
+type = n.type;
+if (type.indexOf("complex") != -1) {
+type = "counter";
+var r = type.search(/\d/), s = 0;
+if (r != -1) var s = type.charAt(r);
+if (s != questionBody.length && this.complex) var o = "qs" + (s + 1);
+}
+var u = {
+answer: "BOOM",
+type: n.type,
+q_id: n.id,
+sub_id: 0
+};
+switch (type) {
+case "text":
+u.answer = this.readFormText(n);
+break;
+case "exclusive_multiple_choice":
+u.answer = this.readFormExclusiveChoice(n);
+break;
+case "multiple_choice":
+u.answer = this.readFormMultipleChoice(n);
+break;
+case "counter":
+u.answer = this.readFormCounter(n);
+break;
+case "cur_time":
+u.answer = this.readTime(n);
+break;
+default:
+continue;
+}
+e.submission.answers.push(u);
+}
+this.log("SENDING TO SERVER: " + JSON.stringify(e));
+var a = Data.getURL() + "submission.json", f = new enyo.Ajax({
+contentType: "application/json",
+method: "POST",
+url: a,
+postBody: JSON.stringify(e),
+cacheBust: !1,
+handleAs: "json"
+});
+f.response(this, "handlePostResponse"), f.go();
+}
+}
+},
+handlePostResponse: function(e, t) {
+this.log("SERVER RESPONSE CAME BACK"), this.bubble("onSubmissionMade"), this.camComplete = !1, this.$.submit.setDisabled(!0), this.chosen_location = undefined, LocalStorage.remove("image"), this.imageOK = !1, !this.complex && this.$.imgDiv.getComponents().length > 0 && this.$.imgDiv.destroyComponents();
+},
+imageSubmission: function(e, t) {
+this.log(JSON.stringify(e)), this.log(JSON.stringify(t));
+},
+close: function() {
+this.bubble("onSubmissionMade");
+},
+testButtons: function(e, t) {
+enyo.Signals.send("onButtonGroupChosen", e);
+},
+newFormText: function(e) {
+var t = "inputDec_" + e.id, n = "input_" + e.id;
+questionBody[0].createComponent({
+name: t,
+style: "clear: both;",
+kind: "onyx.InputDecorator",
+classes: "onyx-input-decorator",
+components: [ {
+name: n,
+kind: "onyx.Input",
+classes: "onyx-input"
+} ]
+}, {
+owner: questionBody[0]
+});
+},
+newFormExclusiveChoice: function(e) {
+var t = "input_" + e.id, n = e.options.split("|"), r = [];
+for (i in n) i == 0 ? r.push({
+content: n[i],
+active: !0,
+ontap: "testButton"
+}) : r.push({
+content: n[i],
+ontap: "testButtons"
+});
+questionBody[0].createComponent({
+name: t,
+kind: "onyx.RadioGroup",
+components: r
+}, {
+owner: this
+});
+},
+newTime: function(e) {
+var t = new Date, n = t.toTimeString().split(" ")[0], r = "time_" + e.id;
+questionBody[0].createComponent({
+content: e.question
+}), questionBody[0].createComponent({
+name: r,
+content: n,
+time: t.toTimeString()
+});
+},
+newFormMultipleChoice: function(e) {
+var t = e.options.split("|");
+questionBody[0].createComponent({
+name: "groupbox",
+kind: "onyx.Groupbox",
+components: []
+}, {
+owner: questionBody[0]
+});
+for (i in t) {
+var n = "checkbox_" + i, r = "content_" + i, s = [];
+questionBody[0].$.groupbox.createComponent({
+name: n,
+kind: "onyx.Checkbox",
+onchange: "testButtons",
+style: "float: left; clear: left;"
+}, {
+owner: this
+}), questionBody[0].$.groupbox.createComponent({
+name: r,
+content: t[i],
+style: "float: left; clear: right;"
+}), questionBody[0].$.groupbox.createComponent({
+tag: "br"
+});
+}
+},
+newFormCounter: function(e) {
+var t = "name_" + e.id, n = "counter_" + e.id, r;
+for (x in this.task.questions) if (this.task.questions[x].type === "exclusive_multiple_choice") {
+r = this.task.questions[x].id.toString();
+break;
+}
+var i = "input_" + r;
+e.type.split("_")[1].indexOf("2") === -1 ? questionBody[1].createComponent({
+name: n,
+kind: "BikeCounter",
+title: e.question,
+style: "clear: both;"
+}) : questionBody[2].createComponent({
+name: n,
+kind: "BikeCounter",
+title: e.question,
+style: "clear: both;"
+});
+},
+readFormText: function(e) {
+var t = "input_" + e.id;
+return questionBody[0].$[t].getValue();
+},
+readFormExclusiveChoice: function(e) {
+var t = "input_" + e.id, n = this.$[t].children;
+for (x in n) if (n[x].hasClass("active")) return n[x].getContent();
+},
+readFormMultipleChoice: function(e) {
+var t = [];
+for (i in e.options.split("|")) {
+var n = "checkbox_" + i, r = "content_" + i;
+this.$[n].getValue() && t.push(questionBody[0].$.groupbox.$[r].getContent());
+}
+return t.join("|");
+},
+readFormCounter: function(e) {
+var t;
+c = "counter_" + e.id;
+for (var n in questionBody) {
+var r = questionBody[n].$[c];
+if (r === undefined) continue;
+t = r.getData();
+}
+return t.join("|");
+},
+readTime: function(e) {
+var t = "time_" + e.id;
+return questionBody[0].$[t].time;
+}
+});
+
+// rok.geolocation.js
+
+enyo.kind({
+name: "rok.geolocation",
+kind: enyo.Component,
+events: {
+onSuccess: "",
+onError: ""
+},
+published: {
+maximumAge: 3e3,
+timeout: 1e4,
+enableHighAccuracy: !0,
+watch: !1
+},
+create: function() {
+this.inherited(arguments), this.watch ? this.watchPosition() : this.getPosition();
+},
+destroy: function() {
+this.watchId && this.stopWatch(), this.inherited(arguments);
+},
+watchPosition: function() {
+var e = {
+maximumAge: this.maximumAge,
+timeout: this.timeout,
+enableHighAccuracy: this.enableHighAccuracy
+};
+this.watchId = navigator.geolocation.watchPosition(enyo.bind(this, "onPosition"), enyo.bind(this, "onFailure"), e);
+},
+stopWatchPosition: function() {
+navigator.geolocation.clearWatch(this.watchId), delete this.watchId, this.watch = !1;
+},
+getPosition: function() {
+var e = {
+maximumAge: this.maximumAge,
+timeout: this.timeout,
+enableHighAccuracy: this.enableHighAccuracy
+};
+navigator.geolocation.getCurrentPosition(enyo.bind(this, "onPosition"), enyo.bind(this, "onFailure"), e);
+},
+onPosition: function(e) {
+var t = {};
+t.timestamp = new Date(e.timestamp), t.coords = e.coords, this.doSuccess(t);
+},
+onFailure: function(e) {
+this.doError(e);
+},
+watchChanged: function() {
+this.watch ? this.watchPosition() : this.stopWatchPosition();
 }
 });
