@@ -10,6 +10,7 @@ public class Submission extends Dto {
 	public Integer id;
 	public Integer task_id;
 	public Integer user_id;
+	public Integer loc_id;
 //	private String notes;
 	public String gps_location;
 	public Answer[] answers;
@@ -17,7 +18,14 @@ public class Submission extends Dto {
 	public String img_path;
 	public Boolean  processed;
 	public Boolean in_range;
+
+	public Integer getLoc_id() {
+		return loc_id;
+	}
 	
+	public void setLoc_id(Integer loc_id) {
+		this.loc_id = loc_id;
+	}
 	public Boolean getProcessed() {
 		return processed;
 	}

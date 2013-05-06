@@ -19,6 +19,14 @@ public class LocationsService {
 		return locations;
 	}
 	
+	public static Locations getLocationById(Integer id) {
+		List<Locations> locations;
+		Session session = HibernateUtil.getSession(true);
+		
+		locations = session.createQuery("from Locations where id= " + id).list();
+		return locations.get(0);
+	}
+	
 	public static List<Locations> getLocationsByTask(Task t) {
 		List<Locations> locations;
 		Session session = HibernateUtil.getSession(true);

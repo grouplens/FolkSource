@@ -19,6 +19,14 @@ public class SubmissionService {
 
 		return submissions;
 	}
+	
+	public static List<Submission> getSubmissions(Integer task,Integer loc) {
+		List<Submission> submissions;
+		Session session = HibernateUtil.getSession(true);
+		submissions = session.createQuery("from Submission where task_id=" +
+											task + " and loc_id=" + loc).list();
+		return submissions;
+	}
 
 	public static boolean save(Submission t) {
 		Session session = HibernateUtil.getSession(true);

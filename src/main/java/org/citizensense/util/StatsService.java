@@ -32,7 +32,7 @@ public class StatsService {
 		return stats;
 	}
 	
-	public static Stats getTaskStatsByLocation(Task t, Locations l) {
+	public static Stats getTaskStatByLocation(Task t, Locations l) {
 		List<Stats> stats;
 		Stats s = null;
 		Session session = HibernateUtil.getSession(true);

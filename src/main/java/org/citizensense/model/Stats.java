@@ -1,5 +1,7 @@
 package org.citizensense.model;
 
+import java.util.List;
+
 import org.grouplens.common.dto.Dto;
 
 public class Stats extends Dto{
@@ -9,6 +11,18 @@ public class Stats extends Dto{
 	private Integer num_submissions;
 	private Integer num_sbs_processed;
 	private Double curr_confidence;
+	
+	/* Should this be in here...do I need to update db */
+	private List<Answer> estimate;
+	
+	public List<Answer> getEstimate() {
+		return estimate;
+	}
+	
+	public void setEstimate(List<Answer> estimate) {
+		this.estimate = estimate;
+	}
+	/* And above */
 	public Integer getId() {
 		return id;
 	}
