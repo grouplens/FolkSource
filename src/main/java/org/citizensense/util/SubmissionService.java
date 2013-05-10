@@ -20,7 +20,7 @@ public class SubmissionService {
 		return submissions;
 	}
 	
-	public static List<Submission> getSubmissions(Integer task,Integer loc) {
+	public static List<Submission> getSubmissionsForTaskLoc(Integer task,Integer loc) {
 		List<Submission> submissions;
 		Session session = HibernateUtil.getSession(true);
 		submissions = session.createQuery("from Submission where task_id=" +
@@ -43,7 +43,13 @@ public class SubmissionService {
 			users.get(0).setPoints(users.get(0).getPoints() + 1);
 			return true;
 	}
-
+	
+	public static boolean update(Submission t) {
+		Session session = HibernateUtil.getSession(true);
+		session.update(t);
+		return true;
+	}
+	// Shouldn't the argument to getSession be true since accessing db?
 	public static User getSubUser(Submission submission) {
 		Session session = HibernateUtil.getSession(false);
 		System.out.println("CITIZENSENSE - " + submission.getUser_id());

@@ -5,15 +5,15 @@ import java.util.List;
 import org.grouplens.common.dto.Dto;
 
 public class Stats extends Dto{
-	private Integer id;
-	private Integer task_id;
-	private Integer loc_id;
-	private Integer num_submissions;
-	private Integer num_sbs_processed;
-	private Double curr_confidence;
+	public Integer id;
+	public Integer task_id;
+	public Integer loc_id;
+	public Integer num_submissions;
+	public Integer num_sbs_processed;
+	public Double curr_confidence;
 	
 	/* Should this be in here...do I need to update db */
-	private List<Answer> estimate;
+	public List<Answer> estimate;
 	
 	public List<Answer> getEstimate() {
 		return estimate;

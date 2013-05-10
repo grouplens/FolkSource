@@ -3,6 +3,7 @@ package org.citizensense.controller;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 import org.citizensense.model.Submission;
+import org.citizensense.util.StatsService;
 import org.citizensense.util.SubmissionService;
 import org.grouplens.common.dto.DtoContainer;
 
@@ -65,6 +66,7 @@ public class SubmissionController implements ModelDriven<DtoContainer<Submission
 //		res.addHeader("Access-Control-Expose-Headers", "X-Uid");
 		res.addIntHeader("X-Points", SubmissionService.getSubUser(content.getSingle()).getPoints());
 		SubmissionService.save(content.getSingle());
+		StatsService.newSub(content.getSingle());
 		return "create";//new DefaultHttpHeaders("create");
 	}
 	

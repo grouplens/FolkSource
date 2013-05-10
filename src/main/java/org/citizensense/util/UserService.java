@@ -51,6 +51,11 @@ public class UserService {
 		session.save(u);
 	}
 	
+	public static boolean update(User u) {
+		Session session = HibernateUtil.getSession(true);
+		session.update(u);
+		return true;
+	}
 
 	
 	public static User getUserByName(String name) {
