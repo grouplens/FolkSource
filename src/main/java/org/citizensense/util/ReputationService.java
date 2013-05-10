@@ -36,6 +36,51 @@ public class ReputationService {
 		
 		
 	}
+	// Convert Answers to numeric format given a conversion specification
+	//private static Double[][] convertAnswers(ArrayList<Answer> answers, Type conversionChart) {}
+	
+	/**
+	 * Compute the estimated correct answer for this (task, location) "weighted mean"
+	 * @param reps-Array of reputations of users
+	 * @param convertedAns-For each user, convertedAns[i] is an array of answers from user[i]
+	 * @param normalizer-normalizing constant
+	 * @return-array of estimated correct answers
+	 */
+	private static Double[] computeEstimate(Double[] reps, Double[][] convertedAns, Double normalizer) {
+		// Might be good to enforce zeros in new estimate array???
+		Double[] estimate = new Double[convertedAns[0].length];
+		Integer len = reps.length;
+		
+		assert(reps.length == convertedAns.length);
+		
+		//NOTE: WE MAY NEED UNSCALED CONVERTED-ANSWERS LATER
+		//SO MIGHT NEED TO MAKE A COPY
+		
+		for ( int i = 0; i < len; i++ ) {
+			Double weight = reps[i] / normalizer;
+			scalarArrayMult(convertedAns[i], weight);
+			arraysAdd(estimate, convertedAns[i]);
+		}
+		
+		scalarArrayMult(estimate, 1.0/len);
+		
+		return estimate;
+	}
+	
+	private static void arraysAdd(Double[] finalArray, Double[] array2Add) {
+		assert(finalArray.length == array2Add.length);
+		int len = finalArray.length;
+		
+		for (int i = 0; i < len; i++) {
+			finalArray[i] = finalArray[i] + array2Add[i];
+		}	
+	}
+	
+	private static void scalarArrayMult(Double[] array, Double scalar) {
+		for (Double d : array) {
+			d = d * scalar;
+		}
+	}
 	
 	
 	// Get array of users who submitted to (task,location)
@@ -58,6 +103,7 @@ public class ReputationService {
 			i++;
 		}
 		
+		assert (submissions.size() ==  users.length);
 		return users;
 	}
 	
@@ -75,6 +121,7 @@ public class ReputationService {
 			reputations[i] = users[i].getReputation();
 		}
 		
+		assert(reputations.length == users.length);
 		return reputations;		
 	}
 	
@@ -88,6 +135,8 @@ public class ReputationService {
 		for(Double r : reps) {
 			norm += r;
 		}
+		
+		assert(!norm.equals(0));
 		return norm;
 	}
 	
@@ -103,6 +152,8 @@ public class ReputationService {
 			List<Answer> answer = s.getAnswers();
 			answers.add(answer);		
 		}
+		
+		assert(answers.size() == submissions.size());
 		return answers;
 	}
 	
