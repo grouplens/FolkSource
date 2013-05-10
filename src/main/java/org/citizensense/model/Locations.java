@@ -3,10 +3,10 @@ package org.citizensense.model;
 import org.grouplens.common.dto.Dto;
 
 public class Locations extends Dto{
-	private Integer id;
-	private Location location;
-	private Integer task_id;
-	private Integer stat_id;
+	public Integer id;
+	public Location location;
+	public Integer task_id;
+	public Integer stat_id;
 	
 	public Integer getId() {
 		return id;
