@@ -28,11 +28,12 @@ for(Object[] o : l) {
 request.setAttribute("tab", p);
 %>
 <display:table name="tab" export="true">
-<display:column property="s_id" sortable="true" />
-<display:column property="t_desc" sortable="true" />
-<display:column property="loc" sortable="true" />
-<display:column property="q_id" sortable="true" />
+<display:column property="sub_id" sortable="true" />
+<display:column property="task_desc" sortable="true" />
+<display:column property="location" sortable="true" />
+<display:column property="sub_timestamp" sortable="true" />
+<display:column property="question_id" sortable="true" />
 notes;
-<display:column property="q" sortable="true" />
-<display:column property="a" sortable="true" />
+<display:column property="question" sortable="true" />
+<display:column property="answer" sortable="true" />
 </display:table>
