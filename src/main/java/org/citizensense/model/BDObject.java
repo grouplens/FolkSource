@@ -19,7 +19,7 @@ public class BDObject {
 			this.sub_id = (Integer) o[1];
 		if(o[2] instanceof String)
 			this.location = (String) o[2];
-		if(o[3] instanceof Integer)
+		if(o[3] instanceof String)
 			this.sub_timestamp = (String) o[3];
 		if(o[4] instanceof Integer)
 			this.question_id = (Integer) o[4];
