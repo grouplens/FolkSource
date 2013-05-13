@@ -18,16 +18,7 @@
 <%
 int id = Integer.parseInt(request.getParameter("id"));
 Session sesh = HibernateUtil.getSession(true);
-List<Object[]> l = sesh.createSQLQuery("SELECT "
-			+"tasks.instructions, answers.sub_id, "
-			+"task_submissions.gps_location, answers.q_id, "
-			+"questions.question, answers.answer "
-		+"FROM tasks JOIN ("
-				+"task_submissions JOIN ("
-						+"answers JOIN "
-							+"questions ON answers.q_id=questions.id) ON "
-						+"answers.sub_id=task_submissions.id) ON "
-		+"task_submissions.task_id=tasks.id where tasks.camp_id="+id+";").list();
+List<Object[]> l = sesh.createSQLQuery("SELECT tasks.instructions, answers.sub_id, task_submissions.gps_location, task_submissions.timestamp, answers.q_id, questions.question, answers.answer FROM tasks JOIN (task_submissions JOIN (answers JOIN questions ON answers.q_id=questions.id) ON answers.sub_id=task_submissions.id) ON task_submissions.task_id=tasks.id where tasks.camp_id="+id+";").list();
 
 List<BDObject> p = new ArrayList<BDObject>();
 for(Object[] o : l) {
