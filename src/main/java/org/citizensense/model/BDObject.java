@@ -2,28 +2,31 @@ package org.citizensense.model;
 
 public class BDObject {
 //	public Integer t_id;
-	public String t_desc;
-	public Integer s_id;
-	public String loc;
-	public Integer q_id;
-	public String q;
-	public String a;
+	public String task_desc;
+	public Integer sub_id;
+	public String location;
+	public String sub_timestamp;
+	public Integer question_id;
+	public String question;
+	public String answer;
 	
 	public BDObject(Object[] o) {
 //		if(o[0] instanceof Integer)
 //			this.t_id = (Integer) o[0];
 		if(o[0] instanceof String)
-			this.t_desc = (String) o[0];
+			this.task_desc = (String) o[0];
 		if(o[1] instanceof Integer)
-			this.s_id = (Integer) o[1];
+			this.sub_id = (Integer) o[1];
 		if(o[2] instanceof String)
-			this.loc = (String) o[2];
+			this.location = (String) o[2];
 		if(o[3] instanceof Integer)
-			this.q_id = (Integer) o[3];
-		if(o[4] instanceof String)
-			this.q = (String) o[4];
+			this.sub_timestamp = (String) o[3];
+		if(o[4] instanceof Integer)
+			this.question_id = (Integer) o[4];
 		if(o[5] instanceof String)
-			this.a = (String) o[5];
+			this.question = (String) o[5];
+		if(o[6] instanceof String)
+			this.answer = (String) o[6];
 	}
 
 //	public Integer getT_id() {
@@ -35,51 +38,51 @@ public class BDObject {
 //	}
 
 	public String getT_desc() {
-		return t_desc;
+		return task_desc;
 	}
 
 	public void setT_desc(String t_desc) {
-		this.t_desc = t_desc;
+		this.task_desc = t_desc;
 	}
 
 	public Integer getS_id() {
-		return s_id;
+		return sub_id;
 	}
 
 	public void setS_id(Integer s_id) {
-		this.s_id = s_id;
+		this.sub_id = s_id;
 	}
 
 	public String getLoc() {
-		return loc;
+		return location;
 	}
 
 	public void setLoc(String loc) {
-		this.loc = loc;
+		this.location = loc;
 	}
 
 	public Integer getQ_id() {
-		return q_id;
+		return question_id;
 	}
 
 	public void setQ_id(Integer q_id) {
-		this.q_id = q_id;
+		this.question_id = q_id;
 	}
 
 	public String getQ() {
-		return q;
+		return question;
 	}
 
 	public void setQ(String q) {
-		this.q = q;
+		this.question = q;
 	}
 
 	public String getA() {
-		return a;
+		return answer;
 	}
 
 	public void setA(String a) {
-		this.a = a;
+		this.answer = a;
 	}
 	
 	
