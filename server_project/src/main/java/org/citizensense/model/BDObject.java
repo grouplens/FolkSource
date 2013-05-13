@@ -1,5 +1,9 @@
 package org.citizensense.model;
 
+import java.sql.Timestamp;
+
+import org.hibernate.Hibernate;
+
 public class BDObject {
 //	public Integer t_id;
 	public String task_desc;
@@ -19,8 +23,8 @@ public class BDObject {
 			this.sub_id = (Integer) o[1];
 		if(o[2] instanceof String)
 			this.location = (String) o[2];
-		if(o[3] instanceof String)
-			this.sub_timestamp = (String) o[3];
+		if(o[3] instanceof Timestamp)
+			this.sub_timestamp = o[3].toString();
 		if(o[4] instanceof Integer)
 			this.question_id = (Integer) o[4];
 		if(o[5] instanceof String)
