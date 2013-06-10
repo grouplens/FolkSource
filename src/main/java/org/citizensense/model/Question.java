@@ -6,13 +6,21 @@ public class Question extends Dto implements Comparable<Question> {
 	public Integer id;
 
 	public String question;
-	public String type;
 	public Boolean required;
 	public String options;
 	public Integer task_id;
+	public Integer type_id;
 	
 	@Exclude(ExcludeType.EXPORT)
 	public Answer answer;
+	
+	public Integer getTypeId() {
+		return type_id;
+	}
+	
+	public void setTypeId(Integer type_id) {
+		this.type_id = type_id;
+	}
 
 	public String getQuestion() {
 		return question;
@@ -30,13 +38,6 @@ public class Question extends Dto implements Comparable<Question> {
 		this.answer = answer;
 	}
 
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
 
 	public Boolean isRequired() {
 		return required;

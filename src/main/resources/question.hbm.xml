@@ -9,10 +9,11 @@
 <!-- 	<many-to-one name="task" column="task_id" /> -->
 <!-- 	<property name="task_id" /> -->
 	<property name="question" />
-	<property name="type" />
+<!--  <property name="type" /> -->
 	<property name="required" />
 	<property name="options" />
-	
+	<many-to-one name="type_id" class="Types"
+		column="id" not-null="true" />
 <!-- 	<bag name="answers" lazy="false"> -->
 <!-- 		<key column="task_id" not-null="false"/> -->
 		<!-- <index column="id" base="1" /> -->
