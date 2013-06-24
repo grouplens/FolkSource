@@ -1,0 +1,27 @@
+{
+  "build": {
+    "phonegap": {
+      "enabled": true,
+      "icon": {
+        "src": "icon.png",
+        "role": "default"
+      },
+      "preferences": {
+        "phonegap-version": "2.0.0"
+      },
+      "targets": {},
+      "appId": ""
+    }
+  },
+  "preview": {
+    "top_file": "debug.html"
+  },
+  "author": {
+    "name": "",
+    "href": ""
+  },
+  "id": "",
+  "version": "",
+  "name": "organizer_interface",
+  "title": ""
+}
