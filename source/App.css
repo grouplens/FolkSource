@@ -1,0 +1,47 @@
+/*
+	Put anything you reference with "url()" in ../assets/
+	This way, you can minify your application, and just remove the "source" folder for production
+*/
+.nice-padding {
+	padding: 15px;
+}
+.panel-width {
+	min-width: 30%;
+	max-width: 30%;
+}
+.bordering {
+	border: 1px black outset;
+       	padding: 3px;
+       	margin: 1px;
+}
+.campaign-panel-width: {
+    	min-width: 100%;
+}
+.campaign-decorator-width: {
+    	width: 90%;
+	margin-left: auto;
+	margin-right: auto;
+}
+.list-selection {
+    	color: white;
+    	opacity: 0.8;
+}
+.button-spacing {
+    	margin-left: 3px;
+	margin-right: 3px;
+}
+.map-button {
+    	padding: 10px;
+	/*border-width: 2px;
+	border-style: solid;
+	border: 2px solid black;*/
+	width: 100%;
+}
+.test img:hover {
+    	-moz-box-shadow: 1px 1px 1px #222;
+	-webkit-box-shadow: 1px 1px 1px #222;
+	box-shadow: 1px 1px 1px #222;
+    	border: 1px solid darkgrey;
+	padding: 2px;
+	padding-top: 0px;
+}
