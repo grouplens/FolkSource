@@ -119,13 +119,27 @@ enyo.kind({
 		if (e.layerType === "marker"){
 			this.drawMarker = new L.Draw.Marker(this.map, this.drawControl.options.marker);
 			this.drawMarker.enable();
+			this.drawMarker._tooltip.updatePosition(e.layer._latlng);
 		}
 		if (e.layerType === "polygon"){
 			this.drawPolygon = new L.Draw.Polygon(this.map, this.drawControl.options.polygon);
 			this.drawPolygon.enable();
+			this.drawPolygon._tooltip.updatePosition(e.layer._latlngs[0]);
 		}
 
     },
+
+    showTooltip: function () {
+    	L.DomUtil.removeClass(this.tooltip, "hidden");
+    	this.map.off("mousemove", this.showTooltip, this);
+    },
+
+    fixTooltip: function (tooltipContainer) {
+    	L.DomUtil.addClass(tooltipContainer, "hidden");
+    	this.tooltip = tooltipContainer;
+    	this.map.on("mousemove", this.showTooltip, this);
+    },
+
     /*
 		This function disables all leaflet.draw controls and activates the marker placement control.
     */
@@ -135,6 +149,8 @@ enyo.kind({
 		this.$.addLocationButton.setActive(true);
 		//enable the markers draw-er
 		this.drawMarker.enable();
+		//Don't show tooltip in the upper left hand corner as is the default initial behavior
+		this.fixTooltip(this.drawMarker._tooltip._container);
 	},
 	/*
 		This function disables all leaflet.draw controls and activates the polygon placement control.
@@ -142,8 +158,9 @@ enyo.kind({
 	enablePolygonPlacementMode: function(inSender, inEvent) {
 		this.deactivateEditing();
 		this.$.addRegionButton.setActive(true);
-		//enable the markers draw-er
 		this.drawPolygon.enable();
+		//Don't show tooltip in the upper left hand corner as is the default initial behavior
+		this.fixTooltip(this.drawPolygon._tooltip._container);
 	},
 	/*
 		This function disables all leaflet.draw controls and activates the leaflet.draw edit control.
@@ -154,6 +171,9 @@ enyo.kind({
 
 		//enable the editor
 		this.editor.enable();
+
+		//fix the tooptip
+		this.fixTooltip(this.editor._tooltip._container);
 
 		//Save original state of the verticies for each polygon.
 		this.drawnItems.eachLayer(function (layer) {
@@ -166,6 +186,7 @@ enyo.kind({
 		this.deactivateEditing();
 		this.$.removeFeaturesButton.setActive(true);
 		this.remover.enable();
+		this.fixTooltip(this.remover._tooltip._container);
 	},
 
 	undo: function(){
