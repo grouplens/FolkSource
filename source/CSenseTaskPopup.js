@@ -9,7 +9,7 @@ enyo.kind({
             kind: enyo.Repeater,
             count: 0,
             components: [
-                {kind: onyx.Button, ontap: "openDrawer", published:{index: ""},},
+                {kind: onyx.Button, ontap: "toggleDrawer", published:{index: ""},},
                 {kind: onyx.Drawer, open: false, orient: "v",
                     components:[
                         {content: "Submitter:"},
@@ -45,12 +45,13 @@ enyo.kind({
 
         return true;
     },
-    openDrawer: function (inSender, inEvent){
+    toggleDrawer: function (inSender, inEvent){
 
         //This is really weird... Why can't we use their names?
-        var ind = inSender.index;
-        if (ind === 0){ind = "";}
-        this.$.repeater.$["ownerProxy"+ind].$.drawer.toggle();
+        var ind = inSender.index+1;
+        if (ind === 1){ind = "";}
+        var drawer = this.$.repeater.$["ownerProxy"+ind].$.drawer;
+        drawer.setOpen(!drawer.getOpen());
     }
 });
     /*
