@@ -7,7 +7,7 @@ enyo.kind({
 		{kind: enyo.Signals, onMapClicked: "newPin"},
 		{name: "gps", kind: "rok.geolocation", watch: false, enableHighAccuracy: !0, timeout: this.gpsTimeout, maximumAge: "3000", onSuccess: "locSuccess", onError: "locError"},
 		{kind: onyx.Toolbar, layoutKind: enyo.FittableColumnsLayout, components: [
-		    	{kind: enyo.ToolDecorator, components: [
+				{kind: enyo.ToolDecorator, components: [
 				{kind: onyx.Grabber, ontap: "showCampaigns"},
 			]},
 			{content: "CitizenSense .beta."},
@@ -15,24 +15,24 @@ enyo.kind({
 			{name: "newButton", kind: onyx.Button, content: "new", ontap: "showNewMap"},
 		]},
 		{name: "container", kind: enyo.FittableColumns, fit: true, components: [
-		    {kind: "CSenseShowCampaigns"},
-		    {name: "mapCont", style: "position: relative;", fit: true, components:[
-		    	{name: "addLocationsAndRegionsToolbar", kind: onyx.Drawer, open: false, style: "position: absolute !important; z-index: 100; right: 0px;",components:[
-		    		{name: "addLandRRadioGroup", kind: onyx.RadioGroup, components:[
-		    			{name: "addLocationButton", kind: onyx.RadioButton, content: "Add Location"},
-		    			{name: "addRegionButton", kind: onyx.RadioButton, content: "Add Region"}
-		    		]}
-		    	]},
-		    	{name: "modifyToolbar", kind: onyx.Drawer, open: false, style: "position: absolute !important; z-index: 10; right: 0px;",components:[
-		    		{kind: enyo.ToolDecorator, components:[
-		    			{name: "undoButton", kind: onyx.Button, content: "Undo", classes: "onyx-radiobutton", style:"margin-right: 8px; border-radius: 3px 3px 3px 3px;"},
-		    			{name: "modifyRadioGroup", kind: onyx.RadioGroup, components:[
-		    				{name: "modifyFeaturesButton", kind: onyx.RadioButton, content: "Edit"},
-		    				{name: "removeFeaturesButton", kind: onyx.RadioButton, content: "Remove"}
-		    			]}
-		    		]}
-		    	]}
-		    ]},
+			{kind: "CSenseShowCampaigns"},
+			{name: "mapCont", style: "position: relative;", fit: true, components:[
+				{name: "addLocationsAndRegionsToolbar", kind: onyx.Drawer, open: false, style: "position: absolute !important; z-index: 100; right: 0px;",components:[
+					{name: "addLandRRadioGroup", kind: onyx.RadioGroup, components:[
+						{name: "addLocationButton", kind: onyx.RadioButton, content: "Add Location"},
+						{name: "addRegionButton", kind: onyx.RadioButton, content: "Add Region"}
+					]}
+				]},
+				{name: "modifyToolbar", kind: onyx.Drawer, open: false, style: "position: absolute !important; z-index: 10; right: 0px;",components:[
+					{kind: enyo.ToolDecorator, components:[
+						{name: "undoButton", kind: onyx.Button, content: "Undo", classes: "onyx-radiobutton", style:"margin-right: 8px; border-radius: 3px 3px 3px 3px;"},
+						{name: "modifyRadioGroup", kind: onyx.RadioGroup, components:[
+							{name: "modifyFeaturesButton", kind: onyx.RadioButton, content: "Edit"},
+							{name: "removeFeaturesButton", kind: onyx.RadioButton, content: "Remove"}
+						]}
+					]}
+				]}
+			]},
 			{kind: "CSenseNewCampaign"}
 		]}
 	],
@@ -41,12 +41,12 @@ enyo.kind({
 		location: "",
 	},
 	events: {
-	    onNewTapped: "",
+		onNewTapped: "",
 		onShowTapped: "",
 		onDeactivateTaskLocationEditingUI: "",
 	},
 	handlers: {
-	    //onAddPins: "enableMarkerPlacementMode",
+		//onAddPins: "enableMarkerPlacementMode",
 		//onAddPolygon: "enablePolygonPlacementMode",
 		//onModifyPinsAndPolygons: "enableModifyMode",
 		onPins: "testLoc",
@@ -137,22 +137,22 @@ enyo.kind({
 			this.drawPolygon._tooltip.updatePosition(e.layer._latlngs[0]);
 		}
 
-    },
+	},
 
-    showTooltip: function () {
-    	L.DomUtil.removeClass(this.tooltip, "hidden");
-    	this.map.off("mousemove", this.showTooltip, this);
-    },
+	showTooltip: function () {
+		L.DomUtil.removeClass(this.tooltip, "hidden");
+		this.map.off("mousemove", this.showTooltip, this);
+	},
 
-    fixTooltip: function (tooltipContainer) {
-    	L.DomUtil.addClass(tooltipContainer, "hidden");
-    	this.tooltip = tooltipContainer;
-    	this.map.on("mousemove", this.showTooltip, this);
-    },
+	fixTooltip: function (tooltipContainer) {
+		L.DomUtil.addClass(tooltipContainer, "hidden");
+		this.tooltip = tooltipContainer;
+		this.map.on("mousemove", this.showTooltip, this);
+	},
 
-    /*
+	/*
 		This function disables all leaflet.draw controls and activates the marker placement control.
-    */
+	*/
 	enableMarkerPlacementMode: function(inSender, inEvent) {
 		//disable any other drawers that may be active
 		this.deactivateEditing();
@@ -390,22 +390,22 @@ enyo.kind({
 
 	},
 	savePoint: function(inEvent) {
-	    /*var tmp = LocalStorage.get(this.currentTaskName);
+		/*var tmp = LocalStorage.get(this.currentTaskName);
 		tmp.points.push(inEvent.feature);
 		LocalStorage.set(this.currentTaskName, tmp);*/
 	},
 	savePolygon: function(inEvent) {
-	    /*var tmp = LocalStorage.get(this.currentTaskName);
+		/*var tmp = LocalStorage.get(this.currentTaskName);
 		tmp.polygons.push(inEvent.feature);
 		LocalStorage.set(this.currentTaskName, tmp);*/
 	},
 
 	showCampaigns: function(inSender, inEvent) {
-	    this.waterfallDown("onShowTapped");
-	   	this.waterfallDown("onDeactivateTaskLocationEditingUI");
-	    this.deactivateEditingInterface();
-	    this.$.mapCont.resized();
-	    this.removeTaskLocations();
+		this.waterfallDown("onShowTapped");
+		this.waterfallDown("onDeactivateTaskLocationEditingUI");
+		this.deactivateEditingInterface();
+		this.$.mapCont.resized();
+		this.removeTaskLocations();
 	},
 	showNewMap: function(inSender, inEvent) {
 		this.waterfallDown("onNewTapped");
@@ -414,7 +414,7 @@ enyo.kind({
 		this.deactivateEditingInterface();
 		this.removeTaskLocations();
 
-	    //var truthy = this.$.mapDrawer.getOpen();
+		//var truthy = this.$.mapDrawer.getOpen();
 		//this.$.mapDrawer.setOpen(!truthy);
 
 		var classy = this.$.newButton.hasClass("active");
@@ -443,7 +443,7 @@ enyo.kind({
 		if (str == "Minneapolis, MN"){
 			return new L.LatLng(44.976032,-93.266987);
 		}
-		lnglat = str.split(",");
+		var lnglat = str.split(",");
 		return new L.LatLng(parseFloat(lnglat[1]), parseFloat(lnglat[0]));
 	},
 
@@ -457,71 +457,53 @@ enyo.kind({
 		}
 	},
 
-	showTaskLocationsTEST: function (inSender, inEvent){
-		var mark = new L.marker([44.974998, -93.269906]).addTo(this.map);
-		var popDiv = L.DomUtil.create("div");
-		var pop = new L.popup();
-		mark.bindPopup(pop);
-		mark.togglePopup();
-		mark.togglePopup();
-
-		var ctrl = new enyo.Control({
-			myHandler: function(){
-				alert("The foo button was tapped");
+	/*
+		Takes a task and returns a feature group of markers for each of the tasks submissions
+	*/
+	setupSubmissionMarkers: function(task){
+		//instantiate submission markers:
+		var subs = task.submissions;
+		var markers = new L.FeatureGroup();
+		for(var i=0; i < subs.length; i++){
+			var latlng = subs[i].gps_location.split("|");
+			if (latlng.length === 2) {
+				latlng = new L.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
+				markers.addLayer(new L.Marker(latlng, {icon: new L.DivIcon({className: 'submission-icon-div'})}));
 			}
-		});
-
-		enyo.kind({
-			kind: enyo.Button,
-			name: "thefoobutton",
-			content: "foo",
-			ontap: "myHandler",
-			//rendered: function(){
-			//	this.inherited(arguments);
-			//},
-			//tapHandler: function () {
-			//	alert("The foo button was tapped");
-			//}
-		});
-
-		//var thing = enyo.byId
-		var button = new thefoobutton({owner: ctrl});
-		button.renderInto(popDiv);
-		pop.setContent(popDiv);
+		}
+		return markers;
 	},
-
 
 	showTaskLocations: function (inSender, inEvent) {
 		this.removeTaskLocations();
-
 		if (this.taskMarkerGroups[inEvent.campaign.id] === undefined){
-
 			this.taskMarkerGroups[inEvent.campaign.id] = new L.FeatureGroup();
-
 			for (i in inEvent.campaign.tasks){
+
 				task = inEvent.campaign.tasks[i];
-				//instantiate marker
+
+				//instantiate task marker
 				var latlng = this.getLatLngFromDbString(inEvent.campaign.location);
 				var labelText = "Task "+task.id+"<br/>"+task.submissions.length+" submissions";
 				var hoverText = task.instructions
 
 				var taskMarker = L.marker(latlng)
 					.bindLabel(labelText, { noHide: true })
-	    			.on("mouseover", function(){
-	    				this.updateLabelContent(hoverText);
-	    			})
-	    			.on("mouseout", function(){
-	    				this.updateLabelContent(labelText);
-	    			});
-	    		taskMarker.task = task.id;
-	    		this.taskMarkerGroups[inEvent.campaign.id].addLayer(taskMarker)
+					.on("mouseover", function(){
+						this.updateLabelContent(hoverText);
+					})
+					.on("mouseout", function(){
+						this.updateLabelContent(labelText);
+					});
+				taskMarker.task = task.id;
+				this.taskMarkerGroups[inEvent.campaign.id].addLayer(taskMarker)
 
-	    		//Create a div for the enyo kind to render into
-	    		var popDiv = L.DomUtil.create("div");
-	    		//Create a popup
-	    		var pop = L.popup({minWidth: 400, maxHeight: 400}).setContent(popDiv);
-	    		//Add it to the marker
-	    		taskMarker.bindPopup(pop);
+				//Create a div for the enyo kind to render into
+				var popDiv = L.DomUtil.create("div");
+				//Create a popup
+				var pop = L.popup({minWidth: 400, maxHeight: 300}).setContent(popDiv);
+				//Add it to the marker
+				taskMarker.bindPopup(pop);
 
 				//instantiate the enyo popup content
 				var popContent = new CSenseTaskPopup({owner: this, popup: pop, task: task});
@@ -538,12 +520,31 @@ enyo.kind({
 				pop.on("open", function(e){
 					L.DomEvent.on(pop._contentNode, "click", forward, this);
 				});
-				 //inspired by https://github.com/NBTSolutions/Leaflet/commit/466c0e3507cf0934a9d1441af151df2324a4537b#L2R129
-		        function forward(e){
-		            if (window.enyo && window.enyo.$ && e.srcElement && e.srcElement.id && window.enyo.$[e.srcElement.id]){
-		                window.enyo.$[e.srcElement.id].bubble("ontap", e);
-		            }
-		        }
+				//inspired by https://github.com/NBTSolutions/Leaflet/commit/466c0e3507cf0934a9d1441af151df2324a4537b#L2R129
+				function forward(e){
+					if (window.enyo && window.enyo.$ && e.srcElement && e.srcElement.id && window.enyo.$[e.srcElement.id]){
+						window.enyo.$[e.srcElement.id].bubble("ontap", e);
+					}
+				}
+
+				//Show submission locations when markers are clicked:
+				//  instantiate markers for submissions
+				taskMarker.submissionMarkersGroup = this.setupSubmissionMarkers(task);
+				//  on marker click show the submission location and pan to them
+				pop.on("open", function(){
+					this.map.addLayer(taskMarker.submissionMarkersGroup);
+					this.map.fitBounds(
+						taskMarker.submissionMarkersGroup.getBounds().extend(taskMarker.getLatLng()),
+						{animate: true}
+					);
+				}, this);
+				//  on close of the popup hide the submission locations
+				pop.on("close", function(){
+					this.map.removeLayer(taskMarker.submissionMarkersGroup);
+				}, this)
+				//NOTE: There is an issue with this scheme. Markers behind the popup can never be seen!
+					
+					
 			}
 		}
 		this.taskMarkerGroups[inEvent.campaign.id].addTo(this.map);
@@ -551,6 +552,10 @@ enyo.kind({
 		this.taskMarkerGroups[inEvent.campaign.id].eachLayer(function (layer){
 			layer.showLabel();
 		});
+		//Pan map to bounds
+		this.map.panTo(this.taskMarkerGroups[inEvent.campaign.id].getBounds().getCenter());
+		//this.map.fitBounds(this.taskMarkerGroups[inEvent.campaign.id].getBounds(), {animate: true});
+
 		
 	},
 

@@ -5,7 +5,18 @@
 .hidden {
 	display: none;
 }
-
+.submission-icon-div {
+	border: 1px solid black;
+	opacity: 0.5;
+	background-color: #FD7524;
+	border-radius: 6px;
+}
+.popup-list-heading {
+	text-decoration:underline;
+}
+.popup-list-item {
+	padding-left: 1em;
+}
 .nice-padding {
 	padding: 15px;
 }

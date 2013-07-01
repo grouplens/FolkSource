@@ -33,7 +33,6 @@ enyo.kind({
 		var index = inEvent.index;
 		var tmp = this.campData[index];
 		this.makeTasks({campIndex: index, taskData: tmp.tasks, location: tmp.location});
-
 		this.showTaskLocations(index);
 	},
 	closeDrawer: function(inSender, inEvent) {

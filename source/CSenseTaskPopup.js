@@ -5,25 +5,25 @@ enyo.kind({
         popup: "",
 	},
     components:[
-        {
-            kind: enyo.Repeater,
-            count: 0,
-            components: [
-                {kind: onyx.Button, ontap: "toggleDrawer", published:{index: ""},},
-                {kind: onyx.Drawer, open: false, orient: "v",
-                    components:[
-                        {content: "Submitter:"},
-                        {content: "Number of answers:"},
-                        {content: "Location:"},
-                    ]
-                },
-            ],
-            onSetupItem: "setValues",
-            //Why doesn't this function fire when I set the ontap property of the buttons to "foo"?
-            foo: function (inSender, inEvent){
-                alert("wat");
+        {kind: enyo.Scroller, style: "max-height: 300px;", components:[
+            {
+                kind: enyo.Repeater,
+                count: 0,
+                components: [
+                    {name: "heading", ontap: "toggleDrawer", published:{index: ""}, classes:"popup-list-heading"},
+                    {name: "drawer", kind: onyx.Drawer, open: false, orient: "v",
+                        components:[
+                            {name: "listItem", classes:"popup-list-item",components:[
+                                {content: "Submitter:"},
+                                {content: "Number of answers:"},
+                                {content: "Location:"},
+                            ]},
+                        ]
+                    },
+                ],
+                onSetupItem: "setValues",
             },
-        },
+        ],}
     ],
     create: function(){
         this.inherited(arguments);
@@ -33,11 +33,10 @@ enyo.kind({
         var index = inEvent.index;
         var item = inEvent.item;
         var sub = this.task.submissions[index];
-        //this.log(inEvent);
 
-        item.$.button.setName("submissionheading-" + sub.id);
-        item.$.button.setContent("Submission " + sub.id);
-        item.$.button.index = index;
+        item.$.heading.setName("submissionheading-" + sub.id);
+        item.$.heading.setContent("Submission " + sub.id);
+        item.$.heading.index = index;
         item.$.drawer.setName("subdrawer-"+sub.id);
         item.$.control.setContent("Submitter: "+sub.user_id);
         item.$.control2.setContent("Number of answers: "+sub.answers.length);
@@ -90,8 +89,4 @@ enyo.kind({
         this.inherited(arguments);
         //this.popup._update();
     },
-    test: function(inSender, inEvent){
-        this.log(inSender.submissionId)
-        this.$["subdrawer-"+inSender.published.submissionId].setOpen(true);
-	}
     */
