@@ -10,12 +10,19 @@ enyo.kind({
         onFifteenMinutes: "timerChanged",
         onStartTimer: "timerStarted"
     },
+	events: {
+		onTimerStarted: ""
+	},
     components: [
-        {name: "timer", kind: "enyo.FittableColumns", components: [
-            {kind: "onyx.Button", content: "Start Counting!", style: "width: 50%;", ontap: "buttonClick"},
-            {name: "columnsDrawer",style: "white-space: nowrap; overflow: hidden;", orient: "h", kind: "onyx.Drawer", open: false, components: [
+            {name: "button", kind: "onyx.Button", /*content: "Start Counting!",*/ style: "width: 100%;", ontap: "buttonClick", classes: "onyx-affirmative", components: [
+				{name: "timer", kind: "enyo.FittableColumns", components: [
+					{name: "label", content: "Tap to Start "},
+					{fit: true},
+					{name: "counter", content: "00:00:00", style: "padding: 0px 10px;"}
+				]},
+            /*{name: "columnsDrawer",style: "white-space: nowrap; overflow: hidden;", orient: "h", kind: "onyx.Drawer", open: false, components: [
                 {name: "counter", content: "00:00:00"}
-            ]}
+            ]}*/
         ]},
     ],
     create: function (inSender, inEvent) {
@@ -24,20 +31,25 @@ enyo.kind({
         this.count = 0;
     },
     buttonClick: function(inSender, inEvent) {
+		this.doTimerStarted();
         if(!this.started) {
             this.job = setInterval(enyo.bind(this, "sendSeconds"), 1000);
-            this.$.button.setContent("Stop Counting!");
-            this.$.columnsDrawer.setOpen(true);
+            this.$.label.setContent("Tap to Stop");
+			this.$.button.addRemoveClass("onyx-affirmative", false);
+			this.$.button.addRemoveClass("onyx-negative", true);
+            //this.$.columnsDrawer.setOpen(true);
             //enyo.job("startTimer", enyo.bind(this, "startStopTimer"), this.length);
         } else {
             clearInterval(this.job);// = setTimeout("sendSeconds", 1000);
             //enyo.job.stop("startTimer");
-            this.$.button.setContent("Start Counting!");
+            this.$.label.setContent("Tap to Start");
+			this.$.button.addRemoveClass("onyx-negative", false);
+			this.$.button.addRemoveClass("onyx-affirmative", true);
         }
 
         this.started = !this.started;
     },
-    startStopTimer: function(inSender, inEvent) {
+    /*startStopTimer: function(inSender, inEvent) {
         //var started = false;
         //var job;
         this.waterfall("onStartTimer");
@@ -55,7 +67,7 @@ enyo.kind({
             this.$.button.setContent("Stop Counting!");
             this.$.columnsDrawer.setOpen(true);
         }
-    },
+    },*/
     sendSeconds: function() {
         if((this.count * 1000) % this.resetInterval === 0) {
             this.$.counter.setContent("00:00:00");

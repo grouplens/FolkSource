@@ -1,6 +1,7 @@
 enyo.kind({
     name: "FilledPanels",
-    style: "z-index: -14;",
+    //style: "z-index: -14;",
+    kind: enyo.FittableRows,
     events: {
         onSnapped: "",
         onPlaceChosen: ""
@@ -10,13 +11,14 @@ enyo.kind({
         onDoObservation: "hidePopup"
     },
     components: [
-        {name: "mapUp", kind: "onyx.Popup", style: "width: 80%; position: fixed; z-index: 2;", classes: "onyx-popup", centered: true, floating: true, modal: true, components: [
-			//{name: "spin", kind: "onyx.Spinner"},
-            {name: "pview", kind: "PinView", classes: "mapHide"}
-		]},
+	{name: "mapUp", kind: "onyx.Popup", style: "width: 80%; position: fixed; z-index: 2;", classes: "onyx-popup", centered: true, floating: true, modal: true, components: [
+		{name: "pview", kind: "PinView", classes: "mapHide"}
+	]},
+	{kind: enyo.FittableColumns, fit: true, components: [
 		{name: "leftButton", kind: "onyx.Button", content: "<", slide: "prev", ontap: "buttonTapHandler", classes: "filledButtons", disabled: !0},
-    	{name: "panels", kind: "Panels", arrangerKind: "CarouselArranger", onTransitionFinish: "transitionFinishHandler", onTransitionStart: "transitionStartHandler",classes: "filledPanels", layoutKind: "enyo.FittableColumnsLayout", components: []},
-    	{name: "rightButton", kind: "onyx.Button", content: ">", slide: "next", ontap: "buttonTapHandler", classes: "filledButtons"}, 
+    		{name: "panels", kind: "Panels", arrangerKind: "CarouselArranger", onTransitionFinish: "transitionFinishHandler", onTransitionStart: "transitionStartHandler",classes: "filledPanels", layoutKind: "enyo.FittableColumnsLayout", fit: true, components: []},
+    		{name: "rightButton", kind: "onyx.Button", content: ">", slide: "next", ontap: "buttonTapHandler", classes: "filledButtons"}, 
+	]},
     	{kind: "Signals", onPinClicked: "popupTriggered"}
     ],
     create: function (a, b) {
@@ -30,6 +32,7 @@ enyo.kind({
     },
     renderResponse: function (a, b) {
         this.campaignArray = b.campaigns;
+	this.log(this.campaignArray);
         for (var c in this.campaignArray) {
             var currentCampaign = this.campaignArray[c];
             var e = "panel_" + currentCampaign.id;
@@ -45,18 +48,18 @@ enyo.kind({
 	    var startDate = Date.parse(new Date(st[0], st[1]-1, st[2], st[3], st[4], st[5]));
 	    var endDate = Date.parse(new Date(en[0], en[1]-1, en[2], en[3], en[4], en[5]));
 
-	    if(endDate >= date) { // "closed" campaigns shouldn't show up
+	    //if(endDate >= date) { // "closed" campaigns shouldn't show up
 		this.$.panels.createComponent(
 		    {name: e, classes: "panelItem", fit: true, kind: "enyo.FittableRows", components: [
 			{name: f, kind: "CampaignItem", title: "" + currentCampaign.title, description: "" + currentCampaign.description},
 			{name: g, fit: true, kind: "NewMap", /*layoutKind: "enyo.FittableColumnsLayout", */provider: "openlayers", style: "height: 100%; width: 100%;" /*overflow: hidden;"*/}
 			//{name: g, fit: true, kind: "MapStraction", /*layoutKind: "enyo.FittableColumnsLayout", */provider: "openlayers", style: "height: 100%; width: 100%;" /*overflow: hidden;"*/}
 		]});
-		if(date < startDate) { // setup structure for disallowing campaigns to show up/be used before they're "open"
+		/*if(date < startDate) { // setup structure for disallowing campaigns to show up/be used before they're "open"
 		    this.log(this.$.panels.$[e]);
 		    this.$.panels.$[e].running = false;
 		}
-	    }
+	    }*/
 	    this.render();
 	    this.checkSides(); // make sure the arrow buttons work
         }
@@ -97,14 +100,21 @@ enyo.kind({
             }
         }
     },
-    drawMap: function (a, b) {
+    drawMap: function (inSender, inEvent) { //inSender = a, inEvent = b;
         var c = this.$.panels.getPanels();
         var d = 0;
         var e;
-		var f = b.originator.name.split("_")[1];
+	var f = inEvent.originator.name.split("_")[1];
+	this.log(f);
         for (x in c) {
+	    this.log(x);
             var g = c[x].name.split("_")[1];
-            g === f && (e = this.campaignArray[x].location, this.$.panels.$["map_" + g].checkMap(e));
+	    this.log(g);
+	    if(g === f) {
+            	e = this.campaignArray[x].location;
+		this.log(e);
+	    	this.$.panels.$["map_" + g].checkMap(e);
+	    }
         }
         return !0;
     },

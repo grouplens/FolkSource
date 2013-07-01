@@ -165,7 +165,7 @@ enyo.kind({
             var b = (new enyo.Ajax({
                 method: "POST",
                 url: Data.getURL() + a,
-				headers: {"Cache-Control": "no-cache"},
+				//headers: {"Cache-Control": "no-cache"},
 				cacheBust: true,
                 handleAs: "text"
             })).go().response(this, "handleResponse");

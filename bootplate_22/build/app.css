@@ -1531,28 +1531,14 @@
     height: 100%;
     padding: 0 0;
 }
-
 .bikeTable {
-    display: table;
     width: 100%;
 }
-.tableChild {
-    opacity: 0.6;
-}
-.tablePed {
+.tableMen {
     background-color: lightblue;
 }
-.tableBike {
-    background-color: lightgreen;
-}
-.tablePed > button {
-    background-color: lightblue;
-}
-.tableBike > button {
-    background-color: lightgreen;
-}
-.tableHide {
-    display: none;
+.tableWomen {
+    background-color: pink;
 }
 .tableHide * {
     display: none;
@@ -1569,39 +1555,13 @@
     padding: 4px 4px;
 }
 table, tr, td {
-    border-width: 0px;
+    border: 0px white solid;
 }
 .senseButtons {
-    position: absolute;
-    display: inline;
     width: 100%;
-    bottom: 0px;
 }
 .senseButtons > button{
     width: 50%;
-}
-
-/* BORROWED FROM THE ACCORDION EXAMPLES */
-.accordionHeader {
-    background-image: url(../assets/arrow.png);
-    background-repeat: repeat-y;
-    height: 40px;
-	position: relative;
-	vertical-align: middle;
-	font-size: 14px;
-	font-weight: bold;
-	color: #FFF;
-	padding-left: 50px;
-	background-color: #152737;
-}
-.accordionHeaderHighlight {
-    background-position: 0px 40px;
-}
-.accordionContent div {
-    background-position: 0px 40px;
-	position: relative;
-	color: white;
-	background-color: #0B333E;
 }
 
 .center {
@@ -1611,58 +1571,17 @@ table, tr, td {
     margin-right: auto;
 }
 
-
-/* ../source/menupane/style.css */
-
-/* menupane style.css */
-
-.menu-header,
-.menu-item {
-  height: 40px;
-  width: 284px;
-  /* width: 100%; */
-  color: white;
-  padding: 16px 0 0 16px;
-}
-
-.menu-header > *,
-.menu-item > * {
-  display: inline-block;
-}
-
-.menupane-menu .menu-header,
-.menupane-menu .menu-item {
-  padding-right: 60px;
-}
-
-.menupane-menu-secondary .menu-header,
-.menupane-menu-secondary .menu-item {
-  padding-left: 76px;
-}
-
-.menu-header {
-	background-color: #641F11;
-    color: #5C9DAF;
-}
-
-.menu-item {
-	background-color: #5C9DAF;
-	color: #641F11;
-}
-
-.menupane-pane {
-  background-color: rgb(192, 192, 192);
-  box-shadow: 0px 0px 5px 6px rgba( 32, 32, 32, 0.5);
-}
-
-.content {
-  /*padding-top: 5%;
-  height: 100%;*/
-}
 .onyx-groupbox > .onyx-input-decorator {
     border-color: white;
 }
 
+.tally-small img{
+    height: 20px;
+}
+.slidein-option {
+    min-width: 200px;
+    padding: 15px;
+}
 .ios-navbar {
 	position: absolute;
 	width: 100%;
@@ -1699,4 +1618,47 @@ table, tr, td {
 .nice-padding {
 	padding: 15px;
 }
+.niceish-padding {
+	padding: 15px 0px;
+}
+.highlight {
+	border: 0px red solid;
+	background-color: yellow;
+	color: black;
+	opacity: 0.8;
+}
+
+
+/* source/Tally/source/Tally.css */
+
+.tally *{
+	display: inline-block;
+}
+.tally > div > div{
+	height: 20px;
+	position: relative;
+}
+.tally img{
+	height: 100%;
+}
+.tally .content{
+	background: url(../source/Tally/source/assets/marks.png) no-repeat 108% center;
+	background-size: auto 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	width: 98%;
+}
+.tally-1>div>:last-child .content,
+.tally-2>div>:last-child .content,
+.tally-3>div>:last-child .content,
+.tally-4>div>:last-child .content{
+	background-position: 0% center;
+}
+.tally-1>div>:last-child .content{ width: 12%; }
+.tally-2>div>:last-child .content{ width: 26%; }
+.tally-3>div>:last-child .content{ width: 42%; }
+.tally-4>div>:last-child .content{ width: 54%; }
 
