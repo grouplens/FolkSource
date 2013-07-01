@@ -55,7 +55,8 @@ enyo.kind({
 		onStep: "resizeContainer",
 		onDeactivateAllEditing: "deactivateEditingInterface",
 		onShowAddFeaturesToolbar: "showAddFeaturesToolbar",
-		onShowEditFeaturesToolbar: "showEditFeaturesToolbar"
+		onShowEditFeaturesToolbar: "showEditFeaturesToolbar",
+		onShowTaskLocations: "showTaskLocations"
 	},
 	addMarkers: function () {
 		if (this.locations instanceof Array) {
@@ -72,7 +73,11 @@ enyo.kind({
 		this.pointsLayer.display(true);
 	},
 	create: function (inSender, inEvent) {
+
 		this.inherited(arguments);
+
+		this.log(this);
+
 		this.resized();
 		this.$.gps.setTimeout(this.gpsTimeout);
 		userMoved = false;
@@ -91,6 +96,11 @@ enyo.kind({
 	
 		this.events.onPins = '';
 		this.currentTaskName = "";
+
+		//keys: campaign ids, values: L.FeatureGroups holding task markers/polygons
+		this.taskMarkerGroups = {};
+		this.currentTaskMarkerGroup = null;
+
 	},
 	centerMap: function (coords) {
 		var myLocation = coords;
@@ -392,17 +402,17 @@ enyo.kind({
 
 	showCampaigns: function(inSender, inEvent) {
 	    this.waterfallDown("onShowTapped");
-	    //this.waterfallDown("onDeactivateAllEditing");
 	   	this.waterfallDown("onDeactivateTaskLocationEditingUI");
 	    this.deactivateEditingInterface();
-	    //this.map.invalidateSize();
 	    this.$.mapCont.resized();
+	    this.removeTaskLocations();
 	},
 	showNewMap: function(inSender, inEvent) {
 		this.waterfallDown("onNewTapped");
 		//this.waterfallDown("onDeactivateAllEditing");
 		this.waterfallDown("onDeactivateTaskLocationEditingUI");
 		this.deactivateEditingInterface();
+		this.removeTaskLocations();
 
 	    //var truthy = this.$.mapDrawer.getOpen();
 		//this.$.mapDrawer.setOpen(!truthy);
@@ -423,4 +433,125 @@ enyo.kind({
 		g = f[f.length - 1];
 		return this.addRemoveClass("hideMap", e !== g), !0;
 	},
+
+	/*
+	This function turns a location string from the database into an L.LatLng object
+	At present the strings are lng,lat !
+	*/
+	getLatLngFromDbString: function(str){
+		//temporary fix to allow for testing
+		if (str == "Minneapolis, MN"){
+			return new L.LatLng(44.976032,-93.266987);
+		}
+		lnglat = str.split(",");
+		return new L.LatLng(parseFloat(lnglat[1]), parseFloat(lnglat[0]));
+	},
+
+	/*
+	Removes campaign any task location/region markers that may or may not be on the map as a result of
+	Showing existing campaigns (not from editing campaigns)
+	*/
+	removeTaskLocations: function (){
+		if (this.currentTaskMarkerGroup !== null){
+			this.map.removeLayer(this.currentTaskMarkerGroup);
+		}
+	},
+
+	showTaskLocationsTEST: function (inSender, inEvent){
+		var mark = new L.marker([44.974998, -93.269906]).addTo(this.map);
+		var popDiv = L.DomUtil.create("div");
+		var pop = new L.popup();
+		mark.bindPopup(pop);
+		mark.togglePopup();
+		mark.togglePopup();
+
+		var ctrl = new enyo.Control({
+			myHandler: function(){
+				alert("The foo button was tapped");
+			}
+		});
+
+		enyo.kind({
+			kind: enyo.Button,
+			name: "thefoobutton",
+			content: "foo",
+			ontap: "myHandler",
+			//rendered: function(){
+			//	this.inherited(arguments);
+			//},
+			//tapHandler: function () {
+			//	alert("The foo button was tapped");
+			//}
+		});
+
+		//var thing = enyo.byId
+		var button = new thefoobutton({owner: ctrl});
+		button.renderInto(popDiv);
+		pop.setContent(popDiv);
+	},
+
+
+	showTaskLocations: function (inSender, inEvent) {
+		this.removeTaskLocations();
+
+		if (this.taskMarkerGroups[inEvent.campaign.id] === undefined){
+
+			this.taskMarkerGroups[inEvent.campaign.id] = new L.FeatureGroup();
+
+			for (i in inEvent.campaign.tasks){
+				task = inEvent.campaign.tasks[i];
+				//instantiate marker
+				var latlng = this.getLatLngFromDbString(inEvent.campaign.location);
+				var labelText = "Task "+task.id+"<br/>"+task.submissions.length+" submissions";
+				var hoverText = task.instructions
+
+				var taskMarker = L.marker(latlng)
+					.bindLabel(labelText, { noHide: true })
+	    			.on("mouseover", function(){
+	    				this.updateLabelContent(hoverText);
+	    			})
+	    			.on("mouseout", function(){
+	    				this.updateLabelContent(labelText);
+	    			});
+	    		taskMarker.task = task.id;
+	    		this.taskMarkerGroups[inEvent.campaign.id].addLayer(taskMarker)
+
+	    		//Create a div for the enyo kind to render into
+	    		var popDiv = L.DomUtil.create("div");
+	    		//Create a popup
+	    		var pop = L.popup({minWidth: 400, maxHeight: 400}).setContent(popDiv);
+	    		//Add it to the marker
+	    		taskMarker.bindPopup(pop);
+
+				//instantiate the enyo popup content
+				var popContent = new CSenseTaskPopup({owner: this, popup: pop, task: task});
+				popContent.renderInto(popDiv);
+
+				//The kind is initially rendered into a div that has no size. This ensures the kind is rerendered
+				//after the div is displayed in the popup.
+				pop.on("open", function(){
+					popContent.resized();
+				}, this);
+
+				//Forward click events to the enyo entities that originated them.
+				//This is a workaround for this issue: http://forums.enyojs.com/discussion/comment/7159
+				pop.on("open", function(e){
+					L.DomEvent.on(pop._contentNode, "click", forward, this);
+				});
+				 //inspired by https://github.com/NBTSolutions/Leaflet/commit/466c0e3507cf0934a9d1441af151df2324a4537b#L2R129
+		        function forward(e){
+		            if (window.enyo && window.enyo.$ && e.srcElement && e.srcElement.id && window.enyo.$[e.srcElement.id]){
+		                window.enyo.$[e.srcElement.id].bubble("ontap", e);
+		            }
+		        }
+			}
+		}
+		this.taskMarkerGroups[inEvent.campaign.id].addTo(this.map);
+		this.currentTaskMarkerGroup = this.taskMarkerGroups[inEvent.campaign.id];
+		this.taskMarkerGroups[inEvent.campaign.id].eachLayer(function (layer){
+			layer.showLabel();
+		});
+		
+	},
+
 });
