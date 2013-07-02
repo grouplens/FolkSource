@@ -56,7 +56,8 @@ enyo.kind({
 		onDeactivateAllEditing: "deactivateEditingInterface",
 		onShowAddFeaturesToolbar: "showAddFeaturesToolbar",
 		onShowEditFeaturesToolbar: "showEditFeaturesToolbar",
-		onShowTaskLocations: "showTaskLocations"
+		onShowTaskLocations: "showTaskLocations",
+		onInvalidateMapSize: "invalidateMapSize",
 	},
 	addMarkers: function () {
 		if (this.locations instanceof Array) {
@@ -308,17 +309,22 @@ enyo.kind({
 		this.inherited(arguments);
 		this.$.gps.getPosition();		
 
-
-		this.log(this.$.mapCont.id);
-
-
-
-		//Create the map
+		//Create the map		
 		this.map = L.map(this.$.mapCont.id).setView([44.981313, -93.266569], 13);
+		
 		//L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-		L.tileLayer("http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg", {	
+		//L.tileLayer("http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg", {
+		L.tileLayer("http://acetate.geoiq.com/tiles/acetate-hillshading/{z}/{x}/{y}.png", {
 			attribution: "Map data &copy; OpenStreetMap contributors"
 		}).addTo(this.map);
+		/*
+		//Stamen tiles
+		//To use be sure to add <script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.2"></script>
+		//to the html file.
+		var tileLayer = new L.StamenTileLayer("terrain");
+		this.map.addLayer(tileLayer);
+		*/
+
 
 		//Leaflet.draw plugin
 		this.undoStack = new Array();
@@ -405,7 +411,7 @@ enyo.kind({
 		this.waterfallDown("onShowTapped");
 		this.waterfallDown("onDeactivateTaskLocationEditingUI");
 		this.deactivateEditingInterface();
-		this.$.mapCont.resized();
+		this.$.mapCont.resized(); //This line may not do any thing since the container doesn't change size until the animation has completed
 		this.removeTaskLocations();
 	},
 	showNewMap: function(inSender, inEvent) {
@@ -455,6 +461,7 @@ enyo.kind({
 	removeTaskLocations: function (){
 		if (this.currentTaskMarkerGroup !== null){
 			this.map.removeLayer(this.currentTaskMarkerGroup);
+			this.currentTaskMarkerGroup = null;
 		}
 	},
 
@@ -478,6 +485,7 @@ enyo.kind({
 	},
 
 	showTaskLocations: function (inSender, inEvent) {
+		//Remove any markers that may be assiciated with another task
 		this.removeTaskLocations();
 		if (this.taskMarkerGroups[inEvent.campaign.id] === undefined){
 			this.taskMarkerGroups[inEvent.campaign.id] = new L.FeatureGroup();
@@ -513,6 +521,8 @@ enyo.kind({
 				popContent.renderInto(popDiv);
 				
 				pop.on("open", function(){
+					//foo
+					this.map.invalidateSize();
 					//The kind is initially rendered into a div that has no size. This ensures the kind is rerendered
 					//after the div is displayed in the popup.
 					popContent.resized();
@@ -561,10 +571,19 @@ enyo.kind({
 			layer.showLabel();
 		});
 		//Pan map to bounds
-		this.map.panTo(this.taskMarkerGroups[inEvent.campaign.id].getBounds().getCenter());
-		//this.map.fitBounds(this.taskMarkerGroups[inEvent.campaign.id].getBounds(), {animate: true});
-
-		
+		this.panToCurrentTaskMarkerGroup();
 	},
+	panToCurrentTaskMarkerGroup: function(){
+		if (this.currentTaskMarkerGroup){
+			this.map.panTo(this.currentTaskMarkerGroup.getBounds().getCenter());
+			//this.map.fitBounds(this.currentTaskMarkerGroup.getBounds(), {animate: true});
+
+		}
+	},
+	invalidateMapSize: function (inSender, inEvent){
+		this.map.invalidateSize();
+		this.map.panBy([inEvent.offset,0],{animate: false, duration: 0});
+		this.panToCurrentTaskMarkerGroup();
+	}
 
 });

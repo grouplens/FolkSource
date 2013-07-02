@@ -1,33 +1,65 @@
+/*
+enyo.kind({
+	name: "MyDrawer",
+	kind: onyx.Drawer,
+	animatorEnd: function(){
+		this.inherited(arguments);
+		this.log("animation ended");
+	},
+});
+*/
+
 enyo.kind({
 	name: "CSenseShowCampaigns",
 	kind: enyo.FittableColumns,
 	events: {
 		onCampPicked: "",
 		onPins: "",
-		onShowTaskLocations: ""
+		onShowTaskLocations: "",
+		onInvalidateMapSize: "",
 	},
 	handlers: {
 		onNewTapped: "closeDrawer",
 		onShowTapped: "toggleDrawer",
-		onCampPicked: "makeTasks"
+		onCampPicked: "makeTasks",
+		onEnd: "endHandler",
 	},
 	components:[
-		{name: "campaignDrawer", kind: onyx.Drawer, layoutKind: enyo.FittableRowsLayout, style: "z-index: 15; position: relative; background-color: orange;", orient: "h", open: false, components: [
-			{name: "campList", kind: enyo.List, onSetupItem: "setupCampList", /*fit: true, */style: "min-width: 200px;", touch: true, count: 0, components: [
-				{name: "campItem", kind: "onyx.Item", ontap: "campTapped", components: [
-					{name: "campIndex", content: "id"},
-					{name: "campTitle", content: "title"}
-				]}
-			]},
-		]},
-		{name: "taskDrawer", kind: onyx.Drawer, layoutKind: enyo.FittableRowsLayout, style: "z-index: 15; position: relative; background-color: pink;", orient: "h", open: false, components: [
-			{name: "taskList", kind: enyo.List, onSetupItem: "setupTaskList", style: "min-width: 200px;", touch: true, count: 0, components: [
-				{name: "taskItem", kind: "onyx.Item", ontap: "taskTapped", components: [
-					{name: "taskIndex", content: "id"},
-					{name: "taskTitle", content: "title"}
-				]}
-			]},
-		]},
+		{name: "campaignDrawer",
+			kind: onyx.Drawer,
+			layoutKind: enyo.FittableRowsLayout,
+			style: "z-index: 15; position: relative; background-color: orange;",
+			orient: "h",
+			open: false,
+			components: [
+				{name: "campList", kind: enyo.List, onSetupItem: "setupCampList", /*fit: true, */style: "min-width: 200px;", touch: true, count: 0, components: [
+					{name: "campItem", kind: "onyx.Item", ontap: "campTapped", components: [
+						{name: "campIndex", content: "id"},
+						{name: "campTitle", content: "title"}
+					]}
+				]},
+			],
+			/*
+			animatorEnd: function(){
+				this.inherited(arguments);
+			}
+			*/
+		},
+		{name: "taskDrawer",
+			kind: onyx.Drawer,
+			layoutKind: enyo.FittableRowsLayout,
+			style: "z-index: 15; position: relative; background-color: pink;",
+			orient: "h",
+			open: false,
+			components: [
+				{name: "taskList", kind: enyo.List, onSetupItem: "setupTaskList", style: "min-width: 200px;", touch: true, count: 0, components: [
+					{name: "taskItem", kind: "onyx.Item", ontap: "taskTapped", components: [
+						{name: "taskIndex", content: "id"},
+						{name: "taskTitle", content: "title"}
+					]}
+				]},
+			],
+		},
 	],
 	campTapped: function(inSender, inEvent) {
 		var index = inEvent.index;
@@ -103,11 +135,16 @@ enyo.kind({
     	return true;
 	},
 
-
 	showTaskLocations: function(campIndex) {
 		this.doShowTaskLocations({"campaign": this.campData[campIndex]});
-	}
+	},
 
-
+	/*
+		Called on each step of the drawers' animations
+	*/
+	endHandler: function(inSender, inEvent) {
+		var offset = inSender.open ? -100 : 100;
+		this.doInvalidateMapSize({offset: offset});
+	},
 });
 
