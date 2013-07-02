@@ -459,7 +459,12 @@ enyo.kind({
 	Showing existing campaigns (not from editing campaigns)
 	*/
 	removeTaskLocations: function (){
+		
 		if (this.currentTaskMarkerGroup !== null){
+			//manually close popups to fix label staying bug
+			this.currentTaskMarkerGroup.eachLayer(function(layer){
+				layer.closePopup();
+			});
 			this.map.removeLayer(this.currentTaskMarkerGroup);
 			this.currentTaskMarkerGroup = null;
 		}
@@ -532,6 +537,7 @@ enyo.kind({
 					//Hide label when clicked
 					taskMarker.hideLabel();
 				}, this);
+
 				pop.on("close", function(){
 					taskMarker.showLabel();
 				}, this);
@@ -567,7 +573,7 @@ enyo.kind({
 		}
 		this.taskMarkerGroups[inEvent.campaign.id].addTo(this.map);
 		this.currentTaskMarkerGroup = this.taskMarkerGroups[inEvent.campaign.id];
-		this.taskMarkerGroups[inEvent.campaign.id].eachLayer(function (layer){
+		this.currentTaskMarkerGroup.eachLayer(function (layer){
 			layer.showLabel();
 		});
 		//Pan map to bounds
