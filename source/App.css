@@ -7,16 +7,26 @@
 }
 .submission-icon-div {
 	border: 1px solid black;
-	opacity: 0.5;
+	opacity: 0.75;
 	background-color: #FD7524;
 	border-radius: 6px;
 }
-.popup-list-heading {
-	text-decoration:underline;
-}
+
 .popup-list-item {
+	border: 1px solid gray;
+	padding: 3px;
+}
+.popup-list-item-highlight {
+	background-color: #DEDEDE;
+}
+.popup-list-item-heading {
+	/*text-decoration: underline;*/
+	font-weight: bold;
+}
+.popup-list-item-body {
 	padding-left: 1em;
 }
+
 .nice-padding {
 	padding: 15px;
 }

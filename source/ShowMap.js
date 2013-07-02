@@ -315,7 +315,8 @@ enyo.kind({
 
 		//Create the map
 		this.map = L.map(this.$.mapCont.id).setView([44.981313, -93.266569], 13);
-		L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+		//L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+		L.tileLayer("http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg", {	
 			attribution: "Map data &copy; OpenStreetMap contributors"
 		}).addTo(this.map);
 
@@ -468,7 +469,9 @@ enyo.kind({
 			var latlng = subs[i].gps_location.split("|");
 			if (latlng.length === 2) {
 				latlng = new L.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
-				markers.addLayer(new L.Marker(latlng, {icon: new L.DivIcon({className: 'submission-icon-div'})}));
+				var mark = new L.Marker(latlng, {icon: new L.DivIcon({className: 'submission-icon-div'})});
+				mark.bindLabel("Submission "+subs[i].id);
+				markers.addLayer(mark);
 			}
 		}
 		return markers;
@@ -508,18 +511,21 @@ enyo.kind({
 				//instantiate the enyo popup content
 				var popContent = new CSenseTaskPopup({owner: this, popup: pop, task: task});
 				popContent.renderInto(popDiv);
-
-				//The kind is initially rendered into a div that has no size. This ensures the kind is rerendered
-				//after the div is displayed in the popup.
+				
 				pop.on("open", function(){
+					//The kind is initially rendered into a div that has no size. This ensures the kind is rerendered
+					//after the div is displayed in the popup.
 					popContent.resized();
+					//Forward click events to the enyo entities that originated them.
+					//This is a workaround for this issue: http://forums.enyojs.com/discussion/comment/7159
+					L.DomEvent.on(pop._contentNode, "click", forward, this);
+					//Hide label when clicked
+					taskMarker.hideLabel();
+				}, this);
+				pop.on("close", function(){
+					taskMarker.showLabel();
 				}, this);
 
-				//Forward click events to the enyo entities that originated them.
-				//This is a workaround for this issue: http://forums.enyojs.com/discussion/comment/7159
-				pop.on("open", function(e){
-					L.DomEvent.on(pop._contentNode, "click", forward, this);
-				});
 				//inspired by https://github.com/NBTSolutions/Leaflet/commit/466c0e3507cf0934a9d1441af151df2324a4537b#L2R129
 				function forward(e){
 					if (window.enyo && window.enyo.$ && e.srcElement && e.srcElement.id && window.enyo.$[e.srcElement.id]){
@@ -542,7 +548,9 @@ enyo.kind({
 				pop.on("close", function(){
 					this.map.removeLayer(taskMarker.submissionMarkersGroup);
 				}, this)
-				//NOTE: There is an issue with this scheme. Markers behind the popup can never be seen!
+				//NOTE:
+				//There is an issue with this scheme. Markers behind the popup can never be seen!
+				//Also, panning to the markers potentially moves away from the popup.
 					
 					
 			}
