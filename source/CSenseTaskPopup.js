@@ -57,6 +57,7 @@ enyo.kind({
         var drawer = this.$.repeater.$["ownerProxy"+ind].$.itemDrawer;
         drawer.setOpen(!drawer.getOpen());
     },
+    /*
     enterListItem: function (inSender, inEvent){
         //Give list item slight highlight
         //this.log(inEvent);
@@ -66,4 +67,5 @@ enyo.kind({
     leaveListItem: function (inSender, inEvent){
         inEvent.originator.removeClass("popup-list-item-highlight");
     }
+    */
 });

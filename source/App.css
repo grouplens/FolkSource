@@ -5,7 +5,7 @@
 .hidden {
 	display: none;
 }
-.submission-icon-div {
+.submission-marker-div {
 	border: 1px solid black;
 	opacity: 0.75;
 	background-color: #FD7524;
@@ -16,7 +16,9 @@
 	border: 1px solid gray;
 	padding: 3px;
 }
-.popup-list-item-highlight {
+.popup-list-item:hover {
+	/*border: 1px solid gray;*/
+	/*padding: 3px;*/
 	background-color: #DEDEDE;
 }
 .popup-list-item-heading {

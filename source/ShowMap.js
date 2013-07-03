@@ -481,7 +481,7 @@ enyo.kind({
 			var latlng = subs[i].gps_location.split("|");
 			if (latlng.length === 2) {
 				latlng = new L.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
-				var mark = new L.Marker(latlng, {icon: new L.DivIcon({className: 'submission-icon-div'})});
+				var mark = new L.Marker(latlng, {icon: new L.DivIcon({className: 'submission-marker-div'})});
 				mark.bindLabel("Submission "+subs[i].id);
 				markers.addLayer(mark);
 			}
