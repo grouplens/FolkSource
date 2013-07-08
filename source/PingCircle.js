@@ -1,3 +1,7 @@
+/*
+	PingCircle is a vector graphic implementation of a "pinging" animation (A circle that grows on the map and disapears)
+*/
+
 (function (window, document, undefined) {
 
 PingCircle = L.CircleMarker.extend({

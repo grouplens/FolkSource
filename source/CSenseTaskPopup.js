@@ -12,7 +12,7 @@ enyo.kind({
                 kind: enyo.Repeater,
                 count: 0,
                 components: [
-                    {name: "itemCont", classes: "popup-list-item", onenter:"enterListItem", onleave:"leaveListItem", components:[
+                    {name: "itemCont", classes: "popup-list-item", components:[
                         {name: "itemHeading", ontap: "toggleDrawer", published:{index: ""}, classes:"popup-list-item-heading"},
                         {name: "itemDrawer", kind: onyx.Drawer, open: false, orient: "v",
                             components:[
@@ -26,6 +26,7 @@ enyo.kind({
                     ]},
                 ],
                 onSetupItem: "setValues",
+                subIdtoIndexMap: {},
             },
         ],}
     ],
@@ -40,6 +41,8 @@ enyo.kind({
         var index = inEvent.index;
         var item = inEvent.item;
         var sub = this.task.submissions[index];
+
+        this.$.repeater.subIdtoIndexMap[sub.id] = index;
         item.$.itemHeading.setName("submissionheading-" + sub.id);
         item.$.itemHeading.setContent("Submission " + sub.id);
         item.$.itemHeading.index = index;
@@ -57,15 +60,43 @@ enyo.kind({
         var drawer = this.$.repeater.$["ownerProxy"+ind].$.itemDrawer;
         drawer.setOpen(!drawer.getOpen());
     },
-    /*
-    enterListItem: function (inSender, inEvent){
-        //Give list item slight highlight
-        //this.log(inEvent);
-        inEvent.originator.addClass("popup-list-item-highlight");
-        //highlight its marker
+
+    getItemCont: function(subId){
+        return this.getOwnerProx(subId).$.itemCont;
     },
-    leaveListItem: function (inSender, inEvent){
-        inEvent.originator.removeClass("popup-list-item-highlight");
-    }
-    */
+
+    getOwnerProx: function(subId){
+        var i = this.$.repeater.subIdtoIndexMap[subId]+1;
+        if (i === 1){i = "";}
+        return this.$.repeater.$["ownerProxy"+i];
+    },
+
+    emphasizeSubmission: function(subId){
+        //Open submission drawer
+        var drawer = this.getOwnerProx(subId).$.itemDrawer;
+            //disable animation first!
+        var wasAnimated = drawer.animated;
+        drawer.animated = false;
+        drawer.setOpen(true);
+        drawer.animated = wasAnimated;
+
+        //scroll the div to the submission drawer
+        var topPos = this.getItemCont(subId).hasNode().offsetTop;
+        this.$.popupScroller.hasNode().scrollTop = topPos;
+
+        //To perform highlighting effect: Add highlight color; enable transitions; remove highlight color; disable transitions
+        this.getItemCont(subId).applyStyle("background-color", "#B00200");
+        //transition does nothing without delay
+        var that = this;
+        var t = setTimeout(function(){
+            that.getItemCont(subId).hasNode().style[L.DomUtil.TRANSITION] = "all 1000ms ease-out";
+            that.getItemCont(subId).hasNode().style["transition-delay"]= "1ms";
+            that.getItemCont(subId).hasNode().style["background-color"] = "#FFFFFF";
+        }, 10);
+        /*
+        I originaly expected that we would have to remove the transition effect when it finished. I thought that otherwise
+        the next time we click on the marker the row would also fade from white to red as well as from red to white. However,
+        this doesn't seem to happen. Not sure why not...
+        */
+    },
 });

@@ -1,3 +1,7 @@
+/*
+	PingLayer is a css3 animated div implementation of a "pinging" animation (A circle that grows on the map and disapears)
+*/
+
 (function (window, document, undefined) {
 
 PingLayer = L.Class.extend({
@@ -79,7 +83,7 @@ PingLayer = L.Class.extend({
 
 	_initDiv: function (){
 		this._div = L.DomUtil.create("div", "leaflet-image-layer");
-		L.DomUtil.addClass(this._div, "csense-div-layer");
+		L.DomUtil.addClass(this._div, "csense-ping-layer");
 
 		L.DomUtil.addClass(this._div, "leaflet-zoom-hide");
 

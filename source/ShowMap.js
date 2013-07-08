@@ -462,7 +462,7 @@ enyo.kind({
 		
 		if (this.currentTaskMarkerGroup !== null){
 
-			//manually close popups to fix label staying bug
+			//manually close popups to fix bug where label stays on map
 			this.currentTaskMarkerGroup.eachLayer(function(layer){
 				layer.closePopup();
 			});
@@ -475,7 +475,7 @@ enyo.kind({
 	/*
 		Takes a task and returns a feature group of markers for each of the tasks submissions
 	*/
-	setupSubmissionMarkers: function(task){
+	setupSubmissionMarkers: function(task, pop, popContent){
 		//instantiate submission markers:
 		var subs = task.submissions;
 		var markers = new L.FeatureGroup();
@@ -484,35 +484,17 @@ enyo.kind({
 			if (latlng.length === 2) {
 
 				var latitudelongitude = new L.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
-				
-				/*
-				var mark = new L.Marker(latitudelongitude, {icon: new L.DivIcon({className: 'submission-marker-div'})});
-				mark.bindLabel("Submission "+subs[i].id);
-				markers.addLayer(mark);
-				*/
-
-				//this.map.on("layeradd", function(e){
-				//	if (e.layer == mark){
-				//		//var ping = new L.Marker(latlng, {icon: new L.DivIcon({className: "ping-marker-div", iconSize: null})});
-				//		var ll = e.layer.getLatLng();
-				//		var ping = new PingLayer(ll, 24);
-				//		this.map.addLayer(ping);
-				//	}
-				//}, this);
-				
-				
-				var mark = new SubmissionMarker(latitudelongitude);
-				mark.bindLabel("Submission "+subs[i].id);
+				var submissionId = subs[i].id;
+				var mark = new SubmissionMarker(latitudelongitude, submissionId, pop, popContent);
+				mark.bindLabel("Submission "+ submissionId);
 				markers.addLayer(mark);
 				
-
 			} else {
 				//Submission has invalid gps coordinates
 			}
 		}
 		return markers;
 	},
-
 
 	showTaskLocations: function (inSender, inEvent) {
 		//Remove any markers that may be assiciated with another campaign
@@ -545,7 +527,7 @@ enyo.kind({
 					//Create a div for the enyo kind to render into
 				var popDiv = L.DomUtil.create("div");
 					//Create a popup
-				var pop = L.popup({minWidth: 400, maxHeight: 300, /*autoPan: false*/}).setContent(popDiv);
+				var pop = L.popup({minWidth: 400, maxHeight: 300, /*autoPanPadding: new L.Point(50, 50),*/ /*autoPan: false,*/}).setContent(popDiv);
 					//Add it to the marker
 				taskMarker.bindPopup(pop);
 					//instantiate the enyo popup content
@@ -577,7 +559,7 @@ enyo.kind({
 
 				//Show submission locations when markers are clicked:
 				//  instantiate markers for submissions
-				taskMarker.submissionMarkersGroup = this.setupSubmissionMarkers(task);
+				taskMarker.submissionMarkersGroup = this.setupSubmissionMarkers(task, pop, popContent);
 				//  on marker click show the submission location and pan to them
 				pop.on("open", function(){
 					this.map.addLayer(taskMarker.submissionMarkersGroup);
