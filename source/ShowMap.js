@@ -461,10 +461,12 @@ enyo.kind({
 	removeTaskLocations: function (){
 		
 		if (this.currentTaskMarkerGroup !== null){
+
 			//manually close popups to fix label staying bug
 			this.currentTaskMarkerGroup.eachLayer(function(layer){
 				layer.closePopup();
 			});
+
 			this.map.removeLayer(this.currentTaskMarkerGroup);
 			this.currentTaskMarkerGroup = null;
 		}
@@ -480,18 +482,42 @@ enyo.kind({
 		for(var i=0; i < subs.length; i++){
 			var latlng = subs[i].gps_location.split("|");
 			if (latlng.length === 2) {
-				latlng = new L.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
-				var mark = new L.Marker(latlng, {icon: new L.DivIcon({className: 'submission-marker-div'})});
+
+				var latitudelongitude = new L.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
+				
+				/*
+				var mark = new L.Marker(latitudelongitude, {icon: new L.DivIcon({className: 'submission-marker-div'})});
 				mark.bindLabel("Submission "+subs[i].id);
 				markers.addLayer(mark);
+				*/
+
+				//this.map.on("layeradd", function(e){
+				//	if (e.layer == mark){
+				//		//var ping = new L.Marker(latlng, {icon: new L.DivIcon({className: "ping-marker-div", iconSize: null})});
+				//		var ll = e.layer.getLatLng();
+				//		var ping = new PingLayer(ll, 24);
+				//		this.map.addLayer(ping);
+				//	}
+				//}, this);
+				
+				
+				var mark = new SubmissionMarker(latitudelongitude);
+				mark.bindLabel("Submission "+subs[i].id);
+				markers.addLayer(mark);
+				
+
+			} else {
+				//Submission has invalid gps coordinates
 			}
 		}
 		return markers;
 	},
 
+
 	showTaskLocations: function (inSender, inEvent) {
-		//Remove any markers that may be assiciated with another task
+		//Remove any markers that may be assiciated with another campaign
 		this.removeTaskLocations();
+		//Instantiate task markers if needed
 		if (this.taskMarkerGroups[inEvent.campaign.id] === undefined){
 			this.taskMarkerGroups[inEvent.campaign.id] = new L.FeatureGroup();
 			for (i in inEvent.campaign.tasks){
@@ -501,33 +527,33 @@ enyo.kind({
 				//instantiate task marker
 				var latlng = this.getLatLngFromDbString(inEvent.campaign.location);
 				var labelText = "Task "+task.id+"<br/>"+task.submissions.length+" submissions";
-				var hoverText = task.instructions
-
+				var hoverText = task.instructions;
 				var taskMarker = L.marker(latlng)
-					.bindLabel(labelText, { noHide: true })
-					.on("mouseover", function(){
-						this.updateLabelContent(hoverText);
-					})
-					.on("mouseout", function(){
-						this.updateLabelContent(labelText);
-					});
 				taskMarker.task = task.id;
+
+				taskMarker.bindLabel(labelText, { noHide: true });
+				taskMarker.on("mouseover", function(){
+					this.updateLabelContent(hoverText);
+				});
+				taskMarker.on("mouseout", function(){
+					this.updateLabelContent(labelText);
+				});
 				this.taskMarkerGroups[inEvent.campaign.id].addLayer(taskMarker)
 
-				//Create a div for the enyo kind to render into
-				var popDiv = L.DomUtil.create("div");
-				//Create a popup
-				var pop = L.popup({minWidth: 400, maxHeight: 300}).setContent(popDiv);
-				//Add it to the marker
-				taskMarker.bindPopup(pop);
 
-				//instantiate the enyo popup content
+				//Instantiate task marker popup
+					//Create a div for the enyo kind to render into
+				var popDiv = L.DomUtil.create("div");
+					//Create a popup
+				var pop = L.popup({minWidth: 400, maxHeight: 300, /*autoPan: false*/}).setContent(popDiv);
+					//Add it to the marker
+				taskMarker.bindPopup(pop);
+					//instantiate the enyo popup content
 				var popContent = new CSenseTaskPopup({owner: this, popup: pop, task: task});
 				popContent.renderInto(popDiv);
 				
+				//Add task marker popup event handler
 				pop.on("open", function(){
-					//foo
-					this.map.invalidateSize();
 					//The kind is initially rendered into a div that has no size. This ensures the kind is rerendered
 					//after the div is displayed in the popup.
 					popContent.resized();
@@ -571,12 +597,12 @@ enyo.kind({
 					
 			}
 		}
+		//Add the markers associated with this campaign to the map
 		this.taskMarkerGroups[inEvent.campaign.id].addTo(this.map);
 		this.currentTaskMarkerGroup = this.taskMarkerGroups[inEvent.campaign.id];
 		this.currentTaskMarkerGroup.eachLayer(function (layer){
 			layer.showLabel();
 		});
-		//Pan map to bounds
 		this.panToCurrentTaskMarkerGroup();
 	},
 	panToCurrentTaskMarkerGroup: function(){

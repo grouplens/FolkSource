@@ -5,11 +5,25 @@
 .hidden {
 	display: none;
 }
+
+.csense-div-layer {
+	border: 1px solid black;
+	background: rgba(0, 0, 0, 0);
+	border-radius: 999px;
+}
+
+.ping-marker-div {
+	border: 1px solid black;
+	background: rgba(0, 0, 0, 0);
+	border-radius: 999px;
+	width: 24px;
+	height: 24px;
+}
 .submission-marker-div {
 	border: 1px solid black;
 	opacity: 0.75;
 	background-color: #FD7524;
-	border-radius: 6px;
+	border-radius: 999px;
 }
 
 .popup-list-item {
