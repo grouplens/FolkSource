@@ -2,7 +2,7 @@
 
 SubmissionMarker = L.Marker.extend({
 
-	initialize: function (latlng, submissionId, pop, popContent, options){
+	initialize: function (latlng, submissionId, pop, popContent, makePing, options){
 		//Set the icon
 		var opt = options;
 		if (opt === undefined){
@@ -13,8 +13,10 @@ SubmissionMarker = L.Marker.extend({
 		L.Marker.prototype.initialize.call(this, latlng, opt);
 
 		//Initililize ping animation
-		this._ping = new PingCircle(this.getLatLng(), 10, {color: "#000000"});
-		//this._ping = new PingLayer(this.getLatLng(), 0);
+		if (makePing){
+			this._ping = new PingCircle(this.getLatLng(), 10, {color: "#000000"});
+			//this._ping = new PingLayer(this.getLatLng(), 0);
+		}
 
 		//Initialize click action
 		this._setupClickHandler(submissionId, pop, popContent);
@@ -22,9 +24,11 @@ SubmissionMarker = L.Marker.extend({
 	onAdd: function(map){
 		L.Marker.prototype.onAdd.call(this, map);
 
-		this._ping.addTo(this._map);
-		this._ping.animate({duration: 600, size: 150, delay: 310});
-		//this._ping.animate({duration: 200, size: 200, delay: 300});
+		if (this._ping){
+			this._ping.addTo(this._map);
+			this._ping.animate({duration: 600, size: 150, delay: 310});
+			//this._ping.animate({duration: 200, size: 200, delay: 300});
+		}
 	},
 
 	_setupClickHandler: function(submissionId, pop, popContent){
@@ -33,6 +37,10 @@ SubmissionMarker = L.Marker.extend({
 			pop._adjustPan();
 		});
 	},
+
+	hasPing: function(){
+		return this._ping ? true : false;
+	}
 
 });
 

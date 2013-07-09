@@ -6,13 +6,6 @@
 	display: none;
 }
 
-
-.popup-list-item-highlight {
-	background-color: #B00200;
-}
-
-
-
 .csense-ping-layer {
 	border: 1px solid black;
 	background: rgba(0, 0, 0, 0);

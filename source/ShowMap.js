@@ -485,7 +485,9 @@ enyo.kind({
 
 				var latitudelongitude = new L.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
 				var submissionId = subs[i].id;
-				var mark = new SubmissionMarker(latitudelongitude, submissionId, pop, popContent);
+				var makePing = !this.pingWithinRange(markers, latitudelongitude, 10);
+
+				var mark = new SubmissionMarker(latitudelongitude, submissionId, pop, popContent, makePing);
 				mark.bindLabel("Submission "+ submissionId);
 				markers.addLayer(mark);
 				
@@ -494,6 +496,25 @@ enyo.kind({
 			}
 		}
 		return markers;
+	},
+
+	pingWithinRange: function(markerGroup, latlng, d){
+		//Retruns true if there is a marker in the markerGroup within distance d pixels of this latlng that has a ping animation attached to it.
+		//TODO: Implement a faster algorithm than this O(n) aproach.
+			// http://en.wikipedia.org/wiki/Fixed-radius_near_neighbors
+			// http://en.wikipedia.org/wiki/Nearest_neighbor_search
+
+		var ret = false;
+		markerGroup.eachLayer(function(otherMarker){
+			if (otherMarker.hasPing()){
+				var dist = this.map.latLngToLayerPoint(latlng).distanceTo( this.map.latLngToLayerPoint(otherMarker.getLatLng()) );
+				if (dist <= d){
+					ret = true;
+					//Is there a way to break out here if we have a true?
+				}
+			}
+		}, this);
+		return ret;
 	},
 
 	showTaskLocations: function (inSender, inEvent) {
