@@ -16,7 +16,7 @@ enyo.kind({
 		onCampPicked: "",
 		onPins: "",
 		onShowTaskLocations: "",
-		onInvalidateMapSize: "",
+		onAdjustMapSize: "",
 	},
 	handlers: {
 		onNewTapped: "closeDrawer",
@@ -144,7 +144,7 @@ enyo.kind({
 	*/
 	endHandler: function(inSender, inEvent) {
 		var offset = inSender.open ? -100 : 100;
-		this.doInvalidateMapSize({offset: offset});
+		this.doAdjustMapSize({offset: offset});
 	},
 });
 

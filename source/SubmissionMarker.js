@@ -2,7 +2,7 @@
 
 SubmissionMarker = L.Marker.extend({
 
-	initialize: function (latlng, submissionId, pop, popContent, makePing, options){
+	initialize: function (latlng, submissionId, pop, popContent, oms, makePing, options){
 		//Set the icon
 		var opt = options;
 		if (opt === undefined){
@@ -19,7 +19,9 @@ SubmissionMarker = L.Marker.extend({
 		}
 
 		//Initialize click action
-		this._setupClickHandler(submissionId, pop, popContent);
+		//this._setupClickHandler(submissionId, pop, popContent);
+		this._setupClickHandler(oms);
+		this.clickArgs = {submissionId: submissionId, pop: pop, popContent: popContent}; //needed for the osm thing...
 	},
 	onAdd: function(map){
 		L.Marker.prototype.onAdd.call(this, map);
@@ -31,11 +33,19 @@ SubmissionMarker = L.Marker.extend({
 		}
 	},
 
-	_setupClickHandler: function(submissionId, pop, popContent){
+	//_setupClickHandler: function(submissionId, pop, popContent){
+	_setupClickHandler: function(oms){
+		oms.addListener("click", function(marker){
+			marker.clickArgs.popContent.emphasizeSubmission(marker.clickArgs.submissionId);
+			marker.clickArgs.pop._adjustPan();
+		});
+
+		/*
 		this.on("click", function(){
 			popContent.emphasizeSubmission(submissionId)
 			pop._adjustPan();
 		});
+		*/
 	},
 
 	hasPing: function(){

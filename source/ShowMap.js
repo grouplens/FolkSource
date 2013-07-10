@@ -57,7 +57,7 @@ enyo.kind({
 		onShowAddFeaturesToolbar: "showAddFeaturesToolbar",
 		onShowEditFeaturesToolbar: "showEditFeaturesToolbar",
 		onShowTaskLocations: "showTaskLocations",
-		onInvalidateMapSize: "invalidateMapSize",
+		onAdjustMapSize: "adjustMapSize",
 	},
 	addMarkers: function () {
 		if (this.locations instanceof Array) {
@@ -76,8 +76,6 @@ enyo.kind({
 	create: function (inSender, inEvent) {
 
 		this.inherited(arguments);
-
-		this.log(this);
 
 		this.resized();
 		this.$.gps.setTimeout(this.gpsTimeout);
@@ -325,6 +323,8 @@ enyo.kind({
 		this.map.addLayer(tileLayer);
 		*/
 
+		//OverlappingMarkerSpiderfier
+		this.oms = new OverlappingMarkerSpiderfier(this.map, {keepSpiderfied: true, nearbyDistance: 10});
 
 		//Leaflet.draw plugin
 		this.undoStack = new Array();
@@ -487,7 +487,8 @@ enyo.kind({
 				var submissionId = subs[i].id;
 				var makePing = !this.pingWithinRange(markers, latitudelongitude, 10);
 
-				var mark = new SubmissionMarker(latitudelongitude, submissionId, pop, popContent, makePing);
+				//var mark = new SubmissionMarker(latitudelongitude, submissionId, pop, popContent, makePing);
+				var mark = new SubmissionMarker(latitudelongitude, submissionId, pop, popContent, this.oms, makePing);
 				mark.bindLabel("Submission "+ submissionId);
 				markers.addLayer(mark);
 				
@@ -584,14 +585,27 @@ enyo.kind({
 				//  on marker click show the submission location and pan to them
 				pop.on("open", function(){
 					this.map.addLayer(taskMarker.submissionMarkersGroup);
+					taskMarker.submissionMarkersGroup.eachLayer(function(layer){
+						this.oms.addMarker(layer);
+					}, this);
+
 					this.map.fitBounds(
 						taskMarker.submissionMarkersGroup.getBounds().extend(taskMarker.getLatLng()),
-						{animate: true}
+						//{animate: false,}
+						{
+							//reset: false,
+							//animate: true,
+							pan: {animate: true},
+							//zoom: {animate: false},
+						}
 					);
+					
 				}, this);
 				//  on close of the popup hide the submission locations
 				pop.on("close", function(){
 					this.map.removeLayer(taskMarker.submissionMarkersGroup);
+					this.oms.unspiderfy();
+					this.oms.clearMarkers();
 				}, this)
 				//NOTE:
 				//There is an issue with this scheme. Markers behind the popup can never be seen!
@@ -615,7 +629,7 @@ enyo.kind({
 
 		}
 	},
-	invalidateMapSize: function (inSender, inEvent){
+	adjustMapSize: function (inSender, inEvent){
 		this.map.invalidateSize();
 		this.map.panBy([inEvent.offset,0],{animate: false, duration: 0});
 		this.panToCurrentTaskMarkerGroup();

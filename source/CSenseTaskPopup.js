@@ -6,7 +6,7 @@ enyo.kind({
 	},
     components:[
         {name: "popupScroller", kind: enyo.Scroller, style: "max-height: 300px;", components:[
-            {name: "popHeading", content: "",},
+            {name: "popHeading", content: "", style: "font-weight: bold;"},
             {name: "popSubHeading", content: "",},
             {
                 kind: enyo.Repeater,
@@ -43,16 +43,25 @@ enyo.kind({
         var sub = this.task.submissions[index];
 
         this.$.repeater.subIdtoIndexMap[sub.id] = index;
-        item.$.itemHeading.setName("submissionheading-" + sub.id);
-        item.$.itemHeading.setContent("Submission " + sub.id);
         item.$.itemHeading.index = index;
+
+        //Setting these names might be pointless since we don't seem to be able to access these guys from the CSenseTaskPopup context anyways
+        item.$.itemHeading.setName("submissionheading-" + sub.id);
         item.$.itemDrawer.setName("subdrawer-"+sub.id);
+
+        item.$.itemHeading.setContent("Submission " + sub.id);
         item.$.control.setContent("Submitter: "+sub.user_id);
         item.$.control2.setContent("Number of answers: "+sub.answers.length);
-        item.$.control3.setContent("Location: "+sub.gps_location);
+        item.$.control3.setContent("Location: "+ this.reverseGeocode(sub.gps_location));
 
         return true;
     },
+
+    reverseGeocode: function(gps_location){
+        //Insert reverse geocoding functionality here!
+        return "123 Fake St SE, Minneapolis, MN";
+    },
+
     toggleDrawer: function (inSender, inEvent){
         //This is really weird... Why can't we use their names?
         var ind = inSender.index+1;
