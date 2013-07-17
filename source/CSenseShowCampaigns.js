@@ -15,14 +15,16 @@ enyo.kind({
 	events: {
 		onCampPicked: "",
 		onPins: "",
-		onShowTaskLocations: "",
+		onShowTaskLocationsOnMap: "",
 		onAdjustMapSize: "",
+		onShowSubmissionsOnMap: "",
 	},
 	handlers: {
-		onNewTapped: "closeDrawer",
+		onNewTapped: "closeDrawers",
 		onShowTapped: "toggleDrawer",
 		onCampPicked: "makeTasks",
 		onEnd: "endHandler",
+		onShowTaskDetail: "showTaskDetail",
 	},
 	components:[
 		{name: "campaignDrawer",
@@ -39,19 +41,50 @@ enyo.kind({
 					]}
 				]},
 			],
-			/*
-			animatorEnd: function(){
-				this.inherited(arguments);
-			}
-			*/
 		},
 		{name: "taskDrawer",
 			kind: onyx.Drawer,
 			layoutKind: enyo.FittableRowsLayout,
-			style: "z-index: 15; position: relative; background-color: pink;",
+			style: "z-index: 15; position: relative; background-color: pink; overflow: auto;",
 			orient: "h",
 			open: false,
 			components: [
+				
+				{name: "taskViewScroller",
+					kind: enyo.Scroller,
+					style: /*"min-width: 200px; max-width: 200px; */"width: 300px;",
+					verticle: "scroll",
+					components: [
+						{name: "taskViewRepeater",
+							kind: enyo.Repeater,
+							onSetupItem: "setupTaskList",
+							count: 0,
+							components: [
+								{name: "taskHeading",
+									kind: enyo.Node,
+									classes: "csenseshowcampaigns-node",
+									onExpand: "nodeToggled",
+									icon: "assets/triangle.png",
+									style: "display: inline-block;",
+									content: "taskHeading",
+									expandable: true,
+									expanded: false,
+									onlyIconExpands: true,
+									components: [
+										{name: "taskDetails", kind: "CSenseTaskPopup", style: "background-color: #ffffff;"},
+										/*{kind: enyo.Control, content: "These are the details of this task"},*/
+									],
+								},
+							],
+							taskIdsToIndex: {},
+						},
+					],
+				},
+			],
+		},
+		
+		/*
+		
 				{name: "taskList", kind: enyo.List, onSetupItem: "setupTaskList", style: "min-width: 200px;", touch: true, count: 0, components: [
 					{name: "taskItem", kind: "onyx.Item", ontap: "taskTapped", components: [
 						{name: "taskIndex", content: "id"},
@@ -60,17 +93,27 @@ enyo.kind({
 				]},
 			],
 		},
+		*/
+		
 	],
+
+	/*
+		Called when a campaign in the campaign pane is tapped. This opens a task pane and shows task locations of the map.
+	*/
 	campTapped: function(inSender, inEvent) {
 		var index = inEvent.index;
+		this.selectedCampIndex = index;
 		var tmp = this.campData[index];
+
+		if (this.selectedCampIndex !== null && this.selectedCampIndex !== index){
+			//Clear submission markers from the map that may or may not be present
+			//An alternative way to do this would be to close all of the nodes in the task pane if it is open
+				//this.doShowSubmissionsOnMap({task: null, taskDetail: null}); 
+		}
 		this.makeTasks({campIndex: index, taskData: tmp.tasks, location: tmp.location});
-		this.showTaskLocations(index);
+		this.doShowTaskLocationsOnMap({"campaign": this.campData[index]});
 	},
-	closeDrawer: function(inSender, inEvent) {
-		this.$.campaignDrawer.setOpen(false);
-		this.$.taskDrawer.setOpen(false);
-	},
+
 	create: function(inSender, inEvent) {
 	    this.inherited(arguments);	    
 	    //Temporary fix to test while database is down
@@ -87,37 +130,64 @@ enyo.kind({
 		var ajax = new enyo.Ajax({url: Data.getURL() + "campaign.json", method: "GET", handleAs: "json"});
 		ajax.response(this, "handleResponse");
 		ajax.go();
+
+		this.selectedCampIndex = null;
 	},
+
+	/*
+		Called when the ajax response arrives. Initializes the campaign pane contents.
+	*/
 	handleResponse: function(inSender, inEvent) {
-		this.log("test");
 		this.campData = inEvent.campaigns;
-		this.log(this.campData);
+		/*For testing purposes*/ /*
+		var aTask = this.campData[0].tasks[0]
+		this.campData[0].tasks = [aTask, aTask, aTask, aTask, aTask];
+		this.campData[0].tasks[1].id = 99;
+		*/
+
 		this.$.campList.setCount(this.campData.length);
 		this.$.campList.reset();
+
 		//this.$.container.resized();
 	},
+
+	/*
+		Builds the contents of the tasks pane
+	*/
 	makeTasks: function(input) {
+		this.log("makeTasks");
+		this.doShowSubmissionsOnMap({task: null, taskDetail: null});
+
 		this.taskData = input.taskData;
-		this.$.taskList.setCount(this.taskData.length);
-		if(this.taskData.length == 1) {
-			this.$.taskList.select(0);
-		}
-		this.$.taskList.reset();
+		this.$.taskViewRepeater.setCount(this.taskData.length);
 		this.$.taskDrawer.setOpen(true);
 		return true;
 	},
+
+	/*
+		Called when user clicks the grabber in the top bar
+	*/
 	toggleDrawer: function(inSender, inEvent) {
-		var truthy = this.$.campaignDrawer.getOpen();
-		var taskTruthy = this.$.taskDrawer.getOpen();
-
-		if(truthy && taskTruthy)
-		    	this.$.taskDrawer.setOpen(false);
-
-		this.$.campaignDrawer.setOpen(!truthy);
-
+		if (this.$.campaignDrawer.getOpen()) {
+			this.closeDrawers();
+		} else{
+			this.$.campaignDrawer.setOpen(true);
+		}
 		this.$.campList.reset();
-		this.$.taskList.reset();
+
 	},
+	/*
+		Closes both the campaign and task drawers
+	*/
+	closeDrawers: function(inSender, inEvent) {
+		this.$.campaignDrawer.setOpen(false);
+		this.$.taskDrawer.setOpen(false);
+		this.doShowSubmissionsOnMap({task: null, taskDetail: null});
+	},
+
+	/*
+		CampList setup function
+	*/
 	setupCampList: function(inSender, inEvent) {
 		var index = inEvent.index
 		var camp = this.campData[index];
@@ -126,25 +196,63 @@ enyo.kind({
 		this.$.campItem.addRemoveClass("list-selection", inSender.isSelected(index));
 		return true;
 	},
+
+	/*
+		TaskList setup function
+	*/
 	setupTaskList: function(inSender, inEvent) {
-    	var index = inEvent.index
-    	var task = this.taskData[index];
-    	this.$.taskIndex.setContent(task.id);
-    	this.$.taskTitle.setContent(task.instructions);
-    	this.$.taskItem.addRemoveClass("list-selection", inSender.isSelected(index));
-    	return true;
+		var index = inEvent.index;
+		var task = this.taskData[index];
+		var item = inEvent.item;
+		item.$.taskHeading.setContent(task.id + " - " + task.instructions);
+		item.$.taskDetails.setTask(task);
+
+		this.$.taskViewRepeater.taskIdsToIndex[task.id] = index;
+
+		return true;
 	},
 
-	showTaskLocations: function(campIndex) {
-		this.doShowTaskLocations({"campaign": this.campData[campIndex]});
+	nodeToggled: function(inSender, inEvent){
+		inSender.setIcon("assets/" + (inSender.expanded ? "triangleDown.png" : "triangle.png"));
+		if (inEvent.expanded){
+			//show submission on map
+			var taskDetail = inEvent.originator.$.client.children[0]; //Why is this so gross?
+			var task = taskDetail.task;
+			this.doShowSubmissionsOnMap({task: task, taskDetail: taskDetail});
+			//Scroll to the heading, lock scrolling, etc...
+		}
+		else {
+			//hide stuff from map
+			this.doShowSubmissionsOnMap({task: null, taskDetail: null});
+		}
 	},
 
 	/*
-		Called on each step of the drawers' animations
+		
+	*/
+	showTaskDetail: function(inSender, inEvent){
+		this.log("showTaskDetail");
+		//Open the campaign drawer?
+		//Open the appropriate task drawer
+		var proxy = this.$.taskViewRepeater.children[this.$.taskViewRepeater.taskIdsToIndex[task.id]];
+		if (proxy.$.taskHeading.expanded === false){
+			proxy.$.taskHeading.toggleExpanded();
+		}
+	},
+
+	/*
+		Called on end of the drawers' animations
 	*/
 	endHandler: function(inSender, inEvent) {
-		var offset = inSender.open ? -100 : 100;
-		this.doAdjustMapSize({offset: offset});
+		var drawer = inEvent.originator.owner;
+		if ( (drawer.name === "campaignDrawer") || (drawer.name === "taskDrawer") ){
+			//This is really sketchy. This should be implemented so that we can get the width from the drawers without knowing it.
+			var offset = drawer.open ? -100 : 100;
+			if (drawer.name === "taskDrawer"){
+				offset = drawer.open ? -150 : 150;
+			}
+			this.doAdjustMapSize({offset: offset});
+		}
 	},
 });
 

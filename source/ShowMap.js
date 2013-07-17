@@ -56,7 +56,9 @@ enyo.kind({
 		onDeactivateAllEditing: "deactivateEditingInterface",
 		onShowAddFeaturesToolbar: "showAddFeaturesToolbar",
 		onShowEditFeaturesToolbar: "showEditFeaturesToolbar",
-		onShowTaskLocations: "showTaskLocations",
+		/*onShowTaskLocations: "showTaskLocations",*/
+		onShowTaskLocationsOnMap: "showTaskLocationsOnMap",
+		onShowSubmissionsOnMap: "showSubmissionsOnMap",
 		onAdjustMapSize: "adjustMapSize",
 	},
 	addMarkers: function () {
@@ -98,7 +100,10 @@ enyo.kind({
 
 		//keys: campaign ids, values: L.FeatureGroups holding task markers/polygons
 		this.taskMarkerGroups = {};
-		this.currentTaskMarkerGroup = null;
+		this.taskMarkers = {}; //keys: task ids, values: L.Layers holding task marker or polygon
+		this.submissionMarkerGroups = {} //Keys: task ids, values: L.FeatureGroups holding submission markers
+		this.currentTaskMarkerGroup = null; //Group of task markers currently being displayed
+		this.currentSubmissionsGroup = null; //Group of submission markers currently being displayed
 
 	},
 	centerMap: function (coords) {
@@ -197,7 +202,6 @@ enyo.kind({
 		this.remover.enable();
 		this.fixTooltip(this.remover._tooltip._container);
 	},
-
 	undo: function(){
 		var action = this.undoStack.pop();
 
@@ -226,7 +230,6 @@ enyo.kind({
 
 		this.$.modifyRadioGroup.setActive(null);
 		this.$.addLandRRadioGroup.setActive(null);
-
 	},
 	closeDrawers: function(){
 		this.$.addLocationsAndRegionsToolbar.setOpen(false);
@@ -236,7 +239,6 @@ enyo.kind({
 		this.deactivateEditing();
 		this.closeDrawers();
 		if (this.$.modificationRadioGroup !== undefined){
-			this.log("in herrrr");
 			this.$.modificationRadioGroup.setActive(null);
 		}
 	},
@@ -308,7 +310,7 @@ enyo.kind({
 		this.$.gps.getPosition();		
 
 		//Create the map		
-		this.map = L.map(this.$.mapCont.id).setView([44.981313, -93.266569], 13);
+		this.map = L.map(this.$.mapCont.id, {closePopupOnClick: false}).setView([44.981313, -93.266569], 13);
 		
 		//L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 		//L.tileLayer("http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg", {
@@ -324,7 +326,12 @@ enyo.kind({
 		*/
 
 		//OverlappingMarkerSpiderfier
-		this.oms = new OverlappingMarkerSpiderfier(this.map, {keepSpiderfied: true, nearbyDistance: 10});
+		this.oms = new OverlappingMarkerSpiderfier(this.map, {keepSpiderfied: true, nearbyDistance: 10});		
+		this.oms.addListener("click", function(marker){
+			if (marker.onClick){
+				marker.onClick();
+			}
+		});
 
 		//Leaflet.draw plugin
 		this.undoStack = new Array();
@@ -479,6 +486,8 @@ enyo.kind({
 		//instantiate submission markers:
 		var subs = task.submissions;
 		var markers = new L.FeatureGroup();
+		var showCampaigns = this.$.cSenseShowCampaigns;
+
 		for(var i=0; i < subs.length; i++){
 			var latlng = subs[i].gps_location.split("|");
 			if (latlng.length === 2) {
@@ -487,8 +496,7 @@ enyo.kind({
 				var submissionId = subs[i].id;
 				var makePing = !this.pingWithinRange(markers, latitudelongitude, 10);
 
-				//var mark = new SubmissionMarker(latitudelongitude, submissionId, pop, popContent, makePing);
-				var mark = new SubmissionMarker(latitudelongitude, submissionId, pop, popContent, this.oms, makePing);
+				var mark = new SubmissionMarker(latitudelongitude, submissionId, showCampaigns, makePing);
 				mark.bindLabel("Submission "+ submissionId);
 				markers.addLayer(mark);
 				
@@ -496,6 +504,7 @@ enyo.kind({
 				//Submission has invalid gps coordinates
 			}
 		}
+
 		return markers;
 	},
 
@@ -516,6 +525,98 @@ enyo.kind({
 			}
 		}, this);
 		return ret;
+	},
+
+	/*
+		Adds markers and heatmap to the map illustrating the locations of the submissions for the given task.
+		Also pans the map to the markers+taskMarker/Polygon
+	*/
+	showSubmissionsOnMap: function (inSender, inEvent) {
+		if (inEvent.task === null){
+			if (this.currentSubmissionsGroup){
+				this.map.removeLayer(this.currentSubmissionsGroup);
+			}
+			this.currentSubmissionsGroup = null; //Is it bad that we are clearing it every time.
+			this.oms.unspiderfy();
+			this.oms.clearMarkers();
+			this.clearHeat();
+		}
+		else {
+
+			var task = inEvent.task;
+			var taskDetail = inEvent.taskDetail;
+			var taskMarker = this.taskMarkers[task.id]
+
+			if (this.submissionMarkerGroups[task.id] === undefined){
+				this.submissionMarkerGroups[task.id] = this.setupSubmissionMarkers(task, null, taskDetail);
+			}
+			var group = this.submissionMarkerGroups[task.id];
+
+			this.map.addLayer(group);
+			group.eachLayer(function(layer){
+				this.oms.addMarker(layer);
+			}, this);
+			this.heatmap(group);
+
+			this.map.fitBounds(
+				group.getBounds().extend(taskMarker.getLatLng()),
+				//{animate: false,}
+				{
+					//reset: false,
+					//animate: true,
+					pan: {animate: true},
+					//zoom: {animate: false},
+				}
+			);
+
+			this.currentSubmissionsGroup = group;
+		}
+	},
+
+	/*
+		Adds marker and polygons to the map illustrating the locations of the tasks for the given campaign.
+		Also pans the map to the markers and polygons.
+	*/
+	showTaskLocationsOnMap: function(inSender, inEvent){
+		var campaign = inEvent.campaign;
+
+		//Remove any markers that may be assiciated with another campaign
+		this.removeTaskLocations();
+		//Instantiate task markers if needed
+		if (this.taskMarkerGroups[campaign.id] === undefined){
+			this.taskMarkerGroups[campaign.id] = new L.FeatureGroup();
+			for (i in campaign.tasks){
+
+				task = campaign.tasks[i];
+				//instantiate task marker
+				var latlng = this.getLatLngFromDbString(campaign.location); //Note that once database is updated this line will need to change to get location from tasks
+				var labelText = "Task "+task.id+"<br/>"+task.submissions.length+" submissions";
+				var hoverText = task.instructions;
+				var taskMarker = L.marker(latlng)
+				taskMarker.task = task.id;
+
+				taskMarker.bindLabel(labelText, { noHide: true });
+				taskMarker.on("mouseover", function(){
+					this.updateLabelContent(hoverText);
+				});
+				taskMarker.on("mouseout", function(){
+					this.updateLabelContent(labelText);
+				});
+				taskMarker.on("click", function(){
+					this.waterfall("onShowTaskDetail", {task: taskMarker.task});
+					//"detailview" the task. Show the details pane in the task pane and put submission markers on the map
+					//Should an event trigger the showing of submission markers, or should a direct method call?
+				}, this);
+				this.taskMarkerGroups[inEvent.campaign.id].addLayer(taskMarker);
+				this.taskMarkers[task.id] = taskMarker;
+			}
+		}
+		this.taskMarkerGroups[campaign.id].addTo(this.map);
+		this.currentTaskMarkerGroup = this.taskMarkerGroups[campaign.id];
+		this.currentTaskMarkerGroup.eachLayer(function (layer){
+			layer.showLabel();
+		});
+		this.panToCurrentTaskMarkerGroup();
 	},
 
 	showTaskLocations: function (inSender, inEvent) {
@@ -564,6 +665,7 @@ enyo.kind({
 					//Forward click events to the enyo entities that originated them.
 					//This is a workaround for this issue: http://forums.enyojs.com/discussion/comment/7159
 					L.DomEvent.on(pop._contentNode, "click", forward, this);
+
 					//Hide label when clicked
 					taskMarker.hideLabel();
 				}, this);
@@ -584,10 +686,13 @@ enyo.kind({
 				taskMarker.submissionMarkersGroup = this.setupSubmissionMarkers(task, pop, popContent);
 				//  on marker click show the submission location and pan to them
 				pop.on("open", function(){
+
 					this.map.addLayer(taskMarker.submissionMarkersGroup);
 					taskMarker.submissionMarkersGroup.eachLayer(function(layer){
 						this.oms.addMarker(layer);
 					}, this);
+					this.heatmap(taskMarker.submissionMarkersGroup);
+
 
 					this.map.fitBounds(
 						taskMarker.submissionMarkersGroup.getBounds().extend(taskMarker.getLatLng()),
@@ -606,6 +711,7 @@ enyo.kind({
 					this.map.removeLayer(taskMarker.submissionMarkersGroup);
 					this.oms.unspiderfy();
 					this.oms.clearMarkers();
+					this.clearHeat();
 				}, this)
 				//NOTE:
 				//There is an issue with this scheme. Markers behind the popup can never be seen!
@@ -622,6 +728,48 @@ enyo.kind({
 		});
 		this.panToCurrentTaskMarkerGroup();
 	},
+
+	clearHeat: function(){
+		if (this.heatmapLayer){
+			this.map.removeLayer(this.heatmapLayer);
+		}
+	},
+
+	heatmap: function(group){
+		//instantiate heat map. We have to do this every time because there doesn't seem to be a way to clear points from the heatmap
+		this.heatmapLayer = new L.TileLayer.heatMap({
+        	radius: {value: 20, absolute: false}, 
+            opacity: 0.8,
+            gradient: {
+            	
+            	0.00: "rgb(0,0,255)",
+                0.50: "rgb(0,255,255)",
+                //0.65: "rgb(0,255,0)",
+                //0.996: "yellow", //mostly red
+                0.99545: "yellow", //mostly red
+                //0.997: "yellow", // mostly yellow
+                1.00: "rgb(255,0,0)"
+                
+            	/*
+                0.45: "rgb(0,0,255)",
+                0.55: "rgb(0,255,255)",
+                0.65: "rgb(0,255,0)",
+                0.95: "yellow",
+                1.00: "rgb(255,0,0)"
+                */
+                
+            }
+
+        });
+        this.map.addLayer(this.heatmapLayer);
+        
+		var d = []
+		group.eachLayer(function(layer){
+			d.push({lat: layer.getLatLng().lat , lon: layer.getLatLng().lng, value:1});
+		});
+		this.heatmapLayer.setData(d);
+	},
+
 	panToCurrentTaskMarkerGroup: function(){
 		if (this.currentTaskMarkerGroup){
 			this.map.panTo(this.currentTaskMarkerGroup.getBounds().getCenter());

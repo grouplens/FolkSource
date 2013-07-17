@@ -6,6 +6,17 @@
 	display: none;
 }
 
+.csenseshowcampaigns-node > div {
+	display: block !important;
+	overflow: hidden;
+}
+
+.csenseshowcampaigns-node > img {
+	float: left;
+	/*border: 1px solid green;*//*For debug purposes*/
+	width: 16px;
+}
+
 .csense-ping-layer {
 	border: 1px solid black;
 	background: rgba(0, 0, 0, 0);

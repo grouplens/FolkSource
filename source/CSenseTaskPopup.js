@@ -4,8 +4,11 @@ enyo.kind({
 		task: "",
         popup: "",
 	},
+    handlers: {
+        onEmphasizeSubmission: "emphasizeSubmission",
+    },
     components:[
-        {name: "popupScroller", kind: enyo.Scroller, style: "max-height: 300px;", components:[
+        {name: "popupScroller", kind: enyo.Scroller, style: "max-height: 300px;", onNodeTapped: "foo", components:[
             {name: "popHeading", content: "", style: "font-weight: bold;"},
             {name: "popSubHeading", content: "",},
             {
@@ -13,7 +16,7 @@ enyo.kind({
                 count: 0,
                 components: [
                     {name: "itemCont", classes: "popup-list-item", components:[
-                        {name: "itemHeading", ontap: "toggleDrawer", published:{index: ""}, classes:"popup-list-item-heading"},
+                        {name: "itemHeading", ontap: "toggleItemDrawer", published:{index: ""}, classes:"popup-list-item-heading"},
                         {name: "itemDrawer", kind: onyx.Drawer, open: false, orient: "v",
                             components:[
                                 {name: "listItem", classes:"popup-list-item-body",components:[
@@ -32,10 +35,16 @@ enyo.kind({
     ],
     create: function(){
         this.inherited(arguments);
+        if (this.task){
+            this.setTask(task);
+        }
+
+    },
+    setTask: function(task){
+        this.task = task;
         this.$.repeater.setCount(this.task.submissions.length);
         this.$.popHeading.setContent("Task "+this.task.id);
         this.$.popSubHeading.setContent("Instructinons: "+this.task.instructions);
-
     },
     setValues: function (inSender, inEvent){
         var index = inEvent.index;
@@ -62,7 +71,8 @@ enyo.kind({
         return "123 Fake St SE, Minneapolis, MN";
     },
 
-    toggleDrawer: function (inSender, inEvent){
+    toggleItemDrawer: function (inSender, inEvent){
+        this.log("toggle item drawer called");
         //This is really weird... Why can't we use their names?
         var ind = inSender.index+1;
         if (ind === 1){ind = "";}
@@ -80,8 +90,10 @@ enyo.kind({
         return this.$.repeater.$["ownerProxy"+i];
     },
 
-    emphasizeSubmission: function(subId){
+    emphasizeSubmission: function(inSender, inEvent){
+        var subId = inEvent.submissionId;
         //Open submission drawer
+        this.log(subId)
         var drawer = this.getOwnerProx(subId).$.itemDrawer;
             //disable animation first!
         var wasAnimated = drawer.animated;

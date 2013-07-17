@@ -2,13 +2,13 @@
 
 SubmissionMarker = L.Marker.extend({
 
-	initialize: function (latlng, submissionId, pop, popContent, oms, makePing, options){
+	initialize: function (latlng, submissionId, showCampaigns, makePing, options){
 		//Set the icon
 		var opt = options;
 		if (opt === undefined){
 			opt = {};
 		}
-		opt.icon = new L.DivIcon({className: 'submission-marker-div'});
+		opt.icon = new L.DivIcon({className: 'submission-marker-div', iconSize: [8 ,8]});
 
 		L.Marker.prototype.initialize.call(this, latlng, opt);
 
@@ -18,10 +18,11 @@ SubmissionMarker = L.Marker.extend({
 			//this._ping = new PingLayer(this.getLatLng(), 0);
 		}
 
+		this.submissionId = submissionId;
+		this.showCampaigns = showCampaigns;
+
 		//Initialize click action
-		//this._setupClickHandler(submissionId, pop, popContent);
-		this._setupClickHandler(oms);
-		this.clickArgs = {submissionId: submissionId, pop: pop, popContent: popContent}; //needed for the osm thing...
+		this._setupClickHandler();
 	},
 	onAdd: function(map){
 		L.Marker.prototype.onAdd.call(this, map);
@@ -33,19 +34,13 @@ SubmissionMarker = L.Marker.extend({
 		}
 	},
 
-	//_setupClickHandler: function(submissionId, pop, popContent){
-	_setupClickHandler: function(oms){
-		oms.addListener("click", function(marker){
-			marker.clickArgs.popContent.emphasizeSubmission(marker.clickArgs.submissionId);
-			marker.clickArgs.pop._adjustPan();
-		});
-
-		/*
-		this.on("click", function(){
-			popContent.emphasizeSubmission(submissionId)
-			pop._adjustPan();
-		});
-		*/
+	_setupClickHandler: function(){
+		this.onClick = function(){
+			//console.log(this.clickArgs.showCampaigns);
+			//console.log(this.showCampaigns);
+			this.showCampaigns.waterfall("onEmphasizeSubmission", {submissionId: this.submissionId});
+			//this.showCampaigns.doEmphasizeSubmission({submissionId: this.submissionId});
+		}
 	},
 
 	hasPing: function(){
