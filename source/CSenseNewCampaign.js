@@ -6,10 +6,12 @@ enyo.kind({
 	orient: "h",
 	open: false,
 	events: {
+		onAdjustMapSize: "",
 	},
 	handlers: {
 	    onNewTapped: "toggleDrawer",
-		onShowTapped: "closeDrawer"
+		onShowTapped: "closeDrawer",
+		onEnd: "endHandler",
 	},
 	components: [
 		//{name: "newDrawer", kind: onyx.Drawer, layoutKind: enyo.FittableColumnsLayout, style: "z-index: 15; position: relative; background-color: lightblue;", orient: "h", open: false, components: [
@@ -51,5 +53,13 @@ enyo.kind({
 	    this.log("toggle Drawer called!");
 	    var truthy = this.getOpen();
 		this.setOpen(!truthy);
+	},
+	endHandler: function (inSender, inEvent){
+		var drawer = inEvent.originator.owner;
+		if ( (drawer.name === "cSenseNewCampaign") ){
+			//This is really sketchy. This should be implemented so that we can get the width from the drawers without knowing it.
+			var offset = drawer.open ? -225 : 225;
+			this.doAdjustMapSize({offset: offset});
+		}
 	},
 });

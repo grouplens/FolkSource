@@ -618,7 +618,7 @@ enyo.kind({
 		});
 		this.panToCurrentTaskMarkerGroup();
 	},
-
+	/*
 	showTaskLocations: function (inSender, inEvent) {
 		//Remove any markers that may be assiciated with another campaign
 		this.removeTaskLocations();
@@ -650,7 +650,7 @@ enyo.kind({
 					//Create a div for the enyo kind to render into
 				var popDiv = L.DomUtil.create("div");
 					//Create a popup
-				var pop = L.popup({minWidth: 400, maxHeight: 300, /*autoPanPadding: new L.Point(50, 50),*/ /*autoPan: false,*/}).setContent(popDiv);
+				var pop = L.popup({minWidth: 400, maxHeight: 300}).setContent(popDiv);
 					//Add it to the marker
 				taskMarker.bindPopup(pop);
 					//instantiate the enyo popup content
@@ -728,6 +728,7 @@ enyo.kind({
 		});
 		this.panToCurrentTaskMarkerGroup();
 	},
+	*/
 
 	clearHeat: function(){
 		if (this.heatmapLayer){
@@ -742,6 +743,7 @@ enyo.kind({
             opacity: 0.8,
             gradient: {
             	
+            	/*
             	0.00: "rgb(0,0,255)",
                 0.50: "rgb(0,255,255)",
                 //0.65: "rgb(0,255,0)",
@@ -749,14 +751,15 @@ enyo.kind({
                 0.99545: "yellow", //mostly red
                 //0.997: "yellow", // mostly yellow
                 1.00: "rgb(255,0,0)"
+                */
                 
-            	/*
+            	
                 0.45: "rgb(0,0,255)",
                 0.55: "rgb(0,255,255)",
                 0.65: "rgb(0,255,0)",
                 0.95: "yellow",
                 1.00: "rgb(255,0,0)"
-                */
+                
                 
             }
 

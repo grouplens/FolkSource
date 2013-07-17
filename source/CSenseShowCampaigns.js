@@ -1,13 +1,15 @@
-/*
+
 enyo.kind({
-	name: "MyDrawer",
-	kind: onyx.Drawer,
-	animatorEnd: function(){
+	events: {
+		onScrollerResized: "",
+	},
+	name: "ShowCampaignsScroller",
+	kind: enyo.Scroller,
+	resizeHandler: function(){
 		this.inherited(arguments);
-		this.log("animation ended");
+		this.doScrollerResized();
 	},
 });
-*/
 
 enyo.kind({
 	name: "CSenseShowCampaigns",
@@ -25,6 +27,7 @@ enyo.kind({
 		onCampPicked: "makeTasks",
 		onEnd: "endHandler",
 		onShowTaskDetail: "showTaskDetail",
+		onScrollerResized: "resizeScroller",
 	},
 	components:[
 		{name: "campaignDrawer",
@@ -44,16 +47,17 @@ enyo.kind({
 		},
 		{name: "taskDrawer",
 			kind: onyx.Drawer,
-			layoutKind: enyo.FittableRowsLayout,
-			style: "z-index: 15; position: relative; background-color: pink; overflow: auto;",
+			//layoutKind: enyo.FittableRowsLayout,
+			//layoutKind: "FittableRowsLayout",
+			style: "z-index: 15; position: relative; background-color: pink;",
 			orient: "h",
 			open: false,
 			components: [
 				
 				{name: "taskViewScroller",
-					kind: enyo.Scroller,
-					style: /*"min-width: 200px; max-width: 200px; */"width: 300px;",
-					verticle: "scroll",
+					kind: "ShowCampaignsScroller",
+					style: "width: 300px;",
+					//fit: true,
 					components: [
 						{name: "taskViewRepeater",
 							kind: enyo.Repeater,
@@ -97,6 +101,10 @@ enyo.kind({
 		
 	],
 
+	resizeScroller: function(inSender, inEvent) {
+		this.$.taskViewScroller.addStyles("height:" + this.$.taskDrawer.getBounds().height + "px;");
+	},
+
 	/*
 		Called when a campaign in the campaign pane is tapped. This opens a task pane and shows task locations of the map.
 	*/
@@ -139,10 +147,11 @@ enyo.kind({
 	*/
 	handleResponse: function(inSender, inEvent) {
 		this.campData = inEvent.campaigns;
-		/*For testing purposes*/ /*
+
+		/*For testing purposes*/
+		/*
 		var aTask = this.campData[0].tasks[0]
-		this.campData[0].tasks = [aTask, aTask, aTask, aTask, aTask];
-		this.campData[0].tasks[1].id = 99;
+		this.campData[0].tasks = [aTask, aTask, aTask, aTask, aTask, aTask, aTask, aTask, aTask, aTask, aTask];
 		*/
 
 		this.$.campList.setCount(this.campData.length);
@@ -161,6 +170,8 @@ enyo.kind({
 		this.taskData = input.taskData;
 		this.$.taskViewRepeater.setCount(this.taskData.length);
 		this.$.taskDrawer.setOpen(true);
+
+		this.$.taskDrawer.resized();
 		return true;
 	},
 
