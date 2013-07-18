@@ -1,4 +1,3 @@
-
 enyo.kind({
 	events: {
 		onScrollerResized: "",
@@ -56,6 +55,7 @@ enyo.kind({
 				
 				{name: "taskViewScroller",
 					kind: "ShowCampaignsScroller",
+					layoutKind: "FittableRowsLayout",
 					style: "width: 300px;",
 					//fit: true,
 					components: [
@@ -149,10 +149,10 @@ enyo.kind({
 		this.campData = inEvent.campaigns;
 
 		/*For testing purposes*/
-		/*
+		
 		var aTask = this.campData[0].tasks[0]
 		this.campData[0].tasks = [aTask, aTask, aTask, aTask, aTask, aTask, aTask, aTask, aTask, aTask, aTask];
-		*/
+		
 
 		this.$.campList.setCount(this.campData.length);
 		this.$.campList.reset();
@@ -230,7 +230,15 @@ enyo.kind({
 			var taskDetail = inEvent.originator.$.client.children[0]; //Why is this so gross?
 			var task = taskDetail.task;
 			this.doShowSubmissionsOnMap({task: task, taskDetail: taskDetail});
+
 			//Scroll to the heading, lock scrolling, etc...
+			this.$.taskViewScroller.scrollIntoView(inEvent.originator, true); //Can we animate this?
+			var that = this; //Can we get this hooked up to the end of the animation instead of using this disgusting hack?
+			var id = setTimeout( function(){
+				that.$.taskViewScroller.setVertical("hidden");
+			}, 1000);
+			
+
 		}
 		else {
 			//hide stuff from map

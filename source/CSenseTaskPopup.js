@@ -8,7 +8,7 @@ enyo.kind({
         onEmphasizeSubmission: "emphasizeSubmission",
     },
     components:[
-        {name: "popupScroller", kind: enyo.Scroller, style: "max-height: 300px;", onNodeTapped: "foo", components:[
+        {name: "popupScroller", kind: enyo.Scroller, /*style: "max-height: 300px;",*/ components:[
             {name: "popHeading", content: "", style: "font-weight: bold;"},
             {name: "popSubHeading", content: "",},
             {
