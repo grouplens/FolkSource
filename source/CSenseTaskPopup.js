@@ -8,7 +8,7 @@ enyo.kind({
         onEmphasizeSubmission: "emphasizeSubmission",
     },
     components:[
-        {name: "popupScroller", kind: enyo.Scroller, /*style: "max-height: 300px;",*/ components:[
+        {name: "popupScroller", kind: enyo.Scroller, style: "padding: 14px;", components:[
             {name: "popHeading", content: "", style: "font-weight: bold;"},
             {name: "popSubHeading", content: "",},
             {
@@ -29,7 +29,8 @@ enyo.kind({
                     ]},
                 ],
                 onSetupItem: "setValues",
-                subIdtoIndexMap: {},
+                //subIdtoIndexMap: {},
+                submissionIdToOwnerProxy: {}, //Mapping of submission ids to ownerProxy instances
             },
         ],}
     ],
@@ -42,6 +43,7 @@ enyo.kind({
     },
     setTask: function(task){
         this.task = task;
+        this.submissionIdToOwnerProxy = {} 
         this.$.repeater.setCount(this.task.submissions.length);
         this.$.popHeading.setContent("Task "+this.task.id);
         this.$.popSubHeading.setContent("Instructinons: "+this.task.instructions);
@@ -51,7 +53,8 @@ enyo.kind({
         var item = inEvent.item;
         var sub = this.task.submissions[index];
 
-        this.$.repeater.subIdtoIndexMap[sub.id] = index;
+        //this.$.repeater.subIdtoIndexMap[sub.id] = index;
+        this.$.repeater.submissionIdToOwnerProxy[sub.id] = item;
         item.$.itemHeading.index = index;
 
         //Setting these names might be pointless since we don't seem to be able to access these guys from the CSenseTaskPopup context anyways
@@ -85,15 +88,21 @@ enyo.kind({
     },
 
     getOwnerProx: function(subId){
+        /*
         var i = this.$.repeater.subIdtoIndexMap[subId]+1;
         if (i === 1){i = "";}
+        this.log(i);
         return this.$.repeater.$["ownerProxy"+i];
+        */
+        return this.$.repeater.submissionIdToOwnerProxy[subId];
     },
 
     emphasizeSubmission: function(inSender, inEvent){
         var subId = inEvent.submissionId;
         //Open submission drawer
-        this.log(subId)
+        this.log(subId);
+        this.log(this.getOwnerProx(subId));
+        this.log(this);
         var drawer = this.getOwnerProx(subId).$.itemDrawer;
             //disable animation first!
         var wasAnimated = drawer.animated;

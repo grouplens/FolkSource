@@ -57,9 +57,14 @@ enyo.kind({
 		onShowAddFeaturesToolbar: "showAddFeaturesToolbar",
 		onShowEditFeaturesToolbar: "showEditFeaturesToolbar",
 		/*onShowTaskLocations: "showTaskLocations",*/
-		onShowTaskLocationsOnMap: "showTaskLocationsOnMap",
-		onShowSubmissionsOnMap: "showSubmissionsOnMap",
-		onAdjustMapSize: "adjustMapSize",
+
+		onSelectCampaign: "showTaskLocationsOnMap",
+		onSelectTask: "showSubmissionsOnMap",
+		onClearTaskSelection: "clearSubmissionsFromMap",
+
+		onDrawerToggled: "adjustMapSize",
+		onTaskDrawerOpened: "panToTaskMarkerGroup",
+		onTaskDetailDrawerOpened: "panToSubmissionsGroup",
 	},
 	addMarkers: function () {
 		if (this.locations instanceof Array) {
@@ -104,6 +109,7 @@ enyo.kind({
 		this.submissionMarkerGroups = {} //Keys: task ids, values: L.FeatureGroups holding submission markers
 		this.currentTaskMarkerGroup = null; //Group of task markers currently being displayed
 		this.currentSubmissionsGroup = null; //Group of submission markers currently being displayed
+		this.currentSubmissionsGroupTaskId = null; //Id of the task whose submissions are currently being displayed
 
 	},
 	centerMap: function (coords) {
@@ -527,27 +533,31 @@ enyo.kind({
 		return ret;
 	},
 
+	clearSubmissionsFromMap: function(inSender, inEvent){
+		if (this.currentSubmissionsGroup){
+			this.map.removeLayer(this.currentSubmissionsGroup);
+		}
+		this.currentSubmissionsGroup = null;
+		this.currentSubmissionsGroupTaskId = null;
+		this.oms.unspiderfy();
+		this.oms.clearMarkers();
+		this.clearHeat();
+	},
+
 	/*
 		Adds markers and heatmap to the map illustrating the locations of the submissions for the given task.
 		Also pans the map to the markers+taskMarker/Polygon
 	*/
 	showSubmissionsOnMap: function (inSender, inEvent) {
-		if (inEvent.task === null){
-			if (this.currentSubmissionsGroup){
-				this.map.removeLayer(this.currentSubmissionsGroup);
-			}
-			this.currentSubmissionsGroup = null; //Is it bad that we are clearing it every time.
-			this.oms.unspiderfy();
-			this.oms.clearMarkers();
-			this.clearHeat();
-		}
-		else {
+		var task = inEvent.task;
+		var taskDetail = inEvent.taskDetail;
+		var taskMarker = this.taskMarkers[task.id];
 
-			var task = inEvent.task;
-			var taskDetail = inEvent.taskDetail;
-			var taskMarker = this.taskMarkers[task.id]
 
+		if (inEvent.task.id !== this.currentSubmissionsGroupTaskId){
+			//Add the markers to the map
 			if (this.submissionMarkerGroups[task.id] === undefined){
+				//Instantiate the markers
 				this.submissionMarkerGroups[task.id] = this.setupSubmissionMarkers(task, null, taskDetail);
 			}
 			var group = this.submissionMarkerGroups[task.id];
@@ -558,18 +568,11 @@ enyo.kind({
 			}, this);
 			this.heatmap(group);
 
-			this.map.fitBounds(
-				group.getBounds().extend(taskMarker.getLatLng()),
-				//{animate: false,}
-				{
-					//reset: false,
-					//animate: true,
-					pan: {animate: true},
-					//zoom: {animate: false},
-				}
-			);
-
 			this.currentSubmissionsGroup = group;
+			this.currentSubmissionsGroupTaskId = task.id;
+		}
+		if(inEvent.detailDrawerOpen === true){
+			this.panToSubmissionsGroup(null, {taskId: task.id}); //Here I am calling an event handler manually, is that bad?
 		}
 	},
 
@@ -593,7 +596,7 @@ enyo.kind({
 				var labelText = "Task "+task.id+"<br/>"+task.submissions.length+" submissions";
 				var hoverText = task.instructions;
 				var taskMarker = L.marker(latlng)
-				taskMarker.task = task.id;
+				taskMarker.task = task;
 
 				taskMarker.bindLabel(labelText, { noHide: true });
 				taskMarker.on("mouseover", function(){
@@ -603,7 +606,7 @@ enyo.kind({
 					this.updateLabelContent(labelText);
 				});
 				taskMarker.on("click", function(){
-					this.waterfall("onShowTaskDetail", {task: taskMarker.task});
+					this.waterfall("onTaskMarkerClicked", {task: taskMarker.task});
 					//"detailview" the task. Show the details pane in the task pane and put submission markers on the map
 					//Should an event trigger the showing of submission markers, or should a direct method call?
 				}, this);
@@ -611,124 +614,15 @@ enyo.kind({
 				this.taskMarkers[task.id] = taskMarker;
 			}
 		}
+		//Add the markers to the map
 		this.taskMarkerGroups[campaign.id].addTo(this.map);
 		this.currentTaskMarkerGroup = this.taskMarkerGroups[campaign.id];
 		this.currentTaskMarkerGroup.eachLayer(function (layer){
 			layer.showLabel();
 		});
-		this.panToCurrentTaskMarkerGroup();
+
+		this.panToTaskMarkerGroup(null, {campId: campaign.id}); //Here I am calling an event handler manually, is that bad?
 	},
-	/*
-	showTaskLocations: function (inSender, inEvent) {
-		//Remove any markers that may be assiciated with another campaign
-		this.removeTaskLocations();
-		//Instantiate task markers if needed
-		if (this.taskMarkerGroups[inEvent.campaign.id] === undefined){
-			this.taskMarkerGroups[inEvent.campaign.id] = new L.FeatureGroup();
-			for (i in inEvent.campaign.tasks){
-
-				task = inEvent.campaign.tasks[i];
-
-				//instantiate task marker
-				var latlng = this.getLatLngFromDbString(inEvent.campaign.location);
-				var labelText = "Task "+task.id+"<br/>"+task.submissions.length+" submissions";
-				var hoverText = task.instructions;
-				var taskMarker = L.marker(latlng)
-				taskMarker.task = task.id;
-
-				taskMarker.bindLabel(labelText, { noHide: true });
-				taskMarker.on("mouseover", function(){
-					this.updateLabelContent(hoverText);
-				});
-				taskMarker.on("mouseout", function(){
-					this.updateLabelContent(labelText);
-				});
-				this.taskMarkerGroups[inEvent.campaign.id].addLayer(taskMarker)
-
-
-				//Instantiate task marker popup
-					//Create a div for the enyo kind to render into
-				var popDiv = L.DomUtil.create("div");
-					//Create a popup
-				var pop = L.popup({minWidth: 400, maxHeight: 300}).setContent(popDiv);
-					//Add it to the marker
-				taskMarker.bindPopup(pop);
-					//instantiate the enyo popup content
-				var popContent = new CSenseTaskPopup({owner: this, popup: pop, task: task});
-				popContent.renderInto(popDiv);
-				
-				//Add task marker popup event handler
-				pop.on("open", function(){
-					//The kind is initially rendered into a div that has no size. This ensures the kind is rerendered
-					//after the div is displayed in the popup.
-					popContent.resized();
-					//Forward click events to the enyo entities that originated them.
-					//This is a workaround for this issue: http://forums.enyojs.com/discussion/comment/7159
-					L.DomEvent.on(pop._contentNode, "click", forward, this);
-
-					//Hide label when clicked
-					taskMarker.hideLabel();
-				}, this);
-
-				pop.on("close", function(){
-					taskMarker.showLabel();
-				}, this);
-
-				//inspired by https://github.com/NBTSolutions/Leaflet/commit/466c0e3507cf0934a9d1441af151df2324a4537b#L2R129
-				function forward(e){
-					if (window.enyo && window.enyo.$ && e.srcElement && e.srcElement.id && window.enyo.$[e.srcElement.id]){
-						window.enyo.$[e.srcElement.id].bubble("ontap", e);
-					}
-				}
-
-				//Show submission locations when markers are clicked:
-				//  instantiate markers for submissions
-				taskMarker.submissionMarkersGroup = this.setupSubmissionMarkers(task, pop, popContent);
-				//  on marker click show the submission location and pan to them
-				pop.on("open", function(){
-
-					this.map.addLayer(taskMarker.submissionMarkersGroup);
-					taskMarker.submissionMarkersGroup.eachLayer(function(layer){
-						this.oms.addMarker(layer);
-					}, this);
-					this.heatmap(taskMarker.submissionMarkersGroup);
-
-
-					this.map.fitBounds(
-						taskMarker.submissionMarkersGroup.getBounds().extend(taskMarker.getLatLng()),
-						//{animate: false,}
-						{
-							//reset: false,
-							//animate: true,
-							pan: {animate: true},
-							//zoom: {animate: false},
-						}
-					);
-					
-				}, this);
-				//  on close of the popup hide the submission locations
-				pop.on("close", function(){
-					this.map.removeLayer(taskMarker.submissionMarkersGroup);
-					this.oms.unspiderfy();
-					this.oms.clearMarkers();
-					this.clearHeat();
-				}, this)
-				//NOTE:
-				//There is an issue with this scheme. Markers behind the popup can never be seen!
-				//Also, panning to the markers potentially moves away from the popup.
-					
-					
-			}
-		}
-		//Add the markers associated with this campaign to the map
-		this.taskMarkerGroups[inEvent.campaign.id].addTo(this.map);
-		this.currentTaskMarkerGroup = this.taskMarkerGroups[inEvent.campaign.id];
-		this.currentTaskMarkerGroup.eachLayer(function (layer){
-			layer.showLabel();
-		});
-		this.panToCurrentTaskMarkerGroup();
-	},
-	*/
 
 	clearHeat: function(){
 		if (this.heatmapLayer){
@@ -773,6 +667,7 @@ enyo.kind({
 		this.heatmapLayer.setData(d);
 	},
 
+	/*
 	panToCurrentTaskMarkerGroup: function(){
 		if (this.currentTaskMarkerGroup){
 			this.map.panTo(this.currentTaskMarkerGroup.getBounds().getCenter());
@@ -780,10 +675,72 @@ enyo.kind({
 
 		}
 	},
+	*/
+	/*
 	adjustMapSize: function (inSender, inEvent){
 		this.map.invalidateSize();
 		this.map.panBy([inEvent.offset,0],{animate: false, duration: 0});
-		this.panToCurrentTaskMarkerGroup();
+		if (inEvent.t == 1){
+			this.panToCurrentTaskMarkerGroup();
+		} else {
+			var bounds = this.currentSubmissionsGroup.getBounds();
+			if(inEvent.taskId){
+				bounds.extend(this.taskMarkers[task.id]);
+			}
+		}
+	},
+	*/
+
+
+
+
+
+	/*
+
+	*/
+	adjustMapSize: function(inSender, inEvent){
+		this.map.invalidateSize();
+		this.map.panBy([inEvent.offset,0],{animate: false, duration: 0});
+	},
+	/*
+
+	*/
+	panToSubmissionsGroup: function(inSender, inEvent){
+		var taskId = inEvent.taskId;
+		// assert taskId === this.currentSubmissionsGroupTaskId
+		this.map.fitBounds(
+			this.submissionMarkerGroups[taskId].getBounds().extend(this.taskMarkers[task.id]),
+			{pan: {animate: true}}
+		);
+	},
+	/*
+	
+	*/
+	panToTaskMarkerGroup: function(inSender, inEvent){
+		var campId = inEvent.campId;
+		// assert this.currentTaskMarkerGroup corresponds to campId
+		this.map.panTo(this.currentTaskMarkerGroup.getBounds().getCenter());
+		//this.map.fitBounds(this.currentTaskMarkerGroup.getBounds(), {pan: {animate: true}});
+	},
+
+
+
+
+	/*
+		Fit the map to the current submission group if present.
+	*/
+	/*
+	panToCurrentSubmissionsGroup: function(inSender, inEvent){
+		if (this.currentSubmissionsGroup && this.map){
+			var bounds = this.currentSubmissionsGroup.getBounds();
+			if(inEvent.taskId){
+				bounds.extend(this.taskMarkers[task.id]);
+			}
+			//this.log("panToCurrentSubmissionsGroup!");
+			//this.map.fitBounds(bounds, {pan: {animate: true},});
+		}
 	}
+	*/
+
 
 });
