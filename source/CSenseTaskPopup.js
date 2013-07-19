@@ -75,11 +75,8 @@ enyo.kind({
     },
 
     toggleItemDrawer: function (inSender, inEvent){
-        this.log("toggle item drawer called");
-        //This is really weird... Why can't we use their names?
-        var ind = inSender.index+1;
-        if (ind === 1){ind = "";}
-        var drawer = this.$.repeater.$["ownerProxy"+ind].$.itemDrawer;
+        this.log("toggle item drawer called");  
+        var drawer = this.$.repeater.children[inEvent.index].$.itemDrawer
         drawer.setOpen(!drawer.getOpen());
     },
 
