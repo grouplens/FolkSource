@@ -36,10 +36,7 @@ SubmissionMarker = L.Marker.extend({
 
 	_setupClickHandler: function(){
 		this.onClick = function(){
-			//console.log(this.clickArgs.showCampaigns);
-			//console.log(this.showCampaigns);
 			this.showCampaigns.waterfall("onEmphasizeSubmission", {submissionId: this.submissionId});
-			//this.showCampaigns.doEmphasizeSubmission({submissionId: this.submissionId});
 		}
 	},
 

@@ -1,12 +1,12 @@
 enyo.kind({
-	name: "CSenseTaskPopup",
+	name: "CSenseTaskDetail",
     layoutKind: enyo.FittableRowsLayout,
 	published: {
 		task: "",
         popup: "",
 	},
     events:{
-        onCSenseTaskPopupResized: "",
+        onCSenseTaskDetailResized: "",
     },
     handlers: {
         onEmphasizeSubmission: "emphasizeSubmission",
@@ -61,7 +61,7 @@ enyo.kind({
         this.$.repeater.submissionIdToOwnerProxy[sub.id] = item;
         item.$.itemHeading.index = index;
 
-        //Setting these names might be pointless since we don't seem to be able to access these guys from the CSenseTaskPopup context anyways
+        //Setting these names might be pointless since we don't seem to be able to access these guys from the CSenseTaskDetail context anyways
         item.$.itemHeading.setName("submissionheading-" + sub.id);
         item.$.itemDrawer.setName("subdrawer-"+sub.id);
 
@@ -75,7 +75,7 @@ enyo.kind({
 
     resizeHandler: function(){
         this.inherited(arguments);
-        this.doCSenseTaskPopupResized();
+        this.doCSenseTaskDetailResized();
     },
 
     reverseGeocode: function(gps_location){
@@ -118,8 +118,11 @@ enyo.kind({
         drawer.animated = wasAnimated;
 
         //scroll the div to the submission drawer
-        var topPos = this.getItemCont(subId).hasNode().offsetTop;
-        this.$.popupScroller.hasNode().scrollTop = topPos;
+            //var topPos = this.getItemCont(subId).hasNode().offsetTop;
+            //this.$.popupScroller.hasNode().scrollTop = topPos;
+        this.$.popupScroller.scrollIntoView(this.getItemCont(subId), true);
+
+
 
         //To perform highlighting effect: Add highlight color; enable transitions; remove highlight color; disable transitions
         this.getItemCont(subId).applyStyle("background-color", "#B00200");
@@ -128,7 +131,7 @@ enyo.kind({
         var t = setTimeout(function(){
             that.getItemCont(subId).hasNode().style[L.DomUtil.TRANSITION] = "all 1000ms ease-out";
             that.getItemCont(subId).hasNode().style["transition-delay"]= "1ms";
-            that.getItemCont(subId).hasNode().style["background-color"] = "#FFFFFF";
+            that.getItemCont(subId).hasNode().style["background-color"] = null;
         }, 10);
         /*
         I originaly expected that we would have to remove the transition effect when it finished. I thought that otherwise

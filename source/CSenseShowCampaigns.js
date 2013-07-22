@@ -15,7 +15,7 @@ enyo.kind({
 		onShowTapped: "toggleDrawer",
 		onEnd: "drawerAnimationEndHandler",
 		onListResized: "setListHeights",
-		onCSenseTaskPopupResized: "setTaskDetailContentHeight",
+		onCSenseTaskDetailResized: "setTaskDetailContentHeight",
 		onTaskMarkerClicked: "showTaskDetail",
 	},
 	components:[
@@ -60,7 +60,7 @@ enyo.kind({
 				currentTaskId: null,
 			},
 			components: [
-				{name: "taskDetailDrawerContent", kind: "CSenseTaskPopup", style: "width: 200px"},
+				{name: "taskDetailDrawerContent", kind: "CSenseTaskDetail", style: "width: 200px"},
 			],
 		},
 	],

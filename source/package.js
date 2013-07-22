@@ -10,7 +10,7 @@ enyo.depends(
 	"CSenseLoginRegister.js",
 	"CSenseNewCampaign.js",
 	"CSenseShowCampaigns.js",
-	"CSenseTaskPopup.js",
+	"CSenseTaskDetail.js",
 	"Data.js",
 	"EditableListItem.js",
 	"LocalStorage.js",
