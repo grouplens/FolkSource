@@ -1,5 +1,6 @@
 enyo.kind({
 	name: "CSenseTaskPopup",
+    layoutKind: enyo.FittableRowsLayout,
 	published: {
 		task: "",
         popup: "",
@@ -11,7 +12,7 @@ enyo.kind({
         onEmphasizeSubmission: "emphasizeSubmission",
     },
     components:[
-        {name: "popupScroller", kind: enyo.Scroller, style: "padding: 14px;", components:[
+        {name: "popupScroller", fit: true, kind: enyo.Scroller, style: "padding: 14px;", components:[
             {name: "popHeading", content: "", style: "font-weight: bold;"},
             {name: "popSubHeading", content: "",},
             {
@@ -105,11 +106,12 @@ enyo.kind({
     emphasizeSubmission: function(inSender, inEvent){
         var subId = inEvent.submissionId;
         //Open submission drawer
-        this.log(subId);
-        this.log(this.getOwnerProx(subId));
-        this.log(this);
+            //this.log(subId);
+            //this.log(this.getOwnerProx(subId));
+            //this.log(this);
         var drawer = this.getOwnerProx(subId).$.itemDrawer;
-            //disable animation first!
+            
+        //disable animation first!
         var wasAnimated = drawer.animated;
         drawer.animated = false;
         drawer.setOpen(true);

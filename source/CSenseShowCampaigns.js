@@ -60,12 +60,7 @@ enyo.kind({
 				currentTaskId: null,
 			},
 			components: [
-				{name: "taskDetailDrawerScroller",
-					kind: enyo.Scroller,
-					components: [
-						{name: "taskDetailDrawerContent", kind: "CSenseTaskPopup", style: "width: 200px"},
-					],
-				}
+				{name: "taskDetailDrawerContent", kind: "CSenseTaskPopup", style: "width: 200px"},
 			],
 		},
 	],
@@ -218,8 +213,11 @@ enyo.kind({
 		this.$.campList.addStyles("height:" + this.$.campaignDrawer.getBounds().height + "px;");
 	},
 
+	/*
+		Set the height of the taskDetailDrawerContent
+	*/
 	setTaskDetailContentHeight: function(inSender, inEvent){
-		this.$.taskDetailDrawerContent.addStyles("height:" + this.$.taskDetailDrawer.getBounds().height + "px;");
+		this.$.taskDetailDrawerContent.addStyles("height:" + (this.$.taskDetailDrawer.getBounds().height) + "px;");
 	},
 
 	/*
