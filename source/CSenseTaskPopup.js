@@ -4,6 +4,9 @@ enyo.kind({
 		task: "",
         popup: "",
 	},
+    events:{
+        onCSenseTaskPopupResized: "",
+    },
     handlers: {
         onEmphasizeSubmission: "emphasizeSubmission",
     },
@@ -67,6 +70,11 @@ enyo.kind({
         item.$.control3.setContent("Location: "+ this.reverseGeocode(sub.gps_location));
 
         return true;
+    },
+
+    resizeHandler: function(){
+        this.inherited(arguments);
+        this.doCSenseTaskPopupResized();
     },
 
     reverseGeocode: function(gps_location){

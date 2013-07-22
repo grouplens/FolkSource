@@ -14,6 +14,8 @@ enyo.kind({
 		onNewTapped: "closeDrawers",
 		onShowTapped: "toggleDrawer",
 		onEnd: "drawerAnimationEndHandler",
+		onListResized: "setListHeights",
+		onCSenseTaskPopupResized: "setTaskDetailContentHeight",
 		onTaskMarkerClicked: "showTaskDetail",
 	},
 	components:[
@@ -24,7 +26,7 @@ enyo.kind({
 			orient: "h",
 			open: false,
 			components: [
-				{name: "campList", kind: enyo.List, onSetupItem: "setupCampList", /*fit: true, */style: "min-width: 200px;", touch: true, count: 0, components: [
+				{name: "campList", kind: "CSenseShowCampaignsList", onSetupItem: "setupCampList", /*fit: true, */style: "width: 200px;", touch: true, count: 0, components: [
 					{name: "campItem", kind: "onyx.Item", ontap: "campTapped", components: [
 						{name: "campIndex", content: "id"},
 						{name: "campTitle", content: "title"}
@@ -38,7 +40,7 @@ enyo.kind({
 			orient: "h",
 			open: false,
 			components: [
-				{name: "taskList", kind: enyo.List, onSetupItem: "setupTaskList", style: "min-width: 200px;", touch: true, count: 0, components: [
+				{name: "taskList", kind: "CSenseShowCampaignsList", onSetupItem: "setupTaskList", style: "width: 200px;", touch: true, count: 0, components: [
 					{name: "taskItem", kind: "onyx.Item", ontap: "taskTapped", components: [
 							{name: "taskIndex", content: "id"},
 							{name: "taskTitle", content: "title"}
@@ -58,7 +60,12 @@ enyo.kind({
 				currentTaskId: null,
 			},
 			components: [
-				{name: "taskDetailDrawerContent", kind: "CSenseTaskPopup", style: "width: 200px"},
+				{name: "taskDetailDrawerScroller",
+					kind: enyo.Scroller,
+					components: [
+						{name: "taskDetailDrawerContent", kind: "CSenseTaskPopup", style: "width: 200px"},
+					],
+				}
 			],
 		},
 	],
@@ -204,6 +211,18 @@ enyo.kind({
 	},
 
 	/*
+		Set the height of the campaign and task lists
+	*/
+	setListHeights: function(inSender, inEvent){
+		this.$.taskList.addStyles("height:" + this.$.taskDrawer.getBounds().height + "px;");
+		this.$.campList.addStyles("height:" + this.$.campaignDrawer.getBounds().height + "px;");
+	},
+
+	setTaskDetailContentHeight: function(inSender, inEvent){
+		this.$.taskDetailDrawerContent.addStyles("height:" + this.$.taskDetailDrawer.getBounds().height + "px;");
+	},
+
+	/*
 		Called on end of the drawers' animations. Tells the map it needs to adjust itself due to its new container size.
 		Also should result in the map panning to the appropriate taskmarkergroup or submissiongroup if a corresponding
 		drawer was opened.
@@ -228,3 +247,14 @@ enyo.kind({
 	},
 });
 
+enyo.kind({
+	name: "CSenseShowCampaignsList",
+	kind: enyo.List,
+	events: {
+		onListResized: "",
+	},
+	resizeHandler: function(){
+		this.inherited(arguments);
+		this.doListResized();
+	},
+});
