@@ -18,16 +18,7 @@
 <%
 int id = Integer.parseInt(request.getParameter("id"));
 Session sesh = HibernateUtil.getSession(true);
-List<Object[]> l = sesh.createSQLQuery("SELECT "
-			+"tasks.instructions, answers.sub_id, "
-			+"task_submissions.gps_location, answers.q_id, "
-			+"questions.question, answers.answer "
-		+"FROM tasks JOIN ("
-				+"task_submissions JOIN ("
-						+"answers JOIN "
-							+"questions ON answers.q_id=questions.id) ON "
-						+"answers.sub_id=task_submissions.id) ON "
-		+"task_submissions.task_id=tasks.id where tasks.camp_id="+id+";").list();
+List<Object[]> l = sesh.createSQLQuery("SELECT tasks.instructions, answers.sub_id, task_submissions.gps_location, task_submissions.timestamp, answers.q_id, questions.question, answers.answer FROM tasks JOIN (task_submissions JOIN (answers JOIN questions ON answers.q_id=questions.id) ON answers.sub_id=task_submissions.id) ON task_submissions.task_id=tasks.id where tasks.camp_id="+id+";").list();
 
 List<BDObject> p = new ArrayList<BDObject>();
 for(Object[] o : l) {
@@ -37,11 +28,12 @@ for(Object[] o : l) {
 request.setAttribute("tab", p);
 %>
 <display:table name="tab" export="true">
-<display:column property="s_id" sortable="true" />
-<display:column property="t_desc" sortable="true" />
-<display:column property="loc" sortable="true" />
-<display:column property="q_id" sortable="true" />
+<display:column property="sub_id" sortable="true" />
+<display:column property="task_desc" sortable="true" />
+<display:column property="location" sortable="true" />
+<display:column property="sub_timestamp" sortable="true" />
+<display:column property="question_id" sortable="true" />
 notes;
-<display:column property="q" sortable="true" />
-<display:column property="a" sortable="true" />
+<display:column property="question" sortable="true" />
+<display:column property="answer" sortable="true" />
 </display:table>

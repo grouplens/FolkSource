@@ -1,86 +1,92 @@
 package org.citizensense.model;
 
+import java.sql.Timestamp;
+
+import org.hibernate.Hibernate;
+
 public class BDObject {
 //	public Integer t_id;
-	public String t_desc;
-	public Integer s_id;
-	public String loc;
-	public Integer q_id;
-	public String q;
-	public String a;
+	public String task_desc;
+	public Integer sub_id;
+	public String location;
+	public String sub_timestamp;
+	public Integer question_id;
+	public String question;
+	public String answer;
 	
 	public BDObject(Object[] o) {
 //		if(o[0] instanceof Integer)
 //			this.t_id = (Integer) o[0];
 		if(o[0] instanceof String)
-			this.t_desc = (String) o[0];
+			this.task_desc = (String) o[0];
 		if(o[1] instanceof Integer)
-			this.s_id = (Integer) o[1];
+			this.sub_id = (Integer) o[1];
 		if(o[2] instanceof String)
-			this.loc = (String) o[2];
-		if(o[3] instanceof Integer)
-			this.q_id = (Integer) o[3];
-		if(o[4] instanceof String)
-			this.q = (String) o[4];
+			this.location = (String) o[2];
+		if(o[3] instanceof Timestamp)
+			this.sub_timestamp = o[3].toString();
+		if(o[4] instanceof Integer)
+			this.question_id = (Integer) o[4];
 		if(o[5] instanceof String)
-			this.a = (String) o[5];
+			this.question = (String) o[5];
+		if(o[6] instanceof String)
+			this.answer = (String) o[6];
 	}
 
-//	public Integer getT_id() {
-//		return t_id;
-//	}
-//
-//	public void setT_id(Integer t_id) {
-//		this.t_id = t_id;
-//	}
-
-	public String getT_desc() {
-		return t_desc;
+	public String getTask_desc() {
+		return task_desc;
 	}
 
-	public void setT_desc(String t_desc) {
-		this.t_desc = t_desc;
+	public void setTask_desc(String task_desc) {
+		this.task_desc = task_desc;
 	}
 
-	public Integer getS_id() {
-		return s_id;
+	public Integer getSub_id() {
+		return sub_id;
 	}
 
-	public void setS_id(Integer s_id) {
-		this.s_id = s_id;
+	public void setSub_id(Integer sub_id) {
+		this.sub_id = sub_id;
 	}
 
-	public String getLoc() {
-		return loc;
+	public String getLocation() {
+		return location;
 	}
 
-	public void setLoc(String loc) {
-		this.loc = loc;
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
-	public Integer getQ_id() {
-		return q_id;
+	public String getSub_timestamp() {
+		return sub_timestamp;
 	}
 
-	public void setQ_id(Integer q_id) {
-		this.q_id = q_id;
+	public void setSub_timestamp(String sub_timestamp) {
+		this.sub_timestamp = sub_timestamp;
 	}
 
-	public String getQ() {
-		return q;
+	public Integer getQuestion_id() {
+		return question_id;
 	}
 
-	public void setQ(String q) {
-		this.q = q;
+	public void setQuestion_id(Integer question_id) {
+		this.question_id = question_id;
 	}
 
-	public String getA() {
-		return a;
+	public String getQuestion() {
+		return question;
 	}
 
-	public void setA(String a) {
-		this.a = a;
+	public void setQuestion(String question) {
+		this.question = question;
 	}
-	
-	
+
+	public String getAnswer() {
+		return answer;
+	}
+
+	public void setAnswer(String answer) {
+		this.answer = answer;
+	}
+
 }
