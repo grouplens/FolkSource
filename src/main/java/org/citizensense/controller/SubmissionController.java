@@ -1,8 +1,14 @@
 package org.citizensense.controller;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
+import org.citizensense.model.Campaign;
 import org.citizensense.model.Submission;
+import org.citizensense.util.CampaignService;
 import org.citizensense.util.SubmissionService;
 import org.grouplens.common.dto.DtoContainer;
 
@@ -50,14 +56,22 @@ public class SubmissionController implements ModelDriven<DtoContainer<Submission
 	// Handles /submission GET requests
 	//public HttpHeaders index() {
 	public String index() {
+		
 		HttpServletResponse res = ServletActionContext.getResponse();
 		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "*");
 		content = new DtoContainer<Submission>(Submission.class, true);
-		content.set(SubmissionService.getSubmissions());
+		Map<String, String[]> paramMap = ServletActionContext.getRequest().getParameterMap();
+		
+		if (paramMap.get("after") != null){
+			content.set(SubmissionService.getSubmissionsAfter(paramMap.get("after")[0]));
+		} else {
+			content.set(SubmissionService.getSubmissions());
+		}
 		//return new DefaultHttpHeaders("index").disableCaching();
 		return "index";
 	}
+	
 	public String create() {
 		HttpServletResponse res = ServletActionContext.getResponse();
 		res.addHeader("Access-Control-Allow-Origin", "*");

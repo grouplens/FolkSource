@@ -7,6 +7,7 @@ import java.util.List;
 import org.citizensense.model.*;
 
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 public class SubmissionService {
 
@@ -17,6 +18,16 @@ public class SubmissionService {
 
 		submissions = session.createQuery("from Submission").list();
 
+		return submissions;
+	}
+	
+	public static List<Submission> getSubmissionsAfter(String date) {
+		//date should be a string representation of the milliseconds since the unix epoch
+		List<Submission> submissions;
+		Session session = HibernateUtil.getSession(true);
+		submissions = session.createCriteria(Submission.class)
+						.add(Restrictions.gt("timestamp", new Date(Long.parseLong(date))))
+						.list();
 		return submissions;
 	}
 
