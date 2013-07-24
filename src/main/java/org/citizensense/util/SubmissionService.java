@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import org.citizensense.model.*;
 
+import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
@@ -19,6 +20,19 @@ public class SubmissionService {
 		submissions = session.createQuery("from Submission").list();
 
 		return submissions;
+	}
+	
+	public static Submission getSubmission(int id){
+		Session session = HibernateUtil.getSession(true);
+		Object obj = session.createCriteria(Submission.class)
+							.add(Restrictions.idEq(id))
+							.list().get(0);
+		Submission sub = null;
+		if(obj instanceof Submission){
+			sub = (Submission) obj;
+		}
+		return sub;
+		
 	}
 	
 	public static List<Submission> getSubmissionsAfter(String date) {

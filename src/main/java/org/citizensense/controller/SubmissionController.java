@@ -32,10 +32,7 @@ public class SubmissionController implements ModelDriven<DtoContainer<Submission
 		HttpServletResponse res = ServletActionContext.getResponse();
 		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "*");
-		for (Submission s : SubmissionService.getSubmissions()) {
-			if(s.getId().equals(id))
-				content.set(s);
-		}
+		content.set(SubmissionService.getSubmission(id));
 		return "show";//new DefaultHttpHeaders("show");
 	}
 

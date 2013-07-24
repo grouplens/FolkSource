@@ -29,9 +29,12 @@ public class CampaignController implements ModelDriven<DtoContainer<Campaign>>{
 		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "ugly.cs.umn.edu:8080");
 		//res.addHeader("Access-Control-Allow-Methods", "GET");
+		content.set(CampaignService.getCampaign(id));
+		/*
 		for (Campaign c : CampaignService.getCampaigns())
 			if(c.getId().equals(((Integer)id).longValue()))
 				content.set(c);
+		*/
 		//content.getSingle();
 		return "show";
 		//return new DefaultHttpHeaders("show").disableCaching();
@@ -39,7 +42,7 @@ public class CampaignController implements ModelDriven<DtoContainer<Campaign>>{
 	
 	public void setId(String id) {
 //		if (id != null)
-//			this.camp = CampaignService.getCampaigns(Integer.parseInt(id)).get(0);
+//			this.camp = CampaignService.getCampaign(Integer.parseInt(id));
 		this.id = Integer.parseInt(id);		
 	}
 	
