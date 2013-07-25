@@ -26,7 +26,9 @@
 .submission-marker-div {
 	border: 1px solid black;
 	opacity: 0.75;
-	background-color: #FD7524;
+	/*background-color: #BCD2EE;
+	background-color: #FFC500;*/
+	background-color: #64FF90;
 	border-radius: 999px;
 }
 

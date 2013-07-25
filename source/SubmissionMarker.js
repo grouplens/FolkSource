@@ -15,7 +15,6 @@ SubmissionMarker = L.Marker.extend({
 		//Initililize ping animation
 		if (makePing){
 			this._ping = new PingCircle(this.getLatLng(), 10, {color: "#000000"});
-			//this._ping = new PingLayer(this.getLatLng(), 0);
 		}
 
 		this.submissionId = submissionId;
@@ -30,7 +29,6 @@ SubmissionMarker = L.Marker.extend({
 		if (this._ping){
 			this._ping.addTo(this._map);
 			this._ping.animate({duration: 600, size: 150, delay: 310});
-			//this._ping.animate({duration: 200, size: 200, delay: 300});
 		}
 	},
 

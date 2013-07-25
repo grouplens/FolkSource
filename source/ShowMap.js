@@ -332,12 +332,39 @@ enyo.kind({
 		*/
 
 		//OverlappingMarkerSpiderfier
-		this.oms = new OverlappingMarkerSpiderfier(this.map, {keepSpiderfied: true, nearbyDistance: 10});		
-		this.oms.addListener("click", function(marker){
-			if (marker.onClick){
-				marker.onClick();
+		//this.oms = new OverlappingMarkerSpiderfier(this.map, {keepSpiderfied: true, nearbyDistance: 10});		
+		//this.oms.addListener("click", function(marker){
+		//	if (marker.onClick){
+		//		marker.onClick();
+		//	}
+		//});
+
+		//markerCluster
+		var that = this;
+		this.clusterGroup = new L.MarkerClusterGroup({maxClusterRadius: 35, showCoverageOnHover, true, iconCreateFunction: function(cluster){
+			var childCount = cluster.getChildCount();
+			var clusters = that._get_clusters();
+			clusters.sort(function(a, b) {return a.getChildCount() - b.getChildCount();});
+			var max = clusters[clusters.length -1].getChildCount();
+			var min = clusters[0].getChildCount();
+			var color = that.getClusterIconColor(childCount, min, max, {r:255,g:255,b:255}, {r:255, g:0, b:0});
+			var icon =  new CSenseClusterDivIcon({color: color, html: '<div><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(40, 40) });
+			return icon;
+		}});
+		this.map.addLayer(this.clusterGroup);
+		this.clusterGroup.on('click', function (a) {
+			if (a.layer.onClick){
+				a.layer.onClick();
 			}
 		});
+		this.clusterGroup.on('clustermouseover', function (a) {
+			a.layer._bringToFront();
+		});
+		this.clusterGroup.on('clustermouseout', function (a) {
+			a.layer._resetZIndex();
+		});
+		
+
 
 		//Leaflet.draw plugin
 		this.undoStack = new Array();
@@ -500,7 +527,8 @@ enyo.kind({
 
 				var latitudelongitude = new L.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
 				var submissionId = subs[i].id;
-				var makePing = !this.pingWithinRange(markers, latitudelongitude, 10);
+				//var makePing = !this.pingWithinRange(markers, latitudelongitude, 10);
+				var makePing = false;
 
 				var mark = new SubmissionMarker(latitudelongitude, submissionId, showCampaigns, makePing);
 				mark.bindLabel("Submission "+ submissionId);
@@ -539,9 +567,10 @@ enyo.kind({
 		}
 		this.currentSubmissionsGroup = null;
 		this.currentSubmissionsGroupTaskId = null;
-		this.oms.unspiderfy();
-		this.oms.clearMarkers();
-		this.clearHeat();
+		this.clusterGroup.clearLayers();
+		//this.oms.unspiderfy();
+		//this.oms.clearMarkers();
+		//this.clearHeat();
 	},
 
 	/*
@@ -562,11 +591,16 @@ enyo.kind({
 			}
 			var group = this.submissionMarkerGroups[task.id];
 
-			this.map.addLayer(group);
-			group.eachLayer(function(layer){
-				this.oms.addMarker(layer);
-			}, this);
-			this.heatmap(group);
+			//group.eachLayer(function(layer){
+			//	this.oms.addMarker(layer);
+			//}, this);
+			//this.heatmap(group);
+
+			this.clusterGroup.addLayers(group.getLayers());
+
+			this.log("Finished adding layers to cluster group");
+			this.log(this.clusterGroup);
+			this.log(this._get_clusters());
 
 			this.currentSubmissionsGroup = group;
 			this.currentSubmissionsGroupTaskId = task.id;
@@ -574,6 +608,15 @@ enyo.kind({
 		if(inEvent.detailDrawerOpen === true){
 			this.panToSubmissionsGroup(null, {taskId: task.id}); //Here I am calling an event handler manually, is that bad?
 		}
+	},
+
+	_get_clusters: function(zoom){
+		var desiredZoom = zoom ? zoom : this.map.getZoom();
+		var clusters = Array();
+		this.clusterGroup._topClusterLevel._recursively(this.clusterGroup.getBounds(), desiredZoom, desiredZoom, function(m) {
+			clusters.push(m);
+		});
+		return clusters;
 	},
 
 	/*
@@ -723,24 +766,53 @@ enyo.kind({
 		//this.map.fitBounds(this.currentTaskMarkerGroup.getBounds(), {pan: {animate: true}});
 	},
 
-
-
-
-	/*
-		Fit the map to the current submission group if present.
-	*/
-	/*
-	panToCurrentSubmissionsGroup: function(inSender, inEvent){
-		if (this.currentSubmissionsGroup && this.map){
-			var bounds = this.currentSubmissionsGroup.getBounds();
-			if(inEvent.taskId){
-				bounds.extend(this.taskMarkers[task.id]);
-			}
-			//this.log("panToCurrentSubmissionsGroup!");
-			//this.map.fitBounds(bounds, {pan: {animate: true},});
+	getClusterIconColor: function(val, minVal, maxVal, minColor, maxColor){
+		//linearly interpelates between minColor and maxColor
+		//colors should be given as {r: 000, g: 000, b:000}
+		if (minVal == maxVal){
+			return {r:maxColor.r, g:maxColor.g, b:maxColor.b};
+			//return "rgba("+maxColor.r+","+maxColor.g+","+maxColor.b+", 0.6)";
 		}
-	}
-	*/
+		var percent = (val - minVal) / (maxVal - minVal);
+		var newR = minColor.r + Math.round((maxColor.r - minColor.r) * percent);
+		var newG = minColor.g + Math.round((maxColor.g - minColor.g) * percent);
+		var newB = minColor.b + Math.round((maxColor.b - minColor.b) * percent);
+		return {r:newR, g:newG, b:newB};
+		//return "rgba("+newR+","+newG+","+newB+", 0.6)";
+	},
+	
 
+
+
+
+
+	getClusterIconColor2: function(val, minVal, maxVal){
+		if (minVal == maxVal){
+			var p = 1;
+		} else{
+			var p = (val - minVal) / (maxVal - minVal);
+		}
+		var heat = this._heatGradient(1-p);
+		return "rgba("+heat.r+","+heat.g+","+heat.b+", 0.6)";
+
+	},
+	//http://commons.wikimedia.org/wiki/File:P_hot.gif
+	_convertToLight: function(p){
+		if (p < 0){ return 0;}
+		if (p > 255){ return 255;}
+		return Math.round(p*255);
+	},
+	_heatGradient: function(p){
+		var r = this._convertToLight(3*p);
+		var g = this._convertToLight(3*p-1);
+		var b = this._convertToLight(3*p-2);
+		return {r:r, g:g, b:b};
+	},
+	_greenYellowRedGradient: function(p){
+		var r = this._convertToLight(2*p);
+		var g = this._convertToLight(-2*p+2);
+		var b = this._convertToLight(0*p);
+		return {r:r, g:g, b:b};
+	},
 
 });
