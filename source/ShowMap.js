@@ -341,7 +341,7 @@ enyo.kind({
 
 		//markerCluster
 		var that = this;
-		this.clusterGroup = new L.MarkerClusterGroup({maxClusterRadius: 35, showCoverageOnHover, true, iconCreateFunction: function(cluster){
+		this.clusterGroup = new L.MarkerClusterGroup({maxClusterRadius: 35, showCoverageOnHover: false, iconCreateFunction: function(cluster){
 			var childCount = cluster.getChildCount();
 			var clusters = that._get_clusters();
 			clusters.sort(function(a, b) {return a.getChildCount() - b.getChildCount();});
