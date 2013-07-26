@@ -9,6 +9,8 @@ enyo.kind({
 		onDrawerToggled: "",
 		onTaskDrawerOpened: "",
 		onTaskDetailDrawerOpened: "",
+
+		onAPIResponse: "",
 	},
 	handlers: {
 		onNewTapped: "closeDrawers",
@@ -91,6 +93,7 @@ enyo.kind({
 
 		this.$.campList.setCount(this.campData.length);
 		this.$.campList.reset();
+		this.doAPIResponse({time: inSender.startTime}); //It is unclear if startTime is the timestamp from the server or not.
 	},
 
 	/*

@@ -49,7 +49,9 @@ enyo.kind({
 		//onAddPins: "enableMarkerPlacementMode",
 		//onAddPolygon: "enablePolygonPlacementMode",
 		//onModifyPinsAndPolygons: "enableModifyMode",
-		onPins: "testLoc",
+
+		//onPins: "testLoc", //I think this is left over from the open layers implementation
+
 		onSnapping: "toggleVisible",
 		onSnapped: "toggleVisible",
 		onStep: "resizeContainer",
@@ -65,27 +67,20 @@ enyo.kind({
 		onDrawerToggled: "adjustMapSize",
 		onTaskDrawerOpened: "panToTaskMarkerGroup",
 		onTaskDetailDrawerOpened: "panToSubmissionsGroup",
+
+		onAPIResponse: "updateLastSubmissionPollTime",
 	},
-	addMarkers: function () {
-		if (this.locations instanceof Array) {
-			for (x in this.locations) {
-				this.log(x);
-				var a = this.locations[x].split(",");
-				var b = this.convertXYToLonLat(a[0], a[1]);
-				var pt = new OpenLayers.Geometry.Point(b.lon, b.lat);
-				this.vectors.addFeatures([new OpenLayers.Feature.Vector(pt)]);
-			}
-		}
-		this.straction.addLayer(this.pointsLayer);
-		this.pointsLayer.refresh();
-		this.pointsLayer.display(true);
-	},
+
 	create: function (inSender, inEvent) {
 
 		this.inherited(arguments);
 
 		this.resized();
 		this.$.gps.setTimeout(this.gpsTimeout);
+
+		this.lastSubmissionPoll = 0;
+		//enyo.job("submissionPoll", enyo.bind(this, "getNewSubmissions"), 1500);
+		
 		userMoved = false;
 		loaded = false;
 		this.panZoomed = false;
@@ -112,17 +107,10 @@ enyo.kind({
 		this.currentSubmissionsGroupTaskId = null; //Id of the task whose submissions are currently being displayed
 
 	},
-	centerMap: function (coords) {
-		var myLocation = coords;
-		this.map.setView([myLocation.latitude, myLocation.longitude], 12, true);
-		if(!this.loaded)
-			this.mapLoaded();	//Can I axe this? Is this just leftover from the mobile version?
-	},
 
 	resizeContainer: function(inSender, inEvent) {
 		this.$.container.resized();
 	},
-
 
 	showEditFeaturesToolbar: function(inSender, inEvent){
 		this.$.modifyToolbar.setOpen(true);
@@ -130,6 +118,7 @@ enyo.kind({
 	showAddFeaturesToolbar: function(inSender, inEvent){
 		this.$.addLocationsAndRegionsToolbar.setOpen(true);
 	},
+
 	createdDrawing: function(e) {
 
 		//Add the element to the map
@@ -254,55 +243,17 @@ enyo.kind({
 
 
 
-
-	convertLonLatToCoords: function(lonlat) {
-		var point = new OpenLayers.LonLat(Number(lonlat.x), Number(lonlat.y));
-		var gpsProj = new OpenLayers.Projection("EPSG:4326");
-		var mapProj = this.straction.getProjectionObject();
-		point.transform(mapProj, gpsProj);
-
-		return point;
-	},
-	convertCoordsToLonLat: function(coords) {
-		var point = new OpenLayers.LonLat(Number(coords.longitude), Number(coords.latitude));
-		var gpsProj = new OpenLayers.Projection("EPSG:4326");
-		var mapProj = this.straction.getProjectionObject();
-		point.transform(gpsProj, mapProj);
-
-		return point;
-	},
-	convertXYToLonLat: function(lon, lat) {
-		var point = new OpenLayers.LonLat(Number(lon), Number(lat));
-		var gpsProj = new OpenLayers.Projection("EPSG:4326");
-		var mapProj = this.straction.getProjectionObject();
-		point.transform(gpsProj, mapProj);
-
-		return point;
-	},
 	locError: function (a, b) {
-		this.log();
+		//Do something
 	},
-	locPlot: function (a) {
-		this.locations = a;//.split("|");
-		var pattern = /-\d+\.\d+,\d+\.\d+/;
-		if (this.locations.match(pattern) != null) {
-			this.locations = this.locations.split("|");
-			this.addMarkers();
-		}
-	},
+
 	locSuccess: function (a, b) {
 		/* This section does no work when loading as file://
 		Data.setLocationData(b.coords);
 		this.centerMap();
 		*/
-		this.centerMap(b.coords);
-		
+		this.Map.setView([b.coords[latitude], b.coords[longitude]], 12, true);
 		return true;
-	},
-	mapLoaded: function() {
-		this.loaded = true;
-		this.log(this.loaded);
-		//this.doLoaded();
 	},
 
 
@@ -316,7 +267,7 @@ enyo.kind({
 		this.$.gps.getPosition();		
 
 		//Create the map		
-		this.map = L.map(this.$.mapCont.id, {closePopupOnClick: false}).setView([44.981313, -93.266569], 13);
+		this.map = L.map(this.$.mapCont.id, {closePopupOnClick: false, maxZoom: 17}).setView([44.981313, -93.266569], 13);
 		
 		//L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 		//L.tileLayer("http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg", {
@@ -331,23 +282,20 @@ enyo.kind({
 		this.map.addLayer(tileLayer);
 		*/
 
-		//OverlappingMarkerSpiderfier
-		//this.oms = new OverlappingMarkerSpiderfier(this.map, {keepSpiderfied: true, nearbyDistance: 10});		
-		//this.oms.addListener("click", function(marker){
-		//	if (marker.onClick){
-		//		marker.onClick();
-		//	}
-		//});
-
 		//markerCluster
 		var that = this;
-		this.clusterGroup = new L.MarkerClusterGroup({maxClusterRadius: 35, showCoverageOnHover: false, iconCreateFunction: function(cluster){
+		this.clusterGroup = new L.MarkerClusterGroup({maxClusterRadius: 35, singleMarkerMode: true, showCoverageOnHover: false, spiderfyOnMaxZoom: false, iconCreateFunction: function(cluster){
 			var childCount = cluster.getChildCount();
-			var clusters = that._get_clusters();
-			clusters.sort(function(a, b) {return a.getChildCount() - b.getChildCount();});
-			var max = clusters[clusters.length -1].getChildCount();
-			var min = clusters[0].getChildCount();
-			var color = that.getClusterIconColor(childCount, min, max, {r:255,g:255,b:255}, {r:255, g:0, b:0});
+			if (childCount == 1){ //There is a problem with _get_clusters() on the first size 1 cluster.
+				var min = 1;
+				var max = 1;
+			} else {
+				var clusters = that._get_clusters();
+				clusters.sort(function(a, b) {return a.getChildCount() - b.getChildCount();});
+				var max = clusters[clusters.length -1].getChildCount();
+				var min = clusters[0].getChildCount();
+			}
+			var color = that.getClusterIconColor(childCount, min, max, {r:255,g:235,b:235}, {r:255, g:0, b:0});
 			var icon =  new CSenseClusterDivIcon({color: color, html: '<div><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(40, 40) });
 			return icon;
 		}});
@@ -467,11 +415,7 @@ enyo.kind({
 		var classy = this.$.newButton.hasClass("active");
 		this.$.newButton.addRemoveClass("active", !classy);
 	},
-	testLoc: function(inSender, inEvent) {
-		this.vectors.destroyFeatures();
-		this.locPlot(inEvent.location);
-		this.vectors.refresh();
-	},
+
 	toggleVisible: function (a, b) {
 		var c = this.parent.parent.getIndex(),
 		d = this.id.split("_"),
@@ -568,9 +512,6 @@ enyo.kind({
 		this.currentSubmissionsGroup = null;
 		this.currentSubmissionsGroupTaskId = null;
 		this.clusterGroup.clearLayers();
-		//this.oms.unspiderfy();
-		//this.oms.clearMarkers();
-		//this.clearHeat();
 	},
 
 	/*
@@ -590,11 +531,6 @@ enyo.kind({
 				this.submissionMarkerGroups[task.id] = this.setupSubmissionMarkers(task, null, taskDetail);
 			}
 			var group = this.submissionMarkerGroups[task.id];
-
-			//group.eachLayer(function(layer){
-			//	this.oms.addMarker(layer);
-			//}, this);
-			//this.heatmap(group);
 
 			this.clusterGroup.addLayers(group.getLayers());
 
@@ -667,77 +603,6 @@ enyo.kind({
 		this.panToTaskMarkerGroup(null, {campId: campaign.id}); //Here I am calling an event handler manually, is that bad?
 	},
 
-	clearHeat: function(){
-		if (this.heatmapLayer){
-			this.map.removeLayer(this.heatmapLayer);
-		}
-	},
-
-	heatmap: function(group){
-		//instantiate heat map. We have to do this every time because there doesn't seem to be a way to clear points from the heatmap
-		this.heatmapLayer = new L.TileLayer.heatMap({
-        	radius: {value: 20, absolute: false}, 
-            opacity: 0.8,
-            gradient: {
-            	
-            	/*
-            	0.00: "rgb(0,0,255)",
-                0.50: "rgb(0,255,255)",
-                //0.65: "rgb(0,255,0)",
-                //0.996: "yellow", //mostly red
-                0.99545: "yellow", //mostly red
-                //0.997: "yellow", // mostly yellow
-                1.00: "rgb(255,0,0)"
-                */
-                
-            	
-                0.45: "rgb(0,0,255)",
-                0.55: "rgb(0,255,255)",
-                0.65: "rgb(0,255,0)",
-                0.95: "yellow",
-                1.00: "rgb(255,0,0)"
-                
-                
-            }
-
-        });
-        this.map.addLayer(this.heatmapLayer);
-        
-		var d = []
-		group.eachLayer(function(layer){
-			d.push({lat: layer.getLatLng().lat , lon: layer.getLatLng().lng, value:1});
-		});
-		this.heatmapLayer.setData(d);
-	},
-
-	/*
-	panToCurrentTaskMarkerGroup: function(){
-		if (this.currentTaskMarkerGroup){
-			this.map.panTo(this.currentTaskMarkerGroup.getBounds().getCenter());
-			//this.map.fitBounds(this.currentTaskMarkerGroup.getBounds(), {animate: true});
-
-		}
-	},
-	*/
-	/*
-	adjustMapSize: function (inSender, inEvent){
-		this.map.invalidateSize();
-		this.map.panBy([inEvent.offset,0],{animate: false, duration: 0});
-		if (inEvent.t == 1){
-			this.panToCurrentTaskMarkerGroup();
-		} else {
-			var bounds = this.currentSubmissionsGroup.getBounds();
-			if(inEvent.taskId){
-				bounds.extend(this.taskMarkers[task.id]);
-			}
-		}
-	},
-	*/
-
-
-
-
-
 	/*
 
 	*/
@@ -766,30 +631,52 @@ enyo.kind({
 		//this.map.fitBounds(this.currentTaskMarkerGroup.getBounds(), {pan: {animate: true}});
 	},
 
+
+
+	getNewSubmissions: function(){
+		//var url =  Data.getURL() + "submission.json?after="+String(this.lastSubmissionPoll);
+		var url =  "http://localhost:9080/csense/submission.json?after="+String(this.lastSubmissionPoll);
+
+		var ajax = new enyo.Ajax({url: url, method: "GET", handleAs: "json"});
+		ajax.response(this, "updateSubmissions"); 
+		ajax.go();
+		//Poll again in 1.5 seconds
+		enyo.job("submissionPoll", enyo.bind(this, "getNewSubmissions"), 1500);
+		
+	},
+	updateSubmissions: function(inSender, inResponse){
+		//this.log("updateSubmissions called");
+		this.lastSubmissionPoll = inSender.startTime;
+		if(inResponse.submissions.length > 0){
+			this.log("Got a new submission!")
+		}
+	},
+	updateLastSubmissionPollTime: function(inSedner, inEvent){
+		this.lastSubmissionPoll = inEvent.time;
+	},
+
 	getClusterIconColor: function(val, minVal, maxVal, minColor, maxColor){
 		//linearly interpelates between minColor and maxColor
 		//colors should be given as {r: 000, g: 000, b:000}
+		if (val == 1){
+			return {r:minColor.r, g:minColor.g, b:minColor.b};
+		}
 		if (minVal == maxVal){
 			return {r:maxColor.r, g:maxColor.g, b:maxColor.b};
-			//return "rgba("+maxColor.r+","+maxColor.g+","+maxColor.b+", 0.6)";
 		}
 		var percent = (val - minVal) / (maxVal - minVal);
 		var newR = minColor.r + Math.round((maxColor.r - minColor.r) * percent);
 		var newG = minColor.g + Math.round((maxColor.g - minColor.g) * percent);
 		var newB = minColor.b + Math.round((maxColor.b - minColor.b) * percent);
 		return {r:newR, g:newG, b:newB};
-		//return "rgba("+newR+","+newG+","+newB+", 0.6)";
 	},
-	
-
-
-
-
 
 	getClusterIconColor2: function(val, minVal, maxVal){
-		if (minVal == maxVal){
+		if (val == 1){
+			var p = 0;
+		} else if (minVal == maxVal){
 			var p = 1;
-		} else{
+		} else {
 			var p = (val - minVal) / (maxVal - minVal);
 		}
 		var heat = this._heatGradient(1-p);
