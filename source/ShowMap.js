@@ -46,6 +46,7 @@ enyo.kind({
 		onDeactivateTaskLocationEditingUI: "",
 		onViewportChanged: "",
 		onClusterSelection: "",
+		onReceiveNewSubmissions: "",
 	},
 	handlers: {
 		//onAddPins: "enableMarkerPlacementMode",
@@ -81,7 +82,7 @@ enyo.kind({
 		this.$.gps.setTimeout(this.gpsTimeout);
 
 		this.lastSubmissionPoll = 0;
-		//enyo.job("submissionPoll", enyo.bind(this, "getNewSubmissions"), 1500);
+		enyo.job("submissionPoll", enyo.bind(this, "getNewSubmissions"), 1500);
 		
 		userMoved = false;
 		loaded = false;
@@ -281,6 +282,9 @@ enyo.kind({
 		return icon;
 	},
 
+	/*
+		Trigger the cluster selection event and highlight the given cluster
+	*/
 	selectCluster: function(clust){
 		this.clearClusterSelect();
 		this.selectedCluster = clust;
@@ -293,6 +297,10 @@ enyo.kind({
 		this.waterfallDown("onClusterSelection",{submissions: subs});
 	},
 
+	/*
+		unhighlight the previously selected cluster (if it exists) and if updateSubs is true, trigger an update of the listed submissions to include
+		all within the viewport.
+	*/
 	clearClusterSelect: function(updateSubs) {
 		if (this.selectedCluster){
 			L.DomUtil.removeClass(this.selectedCluster._icon, "cluster-selected");
@@ -362,7 +370,7 @@ enyo.kind({
 		}, this);
 
 
-		//Leaflet.draw Campaign editting initi
+		//-- Leaflet.draw Campaign editting initialization --//
 		this.undoStack = new Array();
 		this.drawnItems = new L.FeatureGroup(); //Drawn polygons and markers will be stored in the drawnItems group
 		this.map.addLayer(this.drawnItems);
@@ -716,10 +724,10 @@ enyo.kind({
 		
 	},
 	updateSubmissions: function(inSender, inResponse){
-		//this.log("updateSubmissions called");
 		this.lastSubmissionPoll = inSender.startTime;
 		if(inResponse.submissions.length > 0){
 			this.log("Got a new submission!")
+			this.waterfallDown("onReceiveNewSubmissions", {submissions: inResponse.submissions});
 		}
 	},
 	updateLastSubmissionPollTime: function(inSedner, inEvent){

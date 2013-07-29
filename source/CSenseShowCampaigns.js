@@ -21,6 +21,7 @@ enyo.kind({
 		onTaskMarkerClicked: "showTaskDetail",
 		onViewportChanged: "updateTaskDetail",
 		onClusterSelection: "updateTaskDetail",
+		onReceiveNewSubmissions: "integrateNewSubmissions",
 	},
 	components:[
 		{name: "campaignDrawer",
@@ -83,13 +84,36 @@ enyo.kind({
 		this.selectedCampIndex = null;
 	},
 
+	integrateNewSubmissions: function(inSender, inEvent){
+		//assumes that the campaign and task already exists
+		for (var i=0; i< inEvent.submissions.length; i++){
+			var sub = inEvent.submissions[i];
+
+			//update this.campData
+			//There must be a better way to do this (Return a campaign with the submissions from the API, return a 'diff' tree?)
+			var j=0;
+			var notDone = true;
+			while(j<this.campData.length && notDone){ 
+				var camp = this.campData[j];
+				var k=0;
+				while(k<camp.tasks.length && notDone){
+					if (camp.tasks[k].id === sub.task_id){
+						notDone = false;
+						this.campData[j].tasks[k].submissions.push(sub);
+					}
+					k++;
+				}
+				j++;
+			}
+		}
+	},
+
+
 	updateTaskDetail: function(inSender, inEvent){
 		if(this.$.taskDetailDrawer.getOpen()){ //Is this a bad way of checking if we are showing anything in the detail pane?
 			this.$.taskDetailDrawerContent.setCont(inEvent.submissions);
 		}
-	},
-
-	
+	},	
 
 	/*
 		Called when the ajax response arrives. Initializes the campaign pane contents.
@@ -135,7 +159,6 @@ enyo.kind({
 	*/
 	showTasks: function(taskData) {
 		this.doClearTaskSelection();
-		//this.doShowSubmissionsOnMap({task: null, taskDetail: null});
 
 		this.taskData = taskData;
 		this.$.taskList.taskIdToIndex = {};
