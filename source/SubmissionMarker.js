@@ -2,7 +2,7 @@
 
 SubmissionMarker = L.Marker.extend({
 
-	initialize: function (latlng, submissionId, showCampaigns, makePing, options){
+	initialize: function (latlng, submissionId, submission, showCampaigns, makePing, options){
 		//Set the icon
 		var opt = options;
 		if (opt === undefined){
@@ -18,6 +18,7 @@ SubmissionMarker = L.Marker.extend({
 		}
 
 		this.submissionId = submissionId;
+		this.submission = submission;
 		this.showCampaigns = showCampaigns;
 
 		//Initialize click action

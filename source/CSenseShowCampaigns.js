@@ -19,6 +19,8 @@ enyo.kind({
 		onListResized: "setListHeights",
 		onCSenseTaskDetailResized: "setTaskDetailContentHeight",
 		onTaskMarkerClicked: "showTaskDetail",
+		onViewportChanged: "updateTaskDetail",
+		onClusterSelection: "updateTaskDetail",
 	},
 	components:[
 		{name: "campaignDrawer",
@@ -28,6 +30,7 @@ enyo.kind({
 			orient: "h",
 			open: false,
 			components: [
+				{name: "campDrawerHeader", content: "Campaigns:"},
 				{name: "campList", kind: "CSenseShowCampaignsList", onSetupItem: "setupCampList", /*fit: true, */style: "width: 200px;", touch: true, count: 0, components: [
 					{name: "campItem", kind: "onyx.Item", ontap: "campTapped", components: [
 						{name: "campIndex", content: "id"},
@@ -42,6 +45,7 @@ enyo.kind({
 			orient: "h",
 			open: false,
 			components: [
+				{name: "taskDrawerHeader", content: "Tasks:"},
 				{name: "taskList", kind: "CSenseShowCampaignsList", onSetupItem: "setupTaskList", style: "width: 200px;", touch: true, count: 0, components: [
 					{name: "taskItem", kind: "onyx.Item", ontap: "taskTapped", components: [
 							{name: "taskIndex", content: "id"},
@@ -55,7 +59,7 @@ enyo.kind({
 		},
 		{name: "taskDetailDrawer",
 			kind: onyx.Drawer,
-			style: "z-index: 15; position: relative; background-color: bisque;",
+			style: "z-index: 15; position: relative; background-color: LightGoldenRodYellow ;",
 			orient: "h",
 			open: false,
 			published: {
@@ -78,6 +82,14 @@ enyo.kind({
 
 		this.selectedCampIndex = null;
 	},
+
+	updateTaskDetail: function(inSender, inEvent){
+		if(this.$.taskDetailDrawer.getOpen()){ //Is this a bad way of checking if we are showing anything in the detail pane?
+			this.$.taskDetailDrawerContent.setCont(inEvent.submissions);
+		}
+	},
+
+	
 
 	/*
 		Called when the ajax response arrives. Initializes the campaign pane contents.
@@ -115,7 +127,7 @@ enyo.kind({
 	*/
 	taskTapped: function(inSender, inEvent) {
 		var index = inEvent.index;
-		this.showTaskDetail(null, {task: this.taskData[index]}); //Here I am calling an event handler directly, is this bad?
+		this.showTaskDetail(null, {task: this.taskData[index]}); //I am calling an event handler directly, is this bad?
 	},
 
 	/*
@@ -136,13 +148,14 @@ enyo.kind({
 	},
 
 	/*
-		Builds the contents of the taskDetail pane
+		Builds the contents of the taskDetail pane (Called when a task is tapped)
 	*/
 	showTaskDetail: function(inSedner, inEvent){
 		var task = inEvent.task;
 		this.$.taskList.select(this.getTaskListIndex(task.id));
 
-		this.$.taskDetailDrawerContent.setTask(task);
+		//this.$.taskDetailDrawerContent.setTask(task);
+		this.$.taskDetailDrawerContent.setCont(task.submissions);
 		this.$.taskDetailDrawer.currentTaskId = task.id;
 		var detailDrawerOpen = this.$.taskDetailDrawer.getOpen();
 		this.$.taskDetailDrawer.setOpen(true);
@@ -156,6 +169,10 @@ enyo.kind({
 	getTaskListIndex: function(taskId){
 		return this.$.taskList.taskIdToIndex[taskId];
 	},
+
+
+
+
 
 
 	/*

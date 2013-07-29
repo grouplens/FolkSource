@@ -6,6 +6,10 @@
 	display: none;
 }
 
+.cluster-selected {
+	border: 2px solid blue;
+}
+
 .csenseshowcampaigns-node > div {
 	display: block !important;
 	overflow: hidden;

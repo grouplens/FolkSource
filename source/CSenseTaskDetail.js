@@ -3,6 +3,7 @@ enyo.kind({
     layoutKind: enyo.FittableRowsLayout,
 	published: {
 		task: "",
+        subs: "",
         popup: "",
 	},
     events:{
@@ -33,18 +34,26 @@ enyo.kind({
                     ]},
                 ],
                 onSetupItem: "setValues",
-                //subIdtoIndexMap: {},
                 submissionIdToOwnerProxy: {}, //Mapping of submission ids to ownerProxy instances
             },
         ],}
     ],
+    /*
     create: function(){
         this.inherited(arguments);
         if (this.task){
             this.setTask(task);
         }
-
     },
+    */
+    create: function(){
+        this.inherited(arguments);
+        if(this.subs){
+            this.setCont(this.subs); // <- does this make sense?
+        }
+    },
+
+    /*
     setTask: function(task){
         this.task = task;
         this.submissionIdToOwnerProxy = {} 
@@ -52,10 +61,20 @@ enyo.kind({
         this.$.popHeading.setContent("Task "+this.task.id);
         this.$.popSubHeading.setContent("Instructinons: "+this.task.instructions);
     },
+    */
+    setCont: function(subArray){
+        this.subs = subArray;
+        this.submissionIdToOwnerProxy = {}
+        this.$.repeater.setCount(this.subs.length);
+        this.$.popHeading.setContent("Foo");
+        this.$.popSubHeading.setContent("Bar");
+    },
+
     setValues: function (inSender, inEvent){
         var index = inEvent.index;
         var item = inEvent.item;
-        var sub = this.task.submissions[index];
+        //var sub = this.task.submissions[index];
+        var sub = this.subs[index];
 
         //this.$.repeater.subIdtoIndexMap[sub.id] = index;
         this.$.repeater.submissionIdToOwnerProxy[sub.id] = item;
