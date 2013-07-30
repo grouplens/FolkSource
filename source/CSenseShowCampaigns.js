@@ -85,12 +85,14 @@ enyo.kind({
 	},
 
 	integrateNewSubmissions: function(inSender, inEvent){
-		//assumes that the campaign and task already exists
+		//If the campaign and task associated with the new submission(s) does not exist,
+		//nothing will happen.
+
+		//There is likely a better way to find the proper campaign than to linearly search for it. However, the number
+		//of campaigns probably will not be terribly great, so this method may be sufficient.
+		
 		for (var i=0; i< inEvent.submissions.length; i++){
 			var sub = inEvent.submissions[i];
-
-			//update this.campData
-			//There must be a better way to do this (Return a campaign with the submissions from the API, return a 'diff' tree?)
 			var j=0;
 			var notDone = true;
 			while(j<this.campData.length && notDone){ 

@@ -101,8 +101,8 @@ enyo.kind({
 		this.events.onPins = '';
 		this.currentTaskName = "";
 
-		//keys: campaign ids, values: L.FeatureGroups holding task markers/polygons
-		this.taskMarkerGroups = {};
+		
+		this.taskMarkerGroups = {}; //keys: campaign ids, values: L.FeatureGroups holding task markers/polygons
 		this.taskMarkers = {}; //keys: task ids, values: L.Layers holding task marker or polygon
 		this.submissionMarkerGroups = {} //Keys: task ids, values: L.FeatureGroups holding submission markers
 		this.currentTaskMarkerGroup = null; //Group of task markers currently being displayed
@@ -349,7 +349,7 @@ enyo.kind({
 
 		//-- Submission Filtering --//
 		this.clusterGroup.on('clusterclick', function(a) {
-			if (this.map.getMaxZoom() === this.map.getZoom()){
+			if (this.map.getMaxZoom() === a.layer._zoom){
 				this.selectCluster(a.layer);
 			}
 		}, this);
@@ -522,24 +522,34 @@ enyo.kind({
 		var showCampaigns = this.$.cSenseShowCampaigns;
 
 		for(var i=0; i < subs.length; i++){
-			var latlng = subs[i].gps_location.split("|");
-			if (latlng.length === 2) {
-
-				var latitudelongitude = new L.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
-				var submissionId = subs[i].id;
-				//var makePing = !this.pingWithinRange(markers, latitudelongitude, 10);
-				var makePing = false;
-
-				var mark = new SubmissionMarker(latitudelongitude, submissionId, subs[i], showCampaigns, makePing);
-				mark.bindLabel("Submission "+ submissionId);
+			var mark = this.submissionToMarker(subs[i], showCampaigns, markers);
+			if (mark != null){
 				markers.addLayer(mark);
-				
-			} else {
-				//Submission has invalid gps coordinates
 			}
 		}
-
 		return markers;
+	},
+
+	//I don't love the name of this method
+	submissionToMarker: function(sub, showCampaigns, markers){
+		var mark = null;
+		var latlng = sub.gps_location.split("|");
+
+		if (latlng.length === 2) {
+			var latitudelongitude = new L.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1]));
+			var makePing = false;
+			/*
+			if (markers != null){
+				makePing = !this.pingWithinRange(markers, latitudelongitude, 10);
+			}
+			*/
+
+			var mark = new SubmissionMarker(latitudelongitude, sub.id, sub, showCampaigns, makePing);
+			mark.bindLabel("Submission "+ sub.id);
+		} else {
+			//Submission has invalid gps coordinates
+		}
+		return mark;
 	},
 
 	pingWithinRange: function(markerGroup, latlng, d){
@@ -728,8 +738,31 @@ enyo.kind({
 		if(inResponse.submissions.length > 0){
 			this.log("Got a new submission!")
 			this.waterfallDown("onReceiveNewSubmissions", {submissions: inResponse.submissions});
+			this.foo(inResponse.submissions);
 		}
 	},
+	/*
+		This function creates new markers for each submission in the given list of submissions if needed
+	*/
+	foo: function(submissions){
+		for (var i=0;i<submissions.length;i++){
+			var sub = submissions[i];
+			if (sub.task_id in this.submissionMarkerGroups){
+				var mark = this.submissionToMarker(sub, this.$.cSenseShowCampaigns, null);
+				if (mark != null){
+					//add it to the list
+					this.submissionMarkerGroups[sub.task_id].addLayer(mark);
+					if (this.currentSubmissionsGroupTaskId == sub.task_id){
+						this.clusterGroup.addLayer(mark);
+					}
+				}
+			}
+		}
+		this.waterfallDown("onViewportChanged",{submissions: this.getVisibleSubmissions()});
+	},
+
+
+
 	updateLastSubmissionPollTime: function(inSedner, inEvent){
 		this.lastSubmissionPoll = inEvent.time;
 	},
