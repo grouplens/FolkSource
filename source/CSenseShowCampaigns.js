@@ -90,7 +90,7 @@ enyo.kind({
 
 		//There is likely a better way to find the proper campaign than to linearly search for it. However, the number
 		//of campaigns probably will not be terribly great, so this method may be sufficient.
-		
+
 		for (var i=0; i< inEvent.submissions.length; i++){
 			var sub = inEvent.submissions[i];
 			var j=0;
@@ -180,7 +180,7 @@ enyo.kind({
 		this.$.taskList.select(this.getTaskListIndex(task.id));
 
 		//this.$.taskDetailDrawerContent.setTask(task);
-		this.$.taskDetailDrawerContent.setCont(task.submissions);
+		this.$.taskDetailDrawerContent.setCont(task.submissions,"Task "+task.id,task.instructions);
 		this.$.taskDetailDrawer.currentTaskId = task.id;
 		var detailDrawerOpen = this.$.taskDetailDrawer.getOpen();
 		this.$.taskDetailDrawer.setOpen(true);

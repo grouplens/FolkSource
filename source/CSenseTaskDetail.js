@@ -62,12 +62,16 @@ enyo.kind({
         this.$.popSubHeading.setContent("Instructinons: "+this.task.instructions);
     },
     */
-    setCont: function(subArray){
+    setCont: function(subArray, heading, subheading){
         this.subs = subArray;
         this.submissionIdToOwnerProxy = {}
         this.$.repeater.setCount(this.subs.length);
-        this.$.popHeading.setContent("Foo");
-        this.$.popSubHeading.setContent("Bar");
+        if (heading){
+            this.$.popHeading.setContent(heading);
+        }
+        if (subheading){
+            this.$.popSubHeading.setContent(subheading);
+        }
     },
 
     setValues: function (inSender, inEvent){
