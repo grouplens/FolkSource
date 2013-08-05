@@ -1,7 +1,6 @@
 enyo.kind({
     name: "CSenseMenuPane",
     kind: enyo.FittableColumns,
-    style: "background-color: purple;",
     handlers: {
         onSuccessCode: "unPop",
         onFailureCode: "rePop",
@@ -17,8 +16,8 @@ enyo.kind({
             {kind: "CSenseLoginRegister"}
         ]},
 	{name: "menuDrawer", kind: onyx.Drawer, layoutKind: enyo.FittableRowsLayout, orient: "h", style: "position: relative;", open: false, components: [
-	    		{content: "Campaign List", ontap: "showCampaignList", classes: "slidein-option"},
-	    		{content: "Leaderboard", ontap: "showLeaderboard", classes: "slidein-option"},
+	    		{content: "Campaign List", ontap: "showCampaignList", classes: "slidein-option", onup: "toggleHilight", ondown: "toggleHilight"},
+	    		{content: "Leaderboard", ontap: "showLeaderboard", classes: "slidein-option", onup: "toggleHilight", ondown: "toggleHilight"},
 	]},
 	{kind: enyo.FittableRows, fit: true, components: [
 		{kind: onyx.Toolbar, components: [
@@ -94,13 +93,19 @@ enyo.kind({
 		this.$.menuDrawer.setOpen(!truthy);
     },
     showCampaignList: function(inSender, inEvent) {
-		this.$.menuDrawer.setOpen(false);
 		this.$.menupane.setIndex(1);
+		this.$.menuDrawer.setOpen(false);
 		this.$.menupane.render();
     },
     showLeaderboard: function(inSender, inEvent) {
-		this.$.menuDrawer.setOpen(false);
 		this.$.menupane.setIndex(0);
+		this.$.menuDrawer.setOpen(false);
 		this.$.menupane.render();
-    }
+    },
+	toggleHilight: function(inSender, inEvent) {
+		//TODO: WORK IN PROGRESS, NOT FUNCTIONING
+		var truthy = inSender.hasClass("hilight");
+		inSender.addRemoveClass("hilight", !truthy);
+		this.log(inSender.hasClass("higlight"));
+	}
 });
