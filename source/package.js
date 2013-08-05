@@ -9,7 +9,6 @@ enyo.depends(
     "CampaignItem.js",
     "CampaignList.js",
     "ComplexSensr.js",
-    "CountButton.js",
     "Counter.js",
     "Data.js",
     "FilledPanels.js",
