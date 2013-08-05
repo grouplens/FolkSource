@@ -4,10 +4,10 @@ enyo.kind({
 	published: {
 		task: "",
         subs: "",
-        popup: "",
 	},
     events:{
         onCSenseTaskDetailResized: "",
+        onContentSet: "",
     },
     handlers: {
         onEmphasizeSubmission: "emphasizeSubmission",
@@ -16,6 +16,7 @@ enyo.kind({
         {name: "popupScroller", fit: true, kind: enyo.Scroller, style: "padding: 14px;", components:[
             {name: "popHeading", content: "", style: "font-weight: bold;"},
             {name: "popSubHeading", content: "",},
+            {name: "spinner", kind: "onyx.Spinner", classes: "onyx-light hidden", style: "margin-left:auto; margin-right:auto; display:block; margin-top:60px;"},
             {
                 kind: enyo.Repeater,
                 count: 0,
@@ -33,25 +34,11 @@ enyo.kind({
                         },
                     ]},
                 ],
-                onSetupItem: "setValues",
+                onSetupItem: "setRepeaterValues",
                 submissionIdToOwnerProxy: {}, //Mapping of submission ids to ownerProxy instances
             },
         ],}
     ],
-    /*
-    create: function(){
-        this.inherited(arguments);
-        if (this.task){
-            this.setTask(task);
-        }
-    },
-    */
-    create: function(){
-        this.inherited(arguments);
-        if(this.subs){
-            this.setCont(this.subs); // <- does this make sense?
-        }
-    },
 
     /*
     setTask: function(task){
@@ -72,9 +59,31 @@ enyo.kind({
         if (subheading){
             this.$.popSubHeading.setContent(subheading);
         }
+        this.doContentSet();
     },
 
-    setValues: function (inSender, inEvent){
+
+    startSpinner: function(){
+        this.$.spinner.removeClass("hidden");
+        this.$.repeater.addClass("hidden");
+        this.log("started the spinner");
+    },
+    stopSpinner: function(){
+        this.$.spinner.addClass("hidden");
+        this.$.repeater.removeClass("hidden");
+        this.log("stopped the spinner");
+    },
+    spinFor: function(time) {
+        this.startSpinner();
+        var that = this;
+        setTimeout(function(){
+            that.stopSpinner();
+        }, time)
+    },
+
+
+
+    setRepeaterValues: function (inSender, inEvent){
         var index = inEvent.index;
         var item = inEvent.item;
         //var sub = this.task.submissions[index];

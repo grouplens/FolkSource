@@ -3,7 +3,7 @@
 	This way, you can minify your application, and just remove the "source" folder for production
 */
 .hidden {
-	display: none;
+	display: none !important;
 }
 
 .cluster-selected {

@@ -72,6 +72,8 @@ enyo.kind({
 		onTaskDetailDrawerOpened: "panToSubmissionsGroup",
 
 		onAPIResponse: "updateLastSubmissionPollTime",
+
+		onContentSet: "stopTaskDetailSpinner",
 	},
 
 	create: function (inSender, inEvent) {
@@ -82,7 +84,7 @@ enyo.kind({
 		this.$.gps.setTimeout(this.gpsTimeout);
 
 		this.lastSubmissionPoll = 0;
-		enyo.job("submissionPoll", enyo.bind(this, "getNewSubmissions"), 1500);
+		//enyo.job("submissionPoll", enyo.bind(this, "getNewSubmissions"), 1500);
 		
 		userMoved = false;
 		loaded = false;
@@ -109,6 +111,8 @@ enyo.kind({
 		this.currentSubmissionsGroup = null; //Group of submission markers currently being displayed
 		this.currentSubmissionsGroupTaskId = null; //Id of the task whose submissions are currently being displayed
 		this.selectedCluster = null;
+
+		this.stopSpinnerOnTaskDetailContSet = false;
 	},
 
 	resizeContainer: function(inSender, inEvent) {
@@ -314,6 +318,23 @@ enyo.kind({
 		
 	},
 
+	animationEndHandler: function(e){
+		//Remove the event handler (because there will be several animation end functions)
+		this.clusterGroup.off("animationend", this.myAnimationEndFunction, this);
+		//After a short delay (to let other animations finish), repopulate the list (which will also trigger an end to the spinner)
+		enyo.job("viewChangedByZoom", enyo.bind(this, function(){
+			this.stopSpinnerOnTaskDetailContSet = true;
+			this.waterfallDown("onViewportChanged",{submissions: this.getVisibleSubmissions()});
+		}), 200);	
+	},
+
+	stopTaskDetailSpinner: function(inSender, inEvent){
+		if (this.stopSpinnerOnTaskDetailContSet) {
+			this.$.cSenseShowCampaigns.$.taskDetailDrawerContent.stopSpinner();
+			this.stopSpinnerOnTaskDetailContSet = false;
+		}
+	},
+
 	rendered: function () {
 		this.inherited(arguments);
 		this.$.gps.getPosition();		
@@ -353,10 +374,35 @@ enyo.kind({
 				this.selectCluster(a.layer);
 			}
 		}, this);
-		this.map.on("moveend"/*"moveend dragend zoomend resize"*/, function(e){
+
+		/*
+		this.map.on("moveend", function(e){ //"moveend dragend zoomend resize"
 			this.clearClusterSelect();
-			this.waterfallDown("onViewportChanged",{submissions: this.getVisibleSubmissions()});
+			this.$.cSenseShowCampaigns.$.taskDetailDrawerContent.startSpinner();
+			this.clusterGroup.on("animationend", this.myAnimationEndFunction, this);
 		}, this);
+		*/
+
+		
+		this.map.on("dragend resize", function (){
+			this.clearClusterSelect();
+			this.$.cSenseShowCampaigns.$.taskDetailDrawerContent.startSpinner();
+			this.waterfallDown("onViewportChanged",{submissions: this.getVisibleSubmissions()});
+			enyo.job("viewChangedByDragOrResize", enyo.bind(this, function(){
+				this.$.cSenseShowCampaigns.$.taskDetailDrawerContent.stopSpinner();
+			}), 500);
+		}, this);
+		
+		
+		this.map.on("zoomend", function (){
+			this.clearClusterSelect();
+			this.$.cSenseShowCampaigns.$.taskDetailDrawerContent.startSpinner();
+			this.clusterGroup.on("animationend", this.animationEndHandler, this);
+		}, this);
+
+
+
+
 		this.map.on("click", function(e){
 			this.clearClusterSelect(true);
 		}, this);
@@ -495,7 +541,7 @@ enyo.kind({
 	},
 
 	/*
-	Removes campaign any task location/region markers that may or may not be on the map as a result of
+	Removes any task location/region markers that may or may not be on the map as a result of
 	Showing existing campaigns (not from editing campaigns)
 	*/
 	removeTaskLocations: function (){
@@ -707,7 +753,7 @@ enyo.kind({
 		// assert taskId === this.currentSubmissionsGroupTaskId
 		this.map.fitBounds(
 			this.submissionMarkerGroups[taskId].getBounds().extend(this.taskMarkers[task.id]),
-			{pan: {animate: true}}
+			{pan: {animate: true}, padding:[10, 10]}
 		);
 	},
 	/*
@@ -722,29 +768,40 @@ enyo.kind({
 
 
 
+
+
+	/* -- Live Update Functions-- */
+
 	getNewSubmissions: function(){
 		//var url =  Data.getURL() + "submission.json?after="+String(this.lastSubmissionPoll);
 		var url =  "http://localhost:9080/csense/submission.json?after="+String(this.lastSubmissionPoll);
 
-		var ajax = new enyo.Ajax({url: url, method: "GET", handleAs: "json"});
+		var ajax = new enyo.Ajax({url: url, method: "GET", handleAs: "json", cacheBust: false});
 		ajax.response(this, "updateSubmissions"); 
 		ajax.go();
 		//Poll again in 1.5 seconds
 		enyo.job("submissionPoll", enyo.bind(this, "getNewSubmissions"), 1500);
 		
 	},
+	updateLastSubmissionPollTime: function(inSedner, inEvent){
+		this.lastSubmissionPoll = inEvent.time;
+	},
+	/*
+		Handles response from server for new submissions request.
+	*/
 	updateSubmissions: function(inSender, inResponse){
 		this.lastSubmissionPoll = inSender.startTime;
 		if(inResponse.submissions.length > 0){
 			this.log("Got a new submission!")
 			this.waterfallDown("onReceiveNewSubmissions", {submissions: inResponse.submissions});
-			this.foo(inResponse.submissions);
+			this.createNewSubmissionMarkers(inResponse.submissions);
 		}
 	},
 	/*
-		This function creates new markers for each submission in the given list of submissions if needed
+		This function creates new markers for each submission in the given list of submissions (if needed)
+		This function is meant to be used as part of the live updating of submissions.
 	*/
-	foo: function(submissions){
+	createNewSubmissionMarkers: function(submissions){
 		for (var i=0;i<submissions.length;i++){
 			var sub = submissions[i];
 			if (sub.task_id in this.submissionMarkerGroups){
@@ -763,9 +820,10 @@ enyo.kind({
 
 
 
-	updateLastSubmissionPollTime: function(inSedner, inEvent){
-		this.lastSubmissionPoll = inEvent.time;
-	},
+
+
+
+	/* -- Cluster coloring functions -- */
 
 	getClusterIconColor: function(val, minVal, maxVal, minColor, maxColor){
 		//linearly interpelates between minColor and maxColor
@@ -782,7 +840,6 @@ enyo.kind({
 		var newB = minColor.b + Math.round((maxColor.b - minColor.b) * percent);
 		return {r:newR, g:newG, b:newB};
 	},
-
 	getClusterIconColor2: function(val, minVal, maxVal){
 		if (val == 1){
 			var p = 0;
@@ -798,7 +855,7 @@ enyo.kind({
 	//http://commons.wikimedia.org/wiki/File:P_hot.gif
 	_convertToLight: function(p){
 		if (p < 0){ return 0;}
-		if (p > 255){ return 255;}
+		if (p > 1){ return 255;}
 		return Math.round(p*255);
 	},
 	_heatGradient: function(p){
@@ -813,5 +870,4 @@ enyo.kind({
 		var b = this._convertToLight(0*p);
 		return {r:r, g:g, b:b};
 	},
-
 });
