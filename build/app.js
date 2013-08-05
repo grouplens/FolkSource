@@ -1,7 +1,7 @@
 
 // minifier: path aliases
 
-enyo.path.addPaths({layout: "/Users/jts/programming/csense_trunk/bootplate_22/enyo/../lib/layout/", onyx: "/Users/jts/programming/csense_trunk/bootplate_22/enyo/../lib/onyx/", onyx: "/Users/jts/programming/csense_trunk/bootplate_22/enyo/../lib/onyx/source/", menupane: "source/menupane/"});
+enyo.path.addPaths({layout: "/Users/jts/programming/csense_trunk/bootplate_22/enyo/../lib/layout/", onyx: "/Users/jts/programming/csense_trunk/bootplate_22/enyo/../lib/onyx/", onyx: "/Users/jts/programming/csense_trunk/bootplate_22/enyo/../lib/onyx/source/", menupane: "source/menupane/", Tally: "source/Tally/"});
 
 // FittableLayout.js
 
@@ -4420,7 +4420,7 @@ this.setShowing(!1);
 
 enyo.kind({
 name: "App",
-kind: "enyo.FittableRows",
+kind: enyo.FittableRows,
 components: [ {
 kind: "enyo.Signals",
 ondeviceready: "deviceReady"
@@ -4440,7 +4440,7 @@ Data.setIsReady(!0), this.log(Data.getIsReady());
 
 enyo.kind({
 name: "BikeCounter",
-kind: "enyo.Control",
+kind: enyo.FittableRows,
 fit: !0,
 published: {
 type: "bikes"
@@ -4450,8 +4450,6 @@ kind: "enyo.Signals",
 onButtonGroupChosen: "fixIt",
 onDataRemove: "removeItem"
 }, {
-kind: "enyo.FittableRows",
-components: [ {
 name: "timer",
 kind: "Timer",
 length: 72e5,
@@ -4461,21 +4459,51 @@ kind: "onyx.Button",
 content: "Undo",
 ontap: "popup"
 }, {
-name: "cont",
-kind: "enyo.FittableRows",
-fit: !0,
-classes: "bikeTable",
-components: [ {
 name: "tabula",
 tag: "table",
 style: "width: 100%; border-width: 0px;",
+layoutKind: enyo.FittableRowsLayout,
+fit: !0,
 components: [ {
 tag: "tr",
 components: [ {
+tag: "td",
+attributes: {
+colspan: 2
+}
+}, {
+tag: "td",
+attributes: {
+colspan: 2
+},
+style: "text-align: center;",
+components: [ {
+kind: "enyo.Image",
+src: "assets/bike_small.png"
+} ]
+}, {
 tag: "td"
 }, {
 tag: "td",
-classes: "tableCell tableBike",
+attributes: {
+colspan: 2
+},
+style: "text-align: center;",
+components: [ {
+kind: "enyo.Image",
+src: "assets/ped_small.png"
+} ]
+} ]
+}, {
+tag: "tr",
+components: [ {
+tag: "td",
+attributes: {
+colspan: 2
+}
+}, {
+tag: "td",
+classes: "tableCell tableMen",
 colspan: 1,
 components: [ {
 kind: "enyo.Image",
@@ -4483,21 +4511,23 @@ src: "assets/man_small.png"
 } ]
 }, {
 tag: "td",
-classes: "tableCell tableBike",
+classes: "tableCell tableMen",
 components: [ {
 kind: "enyo.Image",
 src: "assets/woman_small.png"
 } ]
 }, {
+tag: "td"
+}, {
 tag: "td",
-classes: "tableCell tablePed",
+classes: "tableCell tableWomen",
 components: [ {
 kind: "enyo.Image",
 src: "assets/man_small.png"
 } ]
 }, {
 tag: "td",
-classes: "tableCell tablePed",
+classes: "tableCell tableWomen",
 components: [ {
 kind: "enyo.Image",
 src: "assets/woman_small.png"
@@ -4508,6 +4538,10 @@ tag: "tr",
 components: [ {
 name: "adultTitle",
 classes: "ageTitle",
+attributes: {
+fit: !0,
+rowspan: 2
+},
 tag: "td",
 components: [ {
 kind: "enyo.Image",
@@ -4515,86 +4549,110 @@ src: "assets/adult_small.png"
 } ]
 }, {
 tag: "td",
-classes: "tableBike tableCell",
 components: [ {
-kind: "CountButton",
-components: [ {
-kind: "onyx.Icon",
+kind: enyo.Image,
 src: "assets/helmet_small.png"
-} ]
 } ]
 }, {
 tag: "td",
 classes: "tableBike tableCell",
 components: [ {
-kind: "CountButton",
-components: [ {
-kind: "onyx.Icon",
-src: "assets/helmet_small.png"
+name: "maleAdultHelmet",
+kind: "TallyCounter",
+fit: !0,
+row: 2,
+col: 2
 } ]
+}, {
+tag: "td",
+classes: "tableBike tableCell",
+components: [ {
+name: "femaleAdultHelmet",
+kind: "TallyCounter",
+fit: !0,
+row: 2,
+col: 3
+} ]
+}, {
+tag: "td",
+components: [ {
+kind: enyo.Image,
+src: "assets/assistive_small.png"
 } ]
 }, {
 tag: "td",
 classes: "tablePed tableCell",
 components: [ {
-kind: "CountButton",
-components: [ {
-kind: "onyx.Icon",
-src: "assets/assistive2_small.png"
-} ]
+name: "maleAdultAsst",
+kind: "TallyCounter",
+fit: !0,
+row: 2,
+col: 5
 } ]
 }, {
 tag: "td",
 classes: "tablePed tableCell",
 components: [ {
-kind: "CountButton",
-components: [ {
-kind: "onyx.Icon",
-src: "assets/assistive2_small.png"
-} ]
+name: "femaleAdultAsst",
+kind: "TallyCounter",
+fit: !0,
+row: 2,
+col: 6
 } ]
 } ]
 }, {
 tag: "tr",
 components: [ {
 tag: "td",
-classes: "tableBike tableCell",
 components: [ {
-kind: "CountButton",
-components: [ {
-kind: "onyx.Icon",
-src: "assets/bike_small.png"
-} ]
+kind: enyo.Image,
+src: "assets/not_small.png"
 } ]
 }, {
 tag: "td",
 classes: "tableBike tableCell",
 components: [ {
-kind: "CountButton",
-components: [ {
-kind: "onyx.Icon",
-src: "assets/bike_small.png"
+name: "maleAdultBike",
+kind: "TallyCounter",
+fit: !0,
+row: 3,
+col: 2
 } ]
+}, {
+tag: "td",
+classes: "tableBike tableCell",
+components: [ {
+name: "femaleAdultBike",
+kind: "TallyCounter",
+fit: !0,
+row: 3,
+col: 3
+} ]
+}, {
+tag: "td",
+components: [ {
+kind: enyo.Image,
+src: "assets/not_small.png"
 } ]
 }, {
 tag: "td",
 classes: "tablePed tableCell",
 components: [ {
-kind: "CountButton",
-components: [ {
-kind: "onyx.Icon",
-src: "assets/ped_small.png"
-} ]
+name: "maleAdultPed",
+kind: "TallyCounter",
+fit: !0,
+row: 3,
+col: 5
 } ]
 }, {
 tag: "td",
 classes: "tablePed tableCell",
 components: [ {
-kind: "CountButton",
-components: [ {
-kind: "onyx.Icon",
-src: "assets/ped_small.png"
-} ]
+name: "femaleAdultPed",
+kind: "TallyCounter",
+fit: !0,
+row: 3,
+col: 6
 } ]
 } ]
 }, {
@@ -4603,92 +4661,120 @@ components: [ {
 name: "kidTitle",
 tag: "td",
 classes: "ageTitle",
+attributes: {
+fit: !0,
+rowspan: 2
+},
 components: [ {
 kind: "enyo.Image",
 src: "assets/child_small.png"
 } ]
 }, {
 tag: "td",
-classes: "tableBike tableChild tableCell",
 components: [ {
-kind: "CountButton",
-components: [ {
-kind: "onyx.Icon",
+kind: enyo.Image,
 src: "assets/helmet_small.png"
-} ]
 } ]
 }, {
 tag: "td",
 classes: "tableBike tableChild tableCell",
 components: [ {
-kind: "CountButton",
-components: [ {
-kind: "onyx.Icon",
-src: "assets/helmet_small.png"
+name: "maleChildHelmet",
+kind: "TallyCounter",
+fit: !0,
+row: 4,
+col: 2
 } ]
+}, {
+tag: "td",
+classes: "tableBike tableChild tableCell",
+components: [ {
+name: "femaleChildHelmet",
+kind: "TallyCounter",
+fit: !0,
+row: 4,
+col: 3
+} ]
+}, {
+tag: "td",
+components: [ {
+kind: enyo.Image,
+src: "assets/assistive_small.png"
 } ]
 }, {
 tag: "td",
 classes: "tablePed tableChild tableCell",
 components: [ {
-kind: "CountButton",
-components: [ {
-kind: "onyx.Icon",
-src: "assets/assistive2_small.png"
-} ]
+name: "maleChildAsst",
+kind: "TallyCounter",
+fit: !0,
+row: 4,
+col: 5
 } ]
 }, {
 tag: "td",
 classes: "tablePed tableChild tableCell",
 components: [ {
-kind: "CountButton",
-components: [ {
-kind: "onyx.Icon",
-src: "assets/assistive2_small.png"
-} ]
+name: "femaleChildAsst",
+kind: "TallyCounter",
+fit: !0,
+row: 4,
+col: 6
 } ]
 } ]
 }, {
 tag: "tr",
 components: [ {
 tag: "td",
-classes: "tableBike tableChild tableCell",
 components: [ {
-kind: "CountButton",
-components: [ {
-kind: "onyx.Icon",
-src: "assets/bike_small.png"
-} ]
+kind: enyo.Image,
+src: "assets/not_small.png"
 } ]
 }, {
 tag: "td",
 classes: "tableBike tableChild tableCell",
 components: [ {
-kind: "CountButton",
-components: [ {
-kind: "onyx.Icon",
-src: "assets/bike_small.png"
+name: "maleChildBike",
+kind: "TallyCounter",
+fit: !0,
+row: 5,
+col: 2
 } ]
+}, {
+tag: "td",
+classes: "tableBike tableChild tableCell",
+components: [ {
+name: "femaleChildBike",
+kind: "TallyCounter",
+fit: !0,
+row: 5,
+col: 3
+} ]
+}, {
+tag: "td",
+components: [ {
+kind: enyo.Image,
+src: "assets/not_small.png"
 } ]
 }, {
 tag: "td",
 classes: "tablePed tableChild tableCell",
 components: [ {
-kind: "CountButton",
-components: [ {
-kind: "onyx.Icon",
-src: "assets/ped_small.png"
-} ]
+name: "maleChildPed",
+kind: "TallyCounter",
+fit: !0,
+row: 5,
+col: 5
 } ]
 }, {
 tag: "td",
 classes: "tablePed tableChild tableCell",
 components: [ {
-kind: "CountButton",
-components: [ {
-kind: "onyx.Icon",
-src: "assets/ped_small.png"
-} ]
+name: "femaleChildPed",
+kind: "TallyCounter",
+fit: !0,
+row: 5,
+col: 6
 } ]
 } ]
 } ]
@@ -4713,8 +4799,6 @@ fit: !0,
 style: "clear: both;",
 kind: "TickerList"
 } ]
-} ]
-} ]
 } ],
 events: {
 onTimer: "",
@@ -4724,10 +4808,12 @@ onDrawerOk: ""
 handlers: {
 on2DrawerClick: "build",
 ontap: "storeCountData",
-onDataRemove: "removeItem"
+onDataRemove: "removeItem",
+onup: "highlightRowsColumns",
+ondown: "highlightRowsColumns"
 },
 create: function(e, t) {
-this.inherited(arguments), this.$.tabula.setAttribute("border-width", 0), this.$.adultTitle.setAttribute("rowspan", 2), this.$.kidTitle.setAttribute("rowspan", 2), this.gender = !1, this.age = !1, this.bike = !0, this.ped = !0, this.assisted = !1, this.helmet = !1, LocalStorage.set("dataArray", []), LocalStorage.remove("countData");
+this.inherited(arguments), this.gender = !1, this.age = !1, this.bike = !0, this.ped = !0, this.assisted = !1, this.helmet = !1, LocalStorage.set("dataArray", []), LocalStorage.remove("countData");
 },
 reset: function() {
 var e = this.$.tabula.children;
@@ -4744,7 +4830,6 @@ this.$.popup.hide();
 },
 build: function(e, t) {
 var n = this.$.tabula.children;
-this.reset();
 for (var r in n) {
 var i = n[r].children;
 for (var s in i) {
@@ -4754,7 +4839,7 @@ if (this.age ? s > 0 : !0) !this.bike && this.ped && s <= 2 && i[s].addRemoveCla
 this.gender || (r == 0 ? i[s].addRemoveClass("tableHide", !this.gender) : (s == 1 || s == 3) && r >= 1 && i[s].addRemoveClass("tableHide", !this.gender)), this.age || ((r <= 1 || r == 3) && s == 0 || r >= 3) && i[s].addRemoveClass("tableHide", !this.age);
 }
 }
-return this.render(), this.parent.parent.parent.getOpen() && t == undefined && this.doDrawerOk(), this.doDrawerOk(), !0;
+return this.doDrawerOk(), !0;
 },
 fixIt: function(e, t) {
 var n, r, i;
@@ -4781,7 +4866,7 @@ break;
 case "Pedestrians":
 this.bike = !1, this.ped = !0;
 }
-this.build(), this.reflow(), this.render();
+this.build(), this.reflow();
 },
 getData: function() {
 return LocalStorage.get("countData");
@@ -4797,6 +4882,19 @@ return tmp = Data.getBikeData(a, f, this.age, this.gender, this.helmet, this.ass
 },
 removeItem: function(e, t) {
 this.$[t.name].children[0].decrement();
+},
+highlightRowsColumns: function(e, t) {
+var n = !1, r = t.originator.container.row, i = t.originator.container.col, s = 1, o = this.$.tabula.children, u, a = 0;
+this.log(t.type), t.type === "down" && (n = !0), this.log(n), i < 4 ? o[0].children[1].addRemoveClass("highlight", n) : i > 4 && o[0].children[3].addRemoveClass("highlight", n), o[1].children[i - 1].addRemoveClass("highlight", n);
+for (var f = 2; f < o.length; f++) {
+if (f == r) break;
+f % 2 == 0 ? o[f].children[i].addRemoveClass("highlight", n) : o[f].children[i - 1].addRemoveClass("highlight", n);
+}
+r % 2 == 0 ? o[r].children[0].addRemoveClass("highlight", n) : o[r - 1].children[0].addRemoveClass("highlight", n), o[r].children[s].addRemoveClass("hightlight", n);
+for (var f = 1; f < o[r].children.length; f++) {
+if (f == i) break;
+r % 2 == 0 ? o[r].children[f].addRemoveClass("highlight", n) : o[r].children[f - 1].addRemoveClass("highlight", n);
+}
 }
 });
 
@@ -4959,9 +5057,6 @@ this.register && (e = "user?", e += "email=" + this.$.email.getValue() + "&"), e
 var t = (new enyo.Ajax({
 method: "POST",
 url: Data.getURL() + e,
-headers: {
-"Cache-Control": "no-cache"
-},
 cacheBust: !0,
 handleAs: "text"
 })).go().response(this, "handleResponse");
@@ -4993,7 +5088,8 @@ return this.checkUsernameExists() && this.checkPasswordExists() ? this.register 
 
 enyo.kind({
 name: "CSenseMenuPane",
-kind: "enyo.FittableRows",
+kind: enyo.FittableColumns,
+style: "background-color: purple;",
 handlers: {
 onSuccessCode: "unPop",
 onFailureCode: "rePop",
@@ -5014,64 +5110,57 @@ components: [ {
 kind: "CSenseLoginRegister"
 } ]
 }, {
-name: "menupane",
-kind: "rwatkins.MenuPane",
-fit: !0,
-onViewChange: "viewChangedHandler",
-onMenuOpened: "menuOpenedHandler",
-onMenuClosed: "menuClosedHandler",
-menu: [ {
-content: "I want to see:",
-classes: "menu-header"
-}, {
+name: "menuDrawer",
+kind: onyx.Drawer,
+layoutKind: enyo.FittableRowsLayout,
+orient: "h",
+style: "position: relative;",
+open: !1,
+components: [ {
 content: "Campaign List",
-view: "campList",
-classes: "menu-item"
+ontap: "showCampaignList",
+classes: "slidein-option"
 }, {
-name: "lb",
 content: "Leaderboard",
-view: "lboard",
-classes: "menu-item"
-} ],
-components: [ {
-name: "campList",
-layoutKind: "enyo.FittableRowsLayout",
-classes: "view enyo-fit",
-components: [ {
-kind: "Toolbar",
-header: "Campaign List",
-onToggleMenu: "toolbarToggleMenuHandler",
-onToggleSecondaryMenu: "toolbarToggleSecondaryMenuHandler",
-classes: "toolbar"
-}, {
-classes: "content",
-fit: !0,
-kind: "FilledPanels"
+ontap: "showLeaderboard",
+classes: "slidein-option"
 } ]
 }, {
-name: "lboard",
-layoutKind: "enyo.FittableRowsLayout",
-classes: "view enyo-fit",
+kind: enyo.FittableRows,
+fit: !0,
 components: [ {
-kind: "Toolbar",
-header: "Leaderboard",
-onToggleMenu: "toolbarToggleMenuHandler",
-onToggleSecondaryMenu: "toolbarToggleSecondaryMenuHandler",
-classes: "toolbar"
+kind: onyx.Toolbar,
+components: [ {
+kind: onyx.Grabber,
+ontap: "showMenu"
+} ]
 }, {
-classes: "content",
+name: "menupane",
+kind: enyo.Panels,
+fit: !0,
+draggable: !1,
+animate: !0,
+index: 1,
+arrangerKind: enyo.CardArranger,
+components: [ {
+name: "llist",
+kind: enyo.FittableRows,
+components: [ {
 kind: "LeaderboardList",
-multiselect: !1
+multiselect: !1,
+fit: !0
+} ]
+}, {
+name: "clist",
+kind: enyo.FittableRows,
+components: [ {
+kind: "FilledPanels",
+fit: !0
 } ]
 }, {
 name: "sense",
-layoutKind: "enyo.FittableRowsLayout",
-classes: "view enyo-fit",
-components: [ {
-kind: "Toolbar",
-onToggleMenu: "toolbarToggleMenuHandler",
-onToggleSecondaryMenu: "toolbarToggleSecondaryMenuHandler",
-classes: "toolbar"
+kind: enyo.FittableRows,
+components: []
 } ]
 } ]
 } ],
@@ -5094,18 +5183,15 @@ return this.$.sensr != undefined && this.$.sensr.destroy(), this.$.sense.createC
 name: "sensr",
 kind: "ComplexSensr",
 fit: !0,
-complex: r,
 data: n,
 classes: "content"
-}, {
-owner: this
-}), this.$.menupane.selectView("sense"), !0;
+}), this.$.sense.render(), this.$.menupane.setIndex(2), !0;
 },
 closeSense: function(e, t) {
 return this.log(), this.$.menupane.selectView("campList"), !0;
 },
 create: function() {
-this.inherited(arguments), LocalStorage.get("user") === undefined && this.$.popup.show();
+this.inherited(arguments), LocalStorage.get("user") === undefined && this.$.popup.show(), this.$.menupane.render();
 },
 backKey: function() {
 this.curView != "campList" && this.$.menupane.selectView("campList");
@@ -5114,14 +5200,15 @@ viewChangedHandler: function(e, t) {
 var n = t.originator;
 n === "sense" && this.$.sensr.openNext(), this.curView === "lboard" && this.$.lboard.render();
 },
-menuOpenedHandler: function(e, t) {
-this.log();
+showMenu: function(e, t) {
+var n = this.$.menuDrawer.getOpen();
+this.log(n), this.$.menuDrawer.setOpen(!n);
 },
-menuClosedHandler: function(e, t) {
-this.log();
+showCampaignList: function(e, t) {
+this.$.menuDrawer.setOpen(!1), this.$.menupane.setIndex(1), this.$.menupane.render();
 },
-toolbarToggleMenuHandler: function(e, t) {
-this.log(), this.$.menupane.toggleMenu();
+showLeaderboard: function(e, t) {
+this.$.menuDrawer.setOpen(!1), this.$.menupane.setIndex(0), this.$.menupane.render();
 }
 });
 
@@ -5227,9 +5314,9 @@ this.doOnChooseCampaign();
 
 enyo.kind({
 name: "ComplexSensr",
-style: "background-color: #254048; color: white; border-color: white; height: 100%;",
+style: "background-color: #254048; color: white; border-color: white;",
+kind: enyo.FittableRows,
 published: {
-complex: !1,
 data: ""
 },
 events: {
@@ -5251,70 +5338,39 @@ onPinClicked: "chosenLocation",
 onPhotoData: "photoData",
 onButtonGroupChosen: "renderSubmitButton"
 }, {
-name: "formDiv",
-layoutKind: "enyo.FittableRowsLayout",
-components: []
+name: "acc",
+kind: "enyo.Scroller",
+layoutKind: enyo.FittableRowsLayout,
+vertical: "auto",
+horizontal: "hidden",
+fit: !0,
+strategyKind: "TouchScrollStrategy"
 }, {
 name: "buttons",
+kind: enyo.ToolDecorator,
 classes: "senseButtons",
 components: [ {
 kind: "onyx.Button",
 classes: "onyx-negative",
 content: "Cancel",
-ontap: "close",
-style: "clear: left;"
+ontap: "close"
 }, {
 name: "submit",
 kind: "onyx.Button",
 classes: "onyx-affirmative",
 content: "Submit",
-ontap: "buildAndSendSubmission",
-style: "clear: right;"
+ontap: "buildAndSendSubmission"
 } ]
 } ],
 create: function(e, t) {
-this.inherited(arguments), this.recreate(), this.render(), this.setTaskData(this.data);
+this.inherited(arguments), this.setTaskData(this.data), this.render();
 },
 recreate: function() {
-this.log(this.$.formDiv), this.$.formDiv === undefined && this.createComponent({
-name: "formDiv",
-layoutKind: "enyo.FittableRowsLayout",
-components: []
-}), this.complex ? this.$.formDiv.createComponent({
-kind: "enyo.FittableRows",
-kind: "enyo.Scroller",
-vertical: "scroll",
-strategyKind: "TranslateScrollStrategy",
-name: "acc",
-style: " width: 100%;",
-components: [ {
-content: "Questions about you",
-ontap: "activateFormDrawer",
-classes: "accordionHeader"
-}, {
-name: "qs",
-kind: "onyx.Drawer",
-fit: !0,
-open: !1,
-layoutKind: "enyo.FittableRowsLayout",
-style: "white-space: nowrap; overflow: scroll; height: 100%;",
-components: [ {
-kind: "enyo.Scroller",
-layoutKind: "enyo.FittableRowsLayout",
-vertical: "scroll",
-strategyKind: "TranslateScrollStrategy",
-name: "accordionItemContent",
-style: "height: 293px;",
-components: []
-} ]
-} ]
-}, {
-owner: this
-}) : (this.log("building formDiv"), this.imageOK = !0, this.$.formDiv.createComponent({
+this.log(this.$.formDiv), this.setTaskData(this.data), this.imageOK = !0, this.$.formDiv.createComponent({
 name: "qbody",
 fit: !0,
 components: []
-}));
+});
 },
 rendered: function(e, t) {
 this.inherited(arguments), this.resized(), this.reflow();
@@ -5328,7 +5384,7 @@ name: "ComplexSensr"
 });
 },
 openDrawer2: function(e, t) {
-return this.$.draw2.reflow(), this.$.draw2.addRemoveClass("accordionHeaderHighlight", !this.$.qs1.open), this.$.qs1.setOpen(!this.$.qs1.open), !0;
+return this.$.draw2.addRemoveClass("accordionHeaderHighlight", !this.$.qs1.open), this.$.qs1.setOpen(!this.$.qs1.open), !0;
 },
 currentLocation: function() {},
 chosenLocation: function(e, t) {
@@ -5357,9 +5413,7 @@ src: "./assets/leaf-2.jpg"
 renderSubmitButton: function(e, t) {
 this.$.submit.setDisabled(!1);
 },
-renderDrawer2: function(e, t) {
-this.$.draw2.reflow(), this.$.draw2.render();
-},
+renderDrawer2: function(e, t) {},
 onPhotoFail: function(e) {
 console.log(e);
 },
@@ -5374,69 +5428,53 @@ photoOk: function() {
 return this.log(), !0;
 },
 setTaskData: function(e) {
-this.task = e.tasks[0], this.campTitle = e.title, questionBody = [], this.$.formDiv != undefined && this.$.formDiv.getComponents().length > 0 && (this.$.formDiv.destroyClientControls(), this.$.formDiv.destroy(), this.recreate()), this.complex ? questionBody.push(this.$.accordionItemContent) : (this.log(this.$), questionBody.push(this.$.formDiv.$.qbody));
+this.task = e.tasks[0], this.campTitle = e.title, questionBody = [];
+var t = -1;
 for (i in this.task.questions) {
-var t = this.task.questions[i], n = "name_" + t.id;
-type = t.type;
+var n = this.task.questions[i], r = "name_" + n.id;
+type = n.type;
 if (type.indexOf("complex") != -1) {
 type = "counter";
-var r = type.search(/\d/), s = 0;
-if (r != -1) var s = type.charAt(r);
-if (s != questionBody.length && this.complex) {
-var o = "qs" + (s + 1);
-this.$.formDiv.createComponent({
-name: "draw2",
-content: "Count Bicycles and/or Pedestrians",
-ontap: "activateFormDrawer2",
-classes: "accordionHeader"
-}, {
-owner: this
-}), this.$.formDiv.createComponent({
-name: o,
-kind: "onyx.Drawer",
-open: !1,
-style: "white-space: nowrap; overflow: hidden;",
-components: [ {
-name: "accordionItemContent2",
-components: []
-} ]
-}, {
-owner: this
-}), questionBody.push(this.$.accordionItemContent2);
-}
+var s = type.search(/\d/), o = 0;
+if (s != -1) var o = type.charAt(s);
 }
 switch (type) {
 case "text":
-questionBody[0].createComponent({
-name: n,
+this.$.acc.createComponent({
+name: r,
 style: "clear: both;",
-content: t.question
-}), this.newFormText(t);
+content: n.question
+}), this.newFormText(n);
 break;
 case "exclusive_multiple_choice":
-questionBody[0].createComponent({
-name: n,
+this.$.acc.createComponent({
+name: r,
 style: "clear: both;",
-content: t.question
-}), this.newFormExclusiveChoice(t);
+content: n.question
+}), this.newFormExclusiveChoice(n);
 break;
 case "multiple_choice":
-questionBody[0].createComponent({
-name: n,
+this.$.acc.createComponent({
+name: r,
 style: "clear: both;",
-content: t.question
-}), this.newFormMultipleChoice(t);
+content: n.question
+}), this.newFormMultipleChoice(n);
 break;
 case "counter":
-this.newFormCounter(t);
+t = i;
 break;
 case "cur_time":
-this.newTime(t);
+this.newTime(n);
 break;
 default:
 }
 }
-this.render(), this.log(this.$), this.complex && (this.$.accordionItemContent.resized(), this.$.accordionItemContent.reflow());
+if (t > -1) {
+this.log(t);
+var u = this.task.questions[t];
+this.newFormCounter(u);
+}
+this.render(), this.resized();
 },
 fileEntry: function(e) {
 window.resolveLocalFileSystemURI(e, this.getImageData, null);
@@ -5533,7 +5571,6 @@ contentType: "application/json",
 method: "POST",
 url: p,
 postBody: JSON.stringify(e),
-cacheBust: !1,
 handleAs: "json"
 });
 d.response(this, "handlePostResponse"), d.go();
@@ -5564,7 +5601,7 @@ enyo.Signals.send("onButtonGroupChosen", e);
 },
 newFormText: function(e) {
 var t = "inputDec_" + e.id, n = "input_" + e.id;
-questionBody[0].createComponent({
+this.$.acc.createComponent({
 name: t,
 style: "clear: both;",
 kind: "onyx.InputDecorator",
@@ -5575,88 +5612,73 @@ name: n,
 kind: "onyx.Input",
 classes: "onyx-input"
 } ]
-}, {
-owner: questionBody[0]
 });
 },
 newFormExclusiveChoice: function(e) {
-var t = "input_" + e.id, n = e.options.split("|"), r = [];
-for (i in n) i == 0 ? r.push({
-content: n[i],
+var t = "input_" + e.id;
+options = e.options.split("|"), array = [];
+for (var n in options) n == 0 ? array.push({
+content: options[n],
 active: !0,
 ontap: "testButtons"
-}) : r.push({
-content: n[i],
+}) : array.push({
+content: options[n],
 ontap: "testButtons"
 });
-questionBody[0].createComponent({
+this.$.acc.createComponent({
 name: t,
 kind: "onyx.RadioGroup",
 classes: "center",
-components: r
-}, {
-owner: this
+components: array
 });
 },
 newTime: function(e) {
-var t = new Date, n = t.toTimeString().split(" ")[0], r = "time_" + e.id;
-questionBody[0].createComponent({
+var t = new Date;
+timeStr = t.toTimeString().split(" ")[0], name = "time_" + e.id, this.$.acc.createComponent({
 content: e.question
-}), questionBody[0].createComponent({
-name: r,
-content: n,
+}), this.$.acc.createComponent({
+name: name,
+content: timeStr,
 classes: "center",
 time: t.toTimeString()
 });
 },
 newFormMultipleChoice: function(e) {
 var t = e.options.split("|");
-questionBody[0].createComponent({
+this.$.acc.createComponent({
 name: "groupbox",
-classes: "center;",
-kind: "onyx.Groupbox",
+classes: "center",
+style: "clear: both;",
+kind: enyo.ToolDecorator,
 components: []
-}, {
-owner: questionBody[0]
 });
 for (i in t) {
-var n = "checkbox_" + i, r = "content_" + i, s = [];
-questionBody[0].$.groupbox.createComponent({
+var n = "checkbox_" + i, r = "content_" + i;
+this.$.acc.$.groupbox.createComponent({
 name: n,
 kind: "onyx.Checkbox",
-onchange: "testButtons",
-style: "float: left; clear: left;"
-}, {
-owner: this
-}), questionBody[0].$.groupbox.createComponent({
+onchange: "testButtons"
+}), this.$.acc.$.groupbox.createComponent({
 name: r,
-content: t[i],
-style: "float: left; clear: right;"
+content: t[i]
 });
 }
 },
 newFormCounter: function(e) {
 var t = "name_" + e.id, n = "counter_" + e.id, r;
 for (x in this.task.questions) if (this.task.questions[x].type === "exclusive_multiple_choice") {
-r = this.task.questions[x].id.toString();
+var r = this.task.questions[x].id.toString();
 break;
 }
 var i = "input_" + r;
-e.type.split("_")[1].indexOf("2") === -1 ? questionBody[1].createComponent({
+this.$.acc.createComponent({
 name: n,
-kind: "BikeCounter",
-title: e.question,
-style: "clear: both;"
-}) : questionBody[2].createComponent({
-name: n,
-kind: "BikeCounter",
-title: e.question,
-style: "clear: both;"
+kind: "BikeCounter"
 });
 },
 readFormText: function(e) {
 var t = "input_" + e.id;
-return questionBody[0].$[t].getValue();
+return this.$.acc.$[t].getValue();
 },
 readFormExclusiveChoice: function(e) {
 var t = "input_" + e.id, n = this.$[t].children;
@@ -5682,7 +5704,7 @@ t = r.getData();
 return this.log(t), t.join("|");
 },
 readTime: function(e) {
-var t = "time_" + e.id, n = questionBody[0].$[t].time;
+var t = "time_" + e.id, n = this.$.acc.$[t].time;
 return n;
 }
 });
@@ -5830,7 +5852,7 @@ return LocalStorage.get("ready");
 
 enyo.kind({
 name: "FilledPanels",
-style: "z-index: -14;",
+kind: enyo.FittableRows,
 events: {
 onSnapped: "",
 onPlaceChosen: ""
@@ -5853,6 +5875,9 @@ kind: "PinView",
 classes: "mapHide"
 } ]
 }, {
+kind: enyo.FittableColumns,
+fit: !0,
+components: [ {
 name: "leftButton",
 kind: "onyx.Button",
 content: "<",
@@ -5868,6 +5893,7 @@ onTransitionFinish: "transitionFinishHandler",
 onTransitionStart: "transitionStartHandler",
 classes: "filledPanels",
 layoutKind: "enyo.FittableColumnsLayout",
+fit: !0,
 components: []
 }, {
 name: "rightButton",
@@ -5876,6 +5902,7 @@ content: ">",
 slide: "next",
 ontap: "buttonTapHandler",
 classes: "filledButtons"
+} ]
 }, {
 kind: "Signals",
 onPinClicked: "popupTriggered"
@@ -5891,10 +5918,10 @@ handleAs: "json"
 r.go().response(this, "renderResponse"), this.$.panels.$.animator.setDuration(350);
 },
 renderResponse: function(e, t) {
-this.campaignArray = t.campaigns;
+this.campaignArray = t.campaigns, this.log(this.campaignArray);
 for (var n in this.campaignArray) {
 var r = this.campaignArray[n], i = "panel_" + r.id, s = "item_" + r.id, o = "map_" + r.id, u = Date.parse(new Date), a = r.start_date_string.split(/[- :]/), f = r.end_date_string.split(/[- :]/), l = Date.parse(new Date(a[0], a[1] - 1, a[2], a[3], a[4], a[5])), c = Date.parse(new Date(f[0], f[1] - 1, f[2], f[3], f[4], f[5]));
-c >= u && (this.$.panels.createComponent({
+this.$.panels.createComponent({
 name: i,
 classes: "panelItem",
 fit: !0,
@@ -5911,7 +5938,7 @@ kind: "NewMap",
 provider: "openlayers",
 style: "height: 100%; width: 100%;"
 } ]
-}), u < l && (this.log(this.$.panels.$[i]), this.$.panels.$[i].running = !1)), this.render(), this.checkSides();
+}), this.render(), this.checkSides();
 }
 },
 buttonTapHandler: function(e, t) {
@@ -5931,9 +5958,11 @@ t == 1 ? (this.$.rightButton.setDisabled(!0), this.$.leftButton.setDisabled(!0))
 },
 drawMap: function(e, t) {
 var n = this.$.panels.getPanels(), r = 0, i, s = t.originator.name.split("_")[1];
+this.log(s);
 for (x in n) {
+this.log(x);
 var o = n[x].name.split("_")[1];
-o === s && (i = this.campaignArray[x].location, this.$.panels.$["map_" + o].checkMap(i));
+this.log(o), o === s && (i = this.campaignArray[x].location, this.log(i), this.$.panels.$["map_" + o].checkMap(i));
 }
 return !0;
 },
@@ -5978,17 +6007,20 @@ this.index = e;
 
 enyo.kind({
 name: "LeaderboardList",
-kind: "enyo.List",
+kind: enyo.FittableRows,
 style: "background-color: #254048;",
 classes: "list",
+components: [ {
+name: "list",
+kind: enyo.List,
+fit: !0,
+onSetupItem: "setupItem",
 components: [ {
 name: "item",
 kind: "LeaderboardItem",
 classes: "campItem"
+} ]
 } ],
-handlers: {
-onSetupItem: "setupItem"
-},
 create: function(e) {
 var t = Data.getURL() + "leaderboard.json", n = new enyo.Ajax({
 method: "GET",
@@ -6008,7 +6040,7 @@ setupItem: function(e, t) {
 return this.$.item.setIndex(t.index), this.leaderboardArray != undefined && (this.$.item.$.User.setContent(this.leaderboardArray[t.index].name), this.$.item.$.Points.setContent(this.leaderboardArray[t.index].points)), !0;
 },
 refreshList: function() {
-this.setCount(this.leaderboardArray.length), this.refresh(), this.render();
+this.$.list.setCount(this.leaderboardArray.length), this.$.list.refresh(), this.$.list.render();
 }
 });
 
@@ -6246,7 +6278,7 @@ this.locPlot(e);
 locPlot: function(e) {
 this.locations = e;
 var t = /-\d+\.\d+,\d+\.\d+/;
-this.locations.match(t) != null && (this.locations = this.locations.split("|"), this.addMarkers(), this.$.obsButton.addStyles("display: none;"));
+this.locations.match(t) != null && (this.log(this.locations), this.locations = this.locations.split("|"), this.addMarkers(), this.$.obsButton.addStyles("display: none;"));
 },
 inside: function(e) {
 var t = this.straction.getBounds().getNorthEast(), n = this.straction.getBounds().getSouthWest();
@@ -6891,6 +6923,66 @@ return t.join("|");
 readFormCounter: function(e) {
 var t = "counter_" + e.id;
 return this.$.qbody.$[t].getCount();
+}
+});
+
+// Tally.js
+
+enyo.kind({
+name: "Tally",
+classes: "tally",
+published: {
+number: 1
+},
+components: [ {
+kind: enyo.FlyweightRepeater,
+bottomUp: !0,
+components: [ {
+tag: "img",
+src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAGCAQAAAClB0z9AAAADElEQVQI12NgoBUAAABaAAGF4JwLAAAAAElFTkSuQmCC"
+}, {
+name: "content",
+classes: "content"
+} ]
+} ],
+numberChanged: function() {
+this.number = this.number || 0, this.removeClass("tally-0"), this.removeClass("tally-1"), this.removeClass("tally-2"), this.removeClass("tally-3"), this.removeClass("tally-4"), this.addClass("tally-" + this.number % 5);
+var e = this.$.flyweightRepeater;
+e.count = Math.ceil(this.number / 5), e.render();
+},
+create: function() {
+this.inherited(arguments), this.numberChanged();
+}
+});
+
+// TallyCounter.js
+
+enyo.kind({
+name: "TallyCounter",
+style: "height: 100%; width: 100%;",
+kind: enyo.FittableRows,
+published: {
+row: 0,
+col: 0
+},
+handlers: {
+onEditing: "setDecrease"
+},
+components: [ {
+name: "numberCount",
+content: "0",
+ontap: "increaseCount",
+fit: !0
+} ],
+create: function(e, t) {
+this.inherited(arguments), this.decrease = !1;
+},
+increaseCount: function(e, t) {
+var n = Number(this.$.numberCount.getContent());
+return this.decrease && n > 0 ? this.$.numberCount.setContent(n - 1) : this.$.numberCount.setContent(n + 1), this.render(), this.log("r: " + this.row + " c: " + this.col), !0;
+},
+setDecrease: function(e, t) {
+return this.decrease = !this.decrease, !0;
 }
 });
 

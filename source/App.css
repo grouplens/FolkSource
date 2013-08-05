@@ -106,77 +106,67 @@
     height: 100%;
     padding: 0 0;
 }
-
 .bikeTable {
-    display: table;
     width: 100%;
+	border-width: 0px;
+   	display: table;
+	empty-cells: hide;
+	border-collapse: collapse;
 }
-.tableChild {
-    opacity: 0.6;
-}
-.tablePed {
+.tableMen {
     background-color: lightblue;
+	text-align: center;
 }
-.tableBike {
-    background-color: lightgreen;
+.tableCellMen {
+	//border: 2px lightblue solid;
+	height: 20%;
 }
-.tablePed > button {
-    background-color: lightblue;
+.tableCellMen > * {
+	width: 100%;
 }
-.tableBike > button {
-    background-color: lightgreen;
+.tableWomen {
+    background-color: pink;
+	text-align: center;
 }
-.tableHide {
+.tableCellWomen {
+	//border: 2px pink solid;
+	height: 20%;
+}
+.tableCellWomen > * {
+	width: 100%;
+}
+.tableCellContent {
+	height: 100%;
+	width: 44px;
+	text-align: center;
+	vertical-align: middle;
+}
+.tableCellHeight {
+	height: 32px;
+}
+.tableCellWidth {
+	width: 32px;
+}
+.tableHideCollapse {
+	height: 0px;
+	width: 0px;
     display: none;
 }
-.tableHide * {
-    display: none;
+.tableHideKeep {
+    visibility: hidden;
 }
-.tableCell {
-    text-align: center;
-    width: 24.5%;
-}
-.ageTitle {
-    width: 2%;
-}
-.tableButton {
-    /*width: 80%;*/
-    padding: 4px 4px;
+.tally {
+	width: 100%;
+	height: 100%;
 }
 table, tr, td {
-    border-width: 0px;
+    border: 0px white solid;
 }
 .senseButtons {
-    position: absolute;
-    display: inline;
     width: 100%;
-    bottom: 0px;
 }
 .senseButtons > button{
     width: 50%;
-}
-
-/* BORROWED FROM THE ACCORDION EXAMPLES */
-.accordionHeader {
-    background-image: url(../assets/arrow.png);
-    background-repeat: repeat-y;
-    height: 40px;
-	position: relative;
-	vertical-align: middle;
-	font-size: 14px;
-	font-weight: bold;
-	color: #FFF;
-	padding-left: 50px;
-	background-color: #152737;
-}
-.accordionHeaderHighlight {
-    background-position: 0px 40px;
-}
-.accordionContent div {
-    background-position: 0px 40px;
-	position: relative;
-	color: white;
-	background-color: #0B333E;
 }
 
 .center {
@@ -186,58 +176,17 @@ table, tr, td {
     margin-right: auto;
 }
 
-
-/* ../source/menupane/style.css */
-
-/* menupane style.css */
-
-.menu-header,
-.menu-item {
-  height: 40px;
-  width: 284px;
-  /* width: 100%; */
-  color: white;
-  padding: 16px 0 0 16px;
-}
-
-.menu-header > *,
-.menu-item > * {
-  display: inline-block;
-}
-
-.menupane-menu .menu-header,
-.menupane-menu .menu-item {
-  padding-right: 60px;
-}
-
-.menupane-menu-secondary .menu-header,
-.menupane-menu-secondary .menu-item {
-  padding-left: 76px;
-}
-
-.menu-header {
-	background-color: #641F11;
-    color: #5C9DAF;
-}
-
-.menu-item {
-	background-color: #5C9DAF;
-	color: #641F11;
-}
-
-.menupane-pane {
-  background-color: rgb(192, 192, 192);
-  box-shadow: 0px 0px 5px 6px rgba( 32, 32, 32, 0.5);
-}
-
-.content {
-  /*padding-top: 5%;
-  height: 100%;*/
-}
 .onyx-groupbox > .onyx-input-decorator {
     border-color: white;
 }
 
+.tally-small img{
+    height: 20px;
+}
+.slidein-option {
+    min-width: 200px;
+    padding: 15px;
+}
 .ios-navbar {
 	position: absolute;
 	width: 100%;
@@ -273,4 +222,15 @@ table, tr, td {
 }
 .nice-padding {
 	padding: 15px;
+}
+.niceish-padding {
+	padding: 15px 0px;
+}
+.highlight {
+	background-color: yellow;
+	color: black;
+	opacity: 0.8;
+}
+.highlight * {
+	background-color: yellow;
 }

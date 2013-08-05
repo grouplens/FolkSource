@@ -100,6 +100,7 @@ enyo.kind({
 	this.locations = a;//.split("|");
 	var pattern = /-\d+\.\d+,\d+\.\d+/;
 	if (this.locations.match(pattern) != null) {
+	    this.log(this.locations);
 	    this.locations = this.locations.split("|");
 	    this.addMarkers();
 	    this.$.obsButton.addStyles("display: none;");

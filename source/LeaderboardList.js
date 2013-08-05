@@ -1,14 +1,13 @@
 enyo.kind({
     name: "LeaderboardList",
-    kind: "enyo.List",
+    kind: enyo.FittableRows,
     style: "background-color: #254048;", 
     classes: "list",
     components: [
-        {name: "item", kind: "LeaderboardItem", classes: "campItem"}
+	{name: "list", kind: enyo.List, fit: true, onSetupItem: "setupItem", components: [
+        	{name: "item", kind: "LeaderboardItem", classes: "campItem"}
+    	]}
     ],
-    handlers: {
-        onSetupItem: "setupItem"
-    },
     create: function (a) {
         var url = Data.getURL() + "leaderboard.json";
         var req = new enyo.Ajax({method: "GET", cacheBust: !1, url: url, handleAs: "json"});
@@ -32,9 +31,9 @@ enyo.kind({
         return true;
     },
     refreshList: function () {
-        this.setCount(this.leaderboardArray.length);
-        this.refresh();
-        this.render();
+        this.$.list.setCount(this.leaderboardArray.length);
+        this.$.list.refresh();
+        this.$.list.render();
         /*this.$.list.setCount(this.leaderboardArray.length);
         this.$.list.refresh();*/
         //this.parent.$.lboard.resized();
