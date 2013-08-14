@@ -78,25 +78,25 @@ L.Control.Layers = L.Control.extend({
 		var form = this._form = L.DomUtil.create('form', className + '-list');
 
 		if (this.options.collapsed) {
-			L.DomEvent
-			    .on(container, 'mouseover', this._expand, this)
-			    .on(container, 'mouseout', this._collapse, this);
-
+			if (!L.Browser.android) {
+				L.DomEvent
+				    .on(container, 'mouseover', this._expand, this)
+				    .on(container, 'mouseout', this._collapse, this);
+			}
 			var link = this._layersLink = L.DomUtil.create('a', className + '-toggle', container);
 			link.href = '#';
 			link.title = 'Layers';
 
 			if (L.Browser.touch) {
 				L.DomEvent
-				    .on(link, 'click', L.DomEvent.stopPropagation)
-				    .on(link, 'click', L.DomEvent.preventDefault)
+				    .on(link, 'click', L.DomEvent.stop)
 				    .on(link, 'click', this._expand, this);
 			}
 			else {
 				L.DomEvent.on(link, 'focus', this._expand, this);
 			}
 
-			this._map.on('movestart', this._collapse, this);
+			this._map.on('click', this._collapse, this);
 			// TODO keyboard accessibility
 		} else {
 			this._expand();

@@ -2,6 +2,57 @@
 	Put anything you reference with "url()" in ../assets/
 	This way, you can minify your application, and just remove the "source" folder for production
 */
+.hidden {
+	display: none !important;
+}
+
+.cluster-selected {
+	border: 2px solid blue;
+}
+
+.csenseshowcampaigns-node > div {
+	display: block !important;
+	overflow: hidden;
+}
+
+.csenseshowcampaigns-node > img {
+	float: left;
+	/*border: 1px solid green;*//*For debug purposes*/
+	width: 16px;
+}
+
+.csense-ping-layer {
+	border: 1px solid black;
+	background: rgba(0, 0, 0, 0);
+	border-radius: 999px;
+}
+
+.submission-marker-div {
+	border: 1px solid black;
+	opacity: 0.75;
+	/*background-color: #BCD2EE;
+	background-color: #FFC500;*/
+	background-color: #64FF90;
+	border-radius: 999px;
+}
+
+.popup-list-item {
+	border: 1px solid gray;
+	padding: 3px;
+}
+.popup-list-item:hover {
+	/*border: 1px solid gray;*/
+	/*padding: 3px;*/
+	background-color: #DEDEDE;
+}
+.popup-list-item-heading {
+	/*text-decoration: underline;*/
+	font-weight: bold;
+}
+.popup-list-item-body {
+	padding-left: 1em;
+}
+
 .nice-padding {
 	padding: 15px;
 }

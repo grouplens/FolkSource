@@ -7,7 +7,7 @@
 var oldL = window.L,
     L = {};
 
-L.version = '0.6-dev';
+L.version = '0.6.2';
 
 // define Leaflet for Node module pattern loaders, including Browserify
 if (typeof module === 'object' && typeof module.exports === 'object') {
@@ -15,7 +15,7 @@ if (typeof module === 'object' && typeof module.exports === 'object') {
 
 // define Leaflet as an AMD module
 } else if (typeof define === 'function' && define.amd) {
-	define('leaflet', [], function () { return L; });
+	define(L);
 }
 
 // define Leaflet as a global L variable, saving the original L to restore later if needed
@@ -968,23 +968,6 @@ L.DomUtil = {
 		return el;
 	},
 
-	disableTextSelection: function () {
-		if (document.selection && document.selection.empty) {
-			document.selection.empty();
-		}
-		if (!this._onselectstart) {
-			this._onselectstart = document.onselectstart || null;
-			document.onselectstart = L.Util.falseFn;
-		}
-	},
-
-	enableTextSelection: function () {
-		if (document.onselectstart === L.Util.falseFn) {
-			document.onselectstart = this._onselectstart;
-			this._onselectstart = null;
-		}
-	},
-
 	hasClass: function (el, name) {
 		return (el.className.length > 0) &&
 		        new RegExp('(^|\\s)' + name + '(\\s|$)').test(el.className);
@@ -1104,6 +1087,54 @@ L.DomUtil.TRANSITION = L.DomUtil.testProp(
 L.DomUtil.TRANSITION_END =
         L.DomUtil.TRANSITION === 'webkitTransition' || L.DomUtil.TRANSITION === 'OTransition' ?
         L.DomUtil.TRANSITION + 'End' : 'transitionend';
+
+(function () {
+	var userSelectProperty = L.DomUtil.testProp(
+		['userSelect', 'WebkitUserSelect', 'OUserSelect', 'MozUserSelect', 'msUserSelect']);
+
+	var userDragProperty = L.DomUtil.testProp(
+		['userDrag', 'WebkitUserDrag', 'OUserDrag', 'MozUserDrag', 'msUserDrag']);
+
+	L.extend(L.DomUtil, {
+		disableTextSelection: function () {
+			if (userSelectProperty) {
+				var style = document.documentElement.style;
+				this._userSelect = style[userSelectProperty];
+				style[userSelectProperty] = 'none';
+			} else {
+				L.DomEvent.on(window, 'selectstart', L.DomEvent.stop);
+			}
+		},
+
+		enableTextSelection: function () {
+			if (userSelectProperty) {
+				document.documentElement.style[userSelectProperty] = this._userSelect;
+				delete this._userSelect;
+			} else {
+				L.DomEvent.off(window, 'selectstart', L.DomEvent.stop);
+			}
+		},
+
+		disableImageDrag: function () {
+			if (userDragProperty) {
+				var style = document.documentElement.style;
+				this._userDrag = style[userDragProperty];
+				style[userDragProperty] = 'none';
+			} else {
+				L.DomEvent.on(window, 'dragstart', L.DomEvent.stop);
+			}
+		},
+
+		enableImageDrag: function () {
+			if (userDragProperty) {
+				document.documentElement.style[userDragProperty] = this._userDrag;
+				delete this._userDrag;
+			} else {
+				L.DomEvent.off(window, 'dragstart', L.DomEvent.stop);
+			}
+		}
+	});
+})();
 
 
 /*
@@ -1519,11 +1550,15 @@ L.Map = L.Class.extend({
 			this.setView(L.latLng(options.center), options.zoom, {reset: true});
 		}
 
-		this._initLayers(options.layers);
-
 		this._handlers = [];
 
+		this._layers = {};
+		this._zoomBoundLayers = {};
+		this._tileLayersNum = 0;
+
 		this.callInitHooks();
+
+		this._addLayers(options.layers);
 	},
 
 
@@ -2022,16 +2057,10 @@ L.Map = L.Class.extend({
 		this._container.removeChild(this._mapPane);
 	},
 
-	_initLayers: function (layers) {
+	_addLayers: function (layers) {
 		layers = layers ? (L.Util.isArray(layers) ? layers : [layers]) : [];
 
-		this._layers = {};
-		this._zoomBoundLayers = {};
-		this._tileLayersNum = 0;
-
-		var i, len;
-
-		for (i = 0, len = layers.length; i < len; i++) {
+		for (var i = 0, len = layers.length; i < len; i++) {
 			this.addLayer(layers[i]);
 		}
 	},
@@ -2158,14 +2187,16 @@ L.Map = L.Class.extend({
 	},
 
 	_onMouseClick: function (e) {
-		if (!this._loaded || (this.dragging && this.dragging.moved())) { return; }
+		// jshint camelcase: false
+		if (!this._loaded || (!e._simulated && this.dragging && this.dragging.moved()) || e._leaflet_stop) { return; }
 
 		this.fire('preclick');
 		this._fireMouseEvent(e);
 	},
 
 	_fireMouseEvent: function (e) {
-		if (!this._loaded) { return; }
+		// jshint camelcase: false
+		if (!this._loaded || e._leaflet_stop) { return; }
 
 		var type = e.type;
 
@@ -2304,7 +2335,7 @@ L.Projection.Mercator = {
 		    lng = point.x * d / r,
 		    tmp = r2 / r,
 		    eccent = Math.sqrt(1 - (tmp * tmp)),
-		    ts = Math.exp(- point.y / r2),
+		    ts = Math.exp(- point.y / r),
 		    phi = (Math.PI / 2) - 2 * Math.atan(ts),
 		    numIter = 15,
 		    tol = 1e-7,
@@ -2575,10 +2606,7 @@ L.TileLayer = L.Class.extend({
 				var className = 'leaflet-tile-container leaflet-zoom-animated';
 
 				this._bgBuffer = L.DomUtil.create('div', className, this._container);
-				this._bgBuffer.style.zIndex = 1;
-
 				this._tileContainer = L.DomUtil.create('div', className, this._container);
-				this._tileContainer.style.zIndex = 2;
 
 			} else {
 				this._tileContainer = this._container;
@@ -2948,7 +2976,7 @@ L.TileLayer.WMS = L.TileLayer.extend({
 
 		for (var i in options) {
 			// all keys that are not TileLayer options go to WMS params
-			if (!this.options.hasOwnProperty(i)) {
+			if (!this.options.hasOwnProperty(i) && i !== 'crs') {
 				wmsParams[i] = options[i];
 			}
 		}
@@ -2960,8 +2988,10 @@ L.TileLayer.WMS = L.TileLayer.extend({
 
 	onAdd: function (map) {
 
+		this._crs = this.options.crs || map.options.crs;
+
 		var projectionKey = parseFloat(this.wmsParams.version) >= 1.3 ? 'crs' : 'srs';
-		this.wmsParams[projectionKey] = map.options.crs.code;
+		this.wmsParams[projectionKey] = this._crs.code;
 
 		L.TileLayer.prototype.onAdd.call(this, map);
 	},
@@ -2969,14 +2999,13 @@ L.TileLayer.WMS = L.TileLayer.extend({
 	getTileUrl: function (tilePoint, zoom) { // (Point, Number) -> String
 
 		var map = this._map,
-		    crs = map.options.crs,
 		    tileSize = this.options.tileSize,
 
 		    nwPoint = tilePoint.multiplyBy(tileSize),
 		    sePoint = nwPoint.add([tileSize, tileSize]),
 
-		    nw = crs.project(map.unproject(nwPoint, zoom)),
-		    se = crs.project(map.unproject(sePoint, zoom)),
+		    nw = this._crs.project(map.unproject(nwPoint, zoom)),
+		    se = this._crs.project(map.unproject(sePoint, zoom)),
 
 		    bbox = [nw.x, se.y, se.x, nw.y].join(','),
 
@@ -3375,6 +3404,7 @@ L.Marker = L.Class.extend({
 		title: '',
 		clickable: true,
 		draggable: false,
+		keyboard: true,
 		zIndexOffset: 0,
 		opacity: 1,
 		riseOnHover: false,
@@ -3485,6 +3515,10 @@ L.Marker = L.Class.extend({
 
 		L.DomUtil.addClass(icon, classToAdd);
 
+		if (options.keyboard) {
+			icon.tabIndex = '0';
+		}
+
 		this._icon = icon;
 
 		this._initInteraction();
@@ -3577,6 +3611,7 @@ L.Marker = L.Class.extend({
 
 		L.DomUtil.addClass(icon, 'leaflet-clickable');
 		L.DomEvent.on(icon, 'click', this._onMouseClick, this);
+		L.DomEvent.on(icon, 'keypress', this._onKeyPress, this);
 
 		for (var i = 0; i < events.length; i++) {
 			L.DomEvent.on(icon, events[i], this._fireMouseEvent, this);
@@ -3608,6 +3643,15 @@ L.Marker = L.Class.extend({
 		});
 	},
 
+	_onKeyPress: function (e) {
+		if (e.keyCode === 13) {
+			this.fire('click', {
+				originalEvent: e,
+				latlng: this._latlng
+			});
+		}
+	},
+
 	_fireMouseEvent: function (e) {
 
 		this.fire(e.type, {
@@ -3622,6 +3666,8 @@ L.Marker = L.Class.extend({
 		}
 		if (e.type !== 'mousedown') {
 			L.DomEvent.stopPropagation(e);
+		} else {
+			L.DomEvent.preventDefault(e);
 		}
 	},
 
@@ -5904,7 +5950,7 @@ L.GeoJSON = L.FeatureGroup.extend({
 		if (options.filter && !options.filter(geojson)) { return; }
 
 		var layer = L.GeoJSON.geometryToLayer(geojson, options.pointToLayer, options.coordsToLatLng);
-		layer.feature = geojson;
+		layer.feature = L.GeoJSON.asFeature(geojson);
 
 		layer.defaultOptions = layer.options;
 		this.resetStyle(layer);
@@ -6029,24 +6075,44 @@ L.extend(L.GeoJSON, {
 		}
 
 		return coords;
-	}
-});
+	},
 
-L.Marker.include({
-	toGeoJSON: function () {
+	getFeature: function (layer, newGeometry) {
+		return layer.feature ? L.extend({}, layer.feature, {geometry: newGeometry}) : L.GeoJSON.asFeature(newGeometry);
+	},
+
+	asFeature: function (geoJSON) {
+		if (geoJSON.type === 'Feature') {
+			return geoJSON;
+		}
+
 		return {
-			type: 'Point',
-			coordinates: L.GeoJSON.latLngToCoords(this.getLatLng())
+			type: 'Feature',
+			properties: {},
+			geometry: geoJSON
 		};
 	}
 });
+
+var PointToGeoJSON = {
+	toGeoJSON: function () {
+		return L.GeoJSON.getFeature(this, {
+			type: 'Point',
+			coordinates: L.GeoJSON.latLngToCoords(this.getLatLng())
+		});
+	}
+};
+
+L.Marker.include(PointToGeoJSON);
+L.Circle.include(PointToGeoJSON);
+L.CircleMarker.include(PointToGeoJSON);
 
 L.Polyline.include({
 	toGeoJSON: function () {
-		return {
+		return L.GeoJSON.getFeature(this, {
 			type: 'LineString',
 			coordinates: L.GeoJSON.latLngsToCoords(this.getLatLngs())
-		};
+		});
 	}
 });
 
@@ -6065,10 +6131,10 @@ L.Polygon.include({
 			}
 		}
 
-		return {
+		return L.GeoJSON.getFeature(this, {
 			type: 'Polygon',
 			coordinates: coords
-		};
+		});
 	}
 });
 
@@ -6079,13 +6145,13 @@ L.Polygon.include({
 				var coords = [];
 
 				this.eachLayer(function (layer) {
-					coords.push(layer.toGeoJSON().coordinates);
+					coords.push(layer.toGeoJSON().geometry.coordinates);
 				});
 
-				return {
+				return L.GeoJSON.getFeature(this, {
 					type: type,
 					coordinates: coords
-				};
+				});
 			}
 		});
 	}
@@ -6096,17 +6162,17 @@ L.Polygon.include({
 
 L.LayerGroup.include({
 	toGeoJSON: function () {
-		var geoms = [];
+		var features = [];
 
 		this.eachLayer(function (layer) {
 			if (layer.toGeoJSON) {
-				geoms.push(layer.toGeoJSON());
+				features.push(L.GeoJSON.asFeature(layer.toGeoJSON()));
 			}
 		});
 
 		return {
-			type: 'GeometryCollection',
-			geometries: geoms
+			type: 'FeatureCollection',
+			features: features
 		};
 	}
 });
@@ -6223,7 +6289,6 @@ L.DomEvent = {
 	},
 
 	disableClickPropagation: function (el) {
-
 		var stop = L.DomEvent.stopPropagation;
 
 		for (var i = L.Draggable.START.length - 1; i >= 0; i--) {
@@ -6231,7 +6296,7 @@ L.DomEvent = {
 		}
 
 		return L.DomEvent
-			.addListener(el, 'click', stop)
+			.addListener(el, 'click', L.DomEvent._fakeStop)
 			.addListener(el, 'dblclick', stop);
 	},
 
@@ -6273,6 +6338,12 @@ L.DomEvent = {
 		return delta;
 	},
 
+	_fakeStop: function stop(e) {
+		// fakes stopPropagation by setting a special event flag checked in Map mouse events handler
+		// jshint camelcase: false
+		e._leaflet_stop = true;
+	},
+
 	// check if element really left/entered the event target (for mouseenter/mouseleave)
 	_checkMouse: function (el, e) {
 
@@ -6306,16 +6377,17 @@ L.DomEvent = {
 		return e;
 	},
 
-	// this solves a bug in Android WebView where a single touch triggers two click events.
+	// this is a horrible workaround for a bug in Android where a single touch triggers two click events
 	_filterClick: function (e, handler) {
-		var timeStamp = (e.timeStamp || e.originalEvent.timeStamp);
-		var elapsed = L.DomEvent._lastClick && (timeStamp - L.DomEvent._lastClick);
+		var timeStamp = (e.timeStamp || e.originalEvent.timeStamp),
+			elapsed = L.DomEvent._lastClick && (timeStamp - L.DomEvent._lastClick);
 
-		// are they closer together than 400ms yet more than 100ms?
+		// are they closer together than 1000ms yet more than 100ms?
 		// Android typically triggers them ~300ms apart while multiple listeners
-		// on the same event should be triggered far faster.
+		// on the same event should be triggered far faster;
+		// or check if click is simulated on the element, and if it is, reject any non-simulated events
 
-		if (elapsed && elapsed > 100 && elapsed < 400) {
+		if ((elapsed && elapsed > 100 && elapsed < 1000) || (e.target._simulatedClick && !e._simulated)) {
 			L.DomEvent.stop(e);
 			return;
 		}
@@ -6347,14 +6419,12 @@ L.Draggable = L.Class.extend({
 			mousedown: 'mousemove',
 			touchstart: 'touchmove',
 			MSPointerDown: 'touchmove'
-		},
-		TAP_TOLERANCE: 15
+		}
 	},
 
-	initialize: function (element, dragStartTarget, longPress) {
+	initialize: function (element, dragStartTarget) {
 		this._element = element;
 		this._dragStartTarget = dragStartTarget || element;
-		this._longPress = longPress && !L.Browser.msTouch;
 	},
 
 	enable: function () {
@@ -6382,23 +6452,14 @@ L.Draggable = L.Class.extend({
 		if (e.shiftKey || ((e.which !== 1) && (e.button !== 1) && !e.touches)) { return; }
 
 		L.DomEvent
-		    .preventDefault(e)
-		    .stopPropagation(e);
+			.stopPropagation(e);
 
 		if (L.Draggable._disabled) { return; }
 
-		this._simulateClick = true;
+		L.DomUtil.disableImageDrag();
+		L.DomUtil.disableTextSelection();
 
-		var touchesNum = (e.touches && e.touches.length) || 0;
-
-		// don't simulate click or track longpress if more than 1 touch
-		if (touchesNum > 1) {
-			this._simulateClick = false;
-			clearTimeout(this._longPressTimeout);
-			return;
-		}
-
-		var first = touchesNum === 1 ? e.touches[0] : e,
+		var first = e.touches ? e.touches[0] : e,
 		    el = first.target;
 
 		// if touching a link, highlight it
@@ -6412,20 +6473,6 @@ L.Draggable = L.Class.extend({
 
 		this._startPoint = new L.Point(first.clientX, first.clientY);
 		this._startPos = this._newPos = L.DomUtil.getPosition(this._element);
-
-		// touch contextmenu event emulation
-		if (touchesNum === 1 && L.Browser.touch && this._longPress) {
-
-			this._longPressTimeout = setTimeout(L.bind(function () {
-				var dist = (this._newPos && this._newPos.distanceTo(this._startPos)) || 0;
-
-				if (dist < L.Draggable.TAP_TOLERANCE) {
-					this._simulateClick = false;
-					this._onUp();
-					this._simulateEvent('contextmenu', first);
-				}
-			}, this), 1000);
-		}
 
 		L.DomEvent
 		    .on(document, L.Draggable.MOVE[e.type], this._onMove, this)
@@ -6450,7 +6497,6 @@ L.Draggable = L.Class.extend({
 			this._startPos = L.DomUtil.getPosition(this._element).subtract(offset);
 
 			if (!L.Browser.touch) {
-				L.DomUtil.disableTextSelection();
 				L.DomUtil.addClass(document.body, 'leaflet-dragging');
 			}
 		}
@@ -6468,37 +6514,19 @@ L.Draggable = L.Class.extend({
 		this.fire('drag');
 	},
 
-	_onUp: function (e) {
-		var first, el, dist, simulateClickTouch, i;
-
-		clearTimeout(this._longPressTimeout);
-
-		if (this._simulateClick && e.changedTouches) {
-
-			dist = (this._newPos && this._newPos.distanceTo(this._startPos)) || 0;
-			first = e.changedTouches[0];
-			el = first.target;
-
-			if (el.tagName.toLowerCase() === 'a') {
-				L.DomUtil.removeClass(el, 'leaflet-active');
-			}
-
-			// simulate click if the touch didn't move too much
-			if (dist < L.Draggable.TAP_TOLERANCE) {
-				simulateClickTouch = true;
-			}
-		}
-
+	_onUp: function () {
 		if (!L.Browser.touch) {
-			L.DomUtil.enableTextSelection();
 			L.DomUtil.removeClass(document.body, 'leaflet-dragging');
 		}
 
-		for (i in L.Draggable.MOVE) {
+		for (var i in L.Draggable.MOVE) {
 			L.DomEvent
 			    .off(document, L.Draggable.MOVE[i], this._onMove)
 			    .off(document, L.Draggable.END[i], this._onUp);
 		}
+
+		L.DomUtil.enableImageDrag();
+		L.DomUtil.enableTextSelection();
 
 		if (this._moved) {
 			// ensure drag is not fired after dragend
@@ -6508,23 +6536,6 @@ L.Draggable = L.Class.extend({
 		}
 
 		this._moving = false;
-
-		if (simulateClickTouch) {
-			this._moved = false;
-			this._simulateEvent('click', first);
-		}
-	},
-
-	_simulateEvent: function (type, e) {
-		var simulatedEvent = document.createEvent('MouseEvents');
-
-		simulatedEvent.initMouseEvent(
-		        type, true, true, window, 1,
-		        e.screenX, e.screenY,
-		        e.clientX, e.clientY,
-		        false, false, false, false, 0, null);
-
-		e.target.dispatchEvent(simulatedEvent);
 	}
 });
 
@@ -6572,8 +6583,6 @@ L.Map.mergeOptions({
 	inertiaThreshold: L.Browser.touch ? 32 : 18, // ms
 	easeLinearity: 0.25,
 
-	longPress: true,
-
 	// TODO refactor, move to CRS
 	worldCopyJump: false
 });
@@ -6583,7 +6592,7 @@ L.Map.Drag = L.Handler.extend({
 		if (!this._draggable) {
 			var map = this._map;
 
-			this._draggable = new L.Draggable(map._mapPane, map._container, map.options.longPress);
+			this._draggable = new L.Draggable(map._mapPane, map._container);
 
 			this._draggable.on({
 				'dragstart': this._onDragStart,
@@ -6747,11 +6756,13 @@ L.Map.mergeOptions({
 L.Map.ScrollWheelZoom = L.Handler.extend({
 	addHooks: function () {
 		L.DomEvent.on(this._map._container, 'mousewheel', this._onWheelScroll, this);
+		L.DomEvent.on(this._map._container, 'MozMousePixelScroll', L.DomEvent.preventDefault);
 		this._delta = 0;
 	},
 
 	removeHooks: function () {
 		L.DomEvent.off(this._map._container, 'mousewheel', this._onWheelScroll);
+		L.DomEvent.off(this._map._container, 'MozMousePixelScroll', L.DomEvent.preventDefault);
 	},
 
 	_onWheelScroll: function (e) {
@@ -7171,6 +7182,115 @@ L.Map.addInitHook('addHandler', 'touchZoom', L.Map.TouchZoom);
 
 
 /*
+ * L.Map.Tap is used to enable mobile hacks like quick taps and long hold.
+ */
+
+L.Map.mergeOptions({
+	tap: true,
+	tapTolerance: 15
+});
+
+L.Map.Tap = L.Handler.extend({
+	addHooks: function () {
+		L.DomEvent.on(this._map._container, 'touchstart', this._onDown, this);
+	},
+
+	removeHooks: function () {
+		L.DomEvent.off(this._map._container, 'touchstart', this._onDown, this);
+	},
+
+	_onDown: function (e) {
+		if (!e.touches) { return; }
+
+		L.DomEvent.preventDefault(e);
+
+		this._fireClick = true;
+
+		// don't simulate click or track longpress if more than 1 touch
+		if (e.touches.length > 1) {
+			this._fireClick = false;
+			clearTimeout(this._holdTimeout);
+			return;
+		}
+
+		var first = e.touches[0],
+		    el = first.target;
+
+		this._startPos = this._newPos = new L.Point(first.clientX, first.clientY);
+
+		// if touching a link, highlight it
+		if (el.tagName.toLowerCase() === 'a') {
+			L.DomUtil.addClass(el, 'leaflet-active');
+		}
+
+		// simulate long hold but setting a timeout
+		this._holdTimeout = setTimeout(L.bind(function () {
+			if (this._isTapValid()) {
+				this._fireClick = false;
+				this._onUp();
+				this._simulateEvent('contextmenu', first);
+			}
+		}, this), 1000);
+
+		L.DomEvent
+			.on(document, 'touchmove', this._onMove, this)
+			.on(document, 'touchend', this._onUp, this);
+	},
+
+	_onUp: function (e) {
+		clearTimeout(this._holdTimeout);
+
+		L.DomEvent
+			.off(document, 'touchmove', this._onMove, this)
+			.off(document, 'touchend', this._onUp, this);
+
+		if (this._fireClick && e && e.changedTouches) {
+
+			var first = e.changedTouches[0],
+			    el = first.target;
+
+			if (el.tagName.toLowerCase() === 'a') {
+				L.DomUtil.removeClass(el, 'leaflet-active');
+			}
+
+			// simulate click if the touch didn't move too much
+			if (this._isTapValid()) {
+				this._simulateEvent('click', first);
+			}
+		}
+	},
+
+	_isTapValid: function () {
+		return this._newPos.distanceTo(this._startPos) <= this._map.options.tapTolerance;
+	},
+
+	_onMove: function (e) {
+		var first = e.touches[0];
+		this._newPos = new L.Point(first.clientX, first.clientY);
+	},
+
+	_simulateEvent: function (type, e) {
+		var simulatedEvent = document.createEvent('MouseEvents');
+
+		simulatedEvent._simulated = true;
+		e.target._simulatedClick = true;
+
+		simulatedEvent.initMouseEvent(
+		        type, true, true, window, 1,
+		        e.screenX, e.screenY,
+		        e.clientX, e.clientY,
+		        false, false, false, false, 0, null);
+
+		e.target.dispatchEvent(simulatedEvent);
+	}
+});
+
+if (L.Browser.touch && !L.Browser.msTouch) {
+	L.Map.addInitHook('addHandler', 'tap', L.Map.Tap);
+}
+
+
+/*
  * L.Handler.ShiftDragZoom is used to add shift-drag zoom interaction to the map
   * (zoom to a selected bounding box), enabled by default.
  */
@@ -7198,6 +7318,7 @@ L.Map.BoxZoom = L.Handler.extend({
 		if (!e.shiftKey || ((e.which !== 1) && (e.button !== 1))) { return false; }
 
 		L.DomUtil.disableTextSelection();
+		L.DomUtil.disableImageDrag();
 
 		this._startLayerPoint = this._map.mouseEventToLayerPoint(e);
 
@@ -7210,8 +7331,7 @@ L.Map.BoxZoom = L.Handler.extend({
 		L.DomEvent
 		    .on(document, 'mousemove', this._onMouseMove, this)
 		    .on(document, 'mouseup', this._onMouseUp, this)
-		    .on(document, 'keydown', this._onKeyDown, this)
-		    .preventDefault(e);
+		    .on(document, 'keydown', this._onKeyDown, this);
 
 		this._map.fire('boxzoomstart');
 	},
@@ -7239,6 +7359,7 @@ L.Map.BoxZoom = L.Handler.extend({
 		this._container.style.cursor = '';
 
 		L.DomUtil.enableTextSelection();
+		L.DomUtil.enableImageDrag();
 
 		L.DomEvent
 		    .off(document, 'mousemove', this._onMouseMove)
@@ -7405,6 +7526,9 @@ L.Map.Keyboard = L.Handler.extend({
 		    map = this._map;
 
 		if (key in this._panKeys) {
+
+			if (map._panAnim && map._panAnim._inProgress) { return; }
+
 			map.panBy(this._panKeys[key]);
 
 			if (map.options.maxBounds) {
@@ -8005,25 +8129,25 @@ L.Control.Layers = L.Control.extend({
 		var form = this._form = L.DomUtil.create('form', className + '-list');
 
 		if (this.options.collapsed) {
-			L.DomEvent
-			    .on(container, 'mouseover', this._expand, this)
-			    .on(container, 'mouseout', this._collapse, this);
-
+			if (!L.Browser.android) {
+				L.DomEvent
+				    .on(container, 'mouseover', this._expand, this)
+				    .on(container, 'mouseout', this._collapse, this);
+			}
 			var link = this._layersLink = L.DomUtil.create('a', className + '-toggle', container);
 			link.href = '#';
 			link.title = 'Layers';
 
 			if (L.Browser.touch) {
 				L.DomEvent
-				    .on(link, 'click', L.DomEvent.stopPropagation)
-				    .on(link, 'click', L.DomEvent.preventDefault)
+				    .on(link, 'click', L.DomEvent.stop)
 				    .on(link, 'click', this._expand, this);
 			}
 			else {
 				L.DomEvent.on(link, 'focus', this._expand, this);
 			}
 
-			this._map.on('movestart', this._collapse, this);
+			this._map.on('click', this._collapse, this);
 			// TODO keyboard accessibility
 		} else {
 			this._expand();
@@ -8232,8 +8356,8 @@ L.PosAnimation = L.Class.extend({
 
 		if (L.Browser.any3d) {
 			matches = style[L.DomUtil.TRANSFORM].match(this._transformRe);
-			left = parseFloat(matches[1]);
-			top  = parseFloat(matches[2]);
+			left = matches ? parseFloat(matches[1]) : 0;
+			top  = matches ? parseFloat(matches[2]) : 0;
 		} else {
 			left = parseFloat(style.left);
 			top  = parseFloat(style.top);
@@ -8537,28 +8661,13 @@ L.Map.include(!L.DomUtil.TRANSITION ? {} : {
 
 L.TileLayer.include({
 	_animateZoom: function (e) {
-		var firstFrame = false;
-
 		if (!this._animating) {
 			this._animating = true;
-			firstFrame = true;
-		}
-
-		if (firstFrame) {
 			this._prepareBgBuffer();
 		}
 
-		var bg = this._bgBuffer;
-
-		if (firstFrame) {
-			//prevent bg buffer from clearing right after zoom
-			clearTimeout(this._clearBgBufferTimer);
-
-			// hack to make sure transform is updated before running animation
-			L.Util.falseFn(bg.offsetWidth);
-		}
-
-		var transform = L.DomUtil.TRANSFORM,
+		var bg = this._bgBuffer,
+		    transform = L.DomUtil.TRANSFORM,
 		    initialTransform = e.delta ? L.DomUtil.getTranslateString(e.delta) : bg.style[transform],
 		    scaleStr = L.DomUtil.getScaleString(e.scale, e.origin);
 
@@ -8572,9 +8681,7 @@ L.TileLayer.include({
 		    bg = this._bgBuffer;
 
 		front.style.visibility = '';
-		front.style.zIndex = 2;
-
-		bg.style.zIndex = 1;
+		front.parentNode.appendChild(front); // Bring to fore
 
 		// force reflow
 		L.Util.falseFn(bg.offsetWidth);
@@ -8618,6 +8725,9 @@ L.TileLayer.include({
 		bg = this._bgBuffer = front;
 
 		this._stopLoadingImages(bg);
+
+		//prevent bg buffer from clearing right after zoom
+		clearTimeout(this._clearBgBufferTimer);
 	},
 
 	_getLoadedTilesPercentage: function (container) {

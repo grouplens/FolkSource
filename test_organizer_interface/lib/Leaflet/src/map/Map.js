@@ -35,11 +35,15 @@ L.Map = L.Class.extend({
 			this.setView(L.latLng(options.center), options.zoom, {reset: true});
 		}
 
-		this._initLayers(options.layers);
-
 		this._handlers = [];
 
+		this._layers = {};
+		this._zoomBoundLayers = {};
+		this._tileLayersNum = 0;
+
 		this.callInitHooks();
+
+		this._addLayers(options.layers);
 	},
 
 
@@ -538,16 +542,10 @@ L.Map = L.Class.extend({
 		this._container.removeChild(this._mapPane);
 	},
 
-	_initLayers: function (layers) {
+	_addLayers: function (layers) {
 		layers = layers ? (L.Util.isArray(layers) ? layers : [layers]) : [];
 
-		this._layers = {};
-		this._zoomBoundLayers = {};
-		this._tileLayersNum = 0;
-
-		var i, len;
-
-		for (i = 0, len = layers.length; i < len; i++) {
+		for (var i = 0, len = layers.length; i < len; i++) {
 			this.addLayer(layers[i]);
 		}
 	},
@@ -674,14 +672,16 @@ L.Map = L.Class.extend({
 	},
 
 	_onMouseClick: function (e) {
-		if (!this._loaded || (this.dragging && this.dragging.moved())) { return; }
+		// jshint camelcase: false
+		if (!this._loaded || (!e._simulated && this.dragging && this.dragging.moved()) || e._leaflet_stop) { return; }
 
 		this.fire('preclick');
 		this._fireMouseEvent(e);
 	},
 
 	_fireMouseEvent: function (e) {
-		if (!this._loaded) { return; }
+		// jshint camelcase: false
+		if (!this._loaded || e._leaflet_stop) { return; }
 
 		var type = e.type;
 
