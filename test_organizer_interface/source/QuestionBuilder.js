@@ -4,20 +4,25 @@ enyo.kind({
 	},
 	handlers: {
 		onDoneEditing: "lockList",
-		onMakeNew: "newOption"
+		onMakeNew: "newOption",
+		onTitleCollapsing: "toggleQuestionDrawer",
+		onNewStep: "saveData"
 	},
 	published: {
-	    	index: 1
+		stepIndex: 1,
+		questionIndex: 1
 	},
 	components:[
-	    	{name: "questions", content: "Question", kind: enyo.Node, expanded: true, onlyIconExpands: true, expandable: true, icon: "assets/question.png", components: [
-			{name: "questionText", kind: onyx.Input, style: "width: 100%;", placeholder: "Enter your question text here..."},
-			{content: "Type of Question:" },
-			{name: "questionChoices", kind: onyx.RadioGroup, ontap: "questionPicked", components: [
-				{content: "Text" },
-				{content: "Mult. Choice" },
-				{content: "Excl. Mult. Choice" },
-				{content: "Counter" },
+		{name: "stepTitle", kind: "SaveTitle", title: "Step #", big: true},
+		{name: "questionTitle", kind: "Title", title: "Question #"},
+		{name: "questionDrawer", kind: onyx.Drawer, open: true, orient: "v", classes: "hanging-child", components: [
+			{name: "questionText", kind: "TitledInput", title: "What's the question?", placeholder: "Enter your question text here..."/*, ontap: "toggleQuestionDrawer"*/},
+			{kind: "Title", title: "Type of Question:" },
+			{name: "questionChoices", tag: "select", classes: "hanging-child", components: [
+				{content: "Text", tag: "option" },
+				{content: "Mult. Choice", tag: "option" },
+				{content: "Excl. Mult. Choice", tag: "option" },
+				{content: "Counter", tag: "option" },
 			]}, 
 	    		{name: "optionList", kind: enyo.List, style: "height: 100px;", count: 1, showing: false, ontap: "editOption", onSetupItem: "makeOption", components: [
 				{kind: "EditableListItem", name: "oItem" }
@@ -25,23 +30,24 @@ enyo.kind({
 		]}
 	],
 	create: function(inSender, inEvent) {
-	    	this.inherited(arguments);
+		this.inherited(arguments);
 		this.options = ["Add new option, hit 'enter' to save"];
-		this.$.questions.setContent("Question " + this.index);
+		this.$.stepTitle.setTitle(this.$.stepTitle.getTitle() + this.stepIndex);
+		this.$.questionTitle.setTitle(this.$.questionTitle.getTitle() + this.questionIndex);
 	},
 	editOption: function(inSender, inEvent) {
-	    	var index = inEvent.index;
+		var index = inEvent.index;
 		this.$.optionList.prepareRow(index);
 		this.$.oItem.flip();
 		return true;
 	},
 	makeOption: function(inSender, inEvent) {
-	    	var index = inEvent.index;
+		var index = inEvent.index;
 		var item = inEvent.item;
 		this.$.oItem.setBuilder(false);
 		this.$.oItem.setFill(this.options[index]);
 		if(index == this.options.length - 1)
-		    	this.$.oItem.setBuilder(true);
+			this.$.oItem.setBuilder(true);
 		return true;
 	},
 	newOption: function(inSender, inEvent) {
@@ -59,28 +65,39 @@ enyo.kind({
 		return true;
 	},
 	lockList: function(inSender, inEvent) {
-	    	this.$.optionList.lockRow();
+		this.$.optionList.lockRow();
 		this.options[inEvent.index] = inEvent.content;
 		//this.buildFakeQuestion();
 	},
 	questionPicked: function (inSender, inEvent) {
-        	if (inEvent.originator.getActive()) {
-            		this.curType = inEvent.originator.getContent();
-        	}
-        	switch (this.curType) {
-            	case "Mult. Choice":
-                	this.$.oItem.setType("checkbox");
-	    		this.$.optionList.show();
-			this.$.optionList.reset();
-                	break;
-            	case "Excl. Mult. Choice":
-                	this.$.oItem.setType("radio");
-	    		this.$.optionList.show();
-			this.$.optionList.reset();
-                	break;
-           	default:
-                	this.$.optionList.applyStyle("visibility", "hidden");
-                	break;
-        	}
-    	},
+		if (inEvent.originator.getActive()) {
+			this.curType = inEvent.originator.getContent();
+		}
+		switch (this.curType) {
+			case "Mult. Choice":
+				this.$.oItem.setType("checkbox");
+				this.$.optionList.show();
+				this.$.optionList.reset();
+			break;
+			case "Excl. Mult. Choice":
+				this.$.oItem.setType("radio");
+				this.$.optionList.show();
+				this.$.optionList.reset();
+			break;
+			default:
+				this.$.optionList.applyStyle("visibility", "hidden");
+			break;
+		}
+	},
+	saveData: function(inSender, inEvent) {
+		//save logic goes here
+		this.log();
+		if(this.$.questionDrawer.getOpen())
+			this.$.stepTitle.sendSave();
+	},
+	toggleQuestionDrawer: function(inSender, inEvent) {
+		var truthy = this.$.questionDrawer.getOpen();
+		this.$.questionDrawer.setOpen(!truthy);
+		return true;
+	}
 });

@@ -15,50 +15,55 @@ enyo.kind({
 		onShowEditFeaturesToolbar: ""
 	},
 	components: [
-		{name: "tasks", content: "Task", kind: enyo.Node, expanded: true, icon: "assets/task.png", classes: "enyo-button test", onlyIconExpands: true, onExpand: "handleExpand", expandable: true, components: [
-	    		{kind: enyo.ToolDecorator, components: [
-	    			{name: "modificationRadioGroup", kind: "onyx.RadioGroup", onActivate: "radioActivated", components: [
-	    				{name: "addFeaturesButton", kind: onyx.RadioButton, content: "Add locations or Regions"},
-	    				{name: "editFeaturesButton", kind: onyx.RadioButton, content: "Edit locations and Regions"}
-	    			]},
-					{name: "finishEditingButton", kind: onyx.Button, content: "Finish Editing", ontap: "finishEditing", showing: false},
-					{name: "shapefileButton", kind: onyx.Button, content: "Upload Shapefile", ontap: "clickToAddShapeFile"}
+		{name: "taskTitle", kind: "SaveTitle", title: "Task #", big: true, onTitleCollapsing: "toggleTaskDrawer", classes: "hanging-child"},
+		{name: "taskDrawer", kind: onyx.Drawer, open: true, orient: "v", classes: "hanging-child", components: [
+			{name: "taskInstructions", kind: "TitledInput", placeholder: "Please enter your instructions here...", classes: "hanging-child", title: "Task Instructions"}, 
+			{kind: enyo.FittableColumns, classes: "hanging-child", components: [
+				{name: "modificationRadioGroup", kind: onyx.RadioGroup, onActivate: "radioActivated", classes: "hanging-child", fit: true, components: [
+					{name: "addFeaturesButton", content: "Add locations or Regions"},
+					{name: "editFeaturesButton", content: "Edit locations and Regions"},
+					{name: "shapefileButton", content: "Upload Shapefile"},
+				]},
+				{name: "finishEditingDrawer", kind: onyx.Drawer, orient: "h", open: false, components: [
+					{name: "finishEditingButton", kind: onyx.Button, content: "Finish Editing", classes: "onyx-negative", ontap: "finishEditing"},
+				]}
 			]},
-			{name: "instructions", kind: onyx.Input, style: "width: 100%;", placeholder: "Task Instructions/Description"},
-			{name: "sensorCont", kind: enyo.FittableRows},
-			{name: "questionCont", kind: enyo.FittableRows},
-			{kind: "StepBuilder"}
+			{name: "stepTitle", kind: "Title", title: "Add new step(s) to this task", classes: "hanging-child"},
+			{name: "questionCont", classes: "hanging-child", kind: enyo.FittableRows},
+			{kind: "StepBuilder", classes: "hanging-child"}
 		]}
 	],
 	addQuestion: function(inSender, inEvent) {
-	    enyo.forEach(this.$.questionCont.getComponents(), function (inSender, inEvent) {
-		this.log(inSender);
-		if(inSender.kind.toString() === "QuestionBuilder" && inSender.$.questions.getExpanded()){
-	    	inSender.$.questions.toggleExpanded();
-		}
-	});
+		this.waterfallDown("onNewStep");
+	    /*enyo.forEach(this.$.questionCont.getComponents(), function (inSender, inEvent) {
+			if(inSender.kind.toString() === "QuestionBuilder" && inSender.$.questions.getExpanded()){
+	    		inSender.$.questions.toggleExpanded();
+			}
+		});*/
 
-	var len = this.$.questionCont.getComponents().length;
-	len = len + 1; // account for Sensor not being a Question
-    	this.$.questionCont.createComponent({kind: "QuestionBuilder", index: len, classes: "bordering"});
-	this.$.questionCont.render();
-	return true;
+		var len = this.$.questionCont.getComponents().length;
+		len = len + 1; // account for Sensor not being a Question
+		this.numQuestions++;
+		this.$.questionCont.createComponent({kind: "QuestionBuilder", stepIndex: len, questionIndex: this.numQuestions, classes: "bordering hanging-child"});
+		this.$.questionCont.render();
 
+		//return true;
 	},
 	addSensor: function(inSender, inEvent) {
-	      	if(!this.sensor) {
-	    		this.$.sensorCont.createComponent({kind: "SensorChooser", classes: "bordering"});
-			this.$.sensorCont.render();
-		}
-		return true;
+		this.waterfallDown("onNewStep");
+		var len = this.$.questionCont.getComponents().length;
+		len = len + 1; // account for Sensor not being a Question
+		this.numSensors++;
+		this.$.questionCont.createComponent({kind: "SensorChooser", stepIndex: len, sensorIndex: this.numSensors, classes: "bordering hanging-child"});
+		this.$.questionCont.render();
+
+		//return true;
 	},
 	buildTaskObj: function() {
 	    	this.taskData.instructions = this.$.instructions.getValue();
 	},
 
 	radioActivated: function(inSender, inEvent){
-		//this.log("in radioActivated function");
-
 		if (inEvent.originator.getActive()){
 			//Deactivate any editing mode that may be active and remove any controls from the map
 			this.doDeactivateAllEditing();
@@ -69,7 +74,7 @@ enyo.kind({
 				this.doShowEditFeaturesToolbar();
 			}
 			//Show finish button
-			this.$.finishEditingButton.show();
+			this.toggleEditingDrawer();
 		}
 	},
 
@@ -83,7 +88,7 @@ enyo.kind({
 		//deselect radio
 		this.$.modificationRadioGroup.setActive(null);
 		//hide button
-		this.$.finishEditingButton.hide();
+		this.toggleEditingDrawer();
 	},
 	
 	clickToAddShapeFile: function(inSender, inEvent) {
@@ -98,13 +103,14 @@ enyo.kind({
 
     create: function(inSender, inEvent) {
 		this.inherited(arguments);
-		this.name = "Task " + this.index;
-		this.$.tasks.setContent(this.name);
+		this.$.taskTitle.setTitle(this.$.taskTitle.getTitle() + this.index);
 		this.taskData = {};
 		var tmp = {};
 		tmp.points = [];
 		tmp.polygons = [];
 		LocalStorage.set(this.name, tmp);
+		this.numSensors = 0;
+		this.numQuestions = 0;
 		this.log(LocalStorage.get(this.name));
     },
 
@@ -113,6 +119,15 @@ enyo.kind({
 		if(!inSender.expanded) {
 			this.finishEditing();
 		}
-	}
+	},
+	toggleEditingDrawer: function(inSender, inEvent) {
+		var truthy = this.$.finishEditingDrawer.getOpen();
+		this.log(truthy);
+		this.$.finishEditingDrawer.setOpen(!truthy);
+	},
+	toggleTaskDrawer: function(inSender, inEvent) {
+		var truthy = this.$.taskDrawer.getOpen();
+		this.$.taskDrawer.setOpen(!truthy);
+	},
         
 });

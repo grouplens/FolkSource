@@ -7,15 +7,15 @@ enyo.kind({
 		{kind: enyo.Signals, onMapClicked: "newPin"},
 		{name: "gps", kind: "rok.geolocation", watch: false, enableHighAccuracy: !0, timeout: this.gpsTimeout, maximumAge: "3000", onSuccess: "locSuccess", onError: "locError"},
 		{kind: onyx.Toolbar, layoutKind: enyo.FittableColumnsLayout, components: [
-		    	{kind: enyo.ToolDecorator, components: [
+			/*{kind: enyo.ToolDecorator, components: [
 				{kind: onyx.Grabber, ontap: "showCampaigns"},
-			]},
-			{content: "CitizenSense .beta."},
-			{fit: true},
+			]},*/
+			{content: "CitizenSense .beta.", fit: true},
 			{name: "newButton", kind: onyx.Button, content: "new", ontap: "showNewMap"},
 		]},
 		{name: "container", kind: enyo.FittableColumns, fit: true, components: [
 		    {kind: "CSenseShowCampaigns"},
+			{name: "showButton", kind: enyo.Button, ontap: "showCampaigns", content: ">"},
 		    {name: "mapCont", style: "position: relative;", fit: true, components:[
 		    	{name: "addLocationsAndRegionsToolbar", kind: onyx.Drawer, open: false, style: "position: absolute !important; z-index: 100; right: 0px;",components:[
 		    		{name: "addLandRRadioGroup", kind: onyx.RadioGroup, components:[
@@ -33,7 +33,7 @@ enyo.kind({
 		    		]}
 		    	]}
 		    ]},
-			{kind: "CSenseNewCampaign"}
+			{kind: "CampaignBuilder"}
 		]}
 	],
 	published: {
@@ -370,6 +370,11 @@ enyo.kind({
 	},
 
 	showCampaigns: function(inSender, inEvent) {
+		if(inSender.getContent() === ">")
+			inSender.setContent("<");
+		else
+			inSender.setContent(">");
+
 	    this.waterfallDown("onShowTapped");
 	    //this.waterfallDown("onDeactivateAllEditing");
 	   	this.waterfallDown("onDeactivateTaskLocationEditingUI");

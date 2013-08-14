@@ -11,14 +11,14 @@
 }
 .bordering {
 	border: 1px black outset;
-       	padding: 3px;
-       	margin: 1px;
+	padding: 3px;
+	margin: 1px;
 }
 .campaign-panel-width: {
     	min-width: 100%;
 }
 .campaign-decorator-width: {
-    	width: 90%;
+	width: 90%;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -27,21 +27,32 @@
     	opacity: 0.8;
 }
 .button-spacing {
-    	margin-left: 3px;
+	margin-left: 3px;
 	margin-right: 3px;
 }
 .map-button {
-    	padding: 10px;
+	padding: 10px;
 	/*border-width: 2px;
 	border-style: solid;
 	border: 2px solid black;*/
 	width: 100%;
 }
 .test img:hover {
-    	-moz-box-shadow: 1px 1px 1px #222;
+	-moz-box-shadow: 1px 1px 1px #222;
 	-webkit-box-shadow: 1px 1px 1px #222;
 	box-shadow: 1px 1px 1px #222;
-    	border: 1px solid darkgrey;
+	border: 1px solid darkgrey;
 	padding: 2px;
 	padding-top: 0px;
+}
+
+.text-title-small {
+	border-bottom: 1px black solid;
+}
+.text-title-big {
+	border-bottom: 3px black double;
+}
+.hanging-child {
+	width: 97%;
+	margin-left: 2%;
 }

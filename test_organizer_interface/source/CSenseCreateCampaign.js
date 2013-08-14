@@ -19,7 +19,7 @@ enyo.kind({
 		{name: "login", kind: "CSenseLoginRegister"}
 	    ]},*/
 	   	{kind: enyo.Signals, onNew: "openSlider"},
-		{name: "slide", kind: enyo.Slideable, layoutKind: enyo.FittableRowsLayout, unit: "px", max: 55, axis: "v", draggable: false, style: "position: absolute; width: 100%; height: 100%; z-index: 1; background-color: rgba(0, 0, 0, 0.6);", components: [
+		{name: "slide", kind: enyo.Slideable, layoutKind: enyo.FittableRowsLayout, unit: "px", max: 55, axis: "v", draggable: false, style: "position: absolute; width: 100%; height: 100%; z-index: 1;", components: [
 			{name: "createCampaign", kind: enyo.Scroller, style: "background-color: orange; position: relative; width: 90%; margin-left: auto; margin-right: auto;", fit: true, layoutKind: enyo.FittableRowsLayout, components: [
 			    	{name: "campaignArea", /*kind: enyo.FittableColumns,*/ fit: true, components: [
 			    		{name: "newCampaign", kind: "CSenseNewCampaign", fit: true},

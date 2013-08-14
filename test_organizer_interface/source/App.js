@@ -3,7 +3,7 @@ enyo.kind({
 	kind: enyo.FittableRows,
 	//classes: "enyo-fit",
 	components:[
-	    	{kind: "ShowMap", fit: true}
-	    	//{kind: "Test", fit: true}
+		{kind: "ShowMap", fit: true}
+		//{kind: "SaveTitledInput", fit: true}
 	]
 });

@@ -4,19 +4,25 @@ enyo.depends(
 	//"Theme.less",	// uncomment this line, and follow the steps described in Theme.less
 	"App.css",
 	"App.js",
+	"CampaignBuilder.js",
 	"ComplexSensr.js",
 	"CreateMap.js",
 	"CSenseCreateCampaign.js",
 	"CSenseLoginRegister.js",
-	"CSenseNewCampaign.js",
 	"CSenseShowCampaigns.js",
 	"Data.js",
 	"EditableListItem.js",
 	"LocalStorage.js",
 	"QuestionBuilder.js",
 	"rok.geolocation.js",
+	"SaveTitle.js",
+	"SaveTitledInput.js",
 	"SensorChooser.js",
 	"ShowMap.js",
 	"StepBuilder.js",
-	"TaskBuilder.js"
+	"TaskBuilder.js",
+	"Title.js",
+	"TitledDrawer.js",
+	"TitledInput.js",
+	"TitledTextArea.js"
 );
