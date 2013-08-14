@@ -307,7 +307,9 @@ enyo.kind({
 	*/
 	clearClusterSelect: function(updateSubs) {
 		if (this.selectedCluster){
-			L.DomUtil.removeClass(this.selectedCluster._icon, "cluster-selected");
+			if (this.selectedCluster._icon){
+				L.DomUtil.removeClass(this.selectedCluster._icon, "cluster-selected");
+			}
 			this.selectedCluster = null;
 
 			if (updateSubs === true){
