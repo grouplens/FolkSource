@@ -9,4 +9,5 @@ public class PhotoService {
 		Session session = HibernateUtil.getSession(true);
 		session.save(p);
 	}
+	
 }

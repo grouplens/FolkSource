@@ -21,6 +21,9 @@ public class AnswerDto extends Dto{
 	//CompassAnswer class fields:
 	public Integer heading;
 	
+	//PhotoAnswer class fields:
+	public String path;
+	
 	public AnswerDto(){
 		super();
 	}
@@ -40,6 +43,8 @@ public class AnswerDto extends Dto{
 			answer = ((TextAnswer)answerIn).answer;
 		} else if (answerIn.answer_type.equals("compass")){
 			heading = ((CompassAnswer)answerIn).heading;
+		} else if (answerIn.answer_type.equals("photo")){
+			path = ((PhotoAnswer)answerIn).path;
 		}
 	}
 
@@ -53,6 +58,8 @@ public class AnswerDto extends Dto{
 		} else if (answer_type.equals("compass")){
 			System.out.println("[LOG] in toAnswer. Heading: "+ heading);
 			return new CompassAnswer(id, answer_type, q_id, sub_id, heading);
+		}else if (answer_type.equals("photo")){
+			return new PhotoAnswer(id, answer_type, q_id, sub_id, path);
 		}else if (answer_type.equals("answer")){
 			return new Answer(id, answer_type, q_id, sub_id);
 		} else {

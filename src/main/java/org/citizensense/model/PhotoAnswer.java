@@ -12,5 +12,13 @@ public class PhotoAnswer extends Answer {
 		super(id, answer_type, q_id, sub_id);
 		this.path = path;
 	}
+	
+	public String getPath(){
+		return path;
+	}
+	
+	public void setPath(String path){
+		this.path = path;
+	}
 
 }
