@@ -1,5 +1,8 @@
 package org.citizensense.model;
 
+import java.sql.Time;
+import java.util.Date;
+
 import org.grouplens.common.dto.Dto;
 
 /**
@@ -19,10 +22,20 @@ public class AnswerDto extends Dto{
 	public String answer;
 	
 	//CompassAnswer class fields:
-	public Integer heading;
+	public Float heading;
 	
-	//PhotoAnswer class fields:
+	//TimeAnswer class fields:
+	public Integer milliseconds;
+	
+	//MediaAnswer class fields:
 	public String path;
+	public String mimeType;
+	
+	//AccelerometerAnswer class fields:
+	public Float x;
+	public Float y;
+	public Float z;
+	public Date timeCreated;
 	
 	public AnswerDto(){
 		super();
@@ -43,8 +56,17 @@ public class AnswerDto extends Dto{
 			answer = ((TextAnswer)answerIn).answer;
 		} else if (answerIn.answer_type.equals("compass")){
 			heading = ((CompassAnswer)answerIn).heading;
-		} else if (answerIn.answer_type.equals("photo")){
-			path = ((PhotoAnswer)answerIn).path;
+		} else if (answerIn.answer_type.equals("media")){
+			path = ((MediaAnswer)answerIn).path;
+			mimeType = ((MediaAnswer)answerIn).mimeType;
+		} else if(answerIn.answer_type.equals("time")){
+			milliseconds = ((TimeAnswer)answerIn).milliseconds;
+		} else if(answerIn.answer_type.equals("accelerometer")){
+			AccelerometerAnswer a = (AccelerometerAnswer) answerIn;
+			x = a.x;
+			y = a.y;
+			z = a.z;
+			timeCreated = a.timeCreated;
 		}
 	}
 
@@ -58,14 +80,19 @@ public class AnswerDto extends Dto{
 		} else if (answer_type.equals("compass")){
 			System.out.println("[LOG] in toAnswer. Heading: "+ heading);
 			return new CompassAnswer(id, answer_type, q_id, sub_id, heading);
-		}else if (answer_type.equals("photo")){
-			return new PhotoAnswer(id, answer_type, q_id, sub_id, path);
+		}else if (answer_type.equals("media")){
+			return new MediaAnswer(id, answer_type, q_id, sub_id, path, mimeType);
+		}else if (answer_type.equals("time")){
+			return new TimeAnswer(id, answer_type, q_id, sub_id, milliseconds);
 		}else if (answer_type.equals("answer")){
 			return new Answer(id, answer_type, q_id, sub_id);
+		}else if (answer_type.equals("accelerometer")){
+			return new AccelerometerAnswer(id, answer_type, q_id, sub_id, x, y, z, timeCreated);
 		} else {
 			//TODO: throw an exception
 			return null;
 		}
 	}
+
 	
 }

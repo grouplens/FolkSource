@@ -44,7 +44,6 @@
         <mapping resource="submission.hbm.xml" />
         <mapping resource="question.hbm.xml" />
         <mapping resource="leaderboard.hbm.xml" />
-		<mapping resource="photo.hbm.xml" />       
         
     </session-factory>
 </hibernate-configuration>

@@ -3,50 +3,12 @@
 
 <hibernate-mapping package="org.citizensense.model">
 
-
-<!--
-<class name = "Answer" table = "answers">
-	<id name="id" column="id">
-    	<generator class="native"/>
-    </id>
-    <discriminator column="answer_type" type="string"/>
-	<property name="sub_id" />
-    <property name="q_id" />
-	
-	<subclass name="TextAnswer" discriminator-value="text">
-		<join table="text_answers">
-    		<key column="id"/>
-    		<property name="answer" column="answer"/>
-        </join>
-    </subclass>
-    
-    <subclass name="MediaAnswer" discriminator-value="media">
-    
-    	<join table="media_answers">
-	    	<key column="id"/>
-	    	<property name="ref" column="ref" />
-	    </join>
-	    
-	    	<subclass name="PhotoAnswer" discriminator-value="photo">
-	    		<join table = "photo_answers">
-	    			<key column="id" />
-	    		</join>
-	    	</subclass>
-    	
-    </subclass>
-    
-</class>
--->
-
-
-
 <class name = "Answer" table = "answers">
 	<id name="id" column="id">
     	<generator class="native"/>
     </id>
 	<property name="sub_id" />
     <property name="q_id" />
-
     <property name="answer_type" />
 	
 	<joined-subclass name="TextAnswer" table="text_answers">
@@ -54,41 +16,32 @@
     	<property name="answer"/>
     </joined-subclass>
     
+    <joined-subclass name="TimeAnswer" table="time_answers">
+    	<key column="id"/>
+    	<property name="milliseconds"/>
+    </joined-subclass>
+    
     <joined-subclass name="CompassAnswer" table="compass_answers">
     	<key column="id"/>
-    	<property name="heading"/>
+    	<property name="heading" type="float"/>
+    </joined-subclass>
+    
+    <joined-subclass name="AccelerometerAnswer" table="accelerometer_answers">
+    	<key column="id"/>
+    	<property name="x" type="float"/>
+    	<property name="y" type="float"/>
+    	<property name="z" type="float"/>
+    	<property name="timeCreated" column="time_created"/>
     </joined-subclass>
     	
-    <joined-subclass name="PhotoAnswer" table = "photo_answers">
+    <joined-subclass name="MediaAnswer" table = "media_answers">
     	<key column="id" />
     	<property name="path"/>
+    	<property name="mimeType" column="mime_type"/>
     </joined-subclass>
     	
 
     
 </class>
-
-
-<!--
-<class name="Answer" abstract="true">
-	<id name="id" column="id">
-		<generator class="native" />
-	</id>
-	<property name="type" />
-	<property name="q_id" />
-	<property name="sub_id" />
-	
-	<union-subclass name="MediaAnswer" abstract="true">
-		<property name="ref" column="ref"/>
-        <union-subclass name="PhotoAnswer" table="photo_answers">
-        </union-subclass>>
-    </union-subclass>
-	
-	<union-subclass name="TextAnswer" table="text_answers">
-		<property name="answer" column="answer" />
-	</union-subclass>
-	
-</class>
--->
 
 </hibernate-mapping>
