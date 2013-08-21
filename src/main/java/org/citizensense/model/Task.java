@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.grouplens.common.dto.Dto;
 
-public class Task extends Dto{
+public class Task{
 	public Integer id;
 	public String name;
 	public String instructions;
@@ -15,38 +15,49 @@ public class Task extends Dto{
 //	private Location loc;
 
 	public Submission[] submissions;
-	public Question[] questions;
+	public Question[] questions;	
 	
-	//	public Location getLocation() {
+	public Task(){
+		super();
+	}
+	//used by the TaskDto
+	public Task(Integer id, String name, String instructions, Boolean required, Submission[] subs, Question[] qs){
+		super();
+		this.id = id;
+		this.name = name;
+		this.instructions = instructions;
+		this.required = required;
+		this.submissions = subs;
+		this.questions = qs;
+	}
+	
+	
+//	public Location getLocation() {
 //		return loc;
 //	}
 //
 //	public void setLocation(Location loc) {
 //		this.loc = loc;
 //	}
-
+	
 	public String getName() {
 		return name;
 	}
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
 	public String getInstructions() {
 		return instructions;
 	}
-
 	public void setInstructions(String instructions) {
 		this.instructions = instructions;
 	}
-
 	public List<Submission> getSubmissions() {
 		return Arrays.asList(submissions);
 	}
 
-	public void setSubmissions(List<Submission> submissions) {
-		this.submissions = submissions.toArray(new Submission[submissions.size()]);
+	public void setSubmissions(List<Submission> subs) {
+		this.submissions = subs.toArray(new Submission[subs.size()]);
 	}
 
 	public Integer getId() {

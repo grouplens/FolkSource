@@ -12,7 +12,7 @@ public class Answer extends Dto {
 	public Submission submission;
 	
 	public Answer(){
-		
+		super();
 	}
 	
 	public Answer(Integer id, String answer_type, Integer q_id, Integer sub_id){
@@ -27,7 +27,6 @@ public class Answer extends Dto {
 		return id;
 	}
 	public void setId(int id) {
-		System.out.println("[MEEE] Set id called!");
 		this.id = id;
 	}
 	
@@ -35,7 +34,6 @@ public class Answer extends Dto {
 		return answer_type;
 	}
 	public void setAnswer_type(String type) {
-		System.out.println("[MEEE] Set answer type called!");
 		this.answer_type = type;
 	}
 	
@@ -59,13 +57,4 @@ public class Answer extends Dto {
 	public void setSubmission(Submission submission) {
 		this.submission = submission;
 	}
-	
-	
-//	
-//public String getType();
-//public void setType(String type);
-//public String getResponse();
-//public void setResponse(String res);
-//public Integer getTaskId();
-//public void setTaskId(Integer id);
 }

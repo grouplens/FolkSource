@@ -17,7 +17,7 @@ public class Submission{
 	public String img_path;
 
 	public Submission(){
-		
+		super();
 	}
 	
 	public Submission(Integer id, Integer task_id, Integer user_id, String gps_location, Answer[] answers, Date timestamp, String img_path){

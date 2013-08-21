@@ -16,9 +16,14 @@
     	<property name="answer"/>
     </joined-subclass>
     
-    <joined-subclass name="TimeAnswer" table="time_answers">
+    <joined-subclass name="TimeSpanAnswer" table="time_span_answers">
     	<key column="id"/>
     	<property name="milliseconds"/>
+    </joined-subclass>
+    
+    <joined-subclass name="DateTimeAnswer" table="date_time_answers">
+    	<key column="id"/>
+    	<property name="timestamp" column="time_point"/>
     </joined-subclass>
     
     <joined-subclass name="CompassAnswer" table="compass_answers">
@@ -31,7 +36,6 @@
     	<property name="x" type="float"/>
     	<property name="y" type="float"/>
     	<property name="z" type="float"/>
-    	<property name="timeCreated" column="time_created"/>
     </joined-subclass>
     	
     <joined-subclass name="MediaAnswer" table = "media_answers">
@@ -39,9 +43,17 @@
     	<property name="path"/>
     	<property name="mimeType" column="mime_type"/>
     </joined-subclass>
-    	
-
     
+    <joined-subclass name="MultipleChoiceAnswer" table = "multiple_choice_answers">
+    	<key column="id" />
+    	<property name="choices"/>
+    </joined-subclass>
+    
+    <joined-subclass name="ComplexCounterAnswer" table = "complex_counter_answers">
+    	<key column="id" />
+    	<property name="counts"/>
+    </joined-subclass>
+    	
 </class>
 
 </hibernate-mapping>

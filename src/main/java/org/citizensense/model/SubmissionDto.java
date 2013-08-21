@@ -1,6 +1,7 @@
 package org.citizensense.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -17,24 +18,16 @@ public class SubmissionDto extends Dto{
 	public Date timestamp;
 	public String img_path;
 	
-	/**
-	 * Returns a list of SubmissionDto objects given a list of Submission objects.
-	 * @param submissions
-	 * @return
-	 */
-	public static List<SubmissionDto> fromSubmissionList(List<Submission> submissions){
-		List<SubmissionDto> submissionDtos = new ArrayList<SubmissionDto>();
-		for (Submission s : submissions){
-			submissionDtos.add(new SubmissionDto(s));
-		}
-		return submissionDtos;
-	}
+	
+	
 	
 	public SubmissionDto(){
 		super();
-		System.out.println("[LOG] A submissionDto has been initialized!");
 	}
-	
+	/**
+	 * Creates a new SubmissionDto object from the given Submission.
+	 * @param s
+	 */
 	public SubmissionDto(Submission s){
 		super();
 		this.id = s.id;
@@ -50,11 +43,41 @@ public class SubmissionDto extends Dto{
 		}
 		this.answers = newAnswers;
 	}
+
+
 	
+	
+	
+	/**
+	 * Returns a list of SubmissionDto objects given a list of Submission objects.
+	 * @param submissions
+	 * @return
+	 */
+	public static List<SubmissionDto> fromSubmissionList(List<Submission> submissions){
+		List<SubmissionDto> submissionDtos = new ArrayList<SubmissionDto>();
+		for (Submission s : submissions){
+			submissionDtos.add(new SubmissionDto(s));
+		}
+		return submissionDtos;
+	}
+	public static SubmissionDto[] fromSubmissionArray(Submission[] subs){
+		SubmissionDto[] subDtos = new SubmissionDto[subs.length];
+		for (int i=0; i < subs.length; i++){
+			subDtos[i] = new SubmissionDto(subs[i]);
+		}
+		return subDtos;
+	}
+	
+
+
+	
+	/**
+	 * Returns a new Submission object from this SubmissionDto.
+	 * @return
+	 */
 	public Submission toSubmission(){
 		
 		//Convert AnswerDtos to Answers
-		System.out.println("[ME] In toSubmission - length of answers is "+answers.length);
 		Answer[] newAnswers = new Answer[answers.length];
 		for (int i=0; i < answers.length; i++){
 			newAnswers[i] = answers[i].toAnswer();
@@ -62,8 +85,24 @@ public class SubmissionDto extends Dto{
 		return new Submission(id, task_id, user_id, gps_location, newAnswers, timestamp, img_path);
 	}
 	
+	// Is the name of this method clear? Should it even be here? I guess I put it here instead of in
+	// the Submission class because I didn't want to clutter the Submission class with any transfer
+	// logic.
+	public static Submission[] toSubmissionArray(SubmissionDto[] subDtos){
+		Submission[] subs = new Submission[subDtos.length];
+		for (int i=0; i < subDtos.length; i++){
+			subs[i] = subDtos[i].toSubmission();
+		}
+		return subs;
+	}
+	
+	
+	
+	
+	
+	
+	//TODO: Does this method ever get called?
 	public void setAnswers(List<AnswerDto> answers){
-		System.out.println("[MEEE] calling setAnswers");
 		this.answers = (AnswerDto[]) answers.toArray();
 	}
 	

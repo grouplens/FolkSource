@@ -24,8 +24,11 @@ public class AnswerDto extends Dto{
 	//CompassAnswer class fields:
 	public Float heading;
 	
-	//TimeAnswer class fields:
+	//TimeSpanAnswer class fields:
 	public Integer milliseconds;
+	
+	//DateTimeAnswer class fields:
+	public String timestamp;
 	
 	//MediaAnswer class fields:
 	public String path;
@@ -35,7 +38,12 @@ public class AnswerDto extends Dto{
 	public Float x;
 	public Float y;
 	public Float z;
-	public Date timeCreated;
+	
+	//MultipleChoiceAnswer class fields:
+	public String choices;
+	
+	//ComplexCounterAnswer class fields:
+	public String counts;
 	
 	public AnswerDto(){
 		super();
@@ -59,14 +67,19 @@ public class AnswerDto extends Dto{
 		} else if (answerIn.answer_type.equals("media")){
 			path = ((MediaAnswer)answerIn).path;
 			mimeType = ((MediaAnswer)answerIn).mimeType;
-		} else if(answerIn.answer_type.equals("time")){
-			milliseconds = ((TimeAnswer)answerIn).milliseconds;
+		} else if(answerIn.answer_type.equals("timeSpan")){
+			milliseconds = ((TimeSpanAnswer)answerIn).milliseconds;
 		} else if(answerIn.answer_type.equals("accelerometer")){
 			AccelerometerAnswer a = (AccelerometerAnswer) answerIn;
 			x = a.x;
 			y = a.y;
 			z = a.z;
-			timeCreated = a.timeCreated;
+		} else if(answerIn.answer_type.equals("multipleChoice")){
+			choices = ((MultipleChoiceAnswer)answerIn).choices;
+		} else if(answerIn.answer_type.equals("complexCounter")){
+			counts = ((ComplexCounterAnswer)answerIn).counts;
+		} else if(answerIn.answer_type.equals("dateTime")){
+			timestamp = ((DateTimeAnswer)answerIn).timestamp;
 		}
 	}
 
@@ -78,16 +91,21 @@ public class AnswerDto extends Dto{
 		if (answer_type.equals("text")){
 			return new TextAnswer(id, answer_type, q_id, sub_id, answer);
 		} else if (answer_type.equals("compass")){
-			System.out.println("[LOG] in toAnswer. Heading: "+ heading);
 			return new CompassAnswer(id, answer_type, q_id, sub_id, heading);
 		}else if (answer_type.equals("media")){
 			return new MediaAnswer(id, answer_type, q_id, sub_id, path, mimeType);
-		}else if (answer_type.equals("time")){
-			return new TimeAnswer(id, answer_type, q_id, sub_id, milliseconds);
+		}else if (answer_type.equals("timeSpan")){
+			return new TimeSpanAnswer(id, answer_type, q_id, sub_id, milliseconds);
 		}else if (answer_type.equals("answer")){
 			return new Answer(id, answer_type, q_id, sub_id);
 		}else if (answer_type.equals("accelerometer")){
-			return new AccelerometerAnswer(id, answer_type, q_id, sub_id, x, y, z, timeCreated);
+			return new AccelerometerAnswer(id, answer_type, q_id, sub_id, x, y, z);
+		} else if (answer_type.equals("multipleChoice")){
+			return new MultipleChoiceAnswer(id, answer_type, q_id, sub_id, choices);
+		} else if (answer_type.equals("complexCounter")){
+			return new ComplexCounterAnswer(id, answer_type, q_id, sub_id, counts);
+		} else if (answer_type.equals("dateTime")){
+			return new DateTimeAnswer(id, answer_type, q_id, sub_id, timestamp);
 		} else {
 			//TODO: throw an exception
 			return null;

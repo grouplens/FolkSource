@@ -26,7 +26,7 @@ public class AnswerController implements ModelDriven<DtoContainer<AnswerDto>>{
 	String mimeType;
 	File media;
 	/** The base directory to save uploaded photos. */
-	public static final String BASE_DIR = "CSenseUploadedPhotos/";
+	public static final String BASE_DIR = "CSenseUploadedMedia/";
 	
 	
 	@Override
@@ -35,30 +35,20 @@ public class AnswerController implements ModelDriven<DtoContainer<AnswerDto>>{
 	}
 	
 	public String create() {
-		//System.out.println("[LOG] AnswerController is running... in create.");
 		HttpServletRequest req = ServletActionContext.getRequest();
 		Map<String, String[]> params = req.getParameterMap();
 		
 		String answer_type = params.get("answer_type")[0];
-		//System.out.println("[LOG] Before assertion");
 		assert(answer_type.equals("media"));
-		//System.out.println("[LOG] After assertion");
 		Integer q_id = Integer.parseInt(params.get("q_id")[0]);
 		Integer sub_id = Integer.parseInt(params.get("sub_id")[0]);
-		//System.out.println("[LOG] After parsing ints");
 		Integer id = 0;
 		String path = saveMedia();
-		//System.out.println("[LOG] After saving photo");
 		
-		MediaAnswer a = new MediaAnswer(id, "media", q_id, sub_id, path, getPhotoContentType());
-		//System.out.println("[LOG] After initing phot obj");
-		//System.out.println("[LOG] PhotoAnswer.path = " + a.path);
+		MediaAnswer a = new MediaAnswer(id, "media", q_id, sub_id, path, getMediaContentType());
 		AnswerService.save(a);
-		//System.out.println("[LOG] After saving answer to db");
-		//System.out.println("[LOG] PhotoAnswer.path = " + a.path);
 		
 		content.set(new AnswerDto(a));
-		//System.out.println("[LOG] After setting content");
 		return "create";
 	}
 	
@@ -69,7 +59,7 @@ public class AnswerController implements ModelDriven<DtoContainer<AnswerDto>>{
 		Map<String, String[]> params = req.getParameterMap();
 		String name = params.get("username")[0] + "-"+ params.get("q_id")[0] + "-" + new Date().getTime();
 		//TODO: Escape/validate file name
-		String path = BASE_DIR + name + getExtension(getPhotoContentType());
+		String path = BASE_DIR + name + getExtension(getMediaContentType());
 		File storageLocation = new File(path);
 		
 		//save the file
@@ -92,21 +82,24 @@ public class AnswerController implements ModelDriven<DtoContainer<AnswerDto>>{
 		if (mimeType.equals("image/png")){
 			return ".png";
 		}
+		if (mimeType.equals("audio/wav")){
+			return ".wav";
+		}
 		return "";
 	}
 	
 	
 	//Getters and Setters
-	public String getPhotoContentType(){
+	public String getMediaContentType(){
 		return this.mimeType;
 	}
-	public void setPhotoContentType(String photoContentType) {
+	public void setMediaContentType(String photoContentType) {
 		this.mimeType = photoContentType;
 	}
-	public void setPhoto(File photo) {
+	public void setMedia(File photo) {
 		this.media = photo;
 	}
-	public File getPhoto() {
+	public File getMedia() {
 		return this.media;
 	}
 

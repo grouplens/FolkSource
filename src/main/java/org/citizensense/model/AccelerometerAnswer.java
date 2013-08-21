@@ -7,18 +7,16 @@ public class AccelerometerAnswer extends Answer {
 	public Float x;
 	public Float y;
 	public Float z;
-	public Date timeCreated;
 	
 	public AccelerometerAnswer(){
 		super();
 	}
 	
-	public AccelerometerAnswer(Integer id, String answer_type, Integer q_id, Integer sub_id, Float x, Float y, Float z, Date timeCreated){
+	public AccelerometerAnswer(Integer id, String answer_type, Integer q_id, Integer sub_id, Float x, Float y, Float z){
 		super(id, answer_type, q_id, sub_id);
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		this.timeCreated = timeCreated;
 	}
 	
 	public Float getX(){
@@ -38,11 +36,5 @@ public class AccelerometerAnswer extends Answer {
 	}
 	public void setZ(Float z){
 		this.z = z;
-	}
-	public Date getTimeCreated(){
-		return timeCreated;
-	}
-	public void setTimeCreated(Date t){
-		this.timeCreated = t;
 	}
 }
