@@ -55,7 +55,7 @@ public class CampaignController implements ModelDriven<DtoContainer<CampaignDto>
 		return "index";
 	}
 	
-	public HttpHeaders create()
+	public String create()
 	{
 		HttpServletResponse res = ServletActionContext.getResponse();
 		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
@@ -66,7 +66,7 @@ public class CampaignController implements ModelDriven<DtoContainer<CampaignDto>
 		// is that the CampaignDto originally in content did not have its id set. CampaignService.save(task) may
 		// modify the Campaign.
 		content.set(new CampaignDto(c));
-		return new DefaultHttpHeaders("create");
+		return "create";
 	}
 
 }

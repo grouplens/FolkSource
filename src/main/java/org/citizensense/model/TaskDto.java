@@ -26,7 +26,8 @@ public class TaskDto extends Dto{
 		name = t.name;
 		instructions = t.instructions;
 		required = t.required;
-		submissions = SubmissionDto.fromSubmissionArray(t.submissions);
+		if (t.submissions == null){submissions = null;}
+		else{submissions = SubmissionDto.fromSubmissionArray(t.submissions);}
 		questions = t.questions;
 	}
 	public static List<TaskDto> fromList(List<Task> tasks){
@@ -48,7 +49,13 @@ public class TaskDto extends Dto{
 	
 	//// Methods that create Tasks or collections of Tasks
 	public Task toTask(){
-		return new Task(id, name, instructions, required, SubmissionDto.toSubmissionArray(submissions), questions);
+		
+		Submission[] subs = null;
+		if (submissions != null){
+			subs = SubmissionDto.toSubmissionArray(submissions);
+		}
+		
+		return new Task(id, name, instructions, required, subs, questions);
 	}
 	public static Task[] toTaskArray(TaskDto[] tdtos){
 		Task[] tasks = new Task[tdtos.length];

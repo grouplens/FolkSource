@@ -53,7 +53,8 @@ public class Campaign{
 		this.id = id;
 	}
 	public List<Task> getTasks() {
-		return Arrays.asList(tasks);
+		if (tasks != null) { return Arrays.asList(tasks);}
+		return null;
 	}
 	public void setTasks(List<Task> tasks) {
 		this.tasks = tasks.toArray(new Task[tasks.size()]);

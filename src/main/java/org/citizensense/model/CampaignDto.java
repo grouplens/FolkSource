@@ -36,7 +36,8 @@ public class CampaignDto extends Dto{
 		end_date_string = c.end_date_string;
 		owner_id = c.owner_id;
 		task_id = c.task_id;
-		tasks = TaskDto.fromTaskArray(c.tasks);
+		if (c.tasks == null){tasks = null;}
+		else {tasks = TaskDto.fromTaskArray(c.tasks);}
 	}
 	public static List<CampaignDto> fromCampaignList(List<Campaign> camps){
 		List<CampaignDto> cdtos = new ArrayList<CampaignDto>();
@@ -49,7 +50,9 @@ public class CampaignDto extends Dto{
 	
 	
 	public Campaign toCampaign(){
-		return new Campaign(id, title, description, location, start_date, end_date, start_date_string, end_date_string, owner_id, task_id, TaskDto.toTaskArray(tasks));
+		Task[] ts = null;
+		if (tasks != null) {ts = TaskDto.toTaskArray(tasks);}
+		return new Campaign(id, title, description, location, start_date, end_date, start_date_string, end_date_string, owner_id, task_id, ts);
 	}
 
 }

@@ -34,6 +34,11 @@ public class AnswerController implements ModelDriven<DtoContainer<AnswerDto>>{
 		return content;
 	}
 	
+	/**
+	 * The answer api endpoint should only be used to send media answers to the server.
+	 * All others should be part of submission objects that get sent to the submission endpoint.
+	 * @return
+	 */
 	public String create() {
 		HttpServletRequest req = ServletActionContext.getRequest();
 		Map<String, String[]> params = req.getParameterMap();

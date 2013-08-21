@@ -53,6 +53,9 @@ public class Task{
 		this.instructions = instructions;
 	}
 	public List<Submission> getSubmissions() {
+		if (submissions == null){
+			return null;
+		}
 		return Arrays.asList(submissions);
 	}
 
@@ -77,6 +80,7 @@ public class Task{
 	}
 
 	public List<Question> getQuestions() {
+		if (questions == null) return null;
 		return Arrays.asList(questions);
 	}
 
