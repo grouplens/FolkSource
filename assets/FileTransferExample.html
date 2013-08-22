@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <title>Capture Image</title>
+
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <!-- <script type="text/javascript" charset="utf-8" src="json2.js"></script> -->
+    <script type="text/javascript" charset="utf-8">
+
+    function captureImage() {
+        navigator.camera.getPicture(
+                uploadFile,
+                function(message) {alert('get picture failed'); },
+                {
+                    quality         : 50,
+                    destinationType : navigator.camera.DestinationType.FILE_URI,
+                    sourceType      : navigator.camera.PictureSourceType.PHOTOLIBRARY
+                }
+            );
+    }
+    function captureAudio() {
+        navigator.device.capture.captureAudio(captureSuccess, captureError);
+    }
+    function captureVideo() {
+        navigator.device.capture.captureVideo(captureSuccess, captureError);
+    }
+
+    function captureSuccess(mediaFiles) {
+        uploadFile(mediaFiles[0]);
+    }
+
+    function captureError(error) {
+        var msg = 'An error occurred during capture: ' + error.code;
+        console.log(msg);
+        console.log(CaptureError);
+        console.log(CaptureError.CAPTURE_NOT_SUPPORTED);
+        console.log(CaptureError(error.code));
+    }
+
+
+    // Upload files to server
+    function uploadFile(mediaFile) {
+        //If uploadFile is called as the success callback from navigator.device.capture, then mediaFile is a MediaFile object.
+        //If uploadFile is called as the success callback from navigator.camera.getPicture, then mediaFile is a path name string.
+
+        var mimeType = mediaFile.type;
+        var path     = mediaFile.fullPath;
+        if (typeof mediaFile === 'string'){
+            mimeType = "image/jpeg"
+            path     = mediaFile
+        } else {
+            console.log("mediaFile:");
+            console.log(mediaFile);
+            console.log("mediaFile.type:");
+            console.log(mediaFile.type);
+            //For some reason mediaFile.type == undefined with audio. This fixes that:
+            if (mimeType == undefined) {mimeType = "audio/wav";}
+        }
+
+        var options = new FileUploadOptions();
+        options.fileKey  = "media";
+        options.fileName = "foobarfilename";
+        options.mimeType = mimeType;
+        options.params   = {"username": "username", "q_id": "9001", "sub_id": "9001", "answer_type": "media"};
+
+        var ft = new FileTransfer();
+        ft.upload(path, encodeURI("http://localhost:9080/csense/answer.json"), uploadSuccess, uploadError, options);
+    }
+
+    function uploadSuccess(r) {
+        console.log("Code = " + r.responseCode);
+        console.log("Response = " + r.response);
+        console.log("Sent = " + r.bytesSent);
+        console.log(r);
+    }
+
+    function uploadError(error) {
+        alert("An error has occurred: Code = " + error.code);
+        console.log("upload error source " + error.source);
+        console.log("upload error target " + error.target);
+        console.log(error);
+    }
+
+    </script>
+    </head>
+    <body>
+        <button onclick="captureImage();">Capture Image</button> <br>
+        <button onclick="captureAudio();">Capture Audio</button> <br>
+        <button onclick="captureVideo();">Capture Video</button> <br>
+    </body>
+</html>

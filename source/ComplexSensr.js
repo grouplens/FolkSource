@@ -265,7 +265,7 @@ enyo.kind({
 					}
 				}
 				this.log("SENDING TO SERVER: " + JSON.stringify(a));
-				/*var h = Data.getURL() + "submission.json", j = new enyo.Ajax({
+				var h = Data.getURL() + "submission.json", j = new enyo.Ajax({
 					contentType: "application/json",
 					method: "POST",
 					url: h,
@@ -273,7 +273,7 @@ enyo.kind({
 					//cacheBust: !1,
 					handleAs: "json"
 				});
-				j.response(this, "handlePostResponse"), j.go();*/
+				j.response(this, "handlePostResponse"), j.go();
 			//}
 		}
 	},
