@@ -58,6 +58,7 @@ enyo.kind({
 		var drawer = inEvent.originator.owner;
 		if ( (drawer.name === "cSenseNewCampaign") ){
 			//This is really sketchy. This should be implemented so that we can get the width from the drawers without knowing it.
+			this.log("END HANDLER CALLED!");
 			var offset = drawer.open ? -225 : 225;
 			this.doAdjustMapSize({offset: offset});
 		}

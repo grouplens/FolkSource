@@ -8,6 +8,7 @@ enyo.depends(
 	"CreateMap.js",
 	"CSenseCreateCampaign.js",
 	"CSenseLoginRegister.js",
+	"CSenseMap.js",
 	"CSenseNewCampaign.js",
 	"CSenseShowCampaigns.js",
 	"CSenseTaskDetail.js",
