@@ -8,8 +8,8 @@
 	<name>Citizen Sense</name>
 
 	<properties>
-		<db.username>citizensense</db.username>
-		<db.password></db.password>
+		<db.username>nick</db.username>
+		<db.password>econetmath</db.password>
 		<db.schema>public</db.schema>
 		<db.connection.driver.class>org.postgresql.Driver</db.connection.driver.class>
 		<db.url>jdbc:postgresql://localhost/citizensense</db.url>
@@ -101,7 +101,7 @@
 				<configuration>
 					<container>
 						<containerId>tomcat7x</containerId>
-						<home>/home/grad01/thebault/apache-tomcat-7.0.29</home>
+						<home>/home/nick/Tomcat/apache-tomcat-7.0.35</home>
 						<type>installed</type>
 					</container>
 
