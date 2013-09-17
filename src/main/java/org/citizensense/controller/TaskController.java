@@ -1,44 +1,43 @@
 package org.citizensense.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
 import org.citizensense.model.Task;
+import org.citizensense.model.TaskDto;
 import org.citizensense.util.*;
 import org.grouplens.common.dto.DtoContainer;
 
 import com.opensymphony.xwork2.ModelDriven;
 
-public class TaskController implements ModelDriven<DtoContainer<Task>>{
+public class TaskController implements ModelDriven<DtoContainer<TaskDto>>{
 	
-	DtoContainer<Task> content = new DtoContainer<Task>(Task.class, false);
-	//private Collection<Task> list;
+	DtoContainer<TaskDto> content = new DtoContainer<TaskDto>(TaskDto.class, false);
 	public Integer id;
-	//private Task task = new Task();
 
 	@Override
-	public DtoContainer<Task> getModel() {
+	public DtoContainer<TaskDto> getModel() {
 		return content;
 	}
-	
 	public String show() {
 		return "show";
 	}
-	
-
 	public void setId(Integer id) {
 		this.id = id;		
 	}
-	
 	public Integer getId() {
 		return this.id;
 	}
 	
+	
+	
 	public String index() {
 		HttpServletResponse res = ServletActionContext.getResponse();
 		res.addHeader("Access-Control-Allow-Origin", "*");
-		content = new DtoContainer<Task>(Task.class, true);
-		content.set(TaskService.getTasks());
+		content = new DtoContainer<TaskDto>(TaskDto.class, true);
+		content.set(TaskDto.fromList(TaskService.getTasks()));
 		return "index";
 	}
 	
@@ -46,7 +45,11 @@ public class TaskController implements ModelDriven<DtoContainer<Task>>{
 	{
 		HttpServletResponse res = ServletActionContext.getResponse();
 		res.addHeader("Access-Control-Allow-Origin", "*");
-		TaskService.save(content.getSingle());
+		Task task = content.getSingle().toTask();
+		TaskService.save(task);
+		// Note: It may not be immediately obvious why it is necessary to set the content again. The reason is, is that
+		// the TaskDto originally in content did not have its id set. TaskService.save(task) may modify the task.
+		content.set(new TaskDto(task));
 		return "create";
 	}
 

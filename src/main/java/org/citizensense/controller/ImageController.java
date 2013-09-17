@@ -33,6 +33,7 @@ public class ImageController {
 	 * Handles post request. 
 	 */
 	public String create() {
+		System.out.println("In ImageController Create");
 		HttpServletRequest req = ServletActionContext.getRequest();
 		HttpServletResponse res = ServletActionContext.getResponse();
 

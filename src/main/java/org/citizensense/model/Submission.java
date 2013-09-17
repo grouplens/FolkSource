@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.grouplens.common.dto.Dto;
 
-public class Submission extends Dto {
+public class Submission{
 	public Integer id;
 	public Integer task_id;
 	public Integer user_id;
@@ -16,6 +16,21 @@ public class Submission extends Dto {
 	public Date timestamp;
 	public String img_path;
 
+	public Submission(){
+		super();
+	}
+	
+	public Submission(Integer id, Integer task_id, Integer user_id, String gps_location, Answer[] answers, Date timestamp, String img_path){
+		super();
+		this.id = id;
+		this.task_id = task_id;
+		this.user_id = user_id;
+		this.gps_location = gps_location;
+		this.answers = answers;
+		this.timestamp = timestamp;
+		this.img_path = img_path;
+	}
+	
 	public Integer getId() {
 		return id;
 	}
@@ -28,27 +43,18 @@ public class Submission extends Dto {
 	public void setTask_id(int task_id) {
 		this.task_id = task_id;
 	}
-//	public String getNotes() {
-//		return notes;
-//	}
-//	public void setNotes(String notes) {
-//		this.notes = notes;
-//	}
 	public String getGps_location() {
 		return gps_location;
 	}
 	public void setGps_location(String gps_location) {
+		//System.out.println("[ME] settingGPS!");
 		this.gps_location = gps_location;
 	}
 	public List<Answer> getAnswers() {
 		return Arrays.asList(answers);
 	}
 	public void setAnswers(List<Answer> answers) {
-//		System.out.println(answers);
-//		for(Object o : answers) {
-//			if(o instanceof Answer)
-//				this.answers.add((Answer)o);
-//		}
+		//this.answers = (Answer[]) answers.toArray(/*new Answer[answers.size()]*/);
 		this.answers = answers.toArray(new Answer[answers.size()]);
 	}
 	public Integer getUser_id() {

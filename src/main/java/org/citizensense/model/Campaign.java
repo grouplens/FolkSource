@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.grouplens.common.dto.Dto;
 
-public class Campaign extends Dto{
+public class Campaign{
 
 	public Long id;
 	public String title;
@@ -25,8 +25,23 @@ public class Campaign extends Dto{
 	 * @param args
 	 */
 	public Campaign() {
-	
+		super();
 	}
+	public Campaign(Long id, String title, String description, String location, Date start_date, Date end_date, String start_date_string, String end_date_string, Integer owner_id, Integer task_id, Task[] tasks){
+		super();
+		this.id = id;
+		this.title = title;
+		this.description = description;
+		this.location = location;
+		this.start_date = start_date;
+		this.end_date = end_date;
+		this.start_date_string = start_date_string;
+		this.end_date_string = end_date_string;
+		this.owner_id = owner_id;
+		this.task_id = task_id;
+		this.tasks = tasks;
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
@@ -38,7 +53,8 @@ public class Campaign extends Dto{
 		this.id = id;
 	}
 	public List<Task> getTasks() {
-		return Arrays.asList(tasks);
+		if (tasks != null) { return Arrays.asList(tasks);}
+		return null;
 	}
 	public void setTasks(List<Task> tasks) {
 		this.tasks = tasks.toArray(new Task[tasks.size()]);
