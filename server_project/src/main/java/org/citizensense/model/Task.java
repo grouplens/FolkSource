@@ -14,6 +14,7 @@ public class Task{
 //	private Form form;
 //	private Location loc;
 
+	public Location[] locations;
 	public Submission[] submissions;
 	public Question[] questions;	
 	
@@ -87,6 +88,15 @@ public class Task{
 	public void setQuestions(List<Question> questions) {
 		this.questions = questions.toArray(new Question[questions.size()]);
 	}
+	
+	public List<Location> getLocations() {
+		return Arrays.asList(locations);
+	}
+
+	public void setLocations(List<Location> locations) {
+		this.locations = locations.toArray((new Location[locations.size()]));
+	}
+
 
 //	public String getRequirements() {
 //		return requirements;
