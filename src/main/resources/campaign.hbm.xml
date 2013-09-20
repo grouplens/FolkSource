@@ -13,7 +13,7 @@
 	<property name="task_id" />
 	<property name="owner_id" />
 	<property name="location" />
-	<bag name="tasks" lazy="false" inverse="true">
+	<bag name="tasks" lazy="true" inverse="true">
 		<key column="camp_id" not-null="false"/>
 		<!-- <index column="id" base="1" />-->
 		<one-to-many class="Task" />
