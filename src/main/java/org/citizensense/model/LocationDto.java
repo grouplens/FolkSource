@@ -23,7 +23,7 @@ public class LocationDto extends Dto{
 	public LocationDto(Location locIn) {
 		this.id = locIn.id;
 		this.task_id = locIn.task_id;
-		this.geometryString = locIn.getGeometry().toText();
+		this.geometryString = locIn.getGeometry().toString();
 	}
 	
 	public Location toLocation() {
@@ -33,20 +33,15 @@ public class LocationDto extends Dto{
 			System.out.println(this.geometryString);
 			this.geometry = r.read(this.geometryString);
 			this.geometry.setSRID(4326);
-			System.out.println(this.geometry.getClass());
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		System.out.println(this.geometry.getClass());
 		if(this.geometry instanceof Point) {
-			System.out.println("POINT");
 			return new PointLocation(this.id, this.task_id, this.geometry);
 		} if(this.geometry instanceof Polygon) {
-			System.out.println("POLYGON");
 			return new PolygonLocation(this.id, this.task_id, this.geometry);
 		} else {
-			System.out.println("NONE");
 			return new Location(this.id, this.task_id, this.geometry);
 		}
 	}

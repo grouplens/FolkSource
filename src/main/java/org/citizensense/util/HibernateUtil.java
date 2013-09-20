@@ -44,7 +44,6 @@ import org.hibernate.Interceptor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-import org.hibernate.cfg.HbmBinder;
 import org.hibernate.cfg.Configuration;
 
 /**
