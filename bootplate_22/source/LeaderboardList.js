@@ -1,8 +1,8 @@
 enyo.kind({
     name: "LeaderboardList",
     kind: enyo.FittableRows,
-    style: "background-color: #254048;", 
-    classes: "list",
+    //style: "background-color: #254048;", 
+    classes: "list light-background",
     components: [
 	{name: "list", kind: enyo.List, fit: true, onSetupItem: "setupItem", components: [
         	{name: "item", kind: "LeaderboardItem", classes: "campItem"}

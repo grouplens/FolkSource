@@ -2,6 +2,7 @@ enyo.kind({
     name: "FilledPanels",
     //style: "z-index: -14;",
     kind: enyo.FittableRows,
+	classes: "light-background",
     events: {
         onSnapped: "",
         onPlaceChosen: ""
@@ -12,13 +13,13 @@ enyo.kind({
     },
     components: [
     	{kind: "Signals", onPinClicked: "popupTriggered"},
-		{name: "mapUp", kind: "onyx.Popup", style: "width: 80%; position: fixed; z-index: 2;", classes: "onyx-popup", centered: true, floating: true, modal: true, components: [
+		{name: "mapUp", kind: "onyx.Popup", style: "width: 80%; position: fixed; z-index: 2;", classes: "light-background onyx-popup", centered: true, floating: true, modal: true, scrim: true, scrimWhenMobal: false, components: [
 			{name: "pview", kind: "PinView", classes: "mapHide"}
 		]},
 		{kind: enyo.FittableColumns, fit: true, components: [
-			{name: "leftButton", kind: "onyx.Button", content: "<", slide: "prev", ontap: "buttonTapHandler", classes: "filledButtons", disabled: !0},
-			{name: "panels", kind: "Panels", arrangerKind: "CarouselArranger", onTransitionFinish: "transitionFinishHandler", onTransitionStart: "transitionStartHandler", classes: "filledPanels", layoutKind: "enyo.FittableColumnsLayout", fit: true},
-			{name: "rightButton", kind: "onyx.Button", content: ">", slide: "next", ontap: "buttonTapHandler", classes: "filledButtons"}, 
+			{name: "leftButton", kind: onyx.Button, content: "<", slide: "prev", ontap: "buttonTapHandler", classes: "button-style filledButtons", disabled: !0},
+			{name: "panels", kind: "Panels", style: "height: 100%;", arrangerKind: "CarouselArranger", onTransitionFinish: "transitionFinishHandler", onTransitionStart: "transitionStartHandler", classes: "filledPanels", layoutKind: enyo.FittableColumnsLayout, fit: true},
+			{name: "rightButton", kind: onyx.Button, content: ">", slide: "next", ontap: "buttonTapHandler", classes: "button-style filledButtons"}, 
 		]},
     ],
     create: function (a, b) {
@@ -52,14 +53,10 @@ enyo.kind({
 			this.$.panels.createComponent(
 				{name: e, classes: "panelItem", /*fit: true,*/ kind: enyo.FittableRows, components: [
 					{name: f, kind: "CampaignItem", title: "" + currentCampaign.title, description: "" + currentCampaign.description},
-					{name: g, fit: true, kind: "NewMap", /*layoutKind: "enyo.FittableColumnsLayout", */provider: "openlayers", style: "height: 100%; width: 100%;" /*overflow: hidden;"*/}
+					{name: g, fit: true, kind: "NewMap"}
 					//{name: g, fit: true, kind: "MapStraction", /*layoutKind: "enyo.FittableColumnsLayout", */provider: "openlayers", style: "height: 100%; width: 100%;" /*overflow: hidden;"*/}
 			]});
-			/*if(date < startDate) { // setup structure for disallowing campaigns to show up/be used before they're "open"
-			  this.log(this.$.panels.$[e]);
-			  this.$.panels.$[e].running = false;
-			  }
-			  }*/
+
 			this.render();
 			this.checkSides(); // make sure the arrow buttons work
 		}

@@ -1,3 +1,187 @@
+body {
+	font-size: 13pt;
+	font-weight: 100 !important;
+	background: #DDFFDD; /* lighter green*/
+}
+/****************************************/
+/*
+	Put anything you reference with "url()" in ../assets/
+	This way, you can minify your application, and just remove the "source" folder for production
+*/
+.hidden {
+	display: none !important;
+}
+
+.cluster-selected {
+	border: 2px solid blue;
+}
+
+.csenseshowcampaigns-node > div {
+	display: block !important;
+	overflow: hidden;
+}
+
+.csenseshowcampaigns-node > img {
+	float: left;
+	/*border: 1px solid green;*//*For debug purposes*/
+	width: 16px;
+}
+
+.csense-ping-layer {
+	border: 1px solid black;
+	background: rgba(0, 0, 0, 0);
+	border-radius: 999px;
+}
+
+.submission-marker-div {
+	border: 1px solid black;
+	opacity: 0.75;
+	/*background-color: #BCD2EE;
+	background-color: #FFC500;*/
+	background-color: #64FF90;
+	border-radius: 999px;
+}
+
+.popup-list-item {
+	border: 1px solid gray;
+	padding: 3px;
+}
+.popup-list-item-heading {
+	/*text-decoration: underline;*/
+	font-weight: bold;
+}
+.popup-list-item-body {
+	padding-left: 1em;
+}
+
+.nice-padding {
+	padding: 15px;
+}
+.panel-width {
+	min-width: 30%;
+	max-width: 30%;
+}
+.campaign-panel-width: {
+    	min-width: 100%;
+}
+.campaign-decorator-width: {
+	width: 90%;
+	margin-left: auto;
+	margin-right: auto;
+}
+.list-selection {
+	color: white;
+	background-color: green;
+	opacity: 0.8;
+}
+.button-spacing {
+	margin-left: 3px;
+	margin-right: 3px;
+}
+.map-button {
+	padding: 10px;
+	/*border-width: 2px;
+	border-style: solid;
+	border: 2px solid black;*/
+	width: 100%;
+}
+
+.text-title-small {
+	border-bottom: 1px black solid;
+}
+.text-title-big {
+	border-bottom: 3px black double;
+}
+.hanging-child {
+	width: 97%;
+	margin-left: 2%;
+}
+.number-style {
+	color: white;
+	padding: 6px 7px;
+	-moz-border-radius: 360px;
+	-webkit-border-radius: 360px;
+	border-radius: 360px;
+	background-color: black;
+}
+.bordering, .bordering-top, .bordering-bottom, .button-cancel-style, .toolbar-button-style {
+	-moz-box-shadow: 1px 1px 1px #444;
+	-webkit-box-shadow: 1px 1px 1px #444;
+	box-shadow: 1px 1px 1px #444;
+	border: 1px solid black;
+	/*-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;*/
+	font-weight: 100;
+}
+.button-style, .button-style-affirmative, .button-style-negative {
+	color: #000 !important;
+	font-size: 14pt;
+	font-weight: 100;
+	vertical-align: center;
+	background: #d1d1d1;
+	border: 1px solid black;
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+	border-radius: 0px;
+}
+.button-style-affirmative {
+	color: green !important;
+	font-weight: 200;
+}
+.button-style-negative {
+	color: red !important;
+	font-weight: 200;
+}
+.button-cancel-style {
+	background-color: red;
+}
+.bordering, .bordering-top, .bordering-bottom {
+	border: 1px #DEDEDE outset;
+	/*background-color: #FFF;
+	background-color: #DDFFDD;*/
+	background-color: #8CC187; /* middle green */
+	padding: 3px;
+}
+.bordering-box {
+	background-color: #FFF;
+	border: 1px solid black;
+	margin: 5px;
+	padding: 5px;
+	/*-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;*/
+}
+.bordering {
+	margin: 0px 4px 7px 3px;
+}
+.bordering-top {
+	margin: 0px 4px 7px 3px;
+}
+.bordering-bottom {
+	margin: 7px 4px 0px 3px;
+}
+.active-card {
+	background-color: #FFDDDD;
+}
+
+/* OVERRIDE ONYX */
+.mod-onyx-background {
+	background: #43823B;
+}
+.light-background {
+	background: #DDFFDD !important; /* lighter green*/
+	color: #000 !important;
+}
+.dark-background {
+	background: #43823B !important; /* darker green */
+	color: #000 !important;
+}
+.active {
+	font-weight: 200;
+	background-color: #43823B !important; /* darker green */
+
+}
 /* ../source/App.css */
 
 /*
@@ -10,12 +194,6 @@
 }
 
 /*These next 2 hide the Google links in our maps */
-.gmnoprint img {
-    display: none;
-}
-.terms-of-use-link {
-    display: none;
-}
 .hideMap {
     display: none;
 }
@@ -33,12 +211,9 @@
     width: 100%;
     height: 100%;
 }
-.enyo-google-map-map {
-    height:500px;
-}
 
 .campTitle {
-    color: #9A7A34;
+    /*color: #9A7A34;*/
     display:inline;
     padding: 0.5%;
 }
@@ -48,11 +223,11 @@
     width: 50%;
 }
 .leaderUser {
-    color: #9A7A34;
-    font-weight: bold;
+    /*color: #9A7A34;*/
+    font-weight: 300;
 }
 .leaderPoints {
-    color: #CC7967;
+    /*color: #CC7967;*/
     font-style: italic;
 }
 .campLoc {
@@ -62,9 +237,10 @@
     padding: 1%;
 }
 .campDesc {
-    font-weight: bold;
-    font-size: 0.65em;
-    color: #CC7967;
+    /*font-weight: bold;*/
+    /*font-size: 0.65em;
+    color: #CC7967;*/
+	font-size: 13pt;
     display: clear;
     overflow-y: hidden;
 }
@@ -90,16 +266,17 @@
 }
 .panelItem {
     /*height: 100%;
-    width: 100%;*/
-	background-color: #235260;
+    width: 100%;
+	background-color: #235260;*/
+	background: #DDFFDD; /* lighter green*/
 }
 .filledPanels {
     /*height: 100%;
     //width: 90%;*/
 }
 .filledButtons {
-    background-color: #0B333E;
-    color: #CCAD67;
+    /*background-color: #0B333E;
+    color: #CCAD67;*/
     width: 5%;
     /*float: left;*/
     height: 100%;
@@ -222,10 +399,10 @@ table, tr, td {
 .android-navbar {
 }
 .nice-padding {
-	padding: 15px;
+	padding: 10px;
 }
 .niceish-padding {
-	padding: 15px 0px;
+	padding: 10px 0px;
 }
 .highlight {
 	background-color: yellow;
@@ -235,3 +412,4 @@ table, tr, td {
 .highlight * {
 	background-color: yellow;
 }
+

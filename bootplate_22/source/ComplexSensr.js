@@ -1,6 +1,7 @@
 enyo.kind({
 	name: "ComplexSensr",
-	style: "background-color: #254048; color: white; border-color: white;",
+	//style: "background-color: #254048; color: white; border-color: white;",
+	style: "background: #DDFFDD;",
 	kind: enyo.FittableRows,
 	published: {
 			data: ""
@@ -20,17 +21,17 @@ enyo.kind({
 	},
 	components: [
 		{kind: "enyo.Signals", onGPSSet: "currentLocation", onPinClicked: "chosenLocation", onPhotoData: "photoData", onButtonGroupChosen: "renderSubmitButton"},
-		{name: "doubleCheckPopup", kind: onyx.Popup, autoDismiss: false, centered: true, floating: true, modal: true, scrimWhenModal: true, style: "width: 80%;", components: [
+		{name: "doubleCheckPopup", kind: onyx.Popup, autoDismiss: false, centered: true, floating: true, modal: true, scrimWhenModal: false, scrim: true, classes: "light-background", style: "width: 80%;", components: [
 			{name: "doubleCheckMessage", content: "Are you sure you want to cancel? You will lose all observation data recorded", style: "padding: 5px 0px;"},
 			{kind: enyo.ToolDecorator, classes: "senseButtons", components: [
-				{name: "no", kind: "onyx.Button", classes: "onyx-negative", content: "No", ontap: "close"},
-				{name: "yes", kind: "onyx.Button", classes: "onyx-affirmative", content: "Yes", ontap: "close"}
+				{name: "no", kind: onyx.Button, classes: "button-style nice-padding button-style-negative", content: "No", ontap: "close"},
+				{name: "yes", kind: onyx.Button, classes: "button-style nice-padding button-style-affirmative", content: "Yes", ontap: "close"}
 			]}
 		]},
 		{name: "acc", kind: "enyo.Scroller", layoutKind: enyo.FittableRowsLayout, vertical: "auto", horizontal: "hidden", fit: true, strategyKind: "TouchScrollStrategy"/*, classes: "nice-padding"*/},
 		{name: "buttons", kind: enyo.ToolDecorator, classes: "senseButtons", components: [
-			{kind: "onyx.Button", classes: "onyx-negative", content: "Cancel", ontap: "togglePopup"},
-			{name: "submit", kind: "onyx.Button", classes: "onyx-affirmative", content: "Submit", ontap: "togglePopup"}
+			{kind: onyx.Button, classes: "button-style button-style-negative", content: "Cancel", ontap: "togglePopup"},
+			{name: "submit", kind: onyx.Button, classes: "button-style button-style-affirmative", content: "Submit", ontap: "togglePopup"}
 		]}
 	],
 	create: function(a, b) {
@@ -339,7 +340,7 @@ enyo.kind({
 	newFormText: function(input) {
 		var decName = "inputDec_" + input.id;
 		var inputName = "input_" + input.id;
-		this.$.acc.createComponent({name: decName, style: "clear: both;", kind: "onyx.InputDecorator", classes: "onyx-input-decorator center", style: "outline-color: white; border-color: white;", components: [
+		this.$.acc.createComponent({name: decName, style: "clear: both;", kind: "onyx.InputDecorator", classes: "onyx-input-decorator center", components: [
 								   {name: inputName, kind: "onyx.Input", classes: "onyx-input" }
 		]}, {owner: this});
 	},
@@ -349,11 +350,11 @@ enyo.kind({
 		array = [];
 		for (var i in options) { 
 			if(i == 0)
-				array.push({content: options[i], active: !0, ontap: "testButtons"})
+				array.push({content: options[i], active: !0, classes: "button-style nice-padding", ontap: "testButtons"})
 			else
-				array.push({content: options[i], ontap: "testButtons"});
+				array.push({content: options[i], classes: "button-style nice-padding", ontap: "testButtons"});
 		}
-		this.$.acc.createComponent({name: name, kind: "onyx.RadioGroup", classes: "center", components: array}, {owner: this});
+		this.$.acc.createComponent({name: name, kind: onyx.RadioGroup, classes: "center", components: array}, {owner: this});
 	},
 	newTime: function(input) {
 		var date = new Date();

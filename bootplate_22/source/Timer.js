@@ -14,7 +14,7 @@ enyo.kind({
 		onTimerStarted: ""
 	},
     components: [
-            {name: "button", kind: "onyx.Button", /*content: "Start Counting!",*/ style: "width: 100%;", ontap: "buttonClick", classes: "onyx-affirmative", components: [
+            {name: "button", kind: "onyx.Button", /*content: "Start Counting!",*/ style: "width: 100%;", ontap: "buttonClick", classes: "button-style", components: [
 				{name: "timer", kind: "enyo.FittableColumns", components: [
 					{name: "label", content: "Tap to Start "},
 					{fit: true},

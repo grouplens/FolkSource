@@ -14,7 +14,7 @@ enyo.kind({
         ontap: "increment"
     },
     components: [
-		{name: "num", kind: onyx.Button, content: 0, style: "text-align: center; width: 100%; height: 100%;", disabled: true}
+		{name: "num", kind: onyx.Button, content: 0, classes: "button-style", style: "text-align: center; width: 100%; height: 100%;", disabled: true}
 	],
     create: function (a, b) {
         this.inherited(arguments);

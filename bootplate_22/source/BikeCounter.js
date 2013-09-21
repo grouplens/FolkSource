@@ -21,10 +21,10 @@ enyo.kind({
 		{kind: "enyo.Signals", onButtonGroupChosen: "fixIt", onDataRemove: "removeItem"},
 		{name: "timer", kind: "Timer", length: 7200000, resetInterval: 900000},
 		{name: "totalCountContainer", kind: enyo.FittableColumns, components: [
-			{kind: "onyx.Button", content: "Undo", ontap: "popup"},
+			//{kind: "onyx.Button", content: "Undo", ontap: "popup"},
 			{fit: true},
 			{content: "Total Count: "},
-			{name: "totalCount", content: 0}
+			{name: "totalCount", style: "font-weight: 400", content: 0}
 		]},
 		{name: "tabula", tag: "table", fit: true, style: "width: 100%;", disabled: true, components: [
 			//row 0
