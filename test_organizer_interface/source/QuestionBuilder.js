@@ -10,15 +10,16 @@ enyo.kind({
 	},
 	published: {
 		stepIndex: 1,
-		questionIndex: 1
+		questionIndex: 1,
+		questionData: null
 	},
 	components:[
-		{name: "stepTitle", kind: "SaveTitle", title: "Step #", big: true},
-		{name: "questionTitle", kind: "Title", title: "Question #"},
+		{name: "stepTitle", kind: "SaveTitle", title: "#", circled: true, big: true},
+		{name: "questionTitle", kind: "Title", title: "Question #", classes: "hanging-child"},
 		{name: "questionDrawer", kind: onyx.Drawer, open: true, orient: "v", classes: "hanging-child", components: [
 			{name: "questionText", kind: "TitledInput", title: "What's the question?", placeholder: "Enter your question text here..."/*, ontap: "toggleQuestionDrawer"*/},
 			{kind: "Title", title: "Type of Question:" },
-			{name: "questionChoices", tag: "select", classes: "hanging-child", components: [
+			{name: "questionChoices", tag: "select", classes: "hanging-child", onchange: "questionPicked", components: [
 				{content: "Text", tag: "option" },
 				{content: "Mult. Choice", tag: "option" },
 				{content: "Excl. Mult. Choice", tag: "option" },
@@ -34,12 +35,46 @@ enyo.kind({
 		this.options = ["Add new option, hit 'enter' to save"];
 		this.$.stepTitle.setTitle(this.$.stepTitle.getTitle() + this.stepIndex);
 		this.$.questionTitle.setTitle(this.$.questionTitle.getTitle() + this.questionIndex);
+		this.curType = "text";
+	},
+	decodeType: function(inType) {
+		var outType = ""
+		switch(inType) {
+			case "Mult. Choice":
+				outType = "multiple_choice";
+			break;
+			case "Excl. Mult. Choice":
+				outType = "exclusive_multiple_choice";
+			break;
+			case "Text":
+				outType = "text";
+			break;
+			case "Counter":
+				outType = "complex_counter";
+			break;
+		}
+		
+		return outType;
 	},
 	editOption: function(inSender, inEvent) {
 		var index = inEvent.index;
 		this.$.optionList.prepareRow(index);
 		this.$.oItem.flip();
 		return true;
+	},
+	getData: function(inSender, inEvent) {
+		var question = {};
+		question.id = 0;
+		question.task_id = 0;
+		question.question = this.$.questionText.getData();
+		question.type = this.curType;
+		if(question.type === "multiple_choice" || question.type === "exclusive_multiple_choice") {
+			var tmp = this.options.pop();
+			question.options = this.options.join("|");
+			this.options.push(tmp);
+			this.log(question.options);
+		}
+		return question;
 	},
 	makeOption: function(inSender, inEvent) {
 		var index = inEvent.index;
@@ -70,28 +105,28 @@ enyo.kind({
 		//this.buildFakeQuestion();
 	},
 	questionPicked: function (inSender, inEvent) {
-		if (inEvent.originator.getActive()) {
-			this.curType = inEvent.originator.getContent();
-		}
+		//if (inEvent.originator.getActive()) {
+		var e = inSender.eventNode;
+		var type = e.options[e.selectedIndex].value;
+		this.curType = this.decodeType(type);
 		switch (this.curType) {
-			case "Mult. Choice":
+			case "multiple_choice":
 				this.$.oItem.setType("checkbox");
 				this.$.optionList.show();
 				this.$.optionList.reset();
 			break;
-			case "Excl. Mult. Choice":
+			case "exclusive_multiple_choice":
 				this.$.oItem.setType("radio");
 				this.$.optionList.show();
 				this.$.optionList.reset();
 			break;
 			default:
-				this.$.optionList.applyStyle("visibility", "hidden");
+				this.$.optionList.hide();;
 			break;
 		}
 	},
 	saveData: function(inSender, inEvent) {
 		//save logic goes here
-		this.log();
 		if(this.$.questionDrawer.getOpen())
 			this.$.stepTitle.sendSave();
 	},

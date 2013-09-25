@@ -21,7 +21,7 @@ enyo.kind({
                 kind: enyo.Repeater,
                 count: 0,
                 components: [
-                    {name: "itemCont", classes: "popup-list-item", components:[
+                    {name: "itemCont", classes: "popup-list-item bordering", components:[
                         {name: "itemHeading", ontap: "toggleItemDrawer", published:{index: ""}, classes:"popup-list-item-heading"},
                         {name: "itemDrawer", kind: onyx.Drawer, open: false, orient: "v",
                             components:[
@@ -66,12 +66,10 @@ enyo.kind({
     startSpinner: function(){
         this.$.spinner.removeClass("hidden");
         this.$.repeater.addClass("hidden");
-        this.log("started the spinner");
     },
     stopSpinner: function(){
         this.$.spinner.addClass("hidden");
         this.$.repeater.removeClass("hidden");
-        this.log("stopped the spinner");
     },
     spinFor: function(time) {
         this.startSpinner();

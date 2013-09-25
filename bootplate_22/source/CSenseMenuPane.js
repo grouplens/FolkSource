@@ -13,7 +13,7 @@ enyo.kind({
         onSenseOpened: ""
     },
     components: [
-        {kind: "onyx.Popup", centered: true, modal: true, autoDismiss: false, scrim: true, scrimWhenModal: false, style: "position: fixed; z-index: 15;", components: [
+        {kind: onyx.Popup, autoDismiss: false, centered: true, floating: true, modal: true, scrimWhenModal: false, scrim: true, classes: "light-background", components: [
             {kind: "CSenseLoginRegister"}
         ]},
 	{name: "menuDrawer", kind: enyo.Panels, fit: true, narrowFit: false, index: 1, draggable: false, margin: 0, realtimeFit: true, arrangerKind: enyo.CollapsingArranger, layoutKind: enyo.FittableColumnsLayout, components: [
@@ -72,14 +72,18 @@ enyo.kind({
 		this.$.sense.destroyComponents();
 		return true;
     },
-    create: function () {
+    create: function (inSender, inEvent) {
         this.inherited(arguments);
-        if(LocalStorage.get("user") === undefined) {
-            this.$.popup.show();
-        }
         //this.$.menupane.createComponent({name: "sensr", kind: "ComplexSensr", fit: true, complex: complex, data: c, classes: "content"});
 		this.$.menupane.render();
     },
+	rendered: function(inSender, inEvent) {
+		this.inherited(arguments);
+        if(LocalStorage.get("user") === undefined) {
+			this.log(this.$.popup);
+            this.$.popup.show();
+        }
+	},
     backKey: function () {
         this.curView != "campList" && this.$.menupane.selectView("campList");
     },

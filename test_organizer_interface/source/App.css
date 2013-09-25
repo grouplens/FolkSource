@@ -2,6 +2,13 @@
 	Put anything you reference with "url()" in ../assets/
 	This way, you can minify your application, and just remove the "source" folder for production
 */
+body {
+	font-size: 13pt;
+	font-weight: 100 !important;
+	background-color: #DDFFDD; /* lighter green*/
+	/* background-color: #8CC187;
+	background-color: #DFDFDF;*/
+}
 .hidden {
 	display: none !important;
 }
@@ -60,11 +67,6 @@
 	min-width: 30%;
 	max-width: 30%;
 }
-.bordering {
-	border: 1px black outset;
-	padding: 3px;
-	margin: 1px;
-}
 .campaign-panel-width: {
     	min-width: 100%;
 }
@@ -74,8 +76,9 @@
 	margin-right: auto;
 }
 .list-selection {
-    	color: white;
-    	opacity: 0.8;
+	color: white;
+	background-color: green;
+	opacity: 0.8;
 }
 .button-spacing {
 	margin-left: 3px;
@@ -106,4 +109,83 @@
 .hanging-child {
 	width: 97%;
 	margin-left: 2%;
+}
+.number-style {
+	color: white;
+	padding: 6px 7px;
+	-moz-border-radius: 360px;
+	-webkit-border-radius: 360px;
+	border-radius: 360px;
+	background-color: black;
+}
+.number-style:hover {
+	color: black;
+	background-color: white;
+}
+.active {
+	background-color: red;
+	-moz-box-shadow: 1px 1px 1px #333 inset;
+	-webkit-box-shadow: 1px 1px 1px #333 inset;
+	box-shadow: 1px 1px 1px #333 inset; 
+}
+.click-hover:hover:first-child div {
+	background-color: white;
+	color: black;
+}
+.click-hover:hover {
+	background-color: lightgreen;
+}
+.button-cancel-style:active, .button-style:active, .toolbar-button-style:active {
+	-moz-box-shadow: 1px 1px 1px #444 inset;
+	-webkit-box-shadow: 1px 1px 1px #444 inset;
+	box-shadow: 1px 1px 1px #444 inset; 
+}
+.bordering, .bordering-top, .bordering-bottom, .button-cancel-style, .button-style, .toolbar-button-style {
+	-moz-box-shadow: 1px 1px 1px #444;
+	-webkit-box-shadow: 1px 1px 1px #444;
+	box-shadow: 1px 1px 1px #444;
+	border: 1px solid black;
+	/*-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;*/
+	font-weight: 100;
+}
+.button-cancel-style {
+	background-color: red;
+}
+.button-style:hover {
+	background-color: #67E667; 
+}
+.bordering, .bordering-top, .bordering-bottom {
+	border: 1px #DEDEDE outset;
+	/*background-color: #FFF;
+	background-color: #DDFFDD;*/
+	background-color: #8CC187; /* middle green */
+	padding: 3px;
+}
+.bordering-box {
+	background-color: #FFF;
+	border: 1px solid black;
+	margin: 5px;
+	padding: 5px;
+	/*-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;*/
+}
+.bordering {
+	margin: 0px 4px 7px 3px;
+}
+.bordering-top {
+	margin: 0px 4px 7px 3px;
+}
+.bordering-bottom {
+	margin: 7px 4px 0px 3px;
+}
+.active-card {
+	background-color: #FFDDDD;
+}
+
+/* OVERRIDE ONYX */
+.mod-onyx-background {
+	background: #43823B;
 }

@@ -1,14 +1,18 @@
 enyo.kind({
 	name: "SaveTitledInput",
-	kind: enyo.FittableRows,
+	kind: enyo.FittableColumns,
 	published: {
 		big: false,
 		title: "Title Goes Here",
 		placeholder: "This is a placeholder"
 	},
 	components: [
+		{kind: enyo.FittableRows, fit: true, components: [
 		{name: "title", kind: "SaveTitle"},
-		{name: "input", kind: enyo.Input, classes: "hanging-child"}
+		{kind: onyx.InputDecorator, alwaysLooksFocused: true, classes: "hanging-child", components: [
+			{name: "input", kind: onyx.Input, style: "width: 100%; font-size: 13px;"}
+		]}
+	]}
 	],
 	create: function(inSender, inEvent) {
 		this.inherited(arguments);

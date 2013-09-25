@@ -1,16 +1,13 @@
 enyo.kind({
     name: "NewMap",
-    //classes: "mapItem hideMap",
-    //style: "overflow: hidden; z-index: 5;",
 	kind: enyo.FittableRows,
+	//classes: "bordering-box light-background",
     published: {
         gpsTimeout: "10000"
     },
     components: [
         {name: "gps", kind: "rok.geolocation", watch: !0, enableHighAccuracy: !0,timeout: this.gpsTimeout, maximumAge: "3000", onSuccess: "locSuccess", onError: "locError"},
-		{name: "holder", kind: onyx.Drawer, orient: "v", open: true, components: [
-			{name: "obsButton", kind: enyo.Button, content: "Make an Observation", ontap: "makeButtonBubbleClick", classes: "button-style", style: "clear: both; width: 100%;"},
-		]},
+		{content: "Tap the pin/region on the map to help!", style: "font-size: 11pt; font-weight: 200;", classes: "bordering-box light-background"},
 		{name: "mapCont", fit: true, style: "overflow: hidden; position: relative;"}
     ],
     events: {
@@ -44,44 +41,6 @@ enyo.kind({
 		}).addTo(this.map);
 
 
-		/*this.straction = new OpenLayers.Map(this.$.mapCont.id);
-
-		//get rid of the OSM attribution for now
-		var c = this.straction.getControlsBy("displayClass", "olControlAttribution");
-		this.straction.removeControl(c[0]);
-
-		var osm = new OpenLayers.Layer.OSM("OSM", null, {transitionEffect: "resize"});
-		this.pointsLayer = new OpenLayers.Layer.Vector('points', {
-			styleMap: new OpenLayers.StyleMap({
-				externalGraphic: "assets/pin2.png",
-				graphicOpacity: 1.0,
-				graphicHeight: 44,
-				graphicWidth: 44
-			}),
-			projection: "EPSG:900913"
-		});
-		//registerEvents(this.pointsLayer);
-
-		//add the layers
-		this.straction.addLayers([osm, this.pointsLayer]);
-
-		this.select = new OpenLayers.Control.SelectFeature(this.pointsLayer, {autoActivate: true, onSelect: enyo.bind(this, this.makeBubbleClick)});
-		var nav = new OpenLayers.Control.TouchNavigation({dragPanOptions: {enableKinetic: true}});
-		var zoom = new OpenLayers.Control.Zoom();
-
-		//add the controls
-		this.straction.addControls([nav, zoom, this.select]);
-
-		//register events
-		this.straction.events.register("zoomend", this.straction, this.makeFilter());
-		this.straction.events.register("moveend", this.straction, this.makeFilter());
-		/*this.straction.events.register("zoomend", this.straction, enyo.bind(this, "makeFilter"));
-		  this.straction.events.register("moveend", this.straction, enyo.bind(this, "makeFilter"));*/
-		//this.straction.events.register("loadend", this.straction, enyo.bind(this, "mapLoaded"));
-
-		//this.centerMap();
-		//this.straction.raiseLayer('points', 500);
-		//this.log(this.straction.getProjection());*/
 	},
 	mapLoaded: function() {
 		this.loaded = true;
@@ -94,6 +53,17 @@ enyo.kind({
 		if(this.locSuc && !this.loaded && !this.panZoomed) {
 			this.centerMap();
 		}
+		var latlng = new L.LatLng(b.coords.latitude, b.coords.longitude);
+
+		if(this.locSuc && !this.loaded && !this.panZoomed) {
+			this.centerMap();
+		}
+		if (!this.userMarker)
+			this.userMarker = L.userMarker(latlng, {pulsing: true, smallIcon: true}).addTo(this.map);
+
+		this.userMarker.setLatLng(latlng);
+		this.userMarker.setAccuracy(b.coords.accuracy);
+
         return true;
     },
     locError: function (a, b) {
@@ -103,72 +73,57 @@ enyo.kind({
 		this.locPlot(a);
 	},
 	locPlot: function (a) {
-		this.locations = a;//.split("|");
-		var pattern = /-\d+\.\d+,\d+\.\d+/;
-		if (this.locations.match(pattern) != null) {
-			this.log(this.locations);
-			this.locations = this.locations.split("|");
-			this.addMarkers();
-			//this.$.obsButton.addStyles("display: none;");
-			this.map.invalidateSize();
-			this.$.holder.setOpen(false);
-			//this.$.holder.resized();
-		}
-		//this.locations = a.split("|"), !(this.locations instanceof Array && this.locations.length > 2), this.makeFilter();
-	},
+		this.locations = a;
+		this.addMarkers();
+	   },
 	inside: function (a) {
 		/*var b = this.straction.getBounds().getNorthEast(),
 		c = this.straction.getBounds().getSouthWest();
 		return a[1] <= b.lat && a[1] >= c.lat && a[0] <= b.lon && a[0] >= c.lon ? !0 : !1;*/
 	},
 	toggleVisible: function (a, b) {
-		var c = this.parent.parent.getIndex(),
+		/*var c = this.parent.parent.getIndex(),
 		d = this.id.split("_"),
 		e = d[d.length - 1],
 		f = this.parent.parent.getPanels()[c].id.split("_"),
 		g = f[f.length - 1];
-		return this.addRemoveClass("hideMap", e !== g), !0;
+		return this.addRemoveClass("hideMap", e !== g), !0;*/
 	},
 	makeFilter: function () {
 		if(this.loaded)
 			this.panZoomed = true;
 		this.addMarkers();
-		/*var a = this.straction.getBounds().getNorthEast(),
-		  b = this.straction.getBounds().getSouthWest();
-		  return this.straction.removeAllFilters(), this.straction.addFilter("lat", "ge", b.lat), this.straction.addFilter("lat", "le", a.lat), this.straction.addFilter("lon", "ge", b.lon), this.straction.addFilter("lon", "le", a.lon), this.addMarkers(), !0;*/
 	},
 	addMarkers: function () {
-		if (this.locations instanceof Array/* && this.locations.length != this.straction.markers.length*/) {
-			//this.pointsLayer.removeAllFeatures();
-			for (x in this.locations) {
-				var a = this.locations[x].split(",").reverse();
-				this.log(a);
-				//var b = this.convertXYToLonLat(a[0], a[1]);
-				var marker = L.marker(a).addTo(this.map);
-				marker.on("click", enyo.bind(this, "makeBubbleClick"));
-				/*var pt = new OpenLayers.Geometry.Point(b.lon, b.lat);
-				this.pointsLayer.addFeatures([new OpenLayers.Feature.Vector(pt/*, {styleMap: new OpenLayers.StyleMap({externalGraphic: "assets/pin2.png"})})]);
-				b.addData({hover: false});
-				  b.setAttribute("lat", a[1]);
-				  b.setAttribute("lon", a[0]);*/
+		var wkt = new Wkt.Wkt();
+		for(x in this.locations) {
+			var str = this.locations[x].geometryString;
+			wkt.read(str);
+			var shape = wkt.toObject();
+			if(str.indexOf("POINT") != -1) {
+				shape.addTo(this.map);
+			} else if (str.indexOf("POLYGON") != -1) {
+				this.map.addLayer(shape);
+				//polygon goes here
+			} else {
+				this.log("FAILED TO MAP");
 			}
-			/*this.pointsLayer.refresh();
-			this.pointsLayer.display();
-			this.straction.addLayer(this.pointsLayer);*/
+			shape.on("click", enyo.bind(this, "makeBubbleClick"));
+			this.log(wkt.components);
 		}
 	},
 	centerMap: function () {
 		var myLocation = Data.getLocationData();
-		//var pt = this.convertCoordsToLonLat(myLocation);
 		this.log(myLocation);
 		this.map.setView([myLocation.latitude, myLocation.longitude], 15);
-		//this.straction.setCenter(pt, 15);//, true, true);
 		if(!this.loaded)
 			this.mapLoaded();
 	},
 	makeBubbleClick: function (inEvent) {
-		this.log(inEvent);
-		enyo.Signals.send("onPinClicked", inEvent.latlng);
+		loc = inEvent.latlng;
+		loc.lat = loc.lat.toPrecision(8);
+		loc.lng = loc.lng.toPrecision(8);
+		enyo.Signals.send("onPinClicked", loc);
 	},
 	makeButtonBubbleClick: function(inEvent) {
 		this.log(Data.getLocationData());
@@ -178,28 +133,4 @@ enyo.kind({
 		loaded = !0;
 		this.doLoaded();
 	},
-	/*convertLonLatToCoords: function(lonlat) {
-		var point = new OpenLayers.LonLat(Number(lonlat.x), Number(lonlat.y));
-		var gpsProj = new OpenLayers.Projection("EPSG:4326");
-		var mapProj = this.straction.getProjectionObject();
-		point.transform(mapProj, gpsProj);
-
-		return point;
-	},
-	convertCoordsToLonLat: function(coords) {
-		var point = new OpenLayers.LonLat(Number(coords.longitude), Number(coords.latitude));
-		var gpsProj = new OpenLayers.Projection("EPSG:4326");
-		var mapProj = this.straction.getProjectionObject();
-		point.transform(gpsProj, mapProj);
-
-		return point;
-	},
-	convertXYToLonLat: function(lon, lat) {
-		var point = new OpenLayers.LonLat(Number(lon), Number(lat));
-		var gpsProj = new OpenLayers.Projection("EPSG:4326");
-		var mapProj = this.straction.getProjectionObject();
-		point.transform(gpsProj, mapProj);
-
-		return point;
-	}*/
 });

@@ -44,10 +44,10 @@ enyo.kind({
 			 * the same way. This should be mostly browser compatible.
 			 */
 			var date = Date.parse(new Date());
-			var st = currentCampaign.start_date_string.split(/[- :]/);
+			/*var st = currentCampaign.start_date_string.split(/[- :]/);
 			var en = currentCampaign.end_date_string.split(/[- :]/);
 			var startDate = Date.parse(new Date(st[0], st[1]-1, st[2], st[3], st[4], st[5]));
-			var endDate = Date.parse(new Date(en[0], en[1]-1, en[2], en[3], en[4], en[5]));
+			var endDate = Date.parse(new Date(en[0], en[1]-1, en[2], en[3], en[4], en[5]));*/
 
 			//if(endDate >= date) { // "closed" campaigns shouldn't show up
 			this.$.panels.createComponent(
@@ -98,20 +98,22 @@ enyo.kind({
         }
     },
     drawMap: function (inSender, inEvent) { //inSender = a, inEvent = b;
-        var c = this.$.panels.getPanels();
+        var panels = this.$.panels.getPanels();
         var d = 0;
         var e;
-	var f = inEvent.originator.name.split("_")[1];
-	this.log(f);
-        for (x in c) {
-	    this.log(x);
-            var g = c[x].name.split("_")[1];
-	    this.log(g);
-	    if(g === f) {
-            	e = this.campaignArray[x].location;
-		this.log(e);
-	    	this.$.panels.$["map_" + g].checkMap(e);
-	    }
+		var name = inEvent.originator.name.split("_")[1];
+		var tmp = [];
+        for (x in panels) {
+			var curName = panels[x].name.split("_")[1];
+			if(curName === name) {
+				var tasks = this.campaignArray[x].tasks;
+				for(y in tasks) {
+					tmp.push(tasks[y].locations);
+				}
+				var tmp2 = [];
+				tmp2 = tmp2.concat.apply(tmp2, tmp);
+				this.$.panels.$["map_" + curName].checkMap(tmp2);
+			}
         }
         return !0;
     },

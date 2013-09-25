@@ -178,8 +178,9 @@ body {
 	color: #000 !important;
 }
 .active {
-	font-weight: 200;
+	font-weight: 100;
 	background-color: #43823B !important; /* darker green */
+	color: #FFF !important;
 
 }
 /* ../source/App.css */

@@ -2,7 +2,7 @@ enyo.kind({
     name: "CampaignItem",
     watching: !1,
     index: "",
-    classes: "campItem",
+    classes: "campItem bordering-box light-background",
     published: {
         title: "",
         description: ""

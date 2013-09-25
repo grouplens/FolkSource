@@ -24,31 +24,20 @@ enyo.kind({
 		onReceiveNewSubmissions: "integrateNewSubmissions",
 	},
 	components:[
-		{name: "campaignDrawer",
-			kind: onyx.Drawer,
-			layoutKind: enyo.FittableRowsLayout,
-			style: "z-index: 15; position: relative; background-color: orange;",
-			orient: "h",
-			open: false,
-			components: [
+		{name: "campaignDrawer", kind: onyx.Drawer, layoutKind: enyo.FittableRowsLayout, style: "z-index: 15; position: relative;", orient: "h", open: false, components: [
 				{name: "campDrawerHeader", content: "Campaigns:"},
 				{name: "campList", kind: "CSenseShowCampaignsList", onSetupItem: "setupCampList", /*fit: true, */style: "width: 200px;", touch: true, count: 0, components: [
-					{name: "campItem", kind: "onyx.Item", ontap: "campTapped", components: [
+					{name: "campItem", kind: "onyx.Item", ontap: "campTapped", classes: "bordering", components: [
 						{name: "campIndex", content: "id"},
 						{name: "campTitle", content: "title"}
 					]}
 				]},
 			],
 		},
-		{name: "taskDrawer",
-			kind: onyx.Drawer,
-			style: "z-index: 15; position: relative; background-color: pink;",
-			orient: "h",
-			open: false,
-			components: [
+		{name: "taskDrawer", kind: onyx.Drawer, style: "z-index: 15; position: relative;", orient: "h", open: false, components: [
 				{name: "taskDrawerHeader", content: "Tasks:"},
 				{name: "taskList", kind: "CSenseShowCampaignsList", onSetupItem: "setupTaskList", style: "width: 200px;", touch: true, count: 0, components: [
-					{name: "taskItem", kind: "onyx.Item", ontap: "taskTapped", components: [
+					{name: "taskItem", kind: "onyx.Item", ontap: "taskTapped", classes: "bordering", components: [
 							{name: "taskIndex", content: "id"},
 							{name: "taskTitle", content: "title"}
 						]}
@@ -58,15 +47,9 @@ enyo.kind({
 
 			],
 		},
-		{name: "taskDetailDrawer",
-			kind: onyx.Drawer,
-			style: "z-index: 15; position: relative; background-color: LightGoldenRodYellow ;",
-			orient: "h",
-			open: false,
-			published: {
+		{name: "taskDetailDrawer", kind: onyx.Drawer, style: "z-index: 15; position: relative;", orient: "h", open: false, published: {
 				currentTaskId: null,
-			},
-			components: [
+			}, components: [
 				{name: "taskDetailDrawerContent", kind: "CSenseTaskDetail", style: "width: 200px"},
 			],
 		},
@@ -82,6 +65,9 @@ enyo.kind({
 		ajax.go();
 
 		this.selectedCampIndex = null;
+	},
+	rendered: function(inSender, inEvent) {
+		this.inherited(arguments);
 	},
 
 	integrateNewSubmissions: function(inSender, inEvent){
@@ -145,7 +131,7 @@ enyo.kind({
 			//Clear submission markers from the map that may or may not be present
 		}
 		this.showTasks(this.campData[index].tasks);
-		this.doSelectCampaign({"campaign": this.campData[index]});
+		this.doSelectCampaign({"campaign": this.campData[index], offset: 200});
 	},
 
 	/*
@@ -153,7 +139,7 @@ enyo.kind({
 	*/
 	taskTapped: function(inSender, inEvent) {
 		var index = inEvent.index;
-		this.showTaskDetail(null, {task: this.taskData[index]}); //I am calling an event handler directly, is this bad?
+		this.showTaskDetail(null, {task: this.taskData[index], offset: 200}); //I am calling an event handler directly, is this bad?
 	},
 
 	/*
@@ -209,7 +195,7 @@ enyo.kind({
 		} else{
 			this.$.campaignDrawer.setOpen(true);
 		}
-		this.$.campList.reset();
+		//this.$.campList.reset();
 	},
 
 	/*
@@ -231,7 +217,7 @@ enyo.kind({
 		var camp = this.campData[index];
 		this.$.campIndex.setContent(Number(index+1));
 		this.$.campTitle.setContent(camp.title);
-		this.$.campItem.addRemoveClass("list-selection", inSender.isSelected(index));
+		this.$.campItem.addRemoveClass("active-card", inSender.isSelected(index));
 		return true;
 	},
 
@@ -246,7 +232,7 @@ enyo.kind({
 
 		this.$.taskIndex.setContent(task.id);
 		this.$.taskTitle.setContent(task.instructions);
-		this.$.taskItem.addRemoveClass("list-selection", inSender.isSelected(index));
+		this.$.taskItem.addRemoveClass("active-card", inSender.isSelected(index));
 		return true;
 	},
 
@@ -275,7 +261,7 @@ enyo.kind({
 		//Fix map size
 		if ((drawer.name === "campaignDrawer") || (drawer.name === "taskDrawer") || (drawer.name === "taskDetailDrawer")) {
 			var offset = drawer.open ? -100 : 100;
-			this.doDrawerToggled({offset: offset});
+			//this.doDrawerToggled({offset: offset});
 			//this.doAdjustMapSize({offset: offset});
 		}
 		//Pan

@@ -1,39 +1,44 @@
 enyo.kind({
 	name: "ShowMap",
-	style: "overflow: hidden;",
 	kind: enyo.FittableRows,
-	fit: true,
+	classes: "enyo-fit",
+	/*style: "overflow: hidden;",*/
 	components: [
 		{kind: enyo.Signals, onMapClicked: "newPin"},
 		{name: "gps", kind: "rok.geolocation", watch: false, enableHighAccuracy: !0, timeout: this.gpsTimeout, maximumAge: "3000", onSuccess: "locSuccess", onError: "locError"},
-		{kind: onyx.Toolbar, layoutKind: enyo.FittableColumnsLayout, components: [
-			/*{kind: enyo.ToolDecorator, components: [
-				{kind: onyx.Grabber, ontap: "showCampaigns"},
+		{kind: onyx.Toolbar, layoutKind: enyo.FittableColumnsLayout, classes: "mod-onyx-background", components: [
+			{name: "showButton", kind: enyo.Button, classes: "toolbar-button-style", ontap: "showCampaigns", content: ">"},
+			{content: "CitizenSense .beta."},
+			/*{kind: enyo.FittableColumns, fit: true, components: [
+				{content: "– a "},
+				{kind: enyo.Image, src: "assets/GL-Logo.png", style: "height: 1em; padding: 0px 10px; bottom: 0px;"},
+				{content: " project"},
 			]},*/
-			{content: "CitizenSense .beta.", fit: true},
-			{name: "newButton", kind: onyx.Button, content: "new", ontap: "showNewMap"},
+		   	{kind: "GrouplensBrand", fit: true, vertical: false},
+			{name: "newButton", kind: enyo.Button, classes: "toolbar-button-style", content: "Create Campaign", ontap: "showNewMap"},
 		]},
 		{name: "container", kind: enyo.FittableColumns, fit: true, components: [
 		    {kind: "CSenseShowCampaigns"},
-			{name: "showButton", kind: enyo.Button, ontap: "showCampaigns", content: ">"},
-		    {name: "mapCont", style: "position: relative;", fit: true, components:[
-		    	{name: "addLocationsAndRegionsToolbar", kind: onyx.Drawer, open: false, style: "position: absolute !important; z-index: 100; right: 0px;",components:[
+			//{name: "showButton", kind: enyo.Button, ontap: "showCampaigns", content: ">", style: "width: 2%; z-index: 15; position: absolute;"},
+		    {name: "mapCont", fit: true, style: "position: relative;", components:[
+		    	{name: "addLocationsAndRegionsToolbar", kind: onyx.Drawer, open: false, style: "z-index: 10; float: right;", components:[
 		    		{name: "addLandRRadioGroup", kind: onyx.RadioGroup, components:[
-		    			{name: "addLocationButton", kind: onyx.RadioButton, content: "Add Location"},
-		    			{name: "addRegionButton", kind: onyx.RadioButton, content: "Add Region"}
+		    			{name: "addLocationButton", kind: enyo.Button, classes: "button-style", content: "Add Location"},
+		    			{name: "addRegionButton", kind: enyo.Button, classes: "button-style", content: "Add Region"}
 		    		]}
 		    	]},
-		    	{name: "modifyToolbar", kind: onyx.Drawer, open: false, style: "position: absolute !important; z-index: 10; right: 0px;",components:[
+		    	{name: "modifyToolbar", kind: onyx.Drawer, open: false, style: "z-index: 10; float: right;", components:[
 		    		{kind: enyo.ToolDecorator, components:[
-		    			{name: "undoButton", kind: onyx.Button, content: "Undo", classes: "onyx-radiobutton", style:"margin-right: 8px; border-radius: 3px 3px 3px 3px;"},
+		    			{name: "undoButton", kind: enyo.Button, content: "Undo", classes: "button-style", style:"margin-right: 8px; border-radius: 3px 3px 3px 3px;"},
 		    			{name: "modifyRadioGroup", kind: onyx.RadioGroup, components:[
-		    				{name: "modifyFeaturesButton", kind: onyx.RadioButton, content: "Edit"},
-		    				{name: "removeFeaturesButton", kind: onyx.RadioButton, content: "Remove"}
+		    				{name: "modifyFeaturesButton", kind: enyo.Button, classes: "button-style", content: "Edit"},
+		    				{name: "removeFeaturesButton", kind: enyo.Button, classes: "button-style", content: "Remove"}
 		    			]}
 		    		]}
 		    	]}
 		    ]},
-			{kind: "CampaignBuilder"}
+			{kind: "CampaignBuilder"},
+			{kind: "QuestionDrawer"},
 		]}
 	],
 	published: {
@@ -57,7 +62,7 @@ enyo.kind({
 
 		onSnapping: "toggleVisible",
 		onSnapped: "toggleVisible",
-		onStep: "resizeContainer",
+		//onStep: "resizeContainer",
 		onDeactivateAllEditing: "deactivateEditingInterface",
 		onShowAddFeaturesToolbar: "showAddFeaturesToolbar",
 		onShowEditFeaturesToolbar: "showEditFeaturesToolbar",
@@ -74,6 +79,8 @@ enyo.kind({
 		onAPIResponse: "updateLastSubmissionPollTime",
 
 		onContentSet: "stopTaskDetailSpinner",
+		
+		onResizeMap: "adjustMapSize"
 	},
 
 	create: function (inSender, inEvent) {
@@ -116,7 +123,7 @@ enyo.kind({
 	},
 
 	resizeContainer: function(inSender, inEvent) {
-		this.$.container.resized();
+		//this.$.container.resized();
 	},
 
 	showEditFeaturesToolbar: function(inSender, inEvent){
@@ -343,18 +350,9 @@ enyo.kind({
 
 		//-- Create the map --//
 		this.map = L.map(this.$.mapCont.id, {closePopupOnClick: false, maxZoom: 17}).setView([44.981313, -93.266569], 13);
-		//L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-		//L.tileLayer("http://otile1.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg", {
 		L.tileLayer("http://acetate.geoiq.com/tiles/acetate-hillshading/{z}/{x}/{y}.png", {
 			attribution: "Map data &copy; OpenStreetMap contributors"
 		}).addTo(this.map);
-		/*
-		//Stamen tiles
-		//To use be sure to add <script type="text/javascript" src="http://maps.stamen.com/js/tile.stamen.js?v1.2.2"></script>
-		//to the html file.
-		var tileLayer = new L.StamenTileLayer("terrain");
-		this.map.addLayer(tileLayer);
-		*/
 
 
 		//-- markerCluster initilization --//
@@ -502,26 +500,33 @@ enyo.kind({
 	showCampaigns: function(inSender, inEvent) {
 		if(inSender.getContent() === ">")
 			inSender.setContent("<");
-		else
+		else {
 			inSender.setContent(">");
+			this.removeTaskLocations();
+		}
 
 	    this.waterfallDown("onShowTapped");
-	    //this.waterfallDown("onDeactivateAllEditing");
 	   	this.waterfallDown("onDeactivateTaskLocationEditingUI");
 	    this.deactivateEditingInterface();
 	    //this.map.invalidateSize();
 	    this.$.mapCont.resized();
 	},
 	showNewMap: function(inSender, inEvent) {
-		this.waterfallDown("onNewTapped");
-		//this.waterfallDown("onDeactivateAllEditing");
-		this.waterfallDown("onDeactivateTaskLocationEditingUI");
-		this.deactivateEditingInterface();
-		this.removeTaskLocations();
+		var truth2 = this.$.questionDrawer.getOpen();
+		this.log(truth2);
+		this.$.campaignBuilder.toggleDrawer();
+		this.$.questionDrawer.toggleDrawer();
+		//this.waterfallDown("onNewTapped");
+		//this.waterfallDown("onDeactivateTaskLocationEditingUI");
+		//this.deactivateEditingInterface();
 
-		//var truthy = this.$.mapDrawer.getOpen();
-		//this.$.mapDrawer.setOpen(!truthy);
-
+		if(this.$.newButton.getContent() === "Create Campaign") {
+			this.$.newButton.setContent("Cancel Campaign");
+			this.$.newButton.resized();
+		} else {
+			this.$.newButton.setContent("Create Campaign");
+			this.$.newButton.resized();
+		}
 		var classy = this.$.newButton.hasClass("active");
 		this.$.newButton.addRemoveClass("active", !classy);
 	},
@@ -742,16 +747,17 @@ enyo.kind({
 		this.currentTaskMarkerGroup.eachLayer(function (layer){
 			layer.showLabel();
 		});
-
-		this.panToTaskMarkerGroup(null, {campId: campaign.id}); //Here I am calling an event handler manually, is that bad?
 	},
 
 	/*
 
 	*/
 	adjustMapSize: function(inSender, inEvent){
-		this.map.invalidateSize();
-		this.map.panBy([inEvent.offset,0],{animate: false, duration: 0});
+		this.log();
+		this.map.panBy([inEvent.offset,0],{animate: true, duration: 0});
+		//this.map.invalidateSize();
+		/*this.$.mapCont.resized();
+		this.reflow();*/
 	},
 	/*
 
@@ -771,7 +777,10 @@ enyo.kind({
 		var campId = inEvent.campId;
 		// assert this.currentTaskMarkerGroup corresponds to campId
 		this.map.panTo(this.currentTaskMarkerGroup.getBounds().getCenter());
+		this.adjustMapSize(-1*Number(inEvent.offset));
 		//this.map.fitBounds(this.currentTaskMarkerGroup.getBounds(), {pan: {animate: true}});
+
+		return true;
 	},
 
 
