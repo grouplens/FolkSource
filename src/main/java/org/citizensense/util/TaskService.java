@@ -29,9 +29,7 @@ public class TaskService {
 	public static void getSubmissions(Task t) {
 		List<Submission> submissions;
 		Session session = HibernateUtil.getSession(true);
-		
 		submissions = session.createQuery("from Submission where task_id= " + t.getId()).list();
-		
 		t.setSubmissions(submissions);
 	}
 	

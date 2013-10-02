@@ -17,13 +17,11 @@ public class CampaignService {
 		return campaigns;
 	}
 	
-	public static List<Campaign> getCampaigns(int id) {
+	public static Campaign getCampaign(int id) {
 		List<Campaign> campaigns;
 		Session session = HibernateUtil.getSession(true);
-		
 		campaigns = session.createQuery("from Campaign where id= "+id).list();
-		
-		return campaigns;
+		return campaigns.get(0);
 	}
 
 	public static void save(Campaign camp) {

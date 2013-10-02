@@ -1,100 +1,84 @@
 package org.citizensense.controller;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts2.ServletActionContext;
+import org.citizensense.model.SubmissionDto;
 import org.citizensense.model.Submission;
 import org.citizensense.util.SubmissionService;
 import org.grouplens.common.dto.DtoContainer;
 
 import com.opensymphony.xwork2.ModelDriven;
 
-public class SubmissionController implements ModelDriven<DtoContainer<Submission>> {
+public class SubmissionController implements ModelDriven<DtoContainer<SubmissionDto>>{
 
-	//private Collection<Submission> list;
+	private DtoContainer<SubmissionDto> content = new DtoContainer<SubmissionDto>(SubmissionDto.class, false);
+	
 	private int id;
-	//private Submission submission = new Submission();
-
-	private DtoContainer<Submission> content = new DtoContainer<Submission>(Submission.class, false);
 	
 	@Override
-	public DtoContainer<Submission> getModel() {
+	public DtoContainer<SubmissionDto> getModel() {
 		return content;
 	}
 
+	public String create() {
+		
+		HttpServletResponse res = ServletActionContext.getResponse();
+		
+		res.addHeader("Access-Control-Allow-Origin", "*");
+		res.addHeader("Access-Control-Allow-Headers", "Cache-Control");
+		
+		SubmissionDto subDto = content.getSingle();
+		Submission s = subDto.toSubmission();
+				
+		res.addIntHeader("X-Points", SubmissionService.getSubUser(s).getPoints());
+				
+		SubmissionService.save(s);
+		
+		// SubmissionService.save updates the submission object with the id that the db has assigned
+		// to the object. We return a new SubmissionDto based on the updated submission object.
+		content.set(new SubmissionDto(s));
+		
+		return "create";
+	}
+	
 	// Handles /submission/{id} GET requests
 	public String show() {
 		HttpServletResponse res = ServletActionContext.getResponse();
 		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "*");
-		for (Submission s : SubmissionService.getSubmissions()) {
-			if(s.getId().equals(id))
-				content.set(s);
-		}
+		content.set(new SubmissionDto(SubmissionService.getSubmission(id)));
 		return "show";//new DefaultHttpHeaders("show");
 	}
-
-	public void setId(String id) {
-		//if (id != null)
-		//	for (Submission s : SubmissionService.getSubmissions()) {
-		//		if (s.getId() == Integer.parseInt(id))
-		//			this.submission = s;
-		//	}
-		// SubmissionService.getSubmissions()..get(Integer.parseInt(id)-1);
-		this.id = Integer.parseInt(id);
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
+	
+	
 	// Handles /submission GET requests
 	//public HttpHeaders index() {
 	public String index() {
+		
 		HttpServletResponse res = ServletActionContext.getResponse();
 		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "*");
-		content = new DtoContainer<Submission>(Submission.class, true);
-		content.set(SubmissionService.getSubmissions());
+		content = new DtoContainer<SubmissionDto>(SubmissionDto.class, true);
+		Map<String, String[]> paramMap = ServletActionContext.getRequest().getParameterMap();
+		
+		if (paramMap.get("after") != null){
+			content.set(SubmissionDto.fromSubmissionList(SubmissionService.getSubmissionsAfter(paramMap.get("after")[0])));
+		} else {
+			content.set(SubmissionDto.fromSubmissionList(SubmissionService.getSubmissions()));
+		}
 		//return new DefaultHttpHeaders("index").disableCaching();
 		return "index";
 	}
-	public String create() {
-		HttpServletResponse res = ServletActionContext.getResponse();
-		res.addHeader("Access-Control-Allow-Origin", "*");
-		res.addHeader("Access-Control-Allow-Headers", "Cache-Control");
-//		res.addHeader("Access-Control-Expose-Headers", "X-Points");
-//		res.addHeader("Access-Control-Expose-Headers", "X-Uid");
-		res.addIntHeader("X-Points", SubmissionService.getSubUser(content.getSingle()).getPoints());
-		SubmissionService.save(content.getSingle());
-		return "create";//new DefaultHttpHeaders("create");
+	
+	
+	public void setId(String id) {
+		this.id = Integer.parseInt(id);
+	}
+	public int getId() {
+		return this.id;
 	}
 	
-	/*
-	 * REVISIT THIS WHEN WE DEPLOY TO REAL DEVICES, NEEDED FOR NOW ON iOS
-	 */
-	public String options() {
-		HttpServletResponse res = ServletActionContext.getResponse();
-		res.addHeader("Allow", "*");
-		res.addHeader("Access-Control-Allow-Origin", "*");
-//		res.addHeader("Access-Control-Expose-Headers", "X-Points");
-//		res.addHeader("Access-Control-Expose-Headers", "X-Uid");
-////		res.addHeader("Access-Control-Allow-Methods", "GET, POST");
-//		res.addHeader("Access-Control-Allow-Headers", "X-Points");
-//		res.addHeader("Access-Control-Allow-Headers", "X-Uid");
-		res.addHeader("Access-Control-Allow-Headers", "Content-Type");
-		res.addHeader("Access-Control-Allow-Headers", "Cache-Control");
-		return "options_success";
-	}
-	
-//	 public String create() {
-//		HttpServletRequest req = ServletActionContext.getRequest();
-//	 	HttpServletResponse res = ServletActionContext.getResponse();
-//	 	if (submission != null && SubmissionService.save(submission)) {
-//	 		res.setStatus(HttpServletResponse.SC_OK);
-//	 		return "post_submission_success";
-//	 	} else {
-//	 		res.setStatus(400);
-//	 		return "post_submission_fail";
-//	 	}
-//	 }
 }

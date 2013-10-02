@@ -8,12 +8,13 @@
 	<name>Citizen Sense</name>
 
 	<properties>
-		<db.username>citizensense</db.username>
+		<db.username>jts</db.username>
 		<db.password></db.password>
 		<db.schema>public</db.schema>
 		<db.connection.driver.class>org.postgresql.Driver</db.connection.driver.class>
-		<db.url>jdbc:postgresql://localhost/citizensense</db.url>
-		<db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect>
+		<db.url>jdbc:postgresql://localhost/postgres</db.url>
+		<db.dialect>org.hibernate.spatial.dialect.postgis.PostgisDialect</db.dialect>
+<!-- 		<db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect> -->
 		<db.connection.maxcount>40</db.connection.maxcount>
 	</properties>
 
@@ -101,14 +102,14 @@
 				<configuration>
 					<container>
 						<containerId>tomcat7x</containerId>
-						<home>/home/grad01/thebault/apache-tomcat-7.0.29</home>
+						<home>/Users/jts/apache-tomcat-7.0.22</home>
 						<type>installed</type>
 					</container>
 
 					<configuration>
 						<type>standalone</type>
 						<properties>
-							<cargo.servlet.port>9080</cargo.servlet.port>
+							<cargo.servlet.port>8080</cargo.servlet.port>
 							<cargo.hostname>localhost</cargo.hostname>
 							<!-- Only needed when using Tomcat. -->
 							<cargo.rmi.port>8089</cargo.rmi.port>
@@ -120,7 +121,7 @@
 								<groupId>${project.groupId}</groupId>
 								<type>war</type>
 								<properties>
-									<context>csense</context>
+									<context>/</context>
 								</properties>
 							</deployable>
 						</deployables>
@@ -170,7 +171,21 @@
 			</plugin>
 		</plugins>
 	</build>
-
+	<repositories>
+        <repository>
+            <id>OSGEO GeoTools repo</id>
+            <url>http://download.osgeo.org/webdav/geotools</url>
+        </repository>
+        <repository>
+            <id>Hibernate Spatial repo</id>
+            <url>http://www.hibernatespatial.org/repository</url>
+        </repository>
+        <!-- add JBOSS repository for easy access to Hibernate libraries -->
+        <repository>
+            <id>JBOSS</id>
+            <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.struts</groupId>
@@ -182,15 +197,15 @@
 			<artifactId>struts2-rest-plugin</artifactId>
 			<version>2.3.4</version>
 		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-annotations</artifactId>
-			<version>3.5.6-Final</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.hibernate</groupId> -->
+<!-- 			<artifactId>hibernate-annotations</artifactId> -->
+<!-- 			<version>3.5.6-Final</version> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-c3p0</artifactId>
-			<version>3.6.6.Final</version>
+			<version>4.2.5.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -214,13 +229,13 @@
 			<artifactId>slf4cldc-simple</artifactId>
 			<version>1.6.0</version>
 		</dependency>
-		<dependency>
-			<groupId>postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>8.4-702.jdbc3</version>
-			<type>jar</type>
-			<scope>runtime</scope>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>postgresql</groupId> -->
+<!-- 			<artifactId>postgresql</artifactId> -->
+<!-- 			<version>8.4-702.jdbc3</version> -->
+<!-- 			<type>jar</type> -->
+<!-- 			<scope>runtime</scope> -->
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>org.grouplens.common</groupId>
 			<artifactId>common-hash</artifactId>
@@ -238,5 +253,32 @@
 			<artifactId>common-serialize</artifactId>
 			<version>0.5</version>
 		</dependency>
+		<dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-spatial</artifactId>
+            <version>4.0-M1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>4.2.5.Final</version>
+        </dependency>
+        <dependency> 
+			<groupId>org.postgis</groupId> 
+			<artifactId>postgis-jdbc</artifactId> 
+			<version>1.5.2</version> 
+			<scope>compile</scope> 
+		</dependency>
+        <!-- the postgresql driver -->
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>8.4-701.jdbc3</version>
+        </dependency>
+<!--         <dependency> -->
+<!--             <groupId>org.slf4j</groupId> -->
+<!--             <artifactId>slf4j-log4j12</artifactId> -->
+<!--             <version>1.5.11</version> -->
+<!--         </dependency> -->
 	</dependencies>
 </project>
