@@ -8,18 +8,18 @@
 		</id>
 		<property name="instructions" />
 		<property name="required" />
-		<bag name="submissions" lazy="true">
-			<key column="task_id" />
-			<one-to-many class="Submission" />
-		</bag>
+<!-- 		<bag name="submissions" lazy="true"> -->
+<!-- 			<key column="task_id" /> -->
+<!-- 			<one-to-many class="Submission" /> -->
+<!-- 		</bag> -->
 		<bag name="questions" lazy="true">
 			<key column="task_id" />
 			<one-to-many class="Question" />
 		</bag>
-<!-- 		<bag name="locations" lazy="false"> -->
-<!-- 			<key column="task_id" /> -->
-<!-- 			<one-to-many class="Location" /> -->
-<!-- 		</bag> -->
+		<bag name="locations" lazy="false">
+			<key column="task_id" />
+			<one-to-many class="Location" />
+		</bag>
 <!-- 		<bag name="points" lazy="false"> -->
 <!-- 			<key column="task_id" /> -->
 <!-- 			<one-to-many class="GeomPoint" -->

@@ -22,7 +22,7 @@ public class Task{
 		super();
 	}
 	//used by the TaskDto
-	public Task(Integer id, String name, String instructions, Boolean required, Submission[] subs, Question[] qs){
+	public Task(Integer id, String name, String instructions, Boolean required, Submission[] subs, Question[] qs, Location[] locs){
 		super();
 		this.id = id;
 		this.name = name;
@@ -30,6 +30,7 @@ public class Task{
 		this.required = required;
 		this.submissions = subs;
 		this.questions = qs;
+		this.locations = locs;
 	}
 	
 	
