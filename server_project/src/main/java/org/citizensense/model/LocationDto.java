@@ -45,5 +45,20 @@ public class LocationDto extends Dto{
 			return new Location(this.id, this.task_id, this.geometry);
 		}
 	}
+	public static Location[] toLocationArray(LocationDto[] ldtos){
+		Location[] locations = new Location[ldtos.length];
+		for (int i = 0; i < locations.length; i++) {
+			locations[i] = ldtos[i].toLocation();
+		}
+		return locations;
+	}
+	
+	public static LocationDto[] fromLocationArray(Location[] locs){
+		LocationDto[] locDtos = new LocationDto[locs.length];
+		for (int i=0; i < locs.length; i++){
+			locDtos[i] = new LocationDto(locs[i]);
+		}
+		return locDtos;
+	}
 
 }

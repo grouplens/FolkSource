@@ -13,6 +13,7 @@ public class TaskDto extends Dto{
 	public Boolean required;
 
 	public SubmissionDto[] submissions;
+	public LocationDto[] locations;
 	public Question[] questions;
 	
 	
@@ -28,6 +29,7 @@ public class TaskDto extends Dto{
 		required = t.required;
 		if (t.submissions == null){submissions = null;}
 		else{submissions = SubmissionDto.fromSubmissionArray(t.submissions);}
+		locations = LocationDto.fromLocationArray(t.locations);
 		questions = t.questions;
 	}
 	public static List<TaskDto> fromList(List<Task> tasks){
@@ -55,7 +57,12 @@ public class TaskDto extends Dto{
 			subs = SubmissionDto.toSubmissionArray(submissions);
 		}
 		
-		return new Task(id, name, instructions, required, subs, questions);
+		Location[] locs = null;
+		if (locations != null) {
+			locs = LocationDto.toLocationArray(locations);
+		}
+		
+		return new Task(id, name, instructions, required, subs, questions, locs);
 	}
 	public static Task[] toTaskArray(TaskDto[] tdtos){
 		Task[] tasks = new Task[tdtos.length];
