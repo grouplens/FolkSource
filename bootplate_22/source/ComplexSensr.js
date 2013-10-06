@@ -1,7 +1,8 @@
 enyo.kind({
 	name: "ComplexSensr",
 	//style: "background-color: #254048; color: white; border-color: white;",
-	style: "background: #DDFFDD;",
+	//style: "background: #DDFFDD;",
+	classes: "light-background",
 	kind: enyo.FittableRows,
 	published: {
 			data: ""

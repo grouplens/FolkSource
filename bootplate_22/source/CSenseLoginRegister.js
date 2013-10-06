@@ -38,7 +38,7 @@ enyo.kind({
 	   	this.$.gbox.createComponent(
 			{name: "gboxcomp", components: [
 				{name: "userdec", kind: "onyx.InputDecorator", classes: "onyx-input-decorator", components: [
-					{name: "username", kind: "onyx.Input", placeholder: "Username", defaultFocus: true, type: "text", style: "width: 100%;", classes: "onyx-input", onkeyup: "checkFields" }
+					{name: "username", kind: "onyx.Input", placeholder: "Username", defaultFocus: true, type: "text", style: "width: 100%;", attributes: {autocorrect: "off", autocaptialize: "none"}, classes: "onyx-input", onkeyup: "checkFields" }
 				]},
 				{name: "passdec", kind: "onyx.InputDecorator", classes: "onyx-input-decorator", components: [
 					{name: "password", kind: "onyx.Input", placeholder: "Password", type: "password", style: "width: 100%;", selectOnFocus: true, classes: "onyx-input", onkeyup: "checkFields" }
@@ -57,7 +57,7 @@ enyo.kind({
 					{name: "email", kind: "onyx.Input", placeholder: "E-Mail", defaultFocus: true, type: "email", style: "width: 100%;", classes: "onyx-input", onkeyup: "emailRegexCheck" }
 				]},
 				{name: "userdec", kind: "onyx.InputDecorator", classes: "onyx-input-decorator", components: [
-					{name: "username", kind: "onyx.Input", placeholder: "Username", type: "text", style: "width: 100%;", classes: "onyx-input", onkeyup: "checkFields" }
+					{name: "username", kind: "onyx.Input", placeholder: "Username", type: "text", attributes: {autocorrect: "off", autocaptialize: "none"}, style: "width: 100%;", classes: "onyx-input", onkeyup: "checkFields" }
 				]},
 				{name: "passdec", kind: "onyx.InputDecorator", classes: "onyx-input-decorator", components: [
 					{name: "password", kind: "onyx.Input", placeholder: "Password", type: "password", style: "width: 100%;", selectOnFocus: true, classes: "onyx-input", onkeyup: "checkFields" }

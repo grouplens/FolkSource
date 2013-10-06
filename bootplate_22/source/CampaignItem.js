@@ -2,14 +2,15 @@ enyo.kind({
     name: "CampaignItem",
     watching: !1,
     index: "",
-    classes: "campItem bordering-box light-background",
+    classes: "campItem light-background",
+	style: "padding: 5px;",
     published: {
         title: "",
         description: ""
     },
     components: [
 		{name: "button", kind: onyx.Button, content: "Watch", classes: "button-style", ontap: "buttonToggled"},
-		{name: "title", content: "title", style: "font-weight: bold;", classes: "campTitle"},
+		{name: "title", content: "title", style: "font-weight: 400;", classes: "campTitle"},
 		{name: "description", tag: "p", content: "desc", classes: "campDesc", /*style: "white-space: normal; word-wrap: break-word;"*/}
 	],
     events: {

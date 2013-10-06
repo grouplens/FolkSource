@@ -16,7 +16,6 @@ enyo.depends(
     "LeaderboardItem.js",
     "LeaderboardList.js",
     "LocalStorage.js",
-	"leaflet",
     "menupane",
     "NewMap.js",
     "PinView.js",

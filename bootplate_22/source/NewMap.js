@@ -7,7 +7,10 @@ enyo.kind({
     },
     components: [
         {name: "gps", kind: "rok.geolocation", watch: !0, enableHighAccuracy: !0,timeout: this.gpsTimeout, maximumAge: "3000", onSuccess: "locSuccess", onError: "locError"},
-		{content: "Tap the pin/region on the map to help!", style: "font-size: 11pt; font-weight: 200;", classes: "bordering-box light-background"},
+		{name: "spinUp", kind: onyx.Popup, centered: true, floating: true, autoDismiss: false, classes: "dark-background-flat", components: [
+			{name: "spin", kind: onyx.Spinner, classes: "onyx-dark dark-background"}
+		]},
+		//{content: "Tap the pin/region on the map to help!", style: "font-size: 11pt; font-weight: 100; text-align: center;", classes: "light-background"},
 		{name: "mapCont", fit: true, style: "overflow: hidden; position: relative;"}
     ],
     events: {
@@ -17,8 +20,8 @@ enyo.kind({
     },
     eventStarted: !1,
     handlers: {
-        onSnapping: "toggleVisible",
-        onSnapped: "toggleVisible"
+        onSnapping: "turnOffMap",
+        onSnapped: "resetPins"
     },
     create: function (a) {
         this.inherited(arguments);
@@ -30,17 +33,24 @@ enyo.kind({
         this.notShowing = true;
 		this.locSuc = false;
 		this.loaded = false;
+		this.pointsLayer = L.layerGroup();
+		this.polygonsLayer = L.layerGroup();
     },
     rendered: function () {
 		this.inherited(arguments);
 		this.$.gps.getPosition();
 
 		this.map = L.map(this.$.mapCont.id, {closePopupOnClick: false, maxZoom: 17}).setView([44.981313, -93.266569], 13);
-		L.tileLayer("http://acetate.geoiq.com/tiles/acetate-hillshading/{z}/{x}/{y}.png", {
-			attribution: "Map data &copy; OpenStreetMap contributors"
+		//L.tileLayer("http://acetate.geoiq.com/tiles/acetate-hillshading/{z}/{x}/{y}.png", {
+		L.tileLayer("http://tile.stamen.com/watercolor/{z}/{x}/{y}.png", {}).addTo(this.map);
+		L.tileLayer("http://tile.stamen.com/toner-lines/{z}/{x}/{y}.png", {}).addTo(this.map);
+		L.tileLayer("http://tile.stamen.com/toner-labels/{z}/{x}/{y}.png", {
+		/*L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg", {
+			subdomains: ['otile1', 'otile2', 'otile3', 'otile4'],*/
+			attribution: "Map data &copy; OpenStreetMap contributors",
 		}).addTo(this.map);
 
-
+		this.$.spin.start();
 	},
 	mapLoaded: function() {
 		this.loaded = true;
@@ -59,7 +69,7 @@ enyo.kind({
 			this.centerMap();
 		}
 		if (!this.userMarker)
-			this.userMarker = L.userMarker(latlng, {pulsing: true, smallIcon: true}).addTo(this.map);
+			this.userMarker = L.userMarker(latlng, {pulsing: true}).addTo(this.map);
 
 		this.userMarker.setLatLng(latlng);
 		this.userMarker.setAccuracy(b.coords.accuracy);
@@ -74,6 +84,8 @@ enyo.kind({
 	},
 	locPlot: function (a) {
 		this.locations = a;
+		this.points = [];
+		this.polygons = [];
 		this.addMarkers();
 	   },
 	inside: function (a) {
@@ -89,6 +101,30 @@ enyo.kind({
 		g = f[f.length - 1];
 		return this.addRemoveClass("hideMap", e !== g), !0;*/
 	},
+	turnOffMap: function(inSender, inEvent) {
+		this.log();
+		/*for(x in this.pointsLayer) {
+			this.map.removeLayer(this.pointsLayer[x]);
+		}
+		for(x in this.polygonsLayer) {
+			this.map.removeLayer(this.polygonsLayer[x]);
+		}*/
+		this.pointsLayer.clearLayers();
+		this.map.removeLayer(this.pointsLayer);
+		this.polygonsLayer.clearLayers();
+		this.map.removeLayer(this.polygonsLayer);
+		//remove all markers
+		/*for(x in this.points) {
+			this.map.removeLayer(this.points[x]);
+		}
+		for (x in this.polygons) {
+			this.map.removeLayer(this.polygons[x]);
+		}*/
+		this.$.spinUp.show();
+	},
+	resetPins: function(inSender, inEvent) {
+		//re-create markers
+	},
 	makeFilter: function () {
 		if(this.loaded)
 			this.panZoomed = true;
@@ -100,17 +136,34 @@ enyo.kind({
 			var str = this.locations[x].geometryString;
 			wkt.read(str);
 			var shape = wkt.toObject();
+			var points = [];
+			var polygons = [];
 			if(str.indexOf("POINT") != -1) {
-				shape.addTo(this.map);
+				shape.on("click", enyo.bind(this, "makeBubbleClick"));
+				this.pointsLayer.addLayer(shape);
+				//shape.addTo(this.map);
+				points.push(shape);
 			} else if (str.indexOf("POLYGON") != -1) {
-				this.map.addLayer(shape);
+				shape.on("click", enyo.bind(this, "makeBubbleClick"));
+				this.polygonsLayer.addLayer(shape);
+				//this.map.addLayer(shape);
+				polygons.push(shape);
+				//this.map.addLayer(shape);
 				//polygon goes here
 			} else {
 				this.log("FAILED TO MAP");
 			}
-			shape.on("click", enyo.bind(this, "makeBubbleClick"));
-			this.log(wkt.components);
+
+			/*if(!this.pointsLayer)
+				this.pointsLayer = L.layerGroup(points);*/
+			this.pointsLayer.addTo(this.map);
+
+			/*if(!this.polygonsLayer)
+				this.polygonsLayer = L.featureGroup(polygons);*/
+			this.polygonsLayer.addTo(this.map);
+			
 		}
+		this.$.spinUp.hide();
 	},
 	centerMap: function () {
 		var myLocation = Data.getLocationData();
