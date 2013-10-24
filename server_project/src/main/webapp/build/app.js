@@ -5613,7 +5613,7 @@ name: "Data",
 kind: "enyo.Control",
 statics: {
 getURL: function() {
-return "http://131.212.228.189.xip.io:8080/";
+return "http://127.0.0.1:8080/";
 },
 getUserName: function(e) {
 var t = new enyo.Ajax({
