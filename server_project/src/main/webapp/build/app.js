@@ -7166,11 +7166,11 @@ this.taskData.instructions = this.$.instructions.getValue();
 },
 checkTitles: function(e, t) {
 var n = t.task, r = /\d+/, i = Number(n.match(r)[0]), s = this.$.taskTitle.getTitle(), o = Number(s.match(r)[0]);
+this.log(i), this.log(o);
 if (i < o) {
 var u = /\(\d+ \w+\)/, a = this.$.taskTitle.getTitle().match(u);
-a != null ? this.$.taskTitle.setTitle("#" + (o - 1) + " " + a[0]) : this.$.taskTitle.setTitle("#" + (o - 1));
+this.log(a), a != null ? this.$.taskTitle.setTitle("#" + (o - 1) + " " + a[0]) : this.$.taskTitle.setTitle("#" + (o - 1));
 }
-return !0;
 },
 radioActivated: function(e, t) {
 t.originator.getActive() && (this.doDeactivateAllEditing(), t.originator.name == "addFeaturesButton" ? this.doShowAddFeaturesToolbar() : t.originator.name == "editFeaturesButton" && this.doShowEditFeaturesToolbar(), this.toggleEditingDrawer());
