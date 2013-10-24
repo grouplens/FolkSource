@@ -5635,7 +5635,7 @@ name: "Data",
 kind: "enyo.Control",
 statics: {
 getURL: function() {
-return "http://127.0.0.1:8080/csense";
+return "http://127.0.0.1:8080/csense/";
 },
 getUserName: function(e) {
 var t = new enyo.Ajax({
