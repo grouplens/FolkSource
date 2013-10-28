@@ -50,7 +50,7 @@ enyo.kind({
 					{name: "finishEditingButton", kind: onyx.Button, content: "Done", classes: "button-style-affirmative", ontap: "finishEditing"},
 				]},
 				{name: "locationList", kind: enyo.Scroller, layoutKind: enyo.FittableColumnsLayout, fit: true, horizontal: "hidden", vertical: "scroll", components: [
-					{name: "realLocationList", kind: enyo.FittableRows, style: "background: pink; width: 100%;", fit: true},
+					{name: "realLocationList", kind: enyo.FittableRows, style: "width: 100%;", fit: true},
 				]},
 			]},
 			{kind: enyo.FittableRows, fit: true, components: [
@@ -136,13 +136,12 @@ enyo.kind({
 		}
 	},
 	newLocation: function(inLocation) {
-		this.log(inLocation);
 		if(inLocation.layerType === "marker") {
-			this.$.realLocationList.createComponent({tag: "i", classes: "icon-map-marker icon-3x nice-padding", style: "width: 100%; display: block; text-align: center; background: orange;", data: inLocation, ontap: "readLocationData"}, {owner: this});
+			this.$.realLocationList.createComponent({tag: "i", classes: "icon-map-marker icon-3x nice-padding", style: "width: 100%; display: block; text-align: center;", data: inLocation, ontap: "readLocationData"}, {owner: this});
 			this.$.realLocationList.render();
 		}
 		if(inLocation.layerType === "polygon") {
-			this.$.realLocationList.createComponent({tag: "i", classes: "icon-globe icon-3x nice-padding", style: "width: 100%; display: block; text-align: center; background: orange;", data: inLocation, ontap: "readLocationData"}, {owner: this});
+			this.$.realLocationList.createComponent({tag: "i", classes: "icon-globe icon-3x nice-padding", style: "width: 100%; display: block; text-align: center;", data: inLocation, ontap: "readLocationData"}, {owner: this});
 			this.$.realLocationList.render();
 		}
 	},
@@ -164,7 +163,18 @@ enyo.kind({
 	},
 	readLocationData: function(inSender, inEvent) {
 		this.log(inSender.data);
-		this.doCheckLocation({data: inSender.data, selected: true});
+		this.log(this.$.realLocationList.getControls());
+		enyo.forEach(this.$.realLocationList.getControls(), function(inSender, inEvent) {
+			this.log(inSender);
+			this.log(inEvent);
+			var truth = inSender.hasClass("hilight-location");
+			inSender.addRemoveClass("hilight-location", false);
+			this.doCheckLocation({data: inSender.data, selected: false});
+		}, this);
+
+		var truth = inSender.hasClass("hilight-location");
+		inSender.addRemoveClass("hilight-location", !truth);
+		this.doCheckLocation({data: inSender.data, selected: !truth});
 	},	
 	remove: function(inSender, inEvent) {
 		//this is sorta weird, but it's a visual cue of destruction

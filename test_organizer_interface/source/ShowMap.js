@@ -172,6 +172,7 @@ enyo.kind({
 			this.drawPolygon.enable();
 			this.drawPolygon._tooltip.updatePosition(e.layer._latlngs[0]);
 		}
+		this.log(this.map.hasLayer(e.layer));
 		this.waterfallDown("onNewLocation", e);
 	},
 
@@ -235,13 +236,21 @@ enyo.kind({
 		this.fixTooltip(this.remover._tooltip._container);
 	},
 	highlightMarkerPolygon: function(inSender, inEvent) {
-		var layer = inEvent.layer; 
-		this.log(this.map.hasLayer(layer));
-		if(this.map.hasLayer(layer)) {
-			if(inEvent.layerType === "marker")
-				layer.setOpacity(0.4);
-			if(inEvent.layerType === "polygon")
-				layer.setStyle({color: "#00FF00"});
+		var layerCont = inEvent.data; 
+		if(this.map.hasLayer(layerCont.layer)) {
+			var layer = layerCont.layer;
+			if(layerCont.layerType === "marker") {
+				if(inEvent.selected)
+					layer.setIcon(new L.DivIcon({iconSize: new L.Point(27,91), html: "<i class=\"icon-map-marker icon-4x\"></i>", className: "map-pin-test"}));
+				else
+					layer.setIcon(new L.DivIcon({iconSize: new L.Point(27,91), html: "<i class=\"icon-map-marker icon-4x\"></i>", className: "map-pin"}));
+			}
+			if(layerCont.layerType === "polygon") {
+				if(inEvent.selected)
+					layer.setStyle({color: "#FF0000"});
+				else 
+					layer.setStyle({color: "#0000FF"});
+			}
 		}
 		return true;
 	},	

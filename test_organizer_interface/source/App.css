@@ -150,6 +150,9 @@ body {
 	text-shadow: 0 0 3px yellow;
 	color: red !important;
 }
+.hilight-location {
+	text-shadow: 0 0 15px #FF0000;
+}
 .button-style-negative  {
 	color: red !important;
 }
@@ -256,7 +259,13 @@ body {
 	box-shadow: 0 0 0 0 white;
 }
 .map-pin {
-	color: #C4676D;
+	color: #0000FF;
+	background-color: transparent;
+	border: 0px;
+	text-shadow: 4px -4px 4px rgba(0, 0, 0, 0.2);
+}
+.map-pin-test {
+	color: #FF0000;
 	background-color: transparent;
 	border: 0px;
 	text-shadow: 4px -4px 4px rgba(0, 0, 0, 0.2);
