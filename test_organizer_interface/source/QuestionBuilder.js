@@ -1,12 +1,15 @@
 enyo.kind({
 	name: "QuestionBuilder",
 	events: {
+		onDestroyedQuestion: "",
 	},
 	handlers: {
 		onDoneEditing: "lockList",
 		onMakeNew: "newOption",
 		onTitleCollapsing: "toggleQuestionDrawer",
-		onNewStep: "saveData"
+		onNewStep: "saveData",
+		onDestroyedQuestion: "checkTitles",
+		onDestroy: "remove",
 	},
 	published: {
 		stepIndex: 1,
@@ -14,19 +17,20 @@ enyo.kind({
 		questionData: null
 	},
 	components:[
-		{name: "stepTitle", kind: "SaveTitle", title: "#", circled: true, big: true},
-		{name: "questionTitle", kind: "Title", title: "Question #", classes: "hanging-child"},
-		{name: "questionDrawer", kind: onyx.Drawer, open: true, orient: "v", classes: "hanging-child", components: [
-			{name: "questionText", kind: "TitledInput", title: "What's the question?", placeholder: "Enter your question text here..."/*, ontap: "toggleQuestionDrawer"*/},
-			{kind: "Title", title: "Type of Question:" },
-			{name: "questionChoices", tag: "select", classes: "hanging-child", onchange: "questionPicked", components: [
-				{content: "Text", tag: "option" },
-				{content: "Mult. Choice", tag: "option" },
-				{content: "Excl. Mult. Choice", tag: "option" },
-				{content: "Counter", tag: "option" },
+		//{kind: enyo.Signals, onDestroyedQuestion: "checkTitles"},
+		{name: "stepTitle", kind: "Title", title: "#", /*circled: true,*/ big: true, save: false, fit: true, style: "height: 100%;"},
+		{name: "questionTitle", kind: "Title", title: "Question #", classes: "nice-padding", save: false},
+		{name: "questionDrawer", kind: onyx.Drawer, open: true, orient: "v", classes: "nice-padding", components: [
+			{name: "questionText", kind: "TitledInput", title: "What's the question?", placeholder: "Enter your question text here...", classes: "nice-padding", save: false},
+			{kind: "Title", title: "Type of Question:", classes: "nice-padding", save: false},
+			{name: "questionChoices", tag: "select", classes: "nice-padding", onchange: "questionPicked", components: [
+				{content: "Text", tag: "option"}, // index 0
+				{content: "Mult. Choice", tag: "option"}, // index 1
+				{content: "Excl. Mult. Choice", tag: "option"}, // index 2
+				{content: "Counter", tag: "option"}, // index 3
 			]}, 
-	    		{name: "optionList", kind: enyo.List, style: "height: 100px;", count: 1, showing: false, ontap: "editOption", onSetupItem: "makeOption", components: [
-				{kind: "EditableListItem", name: "oItem" }
+			{name: "optionList", kind: enyo.List, style: "height: 100px;", count: 1, showing: false, ontap: "editOption", onSetupItem: "makeOption", components: [
+				{kind: "EditableListItem", name: "oItem"}
 			]}
 		]}
 	],
@@ -37,8 +41,35 @@ enyo.kind({
 		this.$.questionTitle.setTitle(this.$.questionTitle.getTitle() + this.questionIndex);
 		this.curType = "text";
 	},
+	rendered: function(inSender, inEvent) {
+		this.inherited(arguments);
+		if(this.questionData) {
+			this.recreate();
+		}
+	},
+	checkTitles: function(inSender, inEvent) {
+		var inStep = inEvent.step;
+		var inQ = inEvent.question;
+		var regex = /\d+/;
+		var inStepNum = Number(inStep.match(regex)[0]);
+		var inQNum = Number(inQ.match(regex)[0]);
+
+		var step = this.$.stepTitle.getTitle();
+		var question = this.$.questionTitle.getTitle();
+		var stepNum = Number(step.match(regex)[0]);
+		var questionNum = Number(question.match(regex)[0]);
+
+		this.log(inStepNum);
+		this.log(stepNum);
+		this.log(inQNum);
+		this.log(questionNum);
+		if(inStepNum < stepNum && inQNum < questionNum) {
+			this.$.stepTitle.setTitle("#" + (stepNum - 1));
+			this.$.questionTitle.setTitle("Question #" + (questionNum - 1));
+		}
+	},
 	decodeType: function(inType) {
-		var outType = ""
+		var outType = "";
 		switch(inType) {
 			case "Mult. Choice":
 				outType = "multiple_choice";
@@ -56,6 +87,24 @@ enyo.kind({
 		
 		return outType;
 	},
+	recodeType: function(inType) {
+		var outDex = -1;
+		switch(inType) {
+			case "multiple_choice":
+				outDex = 1;
+			break;
+			case "exclusive_multiple_choice":
+				outDex = 2;
+			break;
+			case "text":
+				outDex = 0;
+			break;
+			case "complex_counter":
+				outDex = 3;
+			break;
+		}
+		return outDex;
+	},
 	editOption: function(inSender, inEvent) {
 		var index = inEvent.index;
 		this.$.optionList.prepareRow(index);
@@ -66,7 +115,7 @@ enyo.kind({
 		var question = {};
 		question.id = 0;
 		question.task_id = 0;
-		question.question = this.$.questionText.getData();
+		question.question = this.$.questionText.getText();
 		question.type = this.curType;
 		if(question.type === "multiple_choice" || question.type === "exclusive_multiple_choice") {
 			var tmp = this.options.pop();
@@ -121,10 +170,29 @@ enyo.kind({
 				this.$.optionList.reset();
 			break;
 			default:
-				this.$.optionList.hide();;
+				this.$.optionList.hide();
 			break;
 		}
 	},
+	recreate: function(inSender, inEvent) {
+		this.log(this.questionData);
+		this.$.questionText.setText(this.questionData.question);
+		if(this.questionData.question.type === "multiple_choice" || this.questionData.question.type === "exclusive_multiple_choice") {
+			this.options = this.questionData.options.split("|");
+			this.$.optionList.setCount(this.options.length);
+			this.$.optionList.show();
+			this.$.optionList.reset();
+		}
+		this.$.questionChoices.hasNode().selectedIndex = this.recodeType(this.questionData.type);
+	},
+	remove: function(inSender, inEvent) {
+		this.addRemoveClass("task-builder-destroy", true);
+		return true;
+	},
+	removeActually: function(inSender, inEvent) {
+		this.doDestroyedQuestion({step: this.$.stepTitle.getTitle(), question: this.$.questionTitle.getTitle()});
+		this.destroy();
+	},	
 	saveData: function(inSender, inEvent) {
 		//save logic goes here
 		if(this.$.questionDrawer.getOpen())
@@ -133,6 +201,7 @@ enyo.kind({
 	toggleQuestionDrawer: function(inSender, inEvent) {
 		var truthy = this.$.questionDrawer.getOpen();
 		this.$.questionDrawer.setOpen(!truthy);
+		this.$.questionTitle.setTitle(this.$.questionTitle.getTitle() + " (saved)");
 		return true;
 	}
 });

@@ -13,16 +13,13 @@ enyo.kind({
         onEmphasizeSubmission: "emphasizeSubmission",
     },
     components:[
-        {name: "popupScroller", fit: true, kind: enyo.Scroller, style: "padding: 14px;", components:[
-            {name: "popHeading", content: "", style: "font-weight: bold;"},
-            {name: "popSubHeading", content: "",},
-            {name: "spinner", kind: "onyx.Spinner", classes: "onyx-light hidden", style: "margin-left:auto; margin-right:auto; display:block; margin-top:60px;"},
-            {
-                kind: enyo.Repeater,
-                count: 0,
-                components: [
-                    {name: "itemCont", classes: "popup-list-item bordering", components:[
-                        {name: "itemHeading", ontap: "toggleItemDrawer", published:{index: ""}, classes:"popup-list-item-heading"},
+		{name: "popHeading", content: "", style: "font-weight: 300;"},
+		{name: "popSubHeading", content: "",},
+        {name: "popupScroller", fit: true, kind: enyo.Scroller, style: "padding: 4px;", components:[
+            {name: "spinner", kind: "onyx.Spinner", classes: "onyx-dark dark-background hidden", style: "margin-left:auto; margin-right:auto; display:block; margin-top:60px;"},
+            {kind: enyo.Repeater, onSetupItem: "setRepeaterValues", submissionIdToOwnerProxy: {}, count: 0, components: [
+                    {name: "itemCont", classes: "popup-list-item bordering standard-card", components:[
+                        {name: "itemHeading", ontap: "toggleItemDrawer", published:{index: ""}, /*classes:"popup-list-item-heading"*/},
                         {name: "itemDrawer", kind: onyx.Drawer, open: false, orient: "v",
                             components:[
                                 {name: "listItem", classes:"popup-list-item-body",components:[
@@ -34,8 +31,6 @@ enyo.kind({
                         },
                     ]},
                 ],
-                onSetupItem: "setRepeaterValues",
-                submissionIdToOwnerProxy: {}, //Mapping of submission ids to ownerProxy instances
             },
         ],}
     ],
@@ -53,11 +48,15 @@ enyo.kind({
         this.subs = subArray;
         this.submissionIdToOwnerProxy = {}
         this.$.repeater.setCount(this.subs.length);
-        if (heading){
-            this.$.popHeading.setContent(heading);
-        }
+		if(heading)
+			this.totalSubs = this.subs.length;
+        //if (heading){
+			this.$.popHeading.setContent("Showing " + this.subs.length + " of " + this.totalSubs + " submissions.");
+            //this.$.popHeading.setContent(heading);
+        //}
         if (subheading){
-            this.$.popSubHeading.setContent(subheading);
+			this.$.popSubHeading.setContent("Click titles below to see details");
+            //this.$.popSubHeading.setContent(subheading);
         }
         this.doContentSet();
     },
@@ -95,7 +94,8 @@ enyo.kind({
         item.$.itemHeading.setName("submissionheading-" + sub.id);
         item.$.itemDrawer.setName("subdrawer-"+sub.id);
 
-        item.$.itemHeading.setContent("Submission " + sub.id);
+		var num = Number(index) + 1;
+        item.$.itemHeading.setContent("Submission " + num);
         item.$.control.setContent("Submitter: "+sub.user_id);
         item.$.control2.setContent("Number of answers: "+sub.answers.length);
         item.$.control3.setContent("Location: "+ this.reverseGeocode(sub.gps_location));

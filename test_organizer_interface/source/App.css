@@ -1,14 +1,14 @@
+body {
+	font-size: 11pt;
+	font-weight: 300 !important;
+	background: white; /* lighter green*/
+	color: black;
+}
+/****************************************/
 /*
 	Put anything you reference with "url()" in ../assets/
 	This way, you can minify your application, and just remove the "source" folder for production
 */
-body {
-	font-size: 13pt;
-	font-weight: 100 !important;
-	background-color: #DDFFDD; /* lighter green*/
-	/* background-color: #8CC187;
-	background-color: #DFDFDF;*/
-}
 .hidden {
 	display: none !important;
 }
@@ -47,16 +47,11 @@ body {
 	border: 1px solid gray;
 	padding: 3px;
 }
-.popup-list-item:hover {
-	/*border: 1px solid gray;*/
-	/*padding: 3px;*/
-	background-color: #DEDEDE;
-}
 .popup-list-item-heading {
 	/*text-decoration: underline;*/
 	font-weight: bold;
 }
-.popup-list-item-body {
+.popup-list-item-body {1gg
 	padding-left: 1em;
 }
 
@@ -91,101 +86,408 @@ body {
 	border: 2px solid black;*/
 	width: 100%;
 }
-.test img:hover {
-	-moz-box-shadow: 1px 1px 1px #222;
-	-webkit-box-shadow: 1px 1px 1px #222;
-	box-shadow: 1px 1px 1px #222;
-	border: 1px solid darkgrey;
-	padding: 2px;
-	padding-top: 0px;
-}
 
 .text-title-small {
-	border-bottom: 1px black solid;
+	border-bottom: 1px white solid;
 }
 .text-title-big {
-	border-bottom: 3px black double;
+	border-bottom: 3px white double;
 }
 .hanging-child {
-	width: 97%;
-	margin-left: 2%;
+	width: 96%;
+	margin-left: 3%;
 }
 .number-style {
-	color: white;
+	color: black;
 	padding: 6px 7px;
 	-moz-border-radius: 360px;
 	-webkit-border-radius: 360px;
 	border-radius: 360px;
-	background-color: black;
-}
-.number-style:hover {
-	color: black;
 	background-color: white;
 }
-.active {
-	background-color: red;
-	-moz-box-shadow: 1px 1px 1px #333 inset;
-	-webkit-box-shadow: 1px 1px 1px #333 inset;
-	box-shadow: 1px 1px 1px #333 inset; 
-}
-.click-hover:hover:first-child div {
-	background-color: white;
-	color: black;
-}
-.click-hover:hover {
-	background-color: lightgreen;
-}
-.button-cancel-style:active, .button-style:active, .toolbar-button-style:active {
-	-moz-box-shadow: 1px 1px 1px #444 inset;
-	-webkit-box-shadow: 1px 1px 1px #444 inset;
-	box-shadow: 1px 1px 1px #444 inset; 
-}
-.bordering, .bordering-top, .bordering-bottom, .button-cancel-style, .button-style, .toolbar-button-style {
-	-moz-box-shadow: 1px 1px 1px #444;
-	-webkit-box-shadow: 1px 1px 1px #444;
-	box-shadow: 1px 1px 1px #444;
-	border: 1px solid black;
-	/*-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;*/
+.bordering, .button-cancel-style, .toolbar-button-style {
 	font-weight: 100;
 }
-.button-cancel-style {
+.standard-card, .toolbar-button-style {
+	box-sizing: border-box;
+	background-color: #6DB961 !important;
+	/*color: #694225 !important;*/
+	color: #FFF !important;
+	font-size: 11pt;
+	vertical-align: center;
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+	border-radius: 0px;
+	text-shadow: -1px -1px 0 rgba(0,0,0,0.2);
+}
+.standard-card {
+	box-sizing: border-box;
+}
+.toolbar-button-style {
+	color: #6DB961 !important;
+}
+.button-style, .button-style-affirmative, .button-style-negative {
+	background: #694225 !important; /* darker green */
+	color: #FFF !important;
+	/*color: #C5A467 !important; /* lighter green*/
+	font-size: 11pt;
+	font-weight: 100;
+	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+	border-radius: 0px;
+}
+/*.toolbar-button-style {
+	background: #3CAB9F !important;
+}*/
+.button-style-affirmative {
+	color: green !important;
+}
+.hilight-icons-affirmative:hover {
+	text-shadow: 0 0 3px yellow;
+	color: lightgreen !important;
+}
+.hilight-icons-negative:hover {
+	text-shadow: 0 0 3px yellow;
+	color: red !important;
+}
+.button-style-negative  {
+	color: red !important;
+}
+/*.button-cancel-style {
 	background-color: red;
+}*/
+.bordering, .bordering-top, .bordering-bottom, .bordering-bottom-no-shadow, .bordering-top-no-shadow, .bordering-box {
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 3px;
+	margin-bottom: 3px;
 }
-.button-style:hover {
-	background-color: #67E667; 
-}
-.bordering, .bordering-top, .bordering-bottom {
-	border: 1px #DEDEDE outset;
-	/*background-color: #FFF;
-	background-color: #DDFFDD;*/
-	background-color: #8CC187; /* middle green */
-	padding: 3px;
+.bordering {
+	/*border: 1px #DEDEDE outset;*/
 }
 .bordering-box {
 	background-color: #FFF;
-	border: 1px solid black;
-	margin: 5px;
 	padding: 5px;
-	/*-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border-radius: 5px;*/
 }
-.bordering {
+/*.bordering {
 	margin: 0px 4px 7px 3px;
-}
+}*/
 .bordering-top {
-	margin: 0px 4px 7px 3px;
+	top: 0px;
+	margin-top: 0px;
+	width: 100%;
+	padding: 0px;
+	/*-webkit-box-shadow: 0 8px 8px -8px white;
+	-moz-box-shadow: 0 8px 8px -8px white;
+	box-shadow: 0 8px 8px -8px white;*/
 }
 .bordering-bottom {
-	margin: 7px 4px 0px 3px;
+	bottom: 0px;
+	margin-bottom: 0px;
+	width: 100%;
+	padding: 0px;
+	/*-webkit-box-shadow: 0 -8px 8px -8px white;
+	-moz-box-shadow: 0 -8px 8px -8px white;
+	box-shadow: 0 -8px 8px -8px white;*/
+}
+.bordering-bottom-no-shadow {
+	bottom: 0px;
+	margin-bottom: 0px;
+	width: 100%;
+	padding: 0px;
+}
+.bordering-top-no-shadow {
+	top: 0px;
+	margin-top: 0px;
+	width: 100%;
 }
 .active-card {
-	background-color: #FFDDDD;
+	box-sizing: border-box;
+	background: #3CAB9F !important;
+	color: #FFF !important;
+}
+.task-builder {
+	height: 100%;
+	opacity: 1;
+	transition: height 0.5s, opacity 0.5s;
+	-webkit-transition: height 0.5s, opacity 0.5s;
+}
+.task-builder-destroy {
+	height: 0px;
+	opacity: 0;
 }
 
 /* OVERRIDE ONYX */
-.mod-onyx-background {
-	background: #43823B;
+/*.mod-onyx-background {
+	background: #;
+}*/
+.light-background, .panelItem {
+	background-color: #6DB961 !important;
+	color: #FFF !important;
+	font-size: 11pt;
+	text-shadow: -1px -1px 0 rgba(0,0,0,0.2);
+	/*color: #694225 !important;*/
 }
+.dark-background {
+	background-color: #694225 !important; /* darker green */
+	font-size: 11pt;
+	color: #FFF !important;
+	/*color: #C5A467 !important;*/
+}
+.dark-background-flat {
+	background: #694225 !important; /* darker green */
+	color: #6DB961 !important;
+	font-size: 16pt;
+	text-shadow: -1px -1px 0 rgba(0,0,0,0.2);
+	border: 0px;
+}
+/*.dark-background + .active {
+	font-weight: 100;
+	background-color: #694225 !important;
+}*/
+.active {
+	/*font-size: 13pt;*/
+	/*background: #3CAB9F !important; /* lighter green*/
+	background: #3CAB9F !important; /* lighter green*/
+	color: #FFF !important;
+	border-top: 3px white solid;
+	-webkit-box-shadow: 0 0 0 0 white;
+	-moz-box-shadow: 0 0 0 0 white;
+	box-shadow: 0 0 0 0 white;
+}
+.map-pin {
+	color: #C4676D;
+	background-color: transparent;
+	border: 0px;
+	text-shadow: 4px -4px 4px rgba(0, 0, 0, 0.2);
+}
+/* ../source/App.css */
+
+/*
+	Put anything you reference with "url(../source)" in ../assets/
+	This way, you can minify your application, and just remove the "source" folder for production
+*/
+#app {
+    top: 0;
+    left: 0;
+}
+
+/*These next 2 hide the Google links in our maps */
+.hideMap {
+    display: none;
+}
+.mapItem span {
+    display: none;
+}
+/* END */
+
+.imgDiv {
+    width: 100%;
+    height: 15%;
+}
+
+.imgDiv img {
+    width: 100%;
+    height: 100%;
+}
+
+.campTitle {
+    /*color: #9A7A34;*/
+    display:inline;
+    padding: 0.5%;
+}
+.leaderTable {
+    display: table-cell; 
+    text-align: center; 
+    width: 50%;
+}
+.leaderUser {
+    /*color: #9A7A34;*/
+    font-weight: 300;
+}
+.leaderPoints {
+    /*color: #CC7967;*/
+    font-style: italic;
+}
+.campLoc {
+    font-style: italic;
+    font-size: 0.75em;
+    display: clear;
+    padding: 1%;
+}
+.campDesc {
+    /*font-weight: bold;*/
+    /*font-size: 0.65em;
+    color: #CC7967;*/
+	font-size: 13pt;
+    display: clear;
+    overflow-y: hidden;
+}
+/*.campItem {
+    //padding: 20px;
+}*/
+.leaderItem {
+    height: 100%;
+    width: 100%;
+    display: table;
+}
+.toolbar {
+    background-color: #641F11;
+    color: #5C9DAF;
+}
+.mapItem {
+	position: absolute;
+	width: 100%;
+	/*min-width: 1000px;*/
+	/*width: 100%;*/
+    /*height: 80%;*/
+    //clear: both;
+}
+.filledPanels {
+    /*height: 100%;
+    //width: 90%;*/
+}
+.filledButtons {
+    /*background-color: #0B333E;
+    color: #CCAD67;*/
+    width: 7%;
+    /*float: left;*/
+    height: 100%;
+    padding: 0 0;
+}
+.bikeTable {
+    width: 100%;
+	border-width: 0px;
+   	display: table;
+	empty-cells: hide;
+	border-collapse: collapse;
+}
+.tableMen {
+    background-color: lightblue;
+	text-align: center;
+}
+.tableCellMen {
+	//border: 2px lightblue solid;
+	height: 20%;
+}
+.tableCellMen > * {
+	width: 100%;
+}
+.tableWomen {
+    background-color: pink;
+	text-align: center;
+}
+.tableCellWomen {
+	//border: 2px pink solid;
+	height: 20%;
+}
+.tableCellWomen > * {
+	width: 100%;
+}
+.tableCellContent {
+	height: 100%;
+	width: 44px;
+	text-align: center;
+	vertical-align: middle;
+}
+.tableCellHeight {
+	height: 32px;
+}
+.tableCellWidth {
+	width: 32px;
+}
+.tableHideCollapse {
+	height: 0px;
+	width: 0px;
+    display: none;
+}
+.tableHideKeep {
+    visibility: hidden;
+}
+.tally {
+	width: 100%;
+	height: 100%;
+}
+table, tr, td {
+    border: 0px white solid;
+}
+.senseButtons {
+    width: 100%;
+}
+.senseButtons > button{
+    width: 50%;
+}
+
+.center {
+    clear: both;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.onyx-groupbox > .onyx-input-decorator {
+    border-color: white;
+}
+
+.tally-small img{
+    height: 20px;
+}
+.slidein-option {
+    min-width: 200px;
+    padding: 10px;
+	margin-top: 2px;
+	//font-size: 1.333333em;
+	vertical-align: bottom;
+	border: 2px #694225 solid;
+}
+.hilight {
+	background-color: #6DB961;
+}
+.ios-navbar {
+	position: absolute;
+	width: 100%;
+	left: 0;
+	bottom: 0;
+	padding: 0px 0px 0px 0px;
+	height: 49pt;
+}
+.ios-navbar {
+	height: 49pt;
+}
+.ios-navbar button {
+	height: 49pt !important;
+	min-width: 20% !important;
+	padding: 0 0 0 0;
+	margin: 0 0 0 0;
+}
+.ios-navbutton {
+	height: 49pt;
+	padding: 0 0;
+	color: white;
+	font-size: 8pt;
+}
+.ios-navbutton * {
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	clear: both;
+}
+.android-navbar {
+}
+.nice-padding {
+	padding: 5px;
+}
+.niceish-padding {
+	padding: 5px 0px;
+}
+.highlight {
+	background-color: yellow;
+	color: black;
+	opacity: 0.8;
+}
+.highlight * {
+	background-color: yellow;
+}
+

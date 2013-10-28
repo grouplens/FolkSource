@@ -4,26 +4,32 @@ enyo.kind({
 	published: {
 		big: false,
 		title: "Title Goes Here",
-		placeholder: "This is a placeholder"
+		text: "",
+		placeholder: "This is a placeholder",
+		instructions: "",
+		save: false
 	},
 	components: [
-		{name: "title", kind: "Title"},
-		{kind: onyx.InputDecorator, alwaysLooksFocused: true, classes: "hanging-child", components: [
-			{name: "input", kind: onyx.Input, oninput: "reset", style: "width: 100%; font-size: 13px;"}
-		]}
+		{name: "title", kind: "Title", classes: "nice-padding"},
+		//{kind: onyx.InputDecorator, alwaysLooksFocused: true, classes: "hanging-child ", components: [
+			{name: "input", kind: enyo.Input, oninput: "reset", classes: "hanging-child", style: "font-size: 11pt;"}
+		//]}
 	],
 	create: function(inSender, inEvent) {
 		this.inherited(arguments);
 		this.$.title.setTitle(this.title);
 		this.$.title.setBig(this.big);
 		this.$.input.setPlaceholder(this.placeholder);
-		this.text = "";
+		if(this.instructions.length > 0) {
+			this.$.title.setInstructions(this.instructions);
+		}
 	},
 	bigChanged: function(inSender, inEvent) {
 		this.$.title.setBig(this.big);
 	},
-	getData: function(inSender, inEvent) {
-		return this.text;
+	instructionsChanged: function(inSender, inEvent) {
+		if(this.instructions.length > 0)
+			this.$.title.setInstructions(this.instructions);
 	},
 	placeholderChanged: function(inSender, inEvent) {
 		this.$.input.setPlaceholder(this.placeholder);
@@ -31,7 +37,13 @@ enyo.kind({
 	reset: function(inSender, inEvent) {
 		this.text = this.$.input.getValue();
 	},
+	saveChanged: function(inSender, inEvent) {
+		this.$.title.setSave(this.save);
+	},
 	titleChanged: function(inSender, inEvent) {
 		this.$.title.setTitle(this.title);
 	},
+	textChanged: function(inSender, inEvent) {
+		this.$.input.setValue(this.text);
+	}
 });

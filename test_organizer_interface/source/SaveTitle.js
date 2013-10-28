@@ -17,7 +17,7 @@ enyo.kind({
 			{name: "titleText"},
 			{fit: true},
 			{name: "saveDrawer", kind: onyx.Drawer, orient: "h", open: true, components: [
-				{name: "saveButton", kind: enyo.Button, content: "Save", ontap: "sendSave", classes: "button-style"}
+				{name: "saveButton", kind: onyx.Button, content: "Save", ontap: "sendSave", classes: "button-style"}
 			]}
 		]}
 	],

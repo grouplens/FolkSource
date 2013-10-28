@@ -1,6 +1,6 @@
 enyo.kind({
 	name: "CSenseShowCampaigns",
-	kind: enyo.FittableColumns,
+	kind: enyo.FittableRows,
 	events: {
 		onSelectCampaign: "",
 		onSelectTask: "",
@@ -22,37 +22,48 @@ enyo.kind({
 		onViewportChanged: "updateTaskDetail",
 		onClusterSelection: "updateTaskDetail",
 		onReceiveNewSubmissions: "integrateNewSubmissions",
+		onCleanupSelected: "removeSelectionList"
 	},
 	components:[
-		{name: "campaignDrawer", kind: onyx.Drawer, layoutKind: enyo.FittableRowsLayout, style: "z-index: 15; position: relative;", orient: "h", open: false, components: [
+		//TODO: finish making the user thing work
+		/*{kind: enyo.FittableColumns, classes: "dark-background", components: [
+			{name: "choices", kind: onyx.Drawer, orient: "v", open: false, classes: "dark-background", components: [
+				{name: "choiceSettingsButton", kind: onyx.Button, classes: "button-style light-background", style: "height: 100%;", ontap: "toggleChoiceDrawer", components: [
+					{tag: "i", classes: "icon-cog"}
+				]},
+			]},
+			{kind: onyx.Drawer, name: "choiceDrawer", open: false, fit: true, classes: "dark-background", orient: "v", components: [
+				{content: "What kinds of details would you like to see?", style: "font-size: 11pt; font-weight: 100; text-align: center;", classes: "dark-background"},
+				{name: "switcher", style: "width: 100%; text-align: center;", kind: onyx.RadioGroup, classes: "button-style", components: [
+					{content: "Submissions", active: true, classes: "light-backround"},
+					{content: "Users", classes: "light-background"}
+				]},
+			]},
+		]},*/
+		{kind: enyo.FittableColumns, fit: true, components: [
+			{name: "campaignDrawer", kind: onyx.Drawer, layoutKind: enyo.FittableRowsLayout, style: "z-index: 15; position: relative;", orient: "h", open: false, classes: "dark-background", components: [
 				{name: "campDrawerHeader", content: "Campaigns:"},
-				{name: "campList", kind: "CSenseShowCampaignsList", onSetupItem: "setupCampList", /*fit: true, */style: "width: 200px;", touch: true, count: 0, components: [
-					{name: "campItem", kind: "onyx.Item", ontap: "campTapped", classes: "bordering", components: [
-						{name: "campIndex", content: "id"},
+				{name: "campList", kind: "CSenseShowCampaignsList", onSetupItem: "setupCampList", /*fit: true, */style: "width: 150px; padding: 4px; ", touch: true, count: 0, components: [
+					{name: "campItem", kind: "onyx.Item", ontap: "campTapped", classes: "bordering standard-card", components: [
+						//{name: "campIndex", content: "id"},
 						{name: "campTitle", content: "title"}
 					]}
 				]},
-			],
-		},
-		{name: "taskDrawer", kind: onyx.Drawer, style: "z-index: 15; position: relative;", orient: "h", open: false, components: [
+			]},
+			{name: "taskDrawer", kind: onyx.Drawer, style: "z-index: 15; position: relative;", orient: "h", open: false, classes: "dark-background", components: [
 				{name: "taskDrawerHeader", content: "Tasks:"},
-				{name: "taskList", kind: "CSenseShowCampaignsList", onSetupItem: "setupTaskList", style: "width: 200px;", touch: true, count: 0, components: [
-					{name: "taskItem", kind: "onyx.Item", ontap: "taskTapped", classes: "bordering", components: [
-							{name: "taskIndex", content: "id"},
-							{name: "taskTitle", content: "title"}
-						]}
-					],
-					taskIdToIndex: {}, //Mapping of task id to index in the taskList
-				},
+				{name: "taskList", kind: "CSenseShowCampaignsList", onSetupItem: "setupTaskList", style: "width: 150px; padding: 4px;", touch: true, count: 0, components: [
+					{name: "taskItem", kind: "onyx.Item", ontap: "taskTapped", classes: "bordering standard-card", components: [
+						//{name: "taskIndex", content: "id"},
+						{name: "taskTitle", content: "title"}
+					]}
+				], taskIdToIndex: {}, /*Mapping of task id to index in the taskList*/ },
 
-			],
-		},
-		{name: "taskDetailDrawer", kind: onyx.Drawer, style: "z-index: 15; position: relative;", orient: "h", open: false, published: {
-				currentTaskId: null,
-			}, components: [
+			]},
+			{name: "taskDetailDrawer", kind: onyx.Drawer, style: "z-index: 15; position: relative;", orient: "h", open: false, classes: "dark-background", published: { currentTaskId: null, }, components: [
 				{name: "taskDetailDrawerContent", kind: "CSenseTaskDetail", style: "width: 200px"},
-			],
-		},
+			]},
+		]}
 	],
 
 	create: function(inSender, inEvent) {
@@ -130,8 +141,9 @@ enyo.kind({
 			this.selectedCampIndex = index;
 			//Clear submission markers from the map that may or may not be present
 		}
+		this.$.campList.render();
 		this.showTasks(this.campData[index].tasks);
-		this.doSelectCampaign({"campaign": this.campData[index], offset: 200});
+		this.doSelectCampaign({"campaign": this.campData[index], offset: 150});
 	},
 
 	/*
@@ -170,8 +182,10 @@ enyo.kind({
 		this.$.taskDetailDrawer.currentTaskId = task.id;
 		var detailDrawerOpen = this.$.taskDetailDrawer.getOpen();
 		this.$.taskDetailDrawer.setOpen(true);
+		//this.$.choices.resized();
+		//this.$.choices.setOpen(true);
 
-		this.doSelectTask({task: task, taskDetail: this.$.taskDetailDrawerContent, detailDrawerOpen: detailDrawerOpen});
+		this.doSelectTask({task: task, taskDetail: this.$.taskDetailDrawerContent, offset: inEvent.offset});
 	},
 
 	/*
@@ -179,6 +193,14 @@ enyo.kind({
 	*/
 	getTaskListIndex: function(taskId){
 		return this.$.taskList.taskIdToIndex[taskId];
+	},
+
+	/*
+	 * Reset the selection state from the lists.
+	 */
+	removeSelectionList: function(inSender, inEvent) {
+		this.$.campList.reset();
+		this.$.taskList.reset();
 	},
 
 
@@ -196,6 +218,10 @@ enyo.kind({
 			this.$.campaignDrawer.setOpen(true);
 		}
 		//this.$.campList.reset();
+	},
+	toggleChoiceDrawer: function(inSender, inEvent) {
+		var truth = this.$.choiceDrawer.getOpen();
+		this.$.choiceDrawer.setOpen(!truth);
 	},
 
 	/*
@@ -215,7 +241,7 @@ enyo.kind({
 	setupCampList: function(inSender, inEvent) {
 		var index = inEvent.index
 		var camp = this.campData[index];
-		this.$.campIndex.setContent(Number(index+1));
+		//this.$.campIndex.setContent(Number(index+1));
 		this.$.campTitle.setContent(camp.title);
 		this.$.campItem.addRemoveClass("active-card", inSender.isSelected(index));
 		return true;
@@ -230,7 +256,7 @@ enyo.kind({
 
 		this.$.taskList.taskIdToIndex[task.id] = index;
 
-		this.$.taskIndex.setContent(task.id);
+		//this.$.taskIndex.setContent(task.id);
 		this.$.taskTitle.setContent(task.instructions);
 		this.$.taskItem.addRemoveClass("active-card", inSender.isSelected(index));
 		return true;
@@ -259,19 +285,18 @@ enyo.kind({
 	drawerAnimationEndHandler: function(inSender, inEvent) {
 		var drawer = inEvent.originator.owner;
 		//Fix map size
-		if ((drawer.name === "campaignDrawer") || (drawer.name === "taskDrawer") || (drawer.name === "taskDetailDrawer")) {
-			var offset = drawer.open ? -100 : 100;
-			//this.doDrawerToggled({offset: offset});
-			//this.doAdjustMapSize({offset: offset});
-		}
 		//Pan
+		if (drawer.name === "campaignDrawer" && drawer.open === true){
+			//var campId = this.campData[this.selectedCampIndex].id;
+			this.doTaskDrawerOpened({campId: campId, offset: 0});
+		}
 		if (drawer.name === "taskDrawer" && drawer.open === true){
 			var campId = this.campData[this.selectedCampIndex].id;
-			this.doTaskDrawerOpened({campId: campId});
+			this.doTaskDrawerOpened({campId: campId, offset: 150});
 		}
 		if (drawer.name === "taskDetailDrawer" && drawer.open === true){
 			var taskId = inEvent.originator.owner.currentTaskId;
-			this.doTaskDetailDrawerOpened({taskId: taskId});
+			this.doTaskDetailDrawerOpened({taskId: taskId, offset: 0});
 		}
 	},
 });

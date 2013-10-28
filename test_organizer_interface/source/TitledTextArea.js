@@ -7,10 +7,10 @@ enyo.kind({
 		placeholder: "This is a placeholder"
 	},
 	components: [
-		{name: "title", kind: "Title"},
-		{kind: onyx.InputDecorator, alwaysLooksFocused: true, classes: "hanging-child", components: [
-			{name: "input", kind: onyx.TextArea, style: "width: 100%; font-size: 13px;"}
-		]}
+		{name: "title", kind: "Title", classes: "nice-padding"},
+		//{kind: onyx.InputDecorator, alwaysLooksFocused: true, classes: "hanging-child", components: [
+			{name: "input", kind: onyx.TextArea, classes: "hanging-child", style: "font-size: 11pt;"}
+		//]}
 	],
 	create: function(inSender, inEvent) {
 		this.inherited(arguments);
