@@ -1424,8 +1424,8 @@
 /* source/App.css */
 
 body {
-	font-size: 13pt;
-	font-weight: 100 !important;
+	font-size: 11pt;
+	font-weight: 300 !important;
 	background: white; /* lighter green*/
 	color: black;
 }
@@ -1476,7 +1476,7 @@ body {
 	/*text-decoration: underline;*/
 	font-weight: bold;
 }
-.popup-list-item-body {
+.popup-list-item-body {1gg
 	padding-left: 1em;
 }
 
@@ -1513,14 +1513,14 @@ body {
 }
 
 .text-title-small {
-	border-bottom: 1px black solid;
+	border-bottom: 1px white solid;
 }
 .text-title-big {
-	border-bottom: 3px black double;
+	border-bottom: 3px white double;
 }
 .hanging-child {
-	width: 97%;
-	margin-left: 2%;
+	width: 96%;
+	margin-left: 3%;
 }
 .number-style {
 	color: black;
@@ -1538,8 +1538,7 @@ body {
 	background-color: #6DB961 !important;
 	/*color: #694225 !important;*/
 	color: #FFF !important;
-	font-weight: 100;
-	font-size: 14pt;
+	font-size: 11pt;
 	vertical-align: center;
 	-moz-border-radius: 0px;
 	-webkit-border-radius: 0px;
@@ -1553,10 +1552,10 @@ body {
 	color: #6DB961 !important;
 }
 .button-style, .button-style-affirmative, .button-style-negative {
-	background-color: #694225 !important; /* darker green */
+	background: #694225 !important; /* darker green */
 	color: #FFF !important;
 	/*color: #C5A467 !important; /* lighter green*/
-	font-size: 14pt;
+	font-size: 11pt;
 	font-weight: 100;
 	-moz-border-radius: 0px;
 	-webkit-border-radius: 0px;
@@ -1567,22 +1566,26 @@ body {
 }*/
 .button-style-affirmative {
 	color: green !important;
-	font-weight: 200;
 }
-.button-style-negative {
+.hilight-icons-affirmative:hover {
+	text-shadow: 0 0 3px yellow;
+	color: lightgreen !important;
+}
+.hilight-icons-negative:hover {
+	text-shadow: 0 0 3px yellow;
 	color: red !important;
-	font-weight: 200;
+}
+.button-style-negative  {
+	color: red !important;
 }
 /*.button-cancel-style {
 	background-color: red;
 }*/
 .bordering, .bordering-top, .bordering-bottom, .bordering-bottom-no-shadow, .bordering-top-no-shadow, .bordering-box {
-	padding: 3px;
-	/*width: 94%;*/
 	margin-left: auto;
 	margin-right: auto;
-	margin-top: 5px;
-	margin-bottom: 5px;
+	margin-top: 3px;
+	margin-bottom: 3px;
 }
 .bordering {
 	/*border: 1px #DEDEDE outset;*/
@@ -1625,8 +1628,18 @@ body {
 }
 .active-card {
 	box-sizing: border-box;
-	background-color: #3CAB9F !important;
+	background: #3CAB9F !important;
 	color: #FFF !important;
+}
+.task-builder {
+	height: 100%;
+	opacity: 1;
+	transition: height 0.5s, opacity 0.5s;
+	-webkit-transition: height 0.5s, opacity 0.5s;
+}
+.task-builder-destroy {
+	height: 0px;
+	opacity: 0;
 }
 
 /* OVERRIDE ONYX */
@@ -1636,17 +1649,20 @@ body {
 .light-background, .panelItem {
 	background-color: #6DB961 !important;
 	color: #FFF !important;
+	font-size: 11pt;
 	text-shadow: -1px -1px 0 rgba(0,0,0,0.2);
 	/*color: #694225 !important;*/
 }
 .dark-background {
 	background-color: #694225 !important; /* darker green */
+	font-size: 11pt;
 	color: #FFF !important;
 	/*color: #C5A467 !important;*/
 }
 .dark-background-flat {
 	background: #694225 !important; /* darker green */
 	color: #6DB961 !important;
+	font-size: 16pt;
 	text-shadow: -1px -1px 0 rgba(0,0,0,0.2);
 	border: 0px;
 }
@@ -1655,11 +1671,14 @@ body {
 	background-color: #694225 !important;
 }*/
 .active {
-	font-weight: 100;
 	/*font-size: 13pt;*/
 	/*background: #3CAB9F !important; /* lighter green*/
-	background-color: #3CAB9F !important; /* lighter green*/
+	background: #3CAB9F !important; /* lighter green*/
 	color: #FFF !important;
+	border-top: 3px white solid;
+	-webkit-box-shadow: 0 0 0 0 white;
+	-moz-box-shadow: 0 0 0 0 white;
+	box-shadow: 0 0 0 0 white;
 }
 .map-pin {
 	color: #C4676D;
@@ -1883,10 +1902,10 @@ table, tr, td {
 .android-navbar {
 }
 .nice-padding {
-	padding: 10px;
+	padding: 5px;
 }
 .niceish-padding {
-	padding: 10px 0px;
+	padding: 5px 0px;
 }
 .highlight {
 	background-color: yellow;
