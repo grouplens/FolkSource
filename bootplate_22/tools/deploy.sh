@@ -37,4 +37,4 @@ while [ "$1" != "" ]; do
 	esac
 	shift
 done
-cp -r deploy/bootplate_22/* ../phonegap_build/www/
+cp -r deploy/bootplate_22/* ../FolkSource/www/

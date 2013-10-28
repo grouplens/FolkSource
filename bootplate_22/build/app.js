@@ -5209,6 +5209,7 @@ enyo.kind({
 name: "CSenseMenuPane",
 fit: !0,
 kind: enyo.FittableColumns,
+classes: "dark-background",
 handlers: {
 onSuccessCode: "unPop",
 onFailureCode: "rePop",
@@ -5232,6 +5233,9 @@ components: [ {
 kind: "CSenseLoginRegister"
 } ]
 }, {
+kind: enyo.FittableRows,
+fit: !0,
+components: [ {
 name: "menuDrawer",
 kind: enyo.Panels,
 fit: !0,
@@ -5239,24 +5243,43 @@ narrowFit: !1,
 index: 1,
 draggable: !1,
 margin: 0,
-realtimeFit: !0,
 arrangerKind: enyo.CollapsingArranger,
 layoutKind: enyo.FittableColumnsLayout,
 components: [ {
 kind: enyo.FittableRows,
-style: "width: 150px;",
+classes: "dark-background",
 components: [ {
-content: "Campaign List",
 ontap: "showCampaignList",
-classes: "slidein-option",
+kind: enyo.FittableColumns,
+classes: "slidein-option button-style light-background",
+style: "width: 100%;",
 onup: "toggleHilight",
-ondown: "toggleHilight"
+ondown: "toggleHilight",
+components: [ {
+tag: "i",
+classes: "icon-map-marker icon-large",
+style: "padding: 0 5px;",
+ontap: "showMenu"
+}, {
+content: "Campaign List",
+fit: !0
+} ]
+}, {
+ontap: "showLeaderboard",
+kind: enyo.FittableColumns,
+classes: "slidein-option button-style light-background",
+style: "width: 100%;",
+onup: "toggleHilight",
+ondown: "toggleHilight",
+components: [ {
+tag: "i",
+classes: "icon-trophy icon-large",
+style: "padding: 0 5px;",
+ontap: "showMenu"
 }, {
 content: "Leaderboard",
-ontap: "showLeaderboard",
-classes: "slidein-option",
-onup: "toggleHilight",
-ondown: "toggleHilight"
+fit: !0
+} ]
 }, {
 kind: "GrouplensBrand",
 fit: !0
@@ -5264,18 +5287,19 @@ fit: !0
 }, {
 kind: enyo.FittableRows,
 fit: !0,
-wrap: !1,
+style: "min-width: 100%;",
 components: [ {
 kind: onyx.Toolbar,
-classes: "dark-background",
+classes: "dark-background-flat",
 components: [ {
 name: "menuButton",
-kind: onyx.Button,
-content: ">",
-ontap: "showMenu",
-classes: "button-style"
+tag: "i",
+classes: "icon-align-justify icon-large",
+style: "color: #6DB961; vertical-align: middle;",
+ontap: "showMenu"
 }, {
-content: "CitizenSense"
+content: "CitizenSense",
+style: "text-align: center;"
 } ]
 }, {
 name: "menupane",
@@ -5307,6 +5331,7 @@ name: "sense",
 kind: enyo.FittableRows,
 style: "border: 1px black solid;",
 components: []
+} ]
 } ]
 } ]
 } ]
@@ -5351,7 +5376,6 @@ var n = t.originator;
 n === "sense" && this.$.sensr.openNext(), this.curView === "lboard" && this.$.lboard.render();
 },
 showMenu: function(e, t) {
-this.$.menuButton.getContent() === "<" ? this.$.menuButton.setContent(">") : this.$.menuButton.setContent("<");
 var n = this.$.menuDrawer.getIndex();
 n == 1 ? this.$.menuDrawer.setIndex(0) : this.$.menuDrawer.setIndex(1);
 },
@@ -5373,18 +5397,13 @@ enyo.kind({
 name: "CampaignItem",
 watching: !1,
 index: "",
-classes: "campItem bordering-box light-background",
+classes: "campItem light-background",
+style: "padding: 5px;",
 published: {
 title: "",
 description: ""
 },
 components: [ {
-name: "button",
-kind: onyx.Button,
-content: "Watch",
-classes: "button-style",
-ontap: "buttonToggled"
-}, {
 name: "title",
 content: "title",
 style: "font-weight: 400;",
@@ -5470,7 +5489,7 @@ this.doOnChooseCampaign();
 
 enyo.kind({
 name: "ComplexSensr",
-style: "background: #DDFFDD;",
+classes: "light-background",
 kind: enyo.FittableRows,
 published: {
 data: ""
@@ -5514,15 +5533,21 @@ classes: "senseButtons",
 components: [ {
 name: "no",
 kind: onyx.Button,
-classes: "button-style nice-padding button-style-negative",
-content: "No",
-ontap: "close"
+classes: "button-style button-style-negative",
+ontap: "close",
+components: [ {
+tag: "i",
+classes: "icon-ban-circle icon-large"
+} ]
 }, {
 name: "yes",
 kind: onyx.Button,
-classes: "button-style nice-padding button-style-affirmative",
-content: "Yes",
-ontap: "close"
+classes: "button-style button-style-affirmative",
+ontap: "close",
+components: [ {
+tag: "i",
+classes: "icon-ok icon-large"
+} ]
 } ]
 } ]
 }, {
@@ -5540,14 +5565,20 @@ classes: "senseButtons",
 components: [ {
 kind: onyx.Button,
 classes: "button-style button-style-negative",
-content: "Cancel",
-ontap: "togglePopup"
+ontap: "togglePopup",
+components: [ {
+tag: "i",
+classes: "icon-ban-circle icon-large"
+} ]
 }, {
 name: "submit",
 kind: onyx.Button,
 classes: "button-style button-style-affirmative",
-content: "Submit",
-ontap: "togglePopup"
+ontap: "togglePopup",
+components: [ {
+tag: "i",
+classes: "icon-ok icon-large"
+} ]
 } ]
 } ],
 create: function(e, t) {
@@ -5642,6 +5673,10 @@ break;
 case "cur_time":
 this.newTime(n);
 break;
+case "media_camera":
+case "media_audio":
+case "media_video":
+this.newMediaReading(n);
 default:
 }
 }
@@ -5753,7 +5788,7 @@ var n = this.$.doubleCheckPopup.getShowing(), r = e.content;
 e.getContent() === "Submit" && (this.$.doubleCheckPopup.submit = !0, this.$.doubleCheckMessage.setContent("Are you sure you want to submit your observation to the server?")), this.$.doubleCheckPopup.setShowing(!n);
 },
 close: function(e, t) {
-return this.$.doubleCheckPopup.hide(), e.getContent() === "Yes" && (this.$.doubleCheckPopup.submit && this.buildAndSendSubmission(), this.bubble("onSubmissionMade")), !0;
+return this.$.doubleCheckPopup.hide(), e.name === "yes" && (this.$.doubleCheckPopup.submit && this.buildAndSendSubmission(), this.bubble("onSubmissionMade")), !0;
 },
 testButtons: function(e, t) {
 var n = this.$.groupbox.getControls(), r = e.getContent(), t = !0, i = !0;
@@ -5854,6 +5889,15 @@ style: "height: " + s + "px; width: 100%;"
 owner: this
 }), this.counterName = n;
 },
+newMediaReading: function(e) {
+var t = "sensor_" + e.id, n = e.type.split("_")[1];
+this.$.acc.createComponent({
+name: t,
+kind: "MediaSensor",
+type: n,
+sendAutomatically: !1
+});
+},
 readFormText: function(e) {
 var t = "input_" + e.id;
 return this.$[t].getValue();
@@ -5944,7 +5988,7 @@ name: "Data",
 kind: "enyo.Control",
 statics: {
 getURL: function() {
-return "http://134.84.123.181.xip.io:8080/";
+return "http://192.168.0.3:8080/";
 },
 getUserName: function(e) {
 var t = new enyo.Ajax({
@@ -6026,37 +6070,49 @@ kind: "PinView",
 classes: "mapHide"
 } ]
 }, {
-kind: enyo.FittableColumns,
+name: "body",
+kind: enyo.FittableRows,
 fit: !0,
+components: [ {
+name: "cols",
+style: "height: 30%;",
+kind: enyo.FittableColumns,
 components: [ {
 name: "leftButton",
 kind: onyx.Button,
-content: "<",
 slide: "prev",
 ontap: "buttonTapHandler",
 classes: "button-style filledButtons",
-disabled: !0
+disabled: !0,
+components: [ {
+tag: "i",
+classes: "icon-chevron-left icon-large"
+} ]
 }, {
-name: "body",
 kind: enyo.FittableRows,
 fit: !0,
 components: [ {
 name: "panels",
 kind: "Panels",
-style: "height: 30%;",
 arrangerKind: "CarouselArranger",
 onTransitionFinish: "transitionFinishHandler",
 onTransitionStart: "transitionStartHandler",
 classes: "filledPanels",
-layoutKind: enyo.FittableColumnsLayout
+layoutKind: enyo.FittableColumnsLayout,
+classes: "light-background",
+fit: !0
 } ]
 }, {
 name: "rightButton",
 kind: onyx.Button,
-content: ">",
 slide: "next",
 ontap: "buttonTapHandler",
-classes: "button-style filledButtons"
+classes: "button-style filledButtons",
+components: [ {
+tag: "i",
+classes: "icon-chevron-right icon-large"
+} ]
+} ]
 } ]
 } ],
 create: function(e, t) {
@@ -6092,7 +6148,7 @@ kind: "NewMap",
 fit: !0
 }, {
 owner: this
-}), this.$.body.resized(), this.$.body.render(), this.checkSides();
+}), this.$.body.resized(), this.$.body.render(), this.$.cols.resized(), this.$.cols.render(), this.checkSides();
 },
 buttonTapHandler: function(e, t) {
 e.slide === "prev" ? this.$.panels.previous() : e.slide === "next" ? this.$.panels.next() : this.$.panels.snapTo(e.slide);
@@ -6107,7 +6163,7 @@ this.log(), this.waterfall("onSnapping", undefined, n);
 },
 checkSides: function() {
 var e = this.$.panels.getIndex(), t = this.$.panels.getPanels().length, n = t - 1;
-t == 1 ? (this.$.rightButton.setDisabled(!0), this.$.leftButton.setDisabled(!0)) : this.campaignArray != undefined && (e == 0 ? (this.$.rightButton.setDisabled(!1), this.$.leftButton.setDisabled(!0)) : e == n && (this.$.rightButton.setDisabled(!0), this.$.leftButton.setDisabled(!1)));
+this.$.rightButton.setDisabled(!1), this.$.leftButton.setDisabled(!1), this.campaignArray != undefined && (e == 0 ? (this.$.rightButton.setDisabled(!1), this.$.leftButton.setDisabled(!0)) : Number(e) === n && (this.$.rightButton.setDisabled(!0), this.$.leftButton.setDisabled(!1)));
 },
 drawMap: function(e, t) {
 var n = this.$.panels.getPanels(), r = 0, i;
@@ -6144,14 +6200,21 @@ components: [ {
 fit: !0
 }, {
 content: "a ",
-style: "text-align: center;"
+style: "text-align: center; height: 1em;",
+classes: "dark-background"
 }, {
+style: "width: 100%;",
+classes: "dark-background",
+components: [ {
 kind: enyo.Image,
 src: "assets/GL-Logo.png",
-style: "display: block !important; height: 1em; margin-left: auto; margin-right: auto;"
+style: "display: block !important; height: 1em; margin-left: auto; margin-right: auto;",
+classes: "dark-background"
+} ]
 }, {
 content: " project",
-style: "text-align: center;"
+style: "text-align: center; bottom: 0px;",
+classes: "dark-background"
 } ],
 create: function(e, t) {
 this.inherited(arguments);
@@ -6246,6 +6309,128 @@ var e, t = 0;
 for (e = 0; e < localStorage.length; e++) t += localStorage.getItem(localStorage.key()).length;
 return t;
 }
+}
+});
+
+// MediaSensor.js
+
+enyo.kind({
+name: "MediaSensor",
+kind: enyo.FittableRows,
+published: {
+type: "camera",
+sendAutomatically: !0
+},
+handlers: {
+onSubmissionMade: "uploadFile"
+},
+components: [ {
+name: "mediaDiv",
+components: [ {
+name: "img",
+kind: enyo.Image,
+src: "filler",
+style: "width: 50%; height: 50%; margin-left: auto; margin-right: auto;",
+showing: !1
+}, {
+name: "playButton",
+content: "Play back",
+kind: enyo.Button,
+classes: "button-style",
+style: "width: 100%;",
+ontap: "playback",
+showing: !1,
+components: [ {
+name: "content",
+tag: "i",
+classes: "icon-play"
+} ]
+} ]
+}, {
+name: "mediaButton",
+kind: onyx.Button,
+classes: "button-style",
+style: "width: 100%;",
+content: "Record",
+ontap: "parseAndRecordSensor"
+} ],
+create: function(e, t) {
+this.inherited(arguments), this.mediaFile, this.type != "camera" ? this.$.mediaButton.setContent(this.$.mediaButton.getContent() + " " + this.type) : this.$.mediaButton.setContent("Take photo"), this.playing = !1;
+},
+captureImage: function() {
+navigator.device.capture.captureImage(enyo.bind(this, "captureSuccess"), enyo.bind(this, "captureError"));
+},
+captureAudio: function() {
+navigator.device.capture.captureAudio(enyo.bind(this, "captureSuccess"), enyo.bind(this, "captureError"));
+},
+captureVideo: function() {
+navigator.device.capture.captureVideo(enyo.bind(this, "captureSuccess"), enyo.bind(this, "captureError"));
+},
+captureSuccess: function(e) {
+this.log("c begin"), this.mediaFile = e[0], window.resolveLocalFileSystemURI(decodeURI(this.mediaFile.fullPath), enyo.bind(this, "fileEntrySuccess"), enyo.bind(this, "fileEntryFail")), this.render(), this.log("c end");
+},
+captureError: function(e) {
+this.log("CAPTURE FAILED"), this.log(e.message), this.log(e.code);
+},
+fileEntrySuccess: function(e) {
+this.log("f begin"), this.fileEntry = e;
+switch (this.type) {
+case "camera":
+this.$.img.setSrc(this.fileEntry.toURL()), this.$.img.render(), this.$.img.setShowing(!0);
+break;
+case "video":
+case "audio":
+this.log("new media"), this.$.playButton.setShowing(!0);
+break;
+default:
+}
+return this.log("f end"), !0;
+},
+fileEntryFail: function(e) {
+this.log(e);
+},
+parseAndRecordSensor: function(e, t) {
+switch (this.type) {
+case "camera":
+this.captureImage();
+break;
+case "video":
+this.captureVideo();
+break;
+case "audio":
+this.captureAudio();
+break;
+default:
+}
+},
+playback: function(e, t) {
+this.playing ? (this.audioVideoMedia.pause(), this.$.content.addRemoveClass("icon-play", !0), this.$.content.addRemoveClass("icon-pause", !1)) : (this.playing = !0, this.audioVideoMedia = new Media(this.fileEntry.toURL(), enyo.bind(this, "playbackSuccess"), enyo.bind(this, "playbackFail")), this.audioVideoMedia.play(), this.$.content.addRemoveClass("icon-play", !1), this.$.content.addRemoveClass("icon-pause", !0));
+},
+playbackSuccess: function(e) {
+this.log("PLAYBACK"), this.$.content.addRemoveClass("icon-play", !0), this.$.content.addRemoveClass("icon-pause", !1), this.audioVideoMedia.release(), this.playing = !1;
+},
+playbackFail: function(e) {
+this.log("PLAYBACK FAILED"), this.audioVideoMedia.release();
+},
+uploadFile: function(e) {
+this.log("UPLOAD");
+var t = this.mediaFile.type, n = this.mediaFile.fullPath;
+this.log("mediaFile:"), this.log(mediaFile), this.log("mediaFile.type:"), this.log(mediaFile.type), t == undefined && (t = "audio/wav");
+var r = new FileUploadOptions;
+r.fileKey = "media", r.fileName = "foobarfilename", r.params = {
+username: "username",
+q_id: "9001",
+sub_id: "9001",
+answer_type: "media"
+};
+var i = new FileTransfer;
+i.upload(e.fullPath, encodeURI(Data.getURL() + "answer.json"), this.uploadSuccess, this.uploadError, r);
+},
+uploadSuccess: function(e) {
+this.log("Code = " + e.responseCode), this.log("Response = " + e.response), this.log("Sent = " + e.bytesSent), this.log(e);
+},
+uploadError: function(e) {
+this.log("upload error source " + e.source), this.log("upload error target " + e.target), this.log(e);
 }
 });
 
@@ -6397,16 +6582,16 @@ kind: onyx.Popup,
 centered: !0,
 floating: !0,
 autoDismiss: !1,
-classes: "light-background",
+classes: "dark-background-flat",
 components: [ {
 name: "spin",
 kind: onyx.Spinner,
-classes: "onyx-light"
+classes: "onyx-dark dark-background"
 } ]
 }, {
 content: "Tap the pin/region on the map to help!",
-style: "font-size: 11pt; font-weight: 100; text-align: center;",
-classes: "light-background"
+style: "font-size: 11pt; font-weight: 100; text-align: center; padding: 3px;",
+classes: "dark-background"
 }, {
 name: "mapCont",
 fit: !0,
@@ -6467,7 +6652,11 @@ for (x in this.locations) {
 var t = this.locations[x].geometryString;
 e.read(t);
 var n = e.toObject(), r = [], i = [];
-t.indexOf("POINT") != -1 ? (n.on("click", enyo.bind(this, "makeBubbleClick")), this.pointsLayer.addLayer(n), r.push(n)) : t.indexOf("POLYGON") != -1 ? (n.on("click", enyo.bind(this, "makeBubbleClick")), this.polygonsLayer.addLayer(n), i.push(n)) : this.log("FAILED TO MAP"), this.pointsLayer.addTo(this.map), this.polygonsLayer.addTo(this.map);
+t.indexOf("POINT") != -1 ? (n.on("click", enyo.bind(this, "makeBubbleClick")), n.setIcon(new L.DivIcon({
+iconSize: new L.Point(27, 91),
+html: '<i class="icon-map-marker icon-4x"></i>',
+className: "map-pin"
+})), this.pointsLayer.addLayer(n), r.push(n)) : t.indexOf("POLYGON") != -1 ? (n.on("click", enyo.bind(this, "makeBubbleClick")), this.polygonsLayer.addLayer(n), i.push(n)) : this.log("FAILED TO MAP"), this.pointsLayer.addTo(this.map), this.polygonsLayer.addTo(this.map);
 }
 this.$.spinUp.hide();
 },

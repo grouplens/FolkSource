@@ -19,12 +19,16 @@ enyo.kind({
 		//{kind: enyo.FittableColumns, fit: true, components: [
 			{name: "body", kind: enyo.FittableRows, fit: true, components: [
 				{name: "cols", style: "height: 30%;", kind: enyo.FittableColumns, components: [
-					{name: "leftButton", kind: onyx.Button, content: "<", slide: "prev", ontap: "buttonTapHandler", classes: "button-style filledButtons", disabled: !0},
+					{name: "leftButton", kind: onyx.Button, slide: "prev", ontap: "buttonTapHandler", classes: "button-style filledButtons", disabled: !0, components: [
+						{tag: "i", classes: "icon-chevron-left icon-large"}
+					]},
 					{kind: enyo.FittableRows, fit: true, components: [
 						{name: "panels", kind: "Panels", arrangerKind: "CarouselArranger", onTransitionFinish: "transitionFinishHandler", onTransitionStart: "transitionStartHandler", classes: "filledPanels", layoutKind: enyo.FittableColumnsLayout, classes: "light-background", fit: true},
-						{content: "Tap the pin/region on the map to help!", style: "font-size: 11pt; font-weight: 100; text-align: center;", classes: "light-background"},
+						//{content: "Tap the pin/region on the map to help!", style: "font-size: 11pt; font-weight: 100; text-align: center;", classes: "light-background"},
 					]},
-					{name: "rightButton", kind: onyx.Button, content: ">", slide: "next", ontap: "buttonTapHandler", classes: "button-style filledButtons"}, 
+					{name: "rightButton", kind: onyx.Button, slide: "next", ontap: "buttonTapHandler", classes: "button-style filledButtons", components: [
+						{tag: "i", classes: "icon-chevron-right icon-large"}
+					]}, 
 				]}
 				//{kind: "NewMap", fit: true}
 			]},
@@ -97,21 +101,18 @@ enyo.kind({
         var index = this.$.panels.getIndex();
         var size = this.$.panels.getPanels().length;
 		var adjSize = size - 1; //adjust for counting at 0 vs. 1
-        if(size == 1) {
-            this.$.rightButton.setDisabled(true);
-            this.$.leftButton.setDisabled(true);
-        } else {
-            if (this.campaignArray != undefined) {
-                if (index == 0) {
-                    this.$.rightButton.setDisabled(false);
-                    this.$.leftButton.setDisabled(true);
-                } else if (index == adjSize) {
-                    this.$.rightButton.setDisabled(true);
-                    this.$.leftButton.setDisabled(false);
-                }
-            }
-        }
-    },
+		this.$.rightButton.setDisabled(false);
+		this.$.leftButton.setDisabled(false);
+		if (this.campaignArray != undefined) {
+			if (index == 0) {
+				this.$.rightButton.setDisabled(false);
+				this.$.leftButton.setDisabled(true);
+			} else if (Number(index) === adjSize) {
+				this.$.rightButton.setDisabled(true);
+				this.$.leftButton.setDisabled(false);
+			}
+		}
+	},
     drawMap: function (inSender, inEvent) { //inSender = a, inEvent = b;
         var panels = this.$.panels.getPanels();
         var d = 0;

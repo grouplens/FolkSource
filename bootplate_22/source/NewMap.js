@@ -10,7 +10,7 @@ enyo.kind({
 		{name: "spinUp", kind: onyx.Popup, centered: true, floating: true, autoDismiss: false, classes: "dark-background-flat", components: [
 			{name: "spin", kind: onyx.Spinner, classes: "onyx-dark dark-background"}
 		]},
-		//{content: "Tap the pin/region on the map to help!", style: "font-size: 11pt; font-weight: 100; text-align: center;", classes: "light-background"},
+		{content: "Tap the pin/region on the map to help!", style: "font-size: 11pt; font-weight: 100; text-align: center; padding: 3px;", classes: "dark-background"},
 		{name: "mapCont", fit: true, style: "overflow: hidden; position: relative;"}
     ],
     events: {
@@ -140,6 +140,7 @@ enyo.kind({
 			var polygons = [];
 			if(str.indexOf("POINT") != -1) {
 				shape.on("click", enyo.bind(this, "makeBubbleClick"));
+				shape.setIcon(new L.DivIcon({iconSize: new L.Point(27,91), html: "<i class=\"icon-map-marker icon-4x\"></i>", className: "map-pin"}));
 				this.pointsLayer.addLayer(shape);
 				//shape.addTo(this.map);
 				points.push(shape);

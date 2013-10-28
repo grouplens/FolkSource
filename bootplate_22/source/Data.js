@@ -3,9 +3,9 @@ enyo.kind({
     kind: "enyo.Control",
     statics: {
         getURL: function () {
-            return "http://ugly-umh.cs.umn.edu:8080/csense/";
-            //return "http://134.84.228.129.xip.io:8080/";
-            //return "http://192.168.0.3.xip.io:8080/";
+            //return "http://ugly-umh.cs.umn.edu:8080/csense/";
+            //return "http://131.212.229.184.xip.io:8080/";
+            return "http://192.168.0.3:8080/";
         },
         getUserName: function (a) {
             var b = new enyo.Ajax({

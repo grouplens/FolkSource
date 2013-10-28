@@ -25,14 +25,24 @@ enyo.kind({
 		{name: "doubleCheckPopup", kind: onyx.Popup, autoDismiss: false, centered: true, floating: true, modal: true, scrimWhenModal: false, scrim: true, classes: "light-background", style: "width: 80%;", components: [
 			{name: "doubleCheckMessage", content: "Are you sure you want to cancel? You will lose all observation data recorded", style: "padding: 5px 0px;"},
 			{kind: enyo.ToolDecorator, classes: "senseButtons", components: [
-				{name: "no", kind: onyx.Button, classes: "button-style nice-padding button-style-negative", content: "No", ontap: "close"},
-				{name: "yes", kind: onyx.Button, classes: "button-style nice-padding button-style-affirmative", content: "Yes", ontap: "close"}
+				{name: "no", kind: onyx.Button, classes: "button-style button-style-negative", ontap: "close", components: [
+					{tag: "i", classes: "icon-ban-circle icon-large"}
+				]},
+				{name: "yes", kind: onyx.Button, classes: "button-style button-style-affirmative", ontap: "close", components: [
+					{tag: "i", classes: "icon-ok icon-large"}
+				]},
+				/*{name: "no", kind: onyx.Button, classes: "button-style nice-padding button-style-negative", content: "No", ontap: "close"},
+				{name: "yes", kind: onyx.Button, classes: "button-style nice-padding button-style-affirmative", content: "Yes", ontap: "close"}*/
 			]}
 		]},
 		{name: "acc", kind: "enyo.Scroller", layoutKind: enyo.FittableRowsLayout, vertical: "auto", horizontal: "hidden", fit: true, strategyKind: "TouchScrollStrategy"/*, classes: "nice-padding"*/},
 		{name: "buttons", kind: enyo.ToolDecorator, classes: "senseButtons", components: [
-			{kind: onyx.Button, classes: "button-style button-style-negative", content: "Cancel", ontap: "togglePopup"},
-			{name: "submit", kind: onyx.Button, classes: "button-style button-style-affirmative", content: "Submit", ontap: "togglePopup"}
+			{kind: onyx.Button, classes: "button-style button-style-negative", ontap: "togglePopup", components: [
+				{tag: "i", classes: "icon-ban-circle icon-large"}
+			]},
+			{name: "submit", kind: onyx.Button, classes: "button-style button-style-affirmative", ontap: "togglePopup", components: [
+				{tag: "i", classes: "icon-ok icon-large"}
+			]}
 		]}
 	],
 	create: function(a, b) {
@@ -153,6 +163,10 @@ enyo.kind({
                 case "cur_time":
 					this.newTime(b);
                 break;
+				case "media_camera":
+				case "media_audio":
+				case "media_video":
+					this.newMediaReading(b);
                 default:
             }
         }
@@ -305,7 +319,7 @@ enyo.kind({
 	},
 	close: function(inSender, inEvent) {
 		this.$.doubleCheckPopup.hide();
-		if(inSender.getContent() === "Yes") {
+		if(inSender.name === "yes") {
 			if(this.$.doubleCheckPopup.submit)
 				this.buildAndSendSubmission();
 			this.bubble("onSubmissionMade");
@@ -389,6 +403,11 @@ enyo.kind({
 		//this.log(this.$.buttons.node.clientHeight);
 		this.$.acc.createComponent({/*name: countName, */kind: "BikeCounter", style: "height: " + test + "px; width: 100%;"}, {owner: this}); 
 		this.counterName = countName;
+	},
+	newMediaReading: function(input) {
+		var name = "sensor_" + input.id;
+		var type = input.type.split("_")[1];
+		this.$.acc.createComponent({name: name, kind: "MediaSensor", type: type, sendAutomatically: false});
 	},
 	readFormText: function(input) {
 		var name = "input_" + input.id;

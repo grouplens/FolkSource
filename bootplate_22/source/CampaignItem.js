@@ -9,7 +9,7 @@ enyo.kind({
         description: ""
     },
     components: [
-		{name: "button", kind: onyx.Button, content: "Watch", classes: "button-style", ontap: "buttonToggled"},
+		//{name: "button", kind: onyx.Button, content: "Watch", classes: "button-style", ontap: "buttonToggled"},
 		{name: "title", content: "title", style: "font-weight: 400;", classes: "campTitle"},
 		{name: "description", tag: "p", content: "desc", classes: "campDesc", /*style: "white-space: normal; word-wrap: break-word;"*/}
 	],
