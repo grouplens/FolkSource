@@ -10,7 +10,7 @@
 	<property name="password" />
 	<property name="salt" />
 	<property name="email" />
-	<bag name="tasks" lazy="true">
+	<bag name="tasks" lazy="false">
 		<key column="camp_id" not-null="false"/>
 		<!-- <index column="id" base="1" />-->
 		<one-to-many class="Task" />

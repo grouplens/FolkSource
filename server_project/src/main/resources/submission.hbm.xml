@@ -18,7 +18,7 @@
 			<one-to-many class="Answer"/>
 		</array> -->
 		
-		<bag name="answers" lazy="true" inverse="true">
+		<bag name="answers" lazy="false" inverse="true">
 			<key column="sub_id" not-null="false" />
 			 <!-- <index column="id" />-->
 			<one-to-many class="Answer" />
