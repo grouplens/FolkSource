@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CSENSE_SVN_PATH=/export/scratch/thebault/workspace/server/
+CSENSE_SVN_PATH=//Users/jts/programming/csense_trunk/server_project/
 DEPLOY_DIR=`pwd`
 DATE=`date +%Y-%m-%d_%H:%M`
 

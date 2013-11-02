@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CATALINA_HOME=/export/scratch/tomcat7/apache-tomcat-7.0.22
+CATALINA_HOME=/Users/jts/programming/apache-tomcat-7.0.22
 
 CSENSE_DEPLOY_DIR=`pwd`
 

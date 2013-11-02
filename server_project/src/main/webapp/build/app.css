@@ -1513,10 +1513,10 @@ body {
 }
 
 .text-title-small {
-	border-bottom: 1px white solid;
+	border-bottom: 1px #2E426F solid;
 }
 .text-title-big {
-	border-bottom: 3px white double;
+	border-bottom: 3px #2E426F double;
 }
 .hanging-child {
 	width: 96%;
@@ -1535,7 +1535,7 @@ body {
 }
 .standard-card, .toolbar-button-style {
 	box-sizing: border-box;
-	background-color: #6DB961 !important;
+	background-color: #738DC9 !important;
 	/*color: #694225 !important;*/
 	color: #FFF !important;
 	font-size: 11pt;
@@ -1543,7 +1543,7 @@ body {
 	-moz-border-radius: 0px;
 	-webkit-border-radius: 0px;
 	border-radius: 0px;
-	text-shadow: -1px -1px 0 rgba(0,0,0,0.2);
+	//text-shadow: -1px -1px 0 rgba(0,0,0,0.2);
 }
 .standard-card {
 	box-sizing: border-box;
@@ -1552,7 +1552,7 @@ body {
 	color: #6DB961 !important;
 }
 .button-style, .button-style-affirmative, .button-style-negative {
-	background: #694225 !important; /* darker green */
+	background: #2E426F !important; /* darker green */
 	color: #FFF !important;
 	/*color: #C5A467 !important; /* lighter green*/
 	font-size: 11pt;
@@ -1565,18 +1565,23 @@ body {
 	background: #3CAB9F !important;
 }*/
 .button-style-affirmative {
-	color: green !important;
+	background-color: #18AC21 !important;
+	color: #FFF !important;
 }
 .hilight-icons-affirmative:hover {
-	text-shadow: 0 0 3px yellow;
-	color: lightgreen !important;
+	text-shadow: 0 0 7px #2E426F;
+	color: #18AC21 !important;
 }
 .hilight-icons-negative:hover {
-	text-shadow: 0 0 3px yellow;
-	color: red !important;
+	text-shadow: 0 0 7px #2E426F;
+	color: #DB221E !important;
+}
+.hilight-location {
+	text-shadow: 0 0 15px #DB221D;
 }
 .button-style-negative  {
-	color: red !important;
+	background-color: #DB221E !important;
+	color: #FFF !important;
 }
 /*.button-cancel-style {
 	background-color: red;
@@ -1628,17 +1633,17 @@ body {
 }
 .active-card {
 	box-sizing: border-box;
-	background: #3CAB9F !important;
-	color: #FFF !important;
+	background: #EDEC7C !important;
+	color: #2E426F !important;
 }
-.task-builder {
-	height: 100%;
+.task-builder, .question-builder, .location-builder {
+	//width: 100%;
 	opacity: 1;
-	transition: height 0.5s, opacity 0.5s;
+	//transition: width 0.5s, opacity 0.5s;
 	-webkit-transition: height 0.5s, opacity 0.5s;
 }
-.task-builder-destroy {
-	height: 0px;
+.task-builder-destroy, .question-builder-destroy, .location-builder-destroy {
+	//width: 0px;
 	opacity: 0;
 }
 
@@ -1647,23 +1652,24 @@ body {
 	background: #;
 }*/
 .light-background, .panelItem {
-	background-color: #6DB961 !important;
+	background-color: #738DC9 !important;
+	//background-color: #EDEC7C !important;
 	color: #FFF !important;
 	font-size: 11pt;
-	text-shadow: -1px -1px 0 rgba(0,0,0,0.2);
+	//text-shadow: -1px -1px 0 rgba(0,0,0,0.2);
 	/*color: #694225 !important;*/
 }
 .dark-background {
-	background-color: #694225 !important; /* darker green */
+	background-color: #2E426F !important; /* darker green */
 	font-size: 11pt;
 	color: #FFF !important;
 	/*color: #C5A467 !important;*/
 }
 .dark-background-flat {
-	background: #694225 !important; /* darker green */
-	color: #6DB961 !important;
-	font-size: 16pt;
-	text-shadow: -1px -1px 0 rgba(0,0,0,0.2);
+	background: #2E426F !important; /* darker green */
+	color: #FFF !important;
+	font-size: 11pt;
+	//text-shadow: -1px -1px 0 rgba(0,0,0,0.2);
 	border: 0px;
 }
 /*.dark-background + .active {
@@ -1673,15 +1679,21 @@ body {
 .active {
 	/*font-size: 13pt;*/
 	/*background: #3CAB9F !important; /* lighter green*/
-	background: #3CAB9F !important; /* lighter green*/
-	color: #FFF !important;
+	background: #EDEC7C !important; /* lighter green*/
+	color: #2E426F !important;
 	border-top: 3px white solid;
 	-webkit-box-shadow: 0 0 0 0 white;
 	-moz-box-shadow: 0 0 0 0 white;
 	box-shadow: 0 0 0 0 white;
 }
 .map-pin {
-	color: #C4676D;
+	color: #25426F;
+	background-color: transparent;
+	border: 0px;
+	text-shadow: 4px -4px 4px rgba(0, 0, 0, 0.2);
+}
+.map-pin-test {
+	color: #DB221D;
 	background-color: transparent;
 	border: 0px;
 	text-shadow: 4px -4px 4px rgba(0, 0, 0, 0.2);
@@ -1863,10 +1875,10 @@ table, tr, td {
 	margin-top: 2px;
 	//font-size: 1.333333em;
 	vertical-align: bottom;
-	border: 2px #694225 solid;
+	border: 2px #738DC9 solid;
 }
 .hilight {
-	background-color: #6DB961;
+	background-color: #DB221D;
 }
 .ios-navbar {
 	position: absolute;
