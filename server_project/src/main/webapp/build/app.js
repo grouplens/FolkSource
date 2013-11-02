@@ -4545,19 +4545,7 @@ return n - r - i;
 },
 getData: function(e, t) {
 var n = {};
-n.id = 0, n.start_date = "", n.end_date = "", enyo.mixin(n, this.$.header.getData()), n.tasks = this.getTasks(), n.owner_id = LocalStorage.get("user");
-var r = new enyo.Ajax({
-url: Data.getURL() + "campaign.json",
-method: "POST",
-contentType: "application/json",
-postBody: {
-campaign: n
-}
-});
-r.response(this, "handleResponse"), r.go();
-},
-handleResponse: function(e, t) {
-this.log(e), this.log(t);
+return n.id = 0, n.start_date = "", n.end_date = "", enyo.mixin(n, this.$.header.getData()), n.tasks = this.getTasks(), n.owner_id = LocalStorage.get("user"), n;
 },
 getTasks: function(e, t) {
 var n = [];
@@ -5199,7 +5187,7 @@ return !0;
 
 enyo.kind({
 name: "CSenseLoginRegister",
-classes: "dark-background",
+classes: "light-background nice-padding",
 kind: onyx.Popup,
 published: {
 register: !1,
@@ -5211,36 +5199,82 @@ scrimWhenModal: !1,
 scrim: !0
 },
 events: {
+onAnonymousCode: "",
 onSuccessCode: "",
 onFailureCode: ""
 },
 components: [ {
 name: "rbox",
 kind: "onyx.RadioGroup",
-style: "width: 100%;",
 components: [ {
 content: "Login",
 active: !0,
-classes: "onyx-radiobutton",
+classes: "button-style",
 ontap: "setupLogin"
 }, {
 content: "Register",
-classes: "onyx-radiobutton",
+classes: "button-style",
 ontap: "setupRegister"
 } ]
 }, {
 name: "gbox",
-kind: "onyx.Groupbox",
-components: []
+kind: enyo.FittableRows,
+classes: "nice-padding",
+components: [ {
+name: "emailDrawer",
+kind: onyx.Drawer,
+orient: "v",
+open: !1,
+components: [ {
+name: "email",
+kind: enyo.Input,
+classes: "hanging-child",
+placeholder: "E-Mail",
+onkeyup: "emailRegexCheck"
+} ]
 }, {
+name: "username",
+kind: enyo.Input,
+classes: "hanging-child",
+placeholder: "Username",
+type: "email",
+onkeyup: "checkFields"
+}, {
+name: "password",
+kind: enyo.Input,
+classes: "hanging-child",
+placeholder: "Password",
+type: "password",
+onkeyup: "checkFields"
+}, {
+kind: enyo.ToolDecorator,
+classes: "hanging-child",
+components: [ {
 name: "memoryBox",
 kind: "onyx.Checkbox",
-style: "clear: left; float: left;",
 ontap: "remember"
 }, {
 name: "text",
-content: "Remember Me",
-style: "float: left;"
+content: "Remember Me"
+} ]
+}, {
+kind: enyo.FittableColumns,
+components: [ {
+name: "logButton",
+kind: onyx.Button,
+content: "Login",
+classes: "button-style-affirmative nice-padding",
+ontap: "buildURL"
+}, {
+fit: !0
+}, {
+name: "anonBytton",
+kind: onyx.Button,
+content: "Stay Anonymous",
+classes: "button-style nice-padding",
+ontap: "hidePopup"
+} ]
+} ]
 } ],
 create: function() {
 this.inherited(arguments), this.register ? (this.$.radioButton.setActive(!1), this.$.radioButton2.setActive(!0), this.setupRegister()) : this.setupLogin();
@@ -5249,111 +5283,10 @@ rendered: function() {
 this.inherited(arguments);
 },
 setupLogin: function() {
-this.register = !1, this.$.gbox.destroyClientControls(), this.$.gbox.createComponent({
-name: "gboxhead",
-kind: "onyx.GroupboxHeader",
-content: "Login"
-}, {
-owner: this
-}), this.$.gbox.createComponent({
-name: "gboxcomp",
-components: [ {
-name: "userdec",
-kind: "onyx.InputDecorator",
-classes: "onyx-input-decorator",
-components: [ {
-name: "username",
-kind: "onyx.Input",
-placeholder: "Username",
-defaultFocus: !0,
-type: "email",
-style: "width: 100%;",
-classes: "onyx-input",
-onkeyup: "checkFields"
-} ]
-}, {
-name: "passdec",
-kind: "onyx.InputDecorator",
-classes: "onyx-input-decorator",
-components: [ {
-name: "password",
-kind: "onyx.Input",
-placeholder: "Password",
-type: "password",
-style: "width: 100%;",
-classes: "onyx-input",
-onkeyup: "checkFields"
-} ]
-}, {
-name: "logButton",
-kind: "onyx.Button",
-content: "Login",
-style: "clear: both;",
-ontap: "buildURL"
-} ]
-}, {
-owner: this
-}), this.$.gbox.render();
+this.register = !1, this.$.emailDrawer.setOpen(!1), this.$.logButton.setContent("Login"), this.$.logButton.render();
 },
 setupRegister: function() {
-this.register = !0, this.$.gbox.destroyClientControls(), this.$.gbox.createComponent({
-name: "gboxhead",
-kind: "onyx.GroupboxHeader",
-content: "Register"
-}, {
-owner: this
-}), this.$.gbox.createComponent({
-name: "gboxcomp",
-components: [ {
-name: "emaildec",
-kind: "onyx.InputDecorator",
-classes: "onyx-input-decorator",
-components: [ {
-name: "email",
-kind: "onyx.Input",
-placeholder: "E-Mail",
-defaultFocus: !0,
-style: "width: 100%;",
-classes: "onyx-input",
-onkeyup: "emailRegexCheck"
-} ]
-}, {
-name: "userdec",
-kind: "onyx.InputDecorator",
-classes: "onyx-input-decorator",
-components: [ {
-name: "username",
-kind: "onyx.Input",
-placeholder: "Username",
-type: "email",
-style: "width: 100%;",
-classes: "onyx-input",
-onkeyup: "checkFields"
-} ]
-}, {
-name: "passdec",
-kind: "onyx.InputDecorator",
-classes: "onyx-input-decorator",
-components: [ {
-name: "password",
-kind: "onyx.Input",
-placeholder: "Password",
-type: "password",
-style: "width: 100%;",
-classes: "onyx-input",
-onkeyup: "checkFields"
-} ]
-}, {
-name: "logButton",
-kind: "onyx.Button",
-content: "Register",
-disabled: !0,
-style: "clear: both;",
-ontap: "buildURL"
-} ]
-}, {
-owner: this
-}), this.$.gbox.render();
+this.register = !0, this.$.emailDrawer.setOpen(!0), this.$.logButton.setContent("Register"), this.$.logButton.render();
 },
 buildURL: function() {
 this.log();
@@ -5378,6 +5311,9 @@ if (e.xhr.status === 200) {
 var n = JSON.parse(e.xhr.responseText);
 this.log(n.points), this.log(n.uid), this.log("WEEE"), this.hide(), LocalStorage.set("points", JSON.stringify(n.points)), LocalStorage.set("user", JSON.stringify(n.uid)), LocalStorage.set("username", JSON.stringify(n.name)), this.$.memoryBox.getValue() && LocalStorage.set("remember", !0), this.doSuccessCode();
 } else this.log(JSON.stringify(e)), this.log(e.xhr.status), this.log("BOOO"), this.doFailureCode();
+},
+hidePopup: function(e, t) {
+this.doAnonymousCode();
 },
 emailRegexCheck: function() {
 var e = /^\w+([\.\+]\w+)*@\w+(\.\w+)*(\.\w{2,})$/;
@@ -5739,7 +5675,7 @@ name: "Data",
 kind: "enyo.Control",
 statics: {
 getURL: function() {
-return "http://127.0.0.1:8080/";
+return "http://ugly-umh.cs.umn.edu:8080/csense/";
 },
 getUserName: function(e) {
 var t = new enyo.Ajax({
@@ -6610,7 +6546,7 @@ maximumAge: "3000",
 onSuccess: "locSuccess",
 onError: "locError"
 }, {
-name: "doubleCheckPopup",
+name: "doubleCheckSendPopup",
 kind: onyx.Popup,
 autoDismiss: !1,
 centered: !0,
@@ -6620,23 +6556,23 @@ scrimWhenModal: !1,
 scrim: !0,
 classes: "light-background",
 components: [ {
-name: "doubleCheckMessage",
-content: "Are you sure?",
+name: "doubleCheckSendMessage",
+content: "Are you sure you want to save(this will store it to the server)?",
 style: "padding: 5px 0px;"
 }, {
 kind: enyo.ToolDecorator,
 classes: "senseButtons",
 components: [ {
-name: "no",
+name: "sendNo",
 kind: onyx.Button,
 classes: "button-style button-style-negative",
-ontap: "resetTasksAndQuestions",
+ontap: "hideDoubleCheckSend",
 components: [ {
 tag: "i",
 classes: "icon-ban-circle"
 } ]
 }, {
-name: "yes",
+name: "sendYes",
 kind: onyx.Button,
 classes: "button-style button-style-affirmative",
 ontap: "saveTasksAndQuestions",
@@ -6645,6 +6581,61 @@ tag: "i",
 classes: "icon-ok"
 } ]
 } ]
+} ]
+}, {
+name: "doubleCheckCancelPopup",
+kind: onyx.Popup,
+autoDismiss: !1,
+centered: !0,
+floating: !0,
+modal: !0,
+scrimWhenModal: !1,
+scrim: !0,
+classes: "light-background",
+components: [ {
+name: "doubleCheckCancelMessage",
+content: "Are you sure you want to cancel (your work will be lost)?",
+style: "padding: 5px 0px;"
+}, {
+kind: enyo.ToolDecorator,
+classes: "senseButtons",
+components: [ {
+name: "cancelNo",
+kind: onyx.Button,
+classes: "button-style button-style-negative",
+ontap: "hideDoubleCheckCancel",
+components: [ {
+tag: "i",
+classes: "icon-ban-circle"
+} ]
+}, {
+name: "cancelYes",
+kind: onyx.Button,
+classes: "button-style button-style-affirmative",
+ontap: "resetTasksAndQuestions",
+components: [ {
+tag: "i",
+classes: "icon-ok"
+} ]
+} ]
+} ]
+}, {
+name: "sendingPopup",
+kind: onyx.Popup,
+autoDismiss: !1,
+centered: !0,
+floating: !0,
+modal: !0,
+scrimWhenModal: !1,
+scrim: !0,
+classes: "light-background",
+components: [ {
+kind: onyx.Spinner,
+classes: "onyx-light",
+showing: !0
+}, {
+name: "message",
+showing: !1
 } ]
 }, {
 name: "loginRegister",
@@ -6709,7 +6700,7 @@ title: "Cancel the campaign you were making."
 },
 style: "width: 50%;",
 showing: !1,
-ontap: "resetTasksAndQuestions",
+ontap: "doubleCheckCancel",
 components: [ {
 tag: "i",
 classes: "icon-ban-circle icon-large"
@@ -6723,7 +6714,7 @@ title: "Finish the campaign you were making."
 },
 style: "width: 50%;",
 showing: !1,
-ontap: "saveTasksAndQuestions",
+ontap: "doubleCheckSend",
 components: [ {
 tag: "i",
 classes: "icon-ok icon-large"
@@ -6842,13 +6833,26 @@ onContentSet: "stopTaskDetailSpinner",
 onResizeMap: "adjustMapSize",
 onCheckLocation: "highlightMarkerPolygon",
 onSuccessCode: "hideLogin",
-onFailureCode: ""
+onFailureCode: "",
+onAnonymousCode: "hideLogin"
 },
 create: function(e, t) {
 this.inherited(arguments), this.resized(), this.$.gps.setTimeout(this.gpsTimeout), this.lastSubmissionPoll = 0, userMoved = !1, loaded = !1, this.panZoomed = !1, this.firstTime = !0, this.notShowing = !0, this.locSuc = !1, this.loaded = !1, this.locations = [], this.addPins = !1, this.addPolygon = !1, this.addShapeFile = !1, this.events.onPins = "", this.currentTaskName = "", this.taskMarkerGroups = {}, this.taskMarkers = {}, this.submissionMarkerGroups = {}, this.currentTaskMarkerGroup = null, this.currentSubmissionsGroup = null, this.currentSubmissionsGroupTaskId = null, this.selectedCluster = null, this.stopSpinnerOnTaskDetailContSet = !1;
 },
+doubleCheckSend: function(e, t) {
+this.$.doubleCheckSendPopup.show();
+},
+hideDoubleCheckSend: function(e, t) {
+this.$.doubleCheckSendPopup.hide();
+},
+hideDoubleCheckCancel: function(e, t) {
+this.$.doubleCheckCancelPopup.hide();
+},
+doubleCheckCancel: function(e, t) {
+this.$.doubleCheckCancelPopup.show();
+},
 hideLogin: function(e, t) {
-this.$.username.setContent(LocalStorage.get("username").toString()), this.$.toolbar.resized(), this.$.loginRegister.hide();
+LocalStorage.get("username") !== undefined && this.$.username.setContent(LocalStorage.get("username").toString()), this.$.toolbar.resized(), this.$.loginRegister.hide();
 },
 resizeContainer: function(e, t) {},
 showEditFeaturesToolbar: function(e, t) {
@@ -7070,13 +7074,27 @@ duration: 0
 }), this.$.newButton.setShowing(!1), this.$.saveButton.setShowing(!0), this.$.cancelButton.setShowing(!0), this.$.toolbar.resized(), this.$.toolbar.render();
 },
 resetTasksAndQuestions: function(e, t) {
-this.$.campaignBuilder.toggleDrawer(), this.log(), this.$.campaignBuilder.removeAllTasks(), this.$.campaignBuilder.render(), this.$.saveButton.setShowing(!1), this.$.cancelButton.setShowing(!1), this.$.newButton.setShowing(!0), this.$.toolbar.resized(), this.$.toolbar.render(), this.map.panBy([ -450, 0 ], {
+this.$.doubleCheckCancelPopup.hide(), this.$.campaignBuilder.toggleDrawer(), this.log(), this.$.campaignBuilder.removeAllTasks(), this.$.campaignBuilder.render(), this.$.saveButton.setShowing(!1), this.$.cancelButton.setShowing(!1), this.$.newButton.setShowing(!0), this.$.toolbar.resized(), this.$.toolbar.render(), this.map.panBy([ -450, 0 ], {
 animate: !1,
 duration: 0
 });
 },
 saveTasksAndQuestions: function(e, t) {
-this.log(JSON.stringify(this.$.campaignBuilder.getData())), this.resetTasksAndQuestions();
+this.$.doubleCheckSendPopup.hide(), this.log(JSON.stringify(this.$.campaignBuilder.getData()));
+var n = {
+campaign: this.$.campaignBuilder.getData()
+}, r = new enyo.Ajax({
+url: Data.getURL() + "campaign.json",
+method: "POST",
+contentType: "application/json",
+handleAs: "json",
+cacheBust: !1,
+postBody: n
+});
+r.response(this, "handleResponse"), r.go();
+},
+handleResponse: function(e, t) {
+e.failed ? this.$.sendingPopup.setValue("") : (this.$.sendingPopup.hide(), this.resetTasksAndQuestions());
 },
 toggleVisible: function(e, t) {
 var n = this.parent.parent.getIndex(), r = this.id.split("_"), i = r[r.length - 1], s = this.parent.parent.getPanels()[n].id.split("_"), o = s[s.length - 1];
