@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.citizensense.model.*;
-import org.hibernate.Query;
 import org.hibernate.Session;
 
 
@@ -46,7 +45,14 @@ public class TaskService {
 	public static void save(Task t) {
 		Session session = HibernateUtil.getSession(true);
 		session.save(t);
-		
+		for(Question q : t.getQuestions()) {
+			q.setTask_id(t.getId());
+			QuestionService.save(q);
+		}
+		for(Location l : t.getLocations()) {
+			l.setTask_id(t.getId());
+			LocationService.save(l);
+		}
 	}
 	
 	public static Task getTaskById(int id){

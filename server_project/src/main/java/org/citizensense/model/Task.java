@@ -10,9 +10,29 @@ public class Task{
 	public String name;
 	public String instructions;
 	public Boolean required;
+	public Integer camp_id;
 //	private String requirements; // possibly wrong datatype, but for now
 //	private Form form;
 //	private Location loc;
+
+	public Integer getCamp_id() {
+		return camp_id;
+	}
+	public void setCamp_id(Integer camp_id) {
+		this.camp_id = camp_id;
+	}
+	public Boolean getRequired() {
+		return required;
+	}
+	public void setLocations(Location[] locations) {
+		this.locations = locations;
+	}
+	public void setSubmissions(Submission[] submissions) {
+		this.submissions = submissions;
+	}
+	public void setQuestions(Question[] questions) {
+		this.questions = questions;
+	}
 
 	public Location[] locations;
 	public Submission[] submissions;
@@ -62,7 +82,10 @@ public class Task{
 	}
 
 	public void setSubmissions(List<Submission> subs) {
-		this.submissions = subs.toArray(new Submission[subs.size()]);
+		if(subs == null) 
+			this.submissions = new Submission[0];
+		else 
+			this.submissions = subs.toArray(new Submission[subs.size()]);
 	}
 
 	public Integer getId() {

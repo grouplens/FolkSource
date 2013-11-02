@@ -98,7 +98,7 @@ public class UserController implements ModelDriven<User> {
 	// UserService.save(user);
 	// return new DefaultHttpHeaders("create");
 	// }
-
+	
 	public String create() {// deal with register
 		HttpServletResponse response = ServletActionContext.getResponse();
 		HttpServletRequest req = ServletActionContext.getRequest();
@@ -122,6 +122,7 @@ public class UserController implements ModelDriven<User> {
 //			response.addIntHeader("X-Uid", user.getId());
 			req.setAttribute("uid", user.getId());
 			req.setAttribute("points", user.getPoints());
+			req.setAttribute("name", user.getName());
 			return "register_success";
 		} else {
 			// user name does exist, couldn't register

@@ -25,8 +25,8 @@ public class CampaignController implements ModelDriven<DtoContainer<CampaignDto>
 	
 	public String show() {
 		HttpServletResponse res = ServletActionContext.getResponse();
-		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-		res.addHeader("Access-Control-Allow-Origin", "ugly.cs.umn.edu:8080");
+//		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+		res.addHeader("Access-Control-Allow-Origin", "*");
 		//res.addHeader("Access-Control-Allow-Methods", "GET");
 		content.set(new CampaignDto(CampaignService.getCampaign(id)));
 		
@@ -48,18 +48,23 @@ public class CampaignController implements ModelDriven<DtoContainer<CampaignDto>
 		//list = CampaignService.getCampaigns();
 		//return new DefaultHttpHeaders("index").disableCaching();
 		HttpServletResponse res = ServletActionContext.getResponse();
-		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+//		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "*");
 		content = new DtoContainer<CampaignDto>(CampaignDto.class, true);
 		content.set(CampaignDto.fromCampaignList(CampaignService.getCampaigns()));
 		return "index";
 	}
-	
+	public String options() {
+		HttpServletResponse res = ServletActionContext.getResponse();
+		res.addHeader("Access-Control-Allow-Origin", "*");
+		return "options";
+	}
 	public String create()
 	{
 		HttpServletResponse res = ServletActionContext.getResponse();
-		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+//		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "*");
+//		res.addHeader("Access-Control-Allow-Headers", "Content-Type");
 		Campaign c = content.getSingle().toCampaign();
 		CampaignService.save(c);
 		// Note: It may not be immediately obvious why it is necessary to set the content again. The reason is, 

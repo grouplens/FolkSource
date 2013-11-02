@@ -11,6 +11,20 @@ public class Question extends Dto implements Comparable<Question> {
 	public String options;
 	public Integer task_id;
 	
+	public Question() {
+		super();
+	}
+	
+	public Question(Integer id, String question, String type, Boolean required, String options, Integer task_id) {
+		super();
+		this.id = id;
+		this.question = question;
+		this.type = type;
+		this.required = required;
+		this.options = options;
+		this.task_id = task_id;
+	}
+	
 	@Exclude(ExcludeType.EXPORT)
 	public Answer answer;
 

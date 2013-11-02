@@ -8,7 +8,7 @@ import org.grouplens.common.dto.Dto;
 
 public class CampaignDto extends Dto{
 	
-	public Long id;
+	public Integer id;
 	public String title;
 	public String description;
 	public String location;

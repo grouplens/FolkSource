@@ -27,6 +27,10 @@ public class CampaignService {
 	public static void save(Campaign camp) {
 		Session session = HibernateUtil.getSession(true);
 		session.save(camp);
+		for(Task t: camp.getTasks()) {
+			t.setCamp_id(camp.getId());
+			TaskService.save(t);
+		}
 	}
 
 }

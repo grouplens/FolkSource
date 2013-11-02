@@ -10,7 +10,7 @@ import org.grouplens.common.dto.Dto;
 
 public class Campaign{
 
-	public Long id;
+	public Integer id;
 	public String title;
 	public String description;
 	public String location;
@@ -30,7 +30,7 @@ public class Campaign{
 	public Campaign() {
 		super();
 	}
-	public Campaign(Long id, String title, String description, String location, Date start_date, Date end_date, String start_date_string, String end_date_string, Integer owner_id, Integer task_id, Task[] tasks){
+	public Campaign(Integer id, String title, String description, String location, Date start_date, Date end_date, String start_date_string, String end_date_string, Integer owner_id, Integer task_id, Task[] tasks){
 		super();
 		this.id = id;
 		this.title = title;
@@ -49,10 +49,10 @@ public class Campaign{
 		// TODO Auto-generated method stub
 
 	}
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public List<Task> getTasks() {
