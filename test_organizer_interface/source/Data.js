@@ -3,21 +3,22 @@ enyo.kind({
     kind: "enyo.Control",
     statics: {
         getURL: function () {
-            //return "http://ugly-umh.cs.umn.edu:8080/csense/";
+            return "http://ugly-umh.cs.umn.edu:8080/csense/";
             //return "http://131.212.228.189.xip.io:8080/";
             //return "http://192.168.0.3.xip.io:8080/";
-            return "http://127.0.0.1:8080/csense/";
+            //return "http://127.0.0.1:8080/";
         },
         getUserName: function (a) {
-            var b = new enyo.Ajax({
+            var ajax = new enyo.Ajax({
                 contentType: "application/json",
                 sync: !0,
                 url: Data.getURL() + "leaderboard.json"
             });
-            b.response(this, function (a, b) {
+            ajax.response(this, function (a, b) {
                 this.users = b.leaderboardEntrys;
-            }), b.go();
-            for (x in this.users) {
+            });
+			ajax.go();
+            for (var x in this.users) {
                 if (this.users[x].id == a) {
                     this.log(a);
                     return this.users[x].name;

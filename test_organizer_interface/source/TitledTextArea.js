@@ -21,6 +21,9 @@ enyo.kind({
 	bigChanged: function(inSender, inEvent) {
 		this.$.title.setBig(this.big);
 	},
+	getData: function(inSender, inEvent) {
+		return this.$.input.getValue();
+	},	
 	placeholderChanged: function(inSender, inEvent) {
 		this.$.input.setPlaceholder(this.placeholder);
 	},

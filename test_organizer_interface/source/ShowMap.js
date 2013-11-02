@@ -6,32 +6,50 @@ enyo.kind({
 	components: [
 		{kind: enyo.Signals, onMapClicked: "newPin"},
 		{name: "gps", kind: "rok.geolocation", watch: false, enableHighAccuracy: !0, timeout: this.gpsTimeout, maximumAge: "3000", onSuccess: "locSuccess", onError: "locError"},
-		{name: "doubleCheckPopup", kind: onyx.Popup, autoDismiss: false, centered: true, floating: true, modal: true, scrimWhenModal: false, scrim: true, classes: "light-background", components: [
-			{name: "doubleCheckMessage", content: "Are you sure?", style: "padding: 5px 0px;"},
+		{name: "doubleCheckSendPopup", kind: onyx.Popup, autoDismiss: false, centered: true, floating: true, modal: true, scrimWhenModal: false, scrim: true, classes: "light-background", components: [
+			{name: "doubleCheckSendMessage", content: "Are you sure you want to save(this will store it to the server)?", style: "padding: 5px 0px;"},
 			{kind: enyo.ToolDecorator, classes: "senseButtons", components: [
-				{name: "no", kind: onyx.Button, classes: "button-style button-style-negative", ontap: "resetTasksAndQuestions", components: [
+				{name: "sendNo", kind: onyx.Button, classes: "button-style button-style-negative", ontap: "hideDoubleCheckSend", components: [
 					{tag: "i", classes: "icon-ban-circle"}
 				]},
-				{name: "yes", kind: onyx.Button, classes: "button-style button-style-affirmative", ontap: "saveTasksAndQuestions", components: [
+				{name: "sendYes", kind: onyx.Button, classes: "button-style button-style-affirmative", ontap: "saveTasksAndQuestions", components: [
 					{tag: "i", classes: "icon-ok"}
 				]},
 			]}
 		]},
+		{name: "doubleCheckCancelPopup", kind: onyx.Popup, autoDismiss: false, centered: true, floating: true, modal: true, scrimWhenModal: false, scrim: true, classes: "light-background", components: [
+			{name: "doubleCheckCancelMessage", content: "Are you sure you want to cancel (your work will be lost)?", style: "padding: 5px 0px;"},
+			{kind: enyo.ToolDecorator, classes: "senseButtons", components: [
+				{name: "cancelNo", kind: onyx.Button, classes: "button-style button-style-negative", ontap: "hideDoubleCheckCancel", components: [
+					{tag: "i", classes: "icon-ban-circle"}
+				]},
+				{name: "cancelYes", kind: onyx.Button, classes: "button-style button-style-affirmative", ontap: "resetTasksAndQuestions", components: [
+					{tag: "i", classes: "icon-ok"}
+				]},
+			]}
+		]},
+		{name: "sendingPopup", kind: onyx.Popup, autoDismiss: false, centered: true, floating: true, modal: true, scrimWhenModal: false, scrim: true, classes: "light-background", components: [
+			{kind: onyx.Spinner, classes: "onyx-light", showing: true},
+			{name: "message", showing: false}
+		]},
+		{name: "loginRegister", kind: "CSenseLoginRegister"},
 		{name: "toolbar", kind: onyx.Toolbar, layoutKind: enyo.FittableColumnsLayout, classes: "dark-background-flat", components: [
-			{name: "showButton", kind: onyx.Button, classes: "button-style light-background", disabled: true, ontap: "showCampaigns", components: [
+			{name: "showButton", kind: onyx.Button, classes: "button-style light-background", disabled: true, ontap: "showCampaigns", attributes: {title: "Click here to see campaigns and their submissions."}, components: [
 				{name: "spin", showing: true, tag: "i", classes: "icon-refresh icon-spin"},
 				{name: "menuIcon", tag: "i", classes: "icon-list-ul icon-large", showing: false}
 			]},
 			{content: "FolkSource"},
 			{kind: "GrouplensBrand", fit: true, vertical: false},
-			{name: "newButton", kind: onyx.Button, classes: "button-style light-background", showing: true, ontap: "showNewMap", components: [
+			{content: "Logged in as: "},
+			{name: "username", content: "anonymous"},
+			{name: "newButton", kind: onyx.Button, classes: "button-style light-background", showing: true, ontap: "showNewMap", attributes: {title: "Click here to create a new campaign"}, components: [
 				{tag: "i", classes: "icon-plus icon-large"}
 			]},
 			{kind: enyo.FittableColumns, components: [
-				{name: "cancelButton", kind: onyx.Button, classes: "light-background button-style-negative", style: "width: 50%;", showing: false, ontap: "resetTasksAndQuestions", components: [
+				{name: "cancelButton", kind: onyx.Button, classes: "light-background button-style-negative", attributes: {title: "Cancel the campaign you were making."}, style: "width: 50%;", showing: false, ontap: "doubleCheckCancel", components: [
 					{tag: "i", classes: "icon-ban-circle icon-large"},
 				]},
-				{name: "saveButton", kind: onyx.Button, classes: "light-background button-style-affirmative", style: "width: 50%;", showing: false, ontap: "saveTasksAndQuestions", components: [
+				{name: "saveButton", kind: onyx.Button, classes: "light-background button-style-affirmative", attributes: {title: "Finish the campaign you were making."}, style: "width: 50%;", showing: false, ontap: "doubleCheckSend", components: [
 					{tag: "i", classes: "icon-ok icon-large"},
 				]}
 			]}
@@ -43,16 +61,18 @@ enyo.kind({
 				{name: "addLocationsAndRegionsToolbar", kind: onyx.Drawer, open: false, style: "z-index: 10; float: right;", components:[
 					{name: "addLandRRadioGroup", kind: onyx.RadioGroup, components:[
 						{name: "addLocationButton", kind: onyx.Button, classes: "button-style", content: "Add Location"},
-						{name: "addRegionButton", kind: onyx.Button, classes: "button-style", content: "Add Region"}
-					]}
+						{name: "addRegionButton", kind: onyx.Button, classes: "button-style", content: "Add Region"},
+						{name: "finishAddingButton", kind: onyx.Button, content: "Done", classes: "button-style-affirmative", ontap: "deactivateEditingInterface", style:"margin-left: 8px;"},
+					]},
 				]},
 				{name: "modifyToolbar", kind: onyx.Drawer, open: false, style: "z-index: 10; float: right;", components:[
 					{kind: enyo.ToolDecorator, components:[
-						{name: "undoButton", kind: onyx.Button, content: "Undo", classes: "button-style", style:"margin-right: 8px; border-radius: 3px 3px 3px 3px;"},
+						{name: "undoButton", kind: onyx.Button, content: "Undo", classes: "button-style-negative", style:"margin-right: 8px;"},
 						{name: "modifyRadioGroup", kind: onyx.RadioGroup, components:[
 							{name: "modifyFeaturesButton", kind: onyx.Button, classes: "button-style", content: "Edit"},
-							{name: "removeFeaturesButton", kind: onyx.Button, classes: "button-style", content: "Remove"}
-						]}
+							{name: "removeFeaturesButton", kind: onyx.Button, classes: "button-style", content: "Remove"},
+							{name: "finishEditingButton", kind: onyx.Button, content: "Done", classes: "button-style-affirmative", ontap: "finishEditing", style:"margin-left: 8px;"},
+						]},
 					]}
 				]}
 			]},
@@ -103,7 +123,10 @@ enyo.kind({
 		
 		onResizeMap: "adjustMapSize",
 
-		onCheckLocation: "highlightMarkerPolygon"
+		onCheckLocation: "highlightMarkerPolygon",
+
+		onSuccessCode: "hideLogin",
+		onFailureCode: "",
 	},
 
 	create: function (inSender, inEvent) {
@@ -145,6 +168,23 @@ enyo.kind({
 		this.stopSpinnerOnTaskDetailContSet = false;
 	},
 
+	doubleCheckSend: function(inSender, inEvent) {
+		this.$.doubleCheckSendPopup.show();
+	},	
+	hideDoubleCheckSend: function(inSender, inEvent) {
+		this.$.doubleCheckSendPopup.hide();
+	},	
+	hideDoubleCheckCancel: function(inSender, inEvent) {
+		this.$.doubleCheckCancelPopup.hide();
+	},	
+	doubleCheckCancel: function(inSender, inEvent) {
+		this.$.doubleCheckCancelPopup.show();
+	},	
+	hideLogin: function(inSender, inEvent) {
+		this.$.username.setContent(LocalStorage.get("username").toString());
+		this.$.toolbar.resized();
+		this.$.loginRegister.hide();
+	},	
 	resizeContainer: function(inSender, inEvent) {
 		//this.$.container.resized();
 	},
@@ -247,9 +287,9 @@ enyo.kind({
 			}
 			if(layerCont.layerType === "polygon") {
 				if(inEvent.selected)
-					layer.setStyle({color: "#FF0000"});
+					layer.setStyle({color: "#DB221D"});
 				else 
-					layer.setStyle({color: "#0000FF"});
+					layer.setStyle({color: "#25426F"});
 			}
 		}
 		return true;
@@ -293,7 +333,7 @@ enyo.kind({
 		if (this.$.modificationRadioGroup !== undefined){
 			this.$.modificationRadioGroup.setActive(null);
 		}
-		this.waterfallDown("onLocationsIncoming", {locations: this.drawnItems});
+		this.waterfallDown("onDeactivateTaskLocationEditingUI", {locations: this.drawnItems});
 	},
 
 
@@ -333,7 +373,7 @@ enyo.kind({
 			max = clusters[clusters.length -1].getChildCount();
 			min = clusters[0].getChildCount();
 		}
-		var color = this.getClusterIconColor(childCount, min, max, {r:255,g:235,b:245}, {r:255, g:0, b:0});
+		var color = this.getClusterIconColor(childCount, min, max, {r:237,g:236,b:124}, {r:46, g:42, b:111});
 		//var color = this.getClusterIconColor(childCount, min, max, {r:255,g:255,b:200}, {r:255, g:0, b:0});
 		var icon =  new CSenseClusterDivIcon({color: color, html: '<div><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(40, 40) });
 		return icon;
@@ -397,11 +437,8 @@ enyo.kind({
 
 		//-- Create the map --//
 		this.map = L.map(this.$.mapCont.id, {closePopupOnClick: false, minZoom: 1, maxZoom: 16}).setView([44.981313, -93.266569], 12);
-		L.tileLayer("http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg", {}).addTo(this.map);
-		L.tileLayer("http://tile.stamen.com/toner-lines/{z}/{x}/{y}.png", {}).addTo(this.map);
-		L.tileLayer("http://tile.stamen.com/toner-labels/{z}/{x}/{y}.png", {
+		L.tileLayer("http://tile.stamen.com/toner-lite/{z}/{x}/{y}.jpg", {
 			attribution: "Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA."
-			//attribution: "Map data &copy; OpenStreetMap contributors"
 		}).addTo(this.map);
 
 
@@ -486,7 +523,7 @@ enyo.kind({
 			},
 			polygon: {
 				shapeOptions: {
-					color: "#0000FF"
+					color: "#25426F"
 				}
 			}
 		});
@@ -507,6 +544,7 @@ enyo.kind({
 		this.drawnItems.on("layerremove", function(e){
 			//this.log("Removed layer "+e.layer);
 			this.undoStack.push({type:"remove", layer: e.layer});
+			this.waterfallDown("onRemoveLocation", {layer: e.layer});
 		}, this);
 
 		//These event handlers allow for the undoing of edits
@@ -537,13 +575,23 @@ enyo.kind({
 		L.DomEvent.addListener(this.$.modifyFeaturesButton.hasNode(),"click", this.enableModifyMode, this);
 		L.DomEvent.addListener(this.$.removeFeaturesButton.hasNode(),"click", this.enableRemoveMode, this);
 		L.DomEvent.addListener(this.$.undoButton.hasNode(),"click", this.undo, this);
+		L.DomEvent.addListener(this.$.finishAddingButton.hasNode(),"click", this.deactivateEditingInterface, this);
+		L.DomEvent.addListener(this.$.finishEditingButton.hasNode(),"click", this.deactivateEditingInterface, this);
 		L.DomEvent.disableClickPropagation(this.$.addLocationButton.hasNode());
 		L.DomEvent.disableClickPropagation(this.$.addRegionButton.hasNode());
 		L.DomEvent.disableClickPropagation(this.$.modifyFeaturesButton.hasNode());
 		L.DomEvent.disableClickPropagation(this.$.removeFeaturesButton.hasNode());
 		L.DomEvent.disableClickPropagation(this.$.undoButton.hasNode());
+		L.DomEvent.disableClickPropagation(this.$.finishAddingButton.hasNode());
+		L.DomEvent.disableClickPropagation(this.$.finishEditingButton.hasNode());
 
-
+		if(LocalStorage.get("user") === undefined)
+			this.$.loginRegister.show();
+		else {
+			this.$.username.setContent(LocalStorage.get("username"));
+			this.$.toolbar.resized();
+			//this.$.addButton.setDisabled(false);
+		}
 	},
 	savePoint: function(inEvent) {
 		/*var tmp = LocalStorage.get(this.currentTaskName);
@@ -557,6 +605,7 @@ enyo.kind({
 	},
 
 	showCampaigns: function(inSender, inEvent) {
+		this.resetTasksAndQuestions();
 		var classy = this.$.showButton.hasClass("active");
 		this.$.showButton.addRemoveClass("active", !classy);
 		if(classy)
@@ -584,6 +633,7 @@ enyo.kind({
 		this.$.toolbar.render();
 	},
 	resetTasksAndQuestions: function(inSender, inEvent) {
+		this.$.doubleCheckCancelPopup.hide();
 		this.$.campaignBuilder.toggleDrawer();
 		this.log();
 		this.$.campaignBuilder.removeAllTasks();
@@ -597,9 +647,22 @@ enyo.kind({
 		this.map.panBy([-450,0],{animate: false, duration: 0});
 	},
 	saveTasksAndQuestions: function(inSender, inEvent) {
-		//SAVE STUFF GOES HERE
-		this.resetTasksAndQuestions();
+		this.$.doubleCheckSendPopup.hide();
+		this.log(JSON.stringify(this.$.campaignBuilder.getData()));
+		var campaign = {campaign: this.$.campaignBuilder.getData()};
+		var ajax = new enyo.Ajax({url: Data.getURL()+"campaign.json", method: "POST", contentType: "application/json", handleAs: "json", cacheBust: false, postBody: campaign});
+		ajax.response(this, "handleResponse");
+		ajax.go();
 	},
+	handleResponse: function(inSender, inEvent) {
+		if(inSender.failed) {
+			//failed state
+			this.$.sendingPopup.setValue("");
+		} else {
+			this.$.sendingPopup.hide();
+			this.resetTasksAndQuestions();
+		}
+	},	
 
 	toggleVisible: function (a, b) {
 		var c = this.parent.parent.getIndex(),
@@ -793,10 +856,10 @@ enyo.kind({
 				this.clearClusterSelect();
 				this.waterfallDown("onViewportChanged",{submissions: this.getVisibleSubmissions()});
 			};
-			var mouseover = function() {
+			mouseover = function() {
 				this.updateLabelContent(hoverText);
 			};
-			var mosueout = function(){
+			mosueout = function(){
 				this.updateLabelContent(labelText);
 			};
 			for (var i in campaign.tasks){

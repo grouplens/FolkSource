@@ -9,17 +9,20 @@ enyo.kind({
 	},
 	components: [
 		{classes: "standard-card", components: [
-			{name: "campaignTitle", kind: "TitledInput", big: true, title: "Campaign Title", placeholder: "Campaign Title"},
+			{name: "campaignTitle", kind: "TitledInput", big: true, title: "1. Campaign Title", placeholder: "Campaign Title"},
 			//{name: "campaignDesc", kind: "TitledTextArea", big: true, title: "Campaign Description", placeholder: "Please Describe your Campaign goals..."},
-			{name: "campaignDesc", kind: "TitledInput", big: true, title: "Campaign Description", placeholder: "Please Describe your Campaign goals..."},
-			{kind: "Title", big: true, title: "Tasks", instructions: "Create a task below (10 maximum). Tasks will be saved automatically.", classes: "nice-padding"},
+			{name: "campaignDesc", kind: "TitledInput", big: true, title: "2. Campaign Description", placeholder: "Please Describe your Campaign goals..."},
+			{kind: "Title", big: true, title: "3. Create Tasks", instructions: "Create a task below (10 maximum). Tasks will be saved automatically.", classes: "nice-padding"},
 		]},
 	],
 	create: function(inSender, inEvent) {
 		this.inherited(arguments);
 		this.render();
 	},
-	rendered: function(inSender, inEvent) {
-		this.log(this.hasNode().offsetHeight);
+	getData: function(inSender, inEvent) {
+		var tmp = {};
+		tmp.description = this.$.campaignDesc.getData();
+		tmp.title = this.$.campaignTitle.getData();
+		return tmp;
 	},	
 });

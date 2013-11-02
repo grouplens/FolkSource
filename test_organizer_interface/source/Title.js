@@ -13,10 +13,11 @@ enyo.kind({
 	},
 	components: [
 		{name: "cont", kind: enyo.FittableColumns, components: [
+			{name: "savedIndicator", tag: "i", classes: "icon-ok-sign icon-large", attributes: {title: "Saved"}, showing: false},
 			{name: "titleText", style: "font-size: 12pt;", fit: true},
-			{name: "cancelButton", tag: "i", classes: "icon-remove icon-large hilight-icons-negative", ontap: "remove"},
-			{name: "okButton", tag: "i", classes: "icon-ok icon-large hilight-icons-affirmative", ontap: "sendSave"},
-			{name: "editButton", tag: "i", classes: "icon-pencil hilight-icons-affirmative", showing: false, ontap: "sendSave"}
+			{name: "cancelButton", tag: "i", classes: "icon-remove icon-large hilight-icons-negative", attributes: {title: "Delete"}, ontap: "remove"},
+			{name: "okButton", tag: "i", classes: "icon-ok icon-large hilight-icons-affirmative", attributes: {title: "Save"}, ontap: "sendSave"},
+			{name: "editButton", tag: "i", classes: "icon-pencil hilight-icons-affirmative", attributes: {title: "Edit"}, showing: false, ontap: "sendSave"}
 
 		]},
 		{name: "instructions", content: "", showing: false, style: "font-size: 10pt; padding-top: 7px;"},
@@ -58,11 +59,12 @@ enyo.kind({
 	sendSave: function(inSender, inEvent) {
 		this.doTitleCollapsing();
 		if(this.save) {
+			this.$.savedIndicator.setShowing(!this.$.savedIndicator.showing);
 			this.$.cancelButton.setShowing(!this.$.cancelButton.showing);
 			this.$.okButton.setShowing(!this.$.okButton.showing);
 		}
 		this.$.editButton.setShowing(!this.$.editButton.showing);
-		this.$.cont.resized();
+		this.$.cont.render();
 		return true;
 	}
 });

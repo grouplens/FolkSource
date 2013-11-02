@@ -27,6 +27,9 @@ enyo.kind({
 	bigChanged: function(inSender, inEvent) {
 		this.$.title.setBig(this.big);
 	},
+	getData: function(inSender, inEvent) {
+		return this.$.input.getValue();
+	},	
 	instructionsChanged: function(inSender, inEvent) {
 		if(this.instructions.length > 0)
 			this.$.title.setInstructions(this.instructions);

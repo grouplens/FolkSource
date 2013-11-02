@@ -1,6 +1,8 @@
 enyo.kind({
 	name: "SensorChooser",
-	kind: enyo.FittableRows,
+	layoutKind: enyo.FittableRowsLayout,
+	kind: "Destroyable",
+	classes: "question-builder",
 	published: {
 		sensorIndex: 1,
 		stepIndex: 1,
@@ -12,16 +14,13 @@ enyo.kind({
 	handlers: {
 		onTitleCollapsing: "toggleSensorDrawer",
 		onNewStep: "saveData",
-		onDestroyedQuestion: "checkTitles",
+		onQDestroyed: "checkTitles",
 	},
 	components: [
-		{kind: enyo.FittableColumns, components: [
-			{name: "stepTitle", kind: "SaveTitle", big: true, circled: true, title: "#"},
-			{name: "cancelButton", ontap: "remove", tag: "i", classes: "icon-remove"}
-		]},
-		{name: "sensorTitle", kind: "Title", title: "Sensor #", classes: "hanging-child"},
+		{name: "stepTitle", kind: "Title", big: true, save: true, fit: true, title: "#"},
+		{name: "sensorTitle", kind: "Title", title: "Sensor #", save: false, classes: "hanging-child"},
 		{name: "sensorDrawer", kind: onyx.Drawer, orient: "v", open: true, classes: "hanging-child", components: [
-			{title: "Choose a Sensor:", kind: "Title", classes: "hanging-child"},
+			{title: "Choose a Sensor:", kind: "Title", save: false, classes: "hanging-child"},
 			{tag: "select", classes: "hanging-child", onchange: "pickSensor", components: [
 				/*{tag: "option", content: "Accelerometer"},*/
 				{tag: "option", content: "Audio"},
@@ -55,13 +54,16 @@ enyo.kind({
 		this.sensorBits = [false, false, false, false, false];
 		this.$.stepTitle.setTitle(this.$.stepTitle.getTitle() + this.stepIndex);
 		this.$.sensorTitle.setTitle(this.$.sensorTitle.getTitle() + this.sensorIndex);
-		this.curType = "Accelerometer";
+		//this.curType = "Accelerometer";
+		this.curType = "Audio";
 		this.question = {};
 
 	},
-	buildQuestion: function(inSender, inEvent) {
+	getData: function(inSender, inEvent) {
 		this.question.id = 0;
 		this.question.task_id = 0;
+		this.question.required = true;
+		this.question.options = "";
 		if(this.curType === "Photo") 
 			this.question.question = "Take ";
 		else
@@ -70,31 +72,21 @@ enyo.kind({
 		this.question.type = this.curType;
 		
 		this.log(this.question);
+		return this.question;
 	},
 	checkTitles: function(inSender, inEvent) {
-		var inStep = inEvent.step;
-		var inQ = inEvent.question;
-		var regex = /\d+/;
-		var inStepNum = Number(inStep.match(regex)[0]);
-		var inQNum = Number(inQ.match(regex)[0]);
+		var sensor = inEvent.us.kind.indexOf("Sensor") > -1 ? true : false;
+		var inStepNum = inEvent.us.stepIndex;
+		var inQNum = inEvent.us.questionIndex;
 
-		var step = this.$.stepTitle.getTitle();
-		var question = this.$.sensorTitle.getTitle();
-		var stepNum = Number(step.match(regex)[0]);
-		var questionNum = Number(question.match(regex)[0]);
-
-		this.log(inStepNum);
-		this.log(stepNum);
-		this.log(inQNum);
-		this.log(questionNum);
-		if(inStepNum < stepNum && inQNum < questionNum) {
-			this.$.stepTitle.setTitle("#" + (stepNum - 1));
-			this.$.questionTitle.setTitle("Question #" + (questionNum - 1));
+		if(inStepNum < this.stepIndex) {
+			this.stepIndex = this.stepIndex - 1;
+			this.$.stepTitle.setTitle("#" + this.stepIndex);
+			if(sensor && inQNum < this.sensorIndex)
+				this.sensorIndex = this.sensorIndex - 1;
+				this.$.sensorTitle.setTitle("Question #" + this.sensorIndex);
 		}
-	},
-	getData: function(inSender, inEvent) {
-		this.buildQuestion();
-		return this.question;
+		return true;
 	},
 	toggleSensorDrawer: function(inSender, inEvent) {
 		var truthy = this.$.sensorDrawer.getOpen();
@@ -103,15 +95,15 @@ enyo.kind({
 	pickSensor: function(inSender, inEvent) {
 		var e = inSender.eventNode;
 		this.curType = e.options[e.selectedIndex].value;
-		this.buildQuestion();
+		this.getData();
 		this.log(this.question);
 
 		return true;
 	},
-	remove: function(inSender, inEvent) {
+	/*remove: function(inSender, inEvent) {
 		this.doDestroyedQuestion({step: this.$.stepTitle.getTitle(), question: this.$.sensorTitle.getTitle()});
 		this.destroy();
-	},
+	},*/
 	saveData: function(inSender, inEvent) {
 		//save logic goes here
 		this.log();
