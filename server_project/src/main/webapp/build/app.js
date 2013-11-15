@@ -4444,6 +4444,7 @@ onResizeMap: ""
 handlers: {
 onNewTapped: "toggleDrawer",
 onFinishedSavingTask: "finishCreateTask",
+onStep: "drawerAnimationEndHandler",
 onShowTapped: "closeDrawer",
 onNewTask: "resizeUs",
 onNewLocation: "newLocation",
@@ -4492,8 +4493,7 @@ fit: !0
 } ]
 } ],
 closeDrawer: function(e, t) {
-var n = this.getOpen();
-n && this.setOpen(!n);
+this.setOpen(!1);
 },
 create: function(e, t) {
 this.inherited(arguments), this.render();
@@ -4571,16 +4571,12 @@ this.$.nodeContainer.scrollToBottom();
 toggleDrawer: function(e, t) {
 var n = this.getOpen();
 this.setOpen(!n);
-var r = n ? -100 : 100;
-this.doResizeMap({
-offset: r
-});
 },
 removeAllTasks: function(e, t) {
 this.log(), this.$.realContainer.destroyComponents(), this.$.nodeContainer.resized(), this.$.realContainer.render();
 },
 drawerAnimationEndHandler: function(e, t) {
-this.log();
+this.log(), this.doResizeMap();
 }
 });
 
@@ -5342,12 +5338,13 @@ onClearTaskSelection: "",
 onDrawerToggled: "",
 onTaskDrawerOpened: "",
 onTaskDetailDrawerOpened: "",
-onAPIResponse: ""
+onAPIResponse: "",
+onResizeMap: ""
 },
 handlers: {
 onNewTapped: "closeDrawers",
 onShowTapped: "toggleDrawer",
-onEnd: "drawerAnimationEndHandler",
+onStep: "drawerAnimationEndHandler",
 onListResized: "setListHeights",
 onCSenseTaskDetailResized: "setTaskDetailContentHeight",
 onTaskMarkerClicked: "showTaskDetail",
@@ -5430,7 +5427,8 @@ currentTaskId: null
 components: [ {
 name: "taskDetailDrawerContent",
 kind: "CSenseTaskDetail",
-style: "width: 200px"
+fit: !0,
+style: "width: 200px;padding: 4px;"
 } ]
 } ]
 } ],
@@ -5474,8 +5472,7 @@ offset: 150
 taskTapped: function(e, t) {
 var n = t.index;
 this.showTaskDetail(null, {
-task: this.taskData[n],
-offset: 200
+task: this.taskData[n]
 });
 },
 showTasks: function(e) {
@@ -5483,13 +5480,7 @@ return this.doClearTaskSelection(), this.taskData = e, this.$.taskList.taskIdToI
 },
 showTaskDetail: function(e, t) {
 var n = t.task;
-this.$.taskList.select(this.getTaskListIndex(n.id)), this.$.taskDetailDrawerContent.setCont(n.submissions, "Task " + n.id, n.instructions), this.$.taskDetailDrawer.currentTaskId = n.id;
-var r = this.$.taskDetailDrawer.getOpen();
-this.$.taskDetailDrawer.setOpen(!0), this.doSelectTask({
-task: n,
-taskDetail: this.$.taskDetailDrawerContent,
-offset: t.offset
-});
+this.$.taskDetailDrawerContent.startSpinner(), this.$.taskDetailDrawer.setOpen(!0), this.$.taskList.select(this.getTaskListIndex(n.id)), this.$.taskDetailDrawerContent.stopSpinner();
 },
 getTaskListIndex: function(e) {
 return this.$.taskList.taskIdToIndex[e];
@@ -5498,7 +5489,7 @@ removeSelectionList: function(e, t) {
 this.$.campList.reset(), this.$.taskList.reset();
 },
 toggleDrawer: function(e, t) {
-this.$.campaignDrawer.getOpen() ? this.closeDrawers() : this.$.campaignDrawer.setOpen(!0);
+return this.$.campaignDrawer.getOpen() ? this.closeDrawers() : this.$.campaignDrawer.setOpen(!0), !0;
 },
 toggleChoiceDrawer: function(e, t) {
 var n = this.$.choiceDrawer.getOpen();
@@ -5523,24 +5514,10 @@ this.$.taskDetailDrawerContent.addStyles("height:" + this.$.taskDetailDrawer.get
 },
 drawerAnimationEndHandler: function(e, t) {
 var n = t.originator.owner;
-n.name === "campaignDrawer" && n.open === !0 && this.doTaskDrawerOpened({
-campId: r,
-offset: 0
-});
-if (n.name === "taskDrawer" && n.open === !0) {
-var r = this.campData[this.selectedCampIndex].id;
-this.doTaskDrawerOpened({
-campId: r,
-offset: 150
-});
-}
-if (n.name === "taskDetailDrawer" && n.open === !0) {
-var i = t.originator.owner.currentTaskId;
-this.doTaskDetailDrawerOpened({
-taskId: i,
-offset: 0
-});
-}
+n.name === "taskDetailDrawer" && n.open === !0 && (this.doSelectTask({
+task: task,
+taskDetail: this.$.taskDetailDrawerContent
+}), this.$.taskDetailDrawerContent.startSpinner(), this.$.taskDetailDrawerContent.setCont(task.submissions, "Task " + task.id, task.instructions), this.$.taskDetailDrawer.currentTaskId = task.id), this.doResizeMap();
 }
 }), enyo.kind({
 name: "CSenseShowCampaignsList",
@@ -5557,13 +5534,14 @@ this.inherited(arguments), this.doListResized();
 
 enyo.kind({
 name: "CSenseTaskDetail",
-layoutKind: enyo.FittableRowsLayout,
+kind: enyo.FittableRows,
 published: {
 task: "",
 subs: ""
 },
 events: {
 onCSenseTaskDetailResized: "",
+onHilightSubmission: "",
 onContentSet: ""
 },
 handlers: {
@@ -5577,57 +5555,77 @@ style: "font-weight: 300;"
 name: "popSubHeading",
 content: ""
 }, {
-name: "popupScroller",
-fit: !0,
-kind: enyo.Scroller,
-style: "padding: 4px;",
+name: "spinnerDrawer",
+kind: onyx.Drawer,
+orient: "v",
+open: !1,
 components: [ {
 name: "spinner",
 kind: "onyx.Spinner",
 classes: "onyx-dark dark-background hidden",
 style: "margin-left:auto; margin-right:auto; display:block; margin-top:60px;"
+} ]
 }, {
-kind: enyo.Repeater,
+name: "repeater",
+kind: enyo.List,
+fit: !0,
 onSetupItem: "setRepeaterValues",
 submissionIdToOwnerProxy: {},
 count: 0,
 components: [ {
 name: "itemCont",
+kind: enyo.FittableColumns,
+style: "width: 100%;",
+ontap: "hilightMarker",
 classes: "popup-list-item bordering standard-card",
 components: [ {
+kind: enyo.FittableRows,
+classes: "nice-padding",
+style: "height: 100%;",
+components: [ {
 name: "itemHeading",
-ontap: "toggleItemDrawer",
-published: {
-index: ""
-}
+fit: !0
+} ]
 }, {
-name: "itemDrawer",
-kind: onyx.Drawer,
-open: !1,
-orient: "v",
+kind: enyo.FittableRows,
+fit: !0,
+classes: "nice-padding",
 components: [ {
-name: "listItem",
-classes: "popup-list-item-body",
-components: [ {
+name: "sub",
 content: "Submitter:"
 }, {
+name: "num",
 content: "Number of answers:"
 }, {
+name: "loc",
 content: "Location:"
-} ]
-} ]
 } ]
 } ]
 } ]
 } ],
 setCont: function(e, t, n) {
-this.subs = e, this.submissionIdToOwnerProxy = {}, this.$.repeater.setCount(this.subs.length), t && (this.totalSubs = this.subs.length), this.$.popHeading.setContent("Showing " + this.subs.length + " of " + this.totalSubs + " submissions."), n && this.$.popSubHeading.setContent("Click titles below to see details"), this.doContentSet();
+this.subs = e, this.submissionIdToOwnerProxy = {}, this.$.repeater.setCount(this.subs.length), this.$.repeater.reset(), t && (this.totalSubs = this.subs.length), this.$.popHeading.setContent("Showing " + this.subs.length + " of " + this.totalSubs + " submissions."), n && this.$.popSubHeading.setContent("Click titles below to see details");
+},
+getGeocodes: function(e) {
+var t = [], n = function(e, n) {
+var r = n[0].display_name, i = r.split(",");
+t.push(i[0] + ", " + i[1]);
+};
+for (var r in e) {
+var i = e[r].gps_location.split("|"), s = new enyo.Ajax({
+sync: !0,
+handleAs: "json",
+url: "http://open.mapquestapi.com/nominatim/v1/search?format=json&q=" + i[0] + "+" + i[1]
+});
+s.response(n), s.go();
+}
+return t;
 },
 startSpinner: function() {
-this.$.spinner.removeClass("hidden"), this.$.repeater.addClass("hidden");
+this.$.spinner.removeClass("hidden"), this.$.spinnerDrawer.setOpen(!0), this.$.repeater.addClass("hidden");
 },
 stopSpinner: function() {
-this.$.spinner.addClass("hidden"), this.$.repeater.removeClass("hidden");
+this.$.spinner.addClass("hidden"), this.$.spinnerDrawer.setOpen(!1), this.$.repeater.removeClass("hidden");
 },
 spinFor: function(e) {
 this.startSpinner();
@@ -5637,10 +5635,10 @@ t.stopSpinner();
 }, e);
 },
 setRepeaterValues: function(e, t) {
-var n = t.index, r = t.item, i = this.subs[n];
-this.$.repeater.submissionIdToOwnerProxy[i.id] = r, r.$.itemHeading.index = n, r.$.itemHeading.setName("submissionheading-" + i.id), r.$.itemDrawer.setName("subdrawer-" + i.id);
-var s = Number(n) + 1;
-return r.$.itemHeading.setContent("Submission " + s), r.$.control.setContent("Submitter: " + i.user_id), r.$.control2.setContent("Number of answers: " + i.answers.length), r.$.control3.setContent("Location: " + this.reverseGeocode(i.gps_location)), !0;
+var n = t.index, r = this.subs[n];
+this.data = r, this.$.itemHeading.index = n;
+var i = Number(n) + 1;
+return this.$.itemHeading.setContent(i), this.$.sub.setContent("Submitter: " + this.subs[n].user_id), this.$.num.setContent("Number of answers: " + this.subs[n].answers.length), this.$.loc.setContent("Location: " + this.subs[n].gps_location.replace("|", ", ")), !0;
 },
 resizeHandler: function() {
 this.inherited(arguments), this.doCSenseTaskDetailResized();
@@ -5652,6 +5650,14 @@ toggleItemDrawer: function(e, t) {
 this.log("toggle item drawer called");
 var n = this.$.repeater.children[t.index].$.itemDrawer;
 n.setOpen(!n.getOpen());
+var r = n.getOpen();
+},
+hilightMarker: function(e, t) {
+var n = t.index;
+this.doHilightSubmission({
+id: this.subs[n].id,
+open: open
+});
 },
 getItemCont: function(e) {
 return this.getOwnerProx(e).$.itemCont;
@@ -5919,6 +5925,7 @@ name: "questionDrawer",
 kind: onyx.Drawer,
 open: !0,
 orient: "v",
+layoutKind: enyo.FittableRowsLayout,
 classes: "nice-padding",
 components: [ {
 name: "questionText",
@@ -5935,7 +5942,7 @@ save: !1
 }, {
 name: "questionChoices",
 tag: "select",
-classes: "nice-padding",
+classes: "nice-padding hanging-child",
 onchange: "questionPicked",
 components: [ {
 content: "Text",
@@ -5953,22 +5960,37 @@ tag: "option"
 }, {
 name: "optionList",
 kind: enyo.List,
-style: "height: 100px;",
-count: 1,
+fit: !0,
+style: "max-height: 50px;",
+count: 0,
 showing: !1,
+fixedHeight: !0,
+reorderable: !1,
+enableSwipe: !1,
+classes: "nice-padding hanging-child",
 ontap: "editOption",
 onSetupItem: "makeOption",
 components: [ {
-kind: "EditableListItem",
-name: "oItem"
+name: "oItem",
+content: "holder"
 } ]
+}, {
+name: "optionEntry",
+kind: onyx.Input,
+showing: !1,
+classes: "nice-padding hanging-child",
+placeholder: "Hit 'enter' to add an option",
+onchange: "addOption"
 } ]
 } ],
 create: function(e, t) {
-this.inherited(arguments), this.options = [ "Add new option, hit 'enter' to save" ], this.$.stepTitle.setTitle(this.$.stepTitle.getTitle() + this.stepIndex), this.$.questionTitle.setTitle(this.$.questionTitle.getTitle() + this.questionIndex), this.curType = "text";
+this.inherited(arguments), this.options = [], this.$.stepTitle.setTitle(this.$.stepTitle.getTitle() + this.stepIndex), this.$.questionTitle.setTitle(this.$.questionTitle.getTitle() + this.questionIndex), this.curType = "text";
 },
 rendered: function(e, t) {
 this.inherited(arguments), this.questionData && this.recreate();
+},
+addOption: function(e, t) {
+this.log(), this.log(this.$.optionEntry.getValue()), this.options.push(this.$.optionEntry.getValue()), this.$.optionEntry.setValue(""), this.$.optionList.setCount(this.options.length), this.$.optionList.reset(), this.$.optionList.resized(), this.$.optionList.scrollToBottom();
 },
 checkTitles: function(e, t) {
 var n = t.us.kind.indexOf("Sensor") > -1 ? !0 : !1, r = t.us.stepIndex, i = t.us.questionIndex;
@@ -6010,7 +6032,7 @@ return t;
 },
 editOption: function(e, t) {
 var n = t.index;
-return this.$.optionList.prepareRow(n), this.$.oItem.flip(), !0;
+return !0;
 },
 getData: function(e, t) {
 var n = {};
@@ -6023,13 +6045,13 @@ return this.log(n), n;
 },
 makeOption: function(e, t) {
 var n = t.index, r = t.item;
-return this.$.oItem.setBuilder(!1), this.$.oItem.setFill(this.options[n]), n == this.options.length - 1 && this.$.oItem.setBuilder(!0), !0;
+return this.log(n), this.log(this.options[n]), this.$.oItem.setContent(this.options[n]), !0;
 },
 newOption: function(e, t) {
 this.log();
 if (this.options.indexOf(t.content) < 0) {
 var n = this.options.pop();
-this.options.push(t.content), this.options.push(n), this.$.optionList.setCount(this.options.length), this.$.optionList.reset();
+this.options.push(t.content), this.options.push(n), this.$.optionList.setCount(this.options.length);
 }
 return !0;
 },
@@ -6041,13 +6063,13 @@ var n = e.eventNode, r = n.options[n.selectedIndex].value;
 this.curType = this.decodeType(r);
 switch (this.curType) {
 case "multiple_choice":
-this.$.oItem.setType("checkbox"), this.$.optionList.show(), this.$.optionList.reset();
+this.$.optionList.show(), this.$.optionEntry.show(), this.$.optionList.reset();
 break;
 case "exclusive_multiple_choice":
-this.$.oItem.setType("radio"), this.$.optionList.show(), this.$.optionList.reset();
+this.$.optionList.show(), this.$.optionEntry.show(), this.$.optionList.reset();
 break;
 default:
-this.$.optionList.hide();
+this.$.optionList.hide(), this.$.optionEntry.hide();
 }
 },
 recreate: function(e, t) {
@@ -6078,7 +6100,6 @@ onNewQuestion: "",
 onQDestroyed: ""
 },
 handlers: {
-onShowTapped: "closeDrawer",
 onDestroyed: "checkQTitles"
 },
 components: [ {
@@ -6226,7 +6247,6 @@ us: t.us
 }), !0;
 },
 createNewStep: function(e, t) {},
-closeDrawer: function(e, t) {},
 closePopup: function(e, t) {
 this.$.phonePreview.hide();
 },
@@ -6797,7 +6817,6 @@ style: "margin-left: 8px;"
 } ]
 }, {
 name: "campaignBuilder",
-style: "z-index: 15; position: relative;",
 kind: "CampaignBuilder"
 } ]
 } ],
@@ -6834,10 +6853,20 @@ onResizeMap: "adjustMapSize",
 onCheckLocation: "highlightMarkerPolygon",
 onSuccessCode: "hideLogin",
 onFailureCode: "",
-onAnonymousCode: "hideLogin"
+onAnonymousCode: "hideLogin",
+onHilightSubmission: "selectedSubmission"
 },
 create: function(e, t) {
 this.inherited(arguments), this.resized(), this.$.gps.setTimeout(this.gpsTimeout), this.lastSubmissionPoll = 0, userMoved = !1, loaded = !1, this.panZoomed = !1, this.firstTime = !0, this.notShowing = !0, this.locSuc = !1, this.loaded = !1, this.locations = [], this.addPins = !1, this.addPolygon = !1, this.addShapeFile = !1, this.events.onPins = "", this.currentTaskName = "", this.taskMarkerGroups = {}, this.taskMarkers = {}, this.submissionMarkerGroups = {}, this.currentTaskMarkerGroup = null, this.currentSubmissionsGroup = null, this.currentSubmissionsGroupTaskId = null, this.selectedCluster = null, this.stopSpinnerOnTaskDetailContSet = !1;
+},
+selectedSubmission: function(e, t) {
+var n = this.currentSubmissionsGroup._layers, r = t.id;
+this.log(r);
+var i = Object.keys(n);
+for (var s in i) {
+var o = n[i[s]];
+r === o.submissionId && (this.log(o), this.log(this.clusterGroup.hasLayer(o.__parent)), this.selectCluster(o.__parent.__parent.__parent.__parent));
+}
 },
 doubleCheckSend: function(e, t) {
 this.$.doubleCheckSendPopup.show();
@@ -6899,7 +6928,7 @@ className: "map-pin"
 }))), n.layerType === "polygon" && (t.selected ? r.setStyle({
 color: "#DB221D"
 }) : r.setStyle({
-color: "#25426F"
+color: "#2E426F"
 }));
 }
 return !0;
@@ -7028,7 +7057,7 @@ className: "map-pin"
 },
 polygon: {
 shapeOptions: {
-color: "#25426F"
+color: "#2E426F"
 }
 }
 }), this.map.addControl(this.drawControl), L.drawLocal.edit.tooltip.subtext = null, this.drawPolygon = new L.Draw.Polygon(this.map, this.drawControl.options.polygon), this.drawMarker = new L.Draw.Marker(this.map, this.drawControl.options.marker), this.editor = new L.EditToolbar.Edit(this.map, {
@@ -7055,29 +7084,14 @@ verticies: e.target.prevState
 savePoint: function(e) {},
 savePolygon: function(e) {},
 showCampaigns: function(e, t) {
-this.resetTasksAndQuestions();
 var n = this.$.showButton.hasClass("active");
-this.$.showButton.addRemoveClass("active", !n), n && this.removeTaskLocations();
-var r = n ? -150 : 150;
-this.map.panBy([ r, 0 ], {
-animate: !0,
-duration: 0
-}), this.waterfallDown("onShowTapped"), this.waterfallDown("onDeactivateTaskLocationEditingUI", {
-locations: this.drawnItems
-}), this.deactivateEditingInterface(), this.map.invalidateSize(), this.$.mapCont.resized();
+this.$.showButton.addRemoveClass("active", !n), n && this.removeTaskLocations(), this.waterfallDown("onShowTapped"), this.deactivateEditingInterface(), this.map.invalidateSize();
 },
 showNewMap: function(e, t) {
-var n = this.$.campaignBuilder.getOpen();
-this.$.campaignBuilder.toggleDrawer(), this.map.panBy([ 450, 0 ], {
-animate: !1,
-duration: 0
-}), this.$.newButton.setShowing(!1), this.$.saveButton.setShowing(!0), this.$.cancelButton.setShowing(!0), this.$.toolbar.resized(), this.$.toolbar.render();
+this.waterfallDown("onNewTapped"), this.$.newButton.setShowing(!1), this.$.saveButton.setShowing(!0), this.$.cancelButton.setShowing(!0), this.$.toolbar.resized(), this.$.toolbar.render();
 },
 resetTasksAndQuestions: function(e, t) {
-this.$.doubleCheckCancelPopup.hide(), this.$.campaignBuilder.toggleDrawer(), this.log(), this.$.campaignBuilder.removeAllTasks(), this.$.campaignBuilder.render(), this.$.saveButton.setShowing(!1), this.$.cancelButton.setShowing(!1), this.$.newButton.setShowing(!0), this.$.toolbar.resized(), this.$.toolbar.render(), this.map.panBy([ -450, 0 ], {
-animate: !1,
-duration: 0
-});
+this.$.doubleCheckCancelPopup.hide(), this.waterfallDown("onNewTapped"), this.$.campaignBuilder.removeAllTasks(), this.$.campaignBuilder.render(), this.$.saveButton.setShowing(!1), this.$.cancelButton.setShowing(!1), this.$.newButton.setShowing(!0), this.$.toolbar.resized(), this.$.toolbar.render();
 },
 saveTasksAndQuestions: function(e, t) {
 this.$.doubleCheckSendPopup.hide(), this.log(JSON.stringify(this.$.campaignBuilder.getData()));
@@ -7111,12 +7125,13 @@ e.closePopup();
 }), this.map.removeLayer(this.currentTaskMarkerGroup), this.currentTaskMarkerGroup = null), this.doCleanupSelected();
 },
 setupSubmissionMarkers: function(e, t, n) {
-var r = e.submissions, i = new L.FeatureGroup, s = this.$.cSenseShowCampaigns;
+var r = e.submissions, i = this.$.cSenseShowCampaigns, s = [];
 for (var o = 0; o < r.length; o++) {
-var u = this.submissionToMarker(r[o], s, i);
-u !== null && i.addLayer(u);
+var u = this.submissionToMarker(r[o], i, a);
+u !== null && s.push(u);
 }
-return i;
+var a = new L.FeatureGroup(s);
+return a;
 },
 submissionToMarker: function(e, t, n) {
 var r = null, i = e.gps_location.split("|");
@@ -7144,7 +7159,10 @@ if (t.task.id !== this.currentSubmissionsGroupTaskId) {
 this.submissionMarkerGroups[n.id] === undefined && (this.submissionMarkerGroups[n.id] = this.setupSubmissionMarkers(n, null, r));
 var s = this.submissionMarkerGroups[n.id];
 this.clusterGroup.addLayers(s.getLayers()), this.currentSubmissionsGroup = s, this.currentSubmissionsGroupTaskId = n.id;
+var o = s.getBounds();
+this.map.fitBounds(o);
 }
+return !0;
 },
 _get_clusters: function(e) {
 var t = e ? e : this.map.getZoom(), n = Array();
@@ -7179,11 +7197,6 @@ task: f.task
 submissions: this.getVisibleSubmissions()
 });
 };
-mouseover = function() {
-this.updateLabelContent(c);
-}, mosueout = function() {
-this.updateLabelContent(l);
-};
 for (var s in n.tasks) {
 task = n.tasks[s];
 var o = new Wkt.Wkt;
@@ -7195,35 +7208,33 @@ f.task = task, a.indexOf("POINT") != -1 ? (f.setIcon(new L.DivIcon({
 iconSize: new L.Point(27, 91),
 html: '<i class="icon-map-marker icon-4x"></i>',
 className: "map-pin"
-})), f.setZIndexOffset(5), f.on("click", r, this)) : f.on("click", i, this), this.log(task.submissions.length);
-var l = "Task " + task.id + "<br/>" + task.submissions.length + " submissions";
-f.bindLabel(l, {
-noHide: !0
-});
-var c = task.instructions;
-f.on("mouseover", mouseover), f.on("mouseout", mouseout), task.submissions === undefined && (task.submissions = []), this.taskMarkerGroups[n.id].addLayer(f), this.taskMarkers[task.id] = f;
+})), f.setZIndexOffset(5), f.on("click", r, this)) : (f.on("click", i, this), f.setStyle({
+color: "#2E426F"
+})), task.submissions === undefined && (task.submissions = []), this.taskMarkerGroups[n.id].addLayer(f), this.taskMarkers[task.id] = f;
 }
 }
 }
-this.map.addLayer(this.taskMarkerGroups[n.id]), this.currentTaskMarkerGroup = this.taskMarkerGroups[n.id], this.log(this.currentTaskMarkerGroup);
+this.map.addLayer(this.taskMarkerGroups[n.id]), this.currentTaskMarkerGroup = this.taskMarkerGroups[n.id];
+var l = this.currentTaskMarkerGroup.getBounds(), c = (l._northEast.lat + l._southWest.lat) / 2, h = (l._northEast.lng + l._southWest.lng) / 2;
+return this.map.panTo([ c, h ], {
+animate: !1
+}), !0;
 },
 adjustMapSize: function(e, t) {
-this.log();
-var n = t.offset;
+return this.$.container.resized(), this.map.invalidateSize({
+animate: !1
+}), !0;
 },
 panToSubmissionsGroup: function(e, t) {
 var n = t.taskId, r = t.offset;
-this.$.mapCont.resized(), this.map.invalidateSize(), this.map.panBy([ r, 0 ], {
-animate: !0,
+this.log(), this.map.panBy([ r, 0 ], {
+animate: !1,
 duration: 0
-});
+}), this.map.invalidateSize();
 },
 panToTaskMarkerGroup: function(e, t) {
 var n = t.campId, r = t.offset;
-return this.$.mapCont.resized(), this.map.invalidateSize(), this.map.panBy([ r, 0 ], {
-animate: !0,
-duration: 0
-}), this.log(t.offset), !0;
+return !0;
 },
 getNewSubmissions: function() {
 var e = "http://localhost:9080/csense/submission.json?after=" + String(this.lastSubmissionPoll), t = new enyo.Ajax({
@@ -7600,14 +7611,6 @@ title: "Delete"
 },
 ontap: "remove"
 }, {
-name: "okButton",
-tag: "i",
-classes: "icon-ok icon-large hilight-icons-affirmative",
-attributes: {
-title: "Save"
-},
-ontap: "sendSave"
-}, {
 name: "editButton",
 tag: "i",
 classes: "icon-pencil hilight-icons-affirmative",
@@ -7624,7 +7627,7 @@ showing: !1,
 style: "font-size: 10pt; padding-top: 7px;"
 } ],
 create: function(e, t) {
-this.inherited(arguments), this.$.titleText.setContent(this.title), this.$.cont.addRemoveClass("text-title-small", !this.big), this.$.cont.addRemoveClass("text-title-big", this.big), this.$.okButton.setShowing(this.save), this.$.cancelButton.setShowing(this.save), this.instructions.length > 0 && (this.$.instructions.setContent(this.instructions), this.$.instructions.setShowing(!0));
+this.inherited(arguments), this.$.titleText.setContent(this.title), this.$.cont.addRemoveClass("text-title-small", !this.big), this.$.cont.addRemoveClass("text-title-big", this.big), this.$.cancelButton.setShowing(this.save), this.instructions.length > 0 && (this.$.instructions.setContent(this.instructions), this.$.instructions.setShowing(!0));
 },
 bigChanged: function(e, t) {
 this.$.cont.addRemoveClass("text-title-small", !this.big), this.$.cont.addRemoveClass("text-title-big", this.big);
@@ -7636,13 +7639,13 @@ remove: function(e, t) {
 this.doDestroy();
 },
 saveChanged: function(e, t) {
-this.$.okButton.setShowing(this.save), this.$.cancelButton.setShowing(this.save);
+this.$.cancelButton.setShowing(this.save);
 },
 instructionsChanged: function(e, t) {
 this.instructions.length > 0 ? (this.$.instructions.setContent(this.instructions), this.$.instructions.setShowing(!0)) : this.$.instructions.setShowing(!1);
 },
 sendSave: function(e, t) {
-return this.doTitleCollapsing(), this.save && (this.$.savedIndicator.setShowing(!this.$.savedIndicator.showing), this.$.cancelButton.setShowing(!this.$.cancelButton.showing), this.$.okButton.setShowing(!this.$.okButton.showing)), this.$.editButton.setShowing(!this.$.editButton.showing), this.$.cont.render(), !0;
+return this.doTitleCollapsing(), this.save && (this.$.savedIndicator.setShowing(!this.$.savedIndicator.showing), this.$.cancelButton.setShowing(!this.$.cancelButton.showing)), this.$.editButton.setShowing(!this.$.editButton.showing), this.$.cont.render(), !0;
 }
 });
 
