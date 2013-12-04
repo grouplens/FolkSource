@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="org.citizensense.model">
+	<class name="Task" table="tasks">
+		<id name="id" column="id">
+			<generator class="native" />
+		</id>
+		<property name="instructions" />
+		<property name="camp_id" />
+		<property name="required" />
+		<set name="submissions" inverse="true" fetch="subselect" lazy="false">
+			<key column="task_id" not-null="true"/>
+			<one-to-many class="Submission" />
+		</set>
+		<set name="questions" inverse="true" fetch="subselect">
+			<key column="task_id" not-null="true"/>
+			<one-to-many class="Question" />
+		</set>
+		<set name="locations" inverse="true" fetch="subselect">
+			<key column="task_id" not-null="true"/>
+			<one-to-many class="Location" />
+		</set>
+<!-- 		<bag name="points" lazy="false"> -->
+<!-- 			<key column="task_id" /> -->
+<!-- 			<one-to-many class="GeomPoint" -->
+<!-- 		</bag> -->
+<!-- 		<bag name="polygons" lazy="false"> -->
+<!-- 			<key column="task_id" /> -->
+<!-- 			<one-to-many class="GeomPolygon" /> -->
+<!-- 		</bag> -->
+	</class>
+</hibernate-mapping>
