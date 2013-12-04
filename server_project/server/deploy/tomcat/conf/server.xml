@@ -38,7 +38,7 @@
                   autoDeploy="true" xmlValidation="false"
                   xmlNamespaceAware="false">
 
-                <Context path="/" docBase="csense.war"></Context>
+                <Context path="" docBase="csense.war"></Context>
 
                 <!-- Uncomment this to get access logs, but since we have apache
                      access logs, this is initially disabled. -->
