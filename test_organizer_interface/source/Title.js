@@ -16,7 +16,7 @@ enyo.kind({
 			{name: "savedIndicator", tag: "i", classes: "icon-ok-sign icon-large", attributes: {title: "Saved"}, showing: false},
 			{name: "titleText", style: "font-size: 12pt;", fit: true},
 			{name: "cancelButton", tag: "i", classes: "icon-remove icon-large hilight-icons-negative", attributes: {title: "Delete"}, ontap: "remove"},
-			{name: "okButton", tag: "i", classes: "icon-ok icon-large hilight-icons-affirmative", attributes: {title: "Save"}, ontap: "sendSave"},
+			//{name: "okButton", tag: "i", classes: "icon-ok icon-large hilight-icons-affirmative", attributes: {title: "Save"}, ontap: "sendSave"},
 			{name: "editButton", tag: "i", classes: "icon-pencil hilight-icons-affirmative", attributes: {title: "Edit"}, showing: false, ontap: "sendSave"}
 
 		]},
@@ -27,7 +27,7 @@ enyo.kind({
 		this.$.titleText.setContent(this.title);
 		this.$.cont.addRemoveClass("text-title-small", !this.big);
 		this.$.cont.addRemoveClass("text-title-big", this.big);
-		this.$.okButton.setShowing(this.save);
+		//this.$.okButton.setShowing(this.save);
 		this.$.cancelButton.setShowing(this.save);
 		if(this.instructions.length > 0) {
 			this.$.instructions.setContent(this.instructions);
@@ -45,7 +45,7 @@ enyo.kind({
 		this.doDestroy();
 	},
 	saveChanged: function(inSender, inEvent) {
-		this.$.okButton.setShowing(this.save);
+		//this.$.okButton.setShowing(this.save);
 		this.$.cancelButton.setShowing(this.save);
 	},
 	instructionsChanged: function(inSender, inEvent) {
@@ -61,7 +61,7 @@ enyo.kind({
 		if(this.save) {
 			this.$.savedIndicator.setShowing(!this.$.savedIndicator.showing);
 			this.$.cancelButton.setShowing(!this.$.cancelButton.showing);
-			this.$.okButton.setShowing(!this.$.okButton.showing);
+			//this.$.okButton.setShowing(!this.$.okButton.showing);
 		}
 		this.$.editButton.setShowing(!this.$.editButton.showing);
 		this.$.cont.render();

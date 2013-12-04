@@ -1,6 +1,6 @@
 enyo.kind({
     name: "CSenseLoginRegister",
-    classes: "dark-background",
+    classes: "light-background nice-padding",
 	kind: onyx.Popup,
     published: {
         register: !1,
@@ -12,17 +12,31 @@ enyo.kind({
 		scrim: true,
 	},
     events: {
+		onAnonymousCode: "",
 		onSuccessCode: "",
 		onFailureCode: ""
 	},
     components: [
-		{name: "rbox", kind: "onyx.RadioGroup", style: "width: 100%;", components: [
-			{content: "Login", active: !0, classes: "onyx-radiobutton", ontap: "setupLogin"},
-			{content: "Register", classes: "onyx-radiobutton", ontap: "setupRegister"}
+		{name: "rbox", kind: "onyx.RadioGroup", components: [
+			{content: "Login", active: !0, classes: "button-style", ontap: "setupLogin"},
+			{content: "Register", classes: "button-style", ontap: "setupRegister"}
 		]},
-		{name: "gbox", kind: "onyx.Groupbox", components: []},
-		{name: "memoryBox", kind: "onyx.Checkbox", style: "clear: left; float: left;", ontap: "remember"},
-		{name: "text", content: "Remember Me", style: "float: left;"}
+		{name: "gbox", kind: enyo.FittableRows, classes: "nice-padding", components: [
+			{name: "emailDrawer", kind: onyx.Drawer, orient: "v", open: false, components: [
+				{name: "email", kind: enyo.Input, classes: "hanging-child", placeholder: "E-Mail", onkeyup: "emailRegexCheck"}, 
+			]},
+			{name: "username", kind: enyo.Input, classes: "hanging-child", placeholder: "Username", type: "email", onkeyup: "checkFields"}, 
+			{name: "password", kind: enyo.Input, classes: "hanging-child", placeholder: "Password", type: "password", onkeyup: "checkFields"}, 
+			{kind: enyo.ToolDecorator, classes: "hanging-child", components: [
+				{name: "memoryBox", kind: "onyx.Checkbox", ontap: "remember"},
+				{name: "text", content: "Remember Me"}
+			]},
+			{kind: enyo.FittableColumns, components: [
+				{name: "logButton", kind: onyx.Button, content: "Login", classes: "button-style-affirmative nice-padding", ontap: "buildURL"},
+				{fit: true},
+				{name: "anonBytton", kind: onyx.Button, content: "Stay Anonymous", classes: "button-style nice-padding", ontap: "hidePopup"},
+			]}
+		]},
 	],
     create: function () {
         this.inherited(arguments);
@@ -36,23 +50,21 @@ enyo.kind({
 			this.setupRegister();
 		} else 
 			this.setupLogin();
-  },
+	},
     rendered: function () {
         this.inherited(arguments);
-  },
+	},
     setupLogin: function () {
-        this.register = !1;
-		this.$.gbox.destroyClientControls();
-		this.$.gbox.createComponent({name: "gboxhead", kind: "onyx.GroupboxHeader", content: "Login"}, {owner: this});
-		this.$.gbox.createComponent({name: "gboxcomp", components: [{name: "userdec", kind: "onyx.InputDecorator", classes: "onyx-input-decorator", components: [{name: "username", kind: "onyx.Input", placeholder: "Username", defaultFocus: !0, type: "email", style: "width: 100%;", classes: "onyx-input", onkeyup: "checkFields"}]}, {name: "passdec", kind: "onyx.InputDecorator", classes: "onyx-input-decorator", components: [{name: "password", kind: "onyx.Input", placeholder: "Password", type: "password", style: "width: 100%;", classes: "onyx-input", onkeyup: "checkFields"}]}, {name: "logButton", kind: "onyx.Button", content: "Login", style: "clear: both;", ontap: "buildURL"}]}, {owner: this});
-		this.$.gbox.render();
+        this.register = false;
+		this.$.emailDrawer.setOpen(false);
+		this.$.logButton.setContent("Login");
+		this.$.logButton.render();
 	},
     setupRegister: function () {
-        this.register = !0;
-		this.$.gbox.destroyClientControls();
-		this.$.gbox.createComponent({name: "gboxhead", kind: "onyx.GroupboxHeader", content: "Register"}, {owner: this});
-		this.$.gbox.createComponent({name: "gboxcomp", components: [{name: "emaildec", kind: "onyx.InputDecorator", classes: "onyx-input-decorator", components: [{name: "email", kind: "onyx.Input", placeholder: "E-Mail", defaultFocus: !0, style: "width: 100%;", classes: "onyx-input", onkeyup: "emailRegexCheck"}]}, {name: "userdec", kind: "onyx.InputDecorator", classes: "onyx-input-decorator", components: [{name: "username", kind: "onyx.Input", placeholder: "Username", type: "email", style: "width: 100%;", classes: "onyx-input", onkeyup: "checkFields"}]}, {name: "passdec", kind: "onyx.InputDecorator", classes: "onyx-input-decorator", components: [{name: "password", kind: "onyx.Input", placeholder: "Password", type: "password", style: "width: 100%;", classes: "onyx-input", onkeyup: "checkFields"}]}, {name: "logButton", kind: "onyx.Button", content: "Register", disabled: !0, style: "clear: both;", ontap: "buildURL"}]}, {owner: this});
-		this.$.gbox.render();
+        this.register = true;
+		this.$.emailDrawer.setOpen(true);
+		this.$.logButton.setContent("Register");
+		this.$.logButton.render();
 	},
     buildURL: function () {
         this.log();
@@ -73,7 +85,7 @@ enyo.kind({
                 handleAs: "text"
           })).go().response(this, "handleResponse");
       }
-  },
+	},
     handleResponse: function (a, b) {
 	this.log(a.xhr);
         if (a.xhr.status === 200) {
@@ -94,19 +106,22 @@ enyo.kind({
 			this.log("BOOO");
 			this.doFailureCode();
 		}
-  },
+	},
+	hidePopup: function(inSender, inEvent) {
+		this.doAnonymousCode();
+	},	
     emailRegexCheck: function () {
         var a = /^\w+([\.\+]\w+)*@\w+(\.\w+)*(\.\w{2,})$/;
         return a.test(this.$.email.getValue()) ? (this.$.email.applyStyle("color", "black"), !0) : (this.$.email.applyStyle("color", "red"), !1);
-  },
+	},
     checkUsernameExists: function () {
         return this.$.username.getValue() === "" ? !1 : !0;
-  },
+	},
     checkPasswordExists: function () {
         return this.$.password.getValue() === "" ? !1 : !0;
-  },
+	},
     checkFields: function () {
         if (this.checkUsernameExists() && this.checkPasswordExists()) return this.register && this.emailRegexCheck ? (this.$.logButton.setDisabled(!1), !0) : (this.$.logButton.setDisabled(!1), !0);
         return !1;
-  }
+	}
 });

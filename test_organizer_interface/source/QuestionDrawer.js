@@ -11,7 +11,6 @@ enyo.kind({
 		onQDestroyed: ""
 	},
 	handlers: {
-		onShowTapped: "closeDrawer",
 		onDestroyed: "checkQTitles",
 	},
 	components: [
@@ -44,14 +43,14 @@ enyo.kind({
 							]}
 						]},
 					]},
-					{kind: onyx.MenuDecorator, style: "height: 34%;", components: [
+					//{kind: onyx.MenuDecorator, style: "height: 34%;", components: [
 						{kind: onyx.Button, classes: "button-style", ontap: "buildPreview", attributes: {title: "Preview how this task will look when a user is completing it on a phone."}, style: "width: 100%; height: 100%;", fit: true, components: [
 							{tag: "i", classes: "icon-mobile-phone icon-3x"},
 						]},
-						{name: "phonePreview", kind: onyx.ContextualPopup, classes: "dark-background-flat", components: [
-							{content: "test"}
+						{name: "phonePreviewContainer", kind: onyx.Popup, style: "height: 384px; width: 288px;", centered: true, floating: true, modal: true, layoutKind: enyo.FittableRowsLayout, classes: "dark-background-flat", components: [
+							{name: "phonePreview", kind: "ComplexSensr", fit: true}
 						]},
-					]},
+					//]},
 				]},
 				{name: "questionContainer", kind: enyo.Scroller, classes: "dark-background nice-padding", vertical: "scroll", horizontal: "hidden", layoutKind: enyo.FittableRowsLayout, fit: true, components: [
 					{name: "realQuestionContainer", kind: enyo.FittableRows, fit: true}
@@ -97,7 +96,14 @@ enyo.kind({
 	},
 	buildPreview: function(inSender, inEvent) {
 		//preview stuff goes here
-		this.$.phonePreview.show();
+		var tmp = {};
+		tmp.tasks = [];
+		var tmp2 = {};
+		tmp2.questions = this.getData();
+		tmp.tasks.push(tmp2);
+		this.$.phonePreview.setTaskData(tmp);
+		this.$.phonePreviewContainer.show();
+
 	},
 	checkQTitles: function(inSender, inEvent) {
 		if(inEvent.us.kind === "QuestionBuilder" || inEvent.us.kind === "SensorChooser") {
@@ -113,13 +119,8 @@ enyo.kind({
 		/*if(!this.getOpen())
 			this.toggleDrawer();*/
 	},
-	closeDrawer: function(inSender, inEvent) {
-		/*var truth = this.getOpen();
-		if(truth)
-			this.setOpen(!truth);*/
-	},
 	closePopup: function(inSender, inEvent) {
-		this.$.phonePreview.hide();
+		this.$.phonePreviewContainer.hide();
 	},
 	reconstituteQuestions: function(inSender, inEvent) {
 		this.$.spinUp.show();

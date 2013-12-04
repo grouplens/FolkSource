@@ -11,18 +11,20 @@ enyo.kind({
 		onTaskDetailDrawerOpened: "",
 
 		onAPIResponse: "",
+		onResizeMap: ""
 	},
 	handlers: {
 		onNewTapped: "closeDrawers",
 		onShowTapped: "toggleDrawer",
-		onEnd: "drawerAnimationEndHandler",
+		onStep: "drawerAnimationEndHandler",
 		onListResized: "setListHeights",
 		onCSenseTaskDetailResized: "setTaskDetailContentHeight",
 		onTaskMarkerClicked: "showTaskDetail",
 		onViewportChanged: "updateTaskDetail",
 		onClusterSelection: "updateTaskDetail",
 		onReceiveNewSubmissions: "integrateNewSubmissions",
-		onCleanupSelected: "removeSelectionList"
+		onCleanupSelected: "removeSelectionList",
+		onHilightSubmission: "setSubDetails",
 	},
 	components:[
 		//TODO: finish making the user thing work
@@ -40,34 +42,41 @@ enyo.kind({
 				]},
 			]},
 		]},*/
-		{kind: enyo.FittableColumns, fit: true, components: [
-			{name: "campaignDrawer", kind: onyx.Drawer, layoutKind: enyo.FittableRowsLayout, style: "z-index: 15; position: relative;", orient: "h", open: false, classes: "dark-background", components: [
-				{name: "campDrawerHeader", content: "Campaigns:"},
-				{name: "campList", kind: "CSenseShowCampaignsList", onSetupItem: "setupCampList", /*fit: true, */style: "width: 150px; padding: 4px; ", touch: true, count: 0, components: [
-					{name: "campItem", kind: "onyx.Item", ontap: "campTapped", classes: "bordering standard-card", components: [
-						//{name: "campIndex", content: "id"},
-						{name: "campTitle", content: "title"}
-					]}
+		{kind: enyo.FittableRows, fit: true, components: [
+			{kind: enyo.FittableColumns, fit: true, components: [
+				{name: "campaignDrawer", kind: onyx.Drawer, layoutKind: enyo.FittableRowsLayout, style: "z-index: 15; position: relative;", orient: "h", open: false, classes: "dark-background", components: [
+					{name: "campDrawerHeader", content: "Campaigns:"},
+					{name: "campList", kind: "CSenseShowCampaignsList", onSetupItem: "setupCampList", /*fit: true, */style: "width: 150px; padding: 4px; ", touch: true, count: 0, components: [
+						{name: "campItem", kind: "onyx.Item", ontap: "campTapped", classes: "bordering standard-card", components: [
+							//{name: "campIndex", content: "id"},
+							{name: "campTitle", content: "title"}
+						]}
+					]},
+				]},
+				{name: "taskDrawer", kind: onyx.Drawer, style: "z-index: 15; position: relative;", orient: "h", open: false, classes: "dark-background", components: [
+					{name: "taskDrawerHeader", content: "Tasks:"},
+					{name: "taskList", kind: "CSenseShowCampaignsList", onSetupItem: "setupTaskList", style: "width: 150px; padding: 4px;", touch: true, count: 0, components: [
+						{name: "taskItem", kind: "onyx.Item", ontap: "taskTapped", classes: "bordering standard-card", components: [
+							//{name: "taskIndex", content: "id"},
+							{name: "taskTitle", content: "title"}
+						]}
+					], taskIdToIndex: {}, /*Mapping of task id to index in the taskList*/ },
+
+				]},
+				{name: "taskDetailDrawer", kind: onyx.Drawer, style: "z-index: 15; position: relative;", orient: "h", open: false, classes: "dark-background", published: { currentTaskId: null, }, components: [
+					{name: "taskDetailDrawerContent", kind: "CSenseTaskDetail", fit: true, style: "width: 200px;padding: 4px;"},
 				]},
 			]},
-			{name: "taskDrawer", kind: onyx.Drawer, style: "z-index: 15; position: relative;", orient: "h", open: false, classes: "dark-background", components: [
-				{name: "taskDrawerHeader", content: "Tasks:"},
-				{name: "taskList", kind: "CSenseShowCampaignsList", onSetupItem: "setupTaskList", style: "width: 150px; padding: 4px;", touch: true, count: 0, components: [
-					{name: "taskItem", kind: "onyx.Item", ontap: "taskTapped", classes: "bordering standard-card", components: [
-						//{name: "taskIndex", content: "id"},
-						{name: "taskTitle", content: "title"}
-					]}
-				], taskIdToIndex: {}, /*Mapping of task id to index in the taskList*/ },
-
-			]},
-			{name: "taskDetailDrawer", kind: onyx.Drawer, style: "z-index: 15; position: relative;", orient: "h", open: false, classes: "dark-background", published: { currentTaskId: null, }, components: [
-				{name: "taskDetailDrawerContent", kind: "CSenseTaskDetail", style: "width: 200px"},
-			]},
-		]}
+			{name: "detailDrawer", kind: onyx.Drawer, orient: "v", open: false, classes: "light-background", components: [
+				{name: "sub", content: "Submitter:"},
+				{name: "num", content: "Number of answers:"},
+				{name: "loc", content: "Location:"},
+			]}
+	]}
 	],
 
 	create: function(inSender, inEvent) {
-	    this.inherited(arguments);	    
+		this.inherited(arguments);
 
 		//get CampaignData
 		this.campData = [];
@@ -151,9 +160,30 @@ enyo.kind({
 	*/
 	taskTapped: function(inSender, inEvent) {
 		var index = inEvent.index;
-		this.showTaskDetail(null, {task: this.taskData[index], offset: 200}); //I am calling an event handler directly, is this bad?
+		this.showTaskDetail(null, {task: this.taskData[index]/*, offset: 200*/}); //I am calling an event handler directly, is this bad?
 	},
 
+	setSubDetails: function(inSender, inEvent) {
+		var data = inEvent.sub;
+        this.$.sub.setContent("Submitter: "+data.user_id);
+        this.$.num.setContent("Number of answers: "+data.answers.length);
+		this.getGeocode(data);
+		var truth = this.$.detailDrawer.getOpen();
+		this.$.detailDrawer.setOpen(!truth);
+	},
+	getGeocode: function(sub) {
+		var loc = sub.gps_location.split("|");
+		var ajax = new enyo.Ajax({handleAs: "json", url: "http://open.mapquestapi.com/nominatim/v1/search?format=json&q=" + loc[0] + "+" + loc[1]});
+		ajax.response(this, "reverseGeocode");
+		ajax.go();
+	},	
+    reverseGeocode: function(inSender, inEvent){
+		this.log(inSender);
+		this.log(inEvent);
+        //Insert reverse geocoding functionality here!
+		this.$.loc.setContent("Location: " + inEvent[0].display_name);
+        return "123 Fake St SE, Minneapolis, MN";
+    },
 	/*
 		Builds the contents of the tasks pane
 	*/
@@ -175,17 +205,17 @@ enyo.kind({
 	*/
 	showTaskDetail: function(inSedner, inEvent){
 		var task = inEvent.task;
+		this.$.taskDetailDrawerContent.startSpinner();
+		this.$.taskDetailDrawer.setOpen(true);
 		this.$.taskList.select(this.getTaskListIndex(task.id));
+		this.$.taskDetailDrawerContent.stopSpinner();
 
 		//this.$.taskDetailDrawerContent.setTask(task);
-		this.$.taskDetailDrawerContent.setCont(task.submissions,"Task "+task.id,task.instructions);
-		this.$.taskDetailDrawer.currentTaskId = task.id;
-		var detailDrawerOpen = this.$.taskDetailDrawer.getOpen();
-		this.$.taskDetailDrawer.setOpen(true);
+		//this.$.taskDetailDrawerContent.setCont(task.submissions,"Task "+task.id,task.instructions);
+		//this.$.taskDetailDrawer.currentTaskId = task.id;
 		//this.$.choices.resized();
 		//this.$.choices.setOpen(true);
 
-		this.doSelectTask({task: task, taskDetail: this.$.taskDetailDrawerContent, offset: inEvent.offset});
 	},
 
 	/*
@@ -217,6 +247,8 @@ enyo.kind({
 		} else{
 			this.$.campaignDrawer.setOpen(true);
 		}
+
+		return true;
 		//this.$.campList.reset();
 	},
 	toggleChoiceDrawer: function(inSender, inEvent) {
@@ -231,7 +263,6 @@ enyo.kind({
 		this.$.campaignDrawer.setOpen(false);
 		this.$.taskDrawer.setOpen(false);
 		this.$.taskDetailDrawer.setOpen(false);
-
 		this.doClearTaskSelection();
 	},
 
@@ -239,7 +270,7 @@ enyo.kind({
 		CampList setup function
 	*/
 	setupCampList: function(inSender, inEvent) {
-		var index = inEvent.index
+		var index = inEvent.index;
 		var camp = this.campData[index];
 		//this.$.campIndex.setContent(Number(index+1));
 		this.$.campTitle.setContent(camp.title);
@@ -286,18 +317,24 @@ enyo.kind({
 		var drawer = inEvent.originator.owner;
 		//Fix map size
 		//Pan
-		if (drawer.name === "campaignDrawer" && drawer.open === true){
+		/*if (drawer.name === "campaignDrawer" && drawer.open === true){
 			//var campId = this.campData[this.selectedCampIndex].id;
 			this.doTaskDrawerOpened({campId: campId, offset: 0});
 		}
 		if (drawer.name === "taskDrawer" && drawer.open === true){
 			var campId = this.campData[this.selectedCampIndex].id;
 			this.doTaskDrawerOpened({campId: campId, offset: 150});
-		}
+		}*/
 		if (drawer.name === "taskDetailDrawer" && drawer.open === true){
-			var taskId = inEvent.originator.owner.currentTaskId;
-			this.doTaskDetailDrawerOpened({taskId: taskId, offset: 0});
+			/*var taskId = inEvent.originator.owner.currentTaskId;
+			this.doTaskDetailDrawerOpened({taskId: taskId, offset: 0});*/
+			this.doSelectTask({task: task, taskDetail: this.$.taskDetailDrawerContent/*, offset: inEvent.offset*/});
+			this.$.taskDetailDrawerContent.startSpinner();
+			this.$.taskDetailDrawerContent.setCont(task.submissions,"Task "+task.id,task.instructions);
+			this.$.taskDetailDrawer.currentTaskId = task.id;
+			//this.$.taskDetailDrawerContent.stopSpinner();
 		}
+		this.doResizeMap();
 	},
 });
 
