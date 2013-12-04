@@ -12,6 +12,7 @@ enyo.kind({
 	handlers: {
 		onNewTapped: "toggleDrawer",
 		onFinishedSavingTask: "finishCreateTask",
+		onStep: "drawerAnimationEndHandler",
 		onShowTapped: "closeDrawer",
 		onNewTask: "resizeUs",
 		onNewLocation: "newLocation",
@@ -31,10 +32,7 @@ enyo.kind({
 		]}
 	],
 	closeDrawer: function(inSender, inEvent) {
-		var truthy = this.getOpen();
-		if(truthy){
-			this.setOpen(!truthy);
-		}
+		this.setOpen(false);
 	},
 	create: function(inSender, inEvent) {
 		this.inherited(arguments);
@@ -120,8 +118,6 @@ enyo.kind({
 	toggleDrawer: function(inSender, inEvent) {
 		var truthy = this.getOpen();
 		this.setOpen(!truthy);
-		var size = truthy ? -100 : 100;
-		this.doResizeMap({offset: size});
 	},
 	removeAllTasks: function(inSender, inEvent) {
 		this.log();
@@ -134,5 +130,6 @@ enyo.kind({
 	},
 	drawerAnimationEndHandler: function(inSender, inEvent) {
 		this.log();
+		this.doResizeMap();
 	}
 });

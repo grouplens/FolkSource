@@ -1425,7 +1425,7 @@
 
 body {
 	font-size: 11pt;
-	font-weight: 300 !important;
+	/*font-weight: 300 !important;*/
 	background: white; /* lighter green*/
 	color: black;
 }
@@ -1476,7 +1476,7 @@ body {
 	/*text-decoration: underline;*/
 	font-weight: bold;
 }
-.popup-list-item-body {1gg
+.popup-list-item-body {
 	padding-left: 1em;
 }
 
@@ -1531,7 +1531,7 @@ body {
 	background-color: white;
 }
 .bordering, .button-cancel-style, .toolbar-button-style {
-	font-weight: 100;
+	/*font-weight: 100;*/
 }
 .standard-card, .toolbar-button-style {
 	box-sizing: border-box;
@@ -1556,7 +1556,7 @@ body {
 	color: #FFF !important;
 	/*color: #C5A467 !important; /* lighter green*/
 	font-size: 11pt;
-	font-weight: 100;
+	/*font-weight: 100;*/
 	-moz-border-radius: 0px;
 	-webkit-border-radius: 0px;
 	border-radius: 0px;

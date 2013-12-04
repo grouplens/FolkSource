@@ -76,7 +76,7 @@ enyo.kind({
 					]}
 				]}
 			]},
-			{name: "campaignBuilder", style: "z-index: 15; position: relative;", kind: "CampaignBuilder"},
+			{name: "campaignBuilder", kind: "CampaignBuilder"},
 		]}
 	],
 	published: {
@@ -127,6 +127,9 @@ enyo.kind({
 
 		onSuccessCode: "hideLogin",
 		onFailureCode: "",
+		onAnonymousCode: "hideLogin",
+
+		onHilightSubmission: "selectedSubmission",
 	},
 
 	create: function (inSender, inEvent) {
@@ -168,6 +171,24 @@ enyo.kind({
 		this.stopSpinnerOnTaskDetailContSet = false;
 	},
 
+	selectedSubmission: function(inSender, inEvent) {
+		var list = this.currentSubmissionsGroup._layers;
+		var sub_id = inEvent.sub.id;
+		this.log(sub_id);
+		var keys = Object.keys(list);
+		for(var x in keys) {
+			var point = list[keys[x]];
+			if(sub_id === point.submissionId) {
+				this.log(point);
+				this.log(this.clusterGroup.hasLayer(point.__parent));
+				this.selectCluster(point.__parent.__parent.__parent.__parent);
+			}
+		}
+		/*var key = Object.keys(this.currentSubmissionsGroup._layers)[inEvent.index];
+		this.log(key);
+		this.log(this.currentSubmissionsGroup._layers[key].submission);*/
+	},	
+
 	doubleCheckSend: function(inSender, inEvent) {
 		this.$.doubleCheckSendPopup.show();
 	},	
@@ -181,7 +202,9 @@ enyo.kind({
 		this.$.doubleCheckCancelPopup.show();
 	},	
 	hideLogin: function(inSender, inEvent) {
-		this.$.username.setContent(LocalStorage.get("username").toString());
+		if(LocalStorage.get("username") !== undefined) {
+			this.$.username.setContent(LocalStorage.get("username").toString());
+		}
 		this.$.toolbar.resized();
 		this.$.loginRegister.hide();
 	},	
@@ -289,7 +312,7 @@ enyo.kind({
 				if(inEvent.selected)
 					layer.setStyle({color: "#DB221D"});
 				else 
-					layer.setStyle({color: "#25426F"});
+					layer.setStyle({color: "#2E426F"});
 			}
 		}
 		return true;
@@ -523,7 +546,7 @@ enyo.kind({
 			},
 			polygon: {
 				shapeOptions: {
-					color: "#25426F"
+					color: "#2E426F"
 				}
 			}
 		});
@@ -605,26 +628,26 @@ enyo.kind({
 	},
 
 	showCampaigns: function(inSender, inEvent) {
-		this.resetTasksAndQuestions();
 		var classy = this.$.showButton.hasClass("active");
 		this.$.showButton.addRemoveClass("active", !classy);
 		if(classy)
 			this.removeTaskLocations();
-		var offset = classy ? -150 : 150;
-		this.map.panBy([offset,0],{animate: true, duration: 0});
+		/*var offset = classy ? -150 : 150;
+		this.map.panBy([offset,0],{animate: false, duration: 0});*/
 		
 		this.waterfallDown("onShowTapped");
-		this.waterfallDown("onDeactivateTaskLocationEditingUI", {locations: this.drawnItems});
 		this.deactivateEditingInterface();
+		//this.$.mapCont.resized();
 		this.map.invalidateSize();
-		this.$.mapCont.resized();
 	},
 	showNewMap: function(inSender, inEvent) {
-		var truth = this.$.campaignBuilder.getOpen();
-		this.$.campaignBuilder.toggleDrawer();
-		this.map.panBy([450,0],{animate: false, duration: 0});
+		/*var truth = this.$.campaignBuilder.getOpen();
+		this.$.campaignBuilder.toggleDrawer();*/
+		//this.map.panBy([450,0],{animate: false, duration: 0});
+		//this.log();
 		/*this.map.invalidateSize();
 		this.$.mapCont.resized();*/
+		this.waterfallDown("onNewTapped");
 
 		this.$.newButton.setShowing(false);
 		this.$.saveButton.setShowing(true);
@@ -634,8 +657,9 @@ enyo.kind({
 	},
 	resetTasksAndQuestions: function(inSender, inEvent) {
 		this.$.doubleCheckCancelPopup.hide();
-		this.$.campaignBuilder.toggleDrawer();
-		this.log();
+		this.waterfallDown("onNewTapped");
+		//this.$.campaignBuilder.toggleDrawer();
+		//this.log();
 		this.$.campaignBuilder.removeAllTasks();
 		this.$.campaignBuilder.render();
 
@@ -644,7 +668,8 @@ enyo.kind({
 		this.$.newButton.setShowing(true);
 		this.$.toolbar.resized();
 		this.$.toolbar.render();
-		this.map.panBy([-450,0],{animate: false, duration: 0});
+		//this.map.panBy([-450,0],{animate: false, duration: 0});
+		//this.log();
 	},
 	saveTasksAndQuestions: function(inSender, inEvent) {
 		this.$.doubleCheckSendPopup.hide();
@@ -711,15 +736,17 @@ enyo.kind({
 	setupSubmissionMarkers: function(task, pop, popContent){
 		//instantiate submission markers:
 		var subs = task.submissions;
-		var markers = new L.FeatureGroup();
 		var showCampaigns = this.$.cSenseShowCampaigns;
+		var tmp = [];
 
 		for(var i=0; i < subs.length; i++){
 			var mark = this.submissionToMarker(subs[i], showCampaigns, markers);
 			if (mark !== null){
-				markers.addLayer(mark);
+				tmp.push(mark);
 			}
 		}
+		//markers.addLayer(tmp);
+		var markers = new L.FeatureGroup(tmp);
 		return markers;
 	},
 
@@ -795,10 +822,16 @@ enyo.kind({
 
 			this.currentSubmissionsGroup = group;
 			this.currentSubmissionsGroupTaskId = task.id;
+
+			var bounds = group.getBounds();
+			this.map.fitBounds(bounds);
 		}
+		//this.waterfallDown("onViewportChanged",{submissions: this.getVisibleSubmissions()});
+		
 		//if(inEvent.detailDrawerOpen === true){
 			//this.panToSubmissionsGroup(null, {taskId: task.id, offset: inEvent.offset}); //Here I am calling an event handler manually, is that bad?
 		//}
+		return true;
 	},
 
 	_get_clusters: function(zoom){
@@ -845,6 +878,7 @@ enyo.kind({
 		if (this.taskMarkerGroups[campaign.id] === undefined){
 			this.taskMarkerGroups[campaign.id] = new L.FeatureGroup();
 			//this.taskMarkerGroups[campaign.id] = new L.LayerGroup();
+			
 
 			//setup the functions outside the loop (better practice according to
 			//JSHINT)
@@ -856,12 +890,12 @@ enyo.kind({
 				this.clearClusterSelect();
 				this.waterfallDown("onViewportChanged",{submissions: this.getVisibleSubmissions()});
 			};
-			mouseover = function() {
+			/*var mouseover = function() {
 				this.updateLabelContent(hoverText);
 			};
-			mosueout = function(){
+			var mouseout =  function() {
 				this.updateLabelContent(labelText);
-			};
+			};*/
 			for (var i in campaign.tasks){
 
 				task = campaign.tasks[i];
@@ -879,14 +913,15 @@ enyo.kind({
 						shape.on("click", clickpin, this);
 					} else {
 						shape.on("click", clickregion, this);
+						shape.setStyle({color: "#2E426F"});
 					}
-					this.log(task.submissions.length);
+					/*this.log(task.submissions.length);
 					var labelText = "Task "+task.id+"<br/>"+task.submissions.length+" submissions";
 					shape.bindLabel(labelText, { noHide: true });
 					var hoverText = task.instructions;
 
 					shape.on("mouseover", mouseover);
-					shape.on("mouseout", mouseout);
+					shape.on("mouseout", mouseout);*/
 
 					if(task.submissions === undefined)
 						task.submissions=[];
@@ -899,44 +934,48 @@ enyo.kind({
 		//Add the markers to the map
 		this.map.addLayer(this.taskMarkerGroups[campaign.id]);
 		this.currentTaskMarkerGroup = this.taskMarkerGroups[campaign.id];
-		this.log(this.currentTaskMarkerGroup);
+
+		var bounds = this.currentTaskMarkerGroup.getBounds();
+		var lat = (bounds._northEast.lat + bounds._southWest.lat) / 2;
+		var lng = (bounds._northEast.lng + bounds._southWest.lng) / 2;
+		this.map.panTo([lat, lng], {animate: false});
+		//this.panToTaskMarkerGroup(null, {offset: inEvent.offset});
 		/*this.currentTaskMarkerGroup.eachLayer(function (layer){
 			layer.showLabel();
 		});*/
+		return true;
 	},
 
 	/*
 
 	*/
 	adjustMapSize: function(inSender, inEvent){
-		this.log();
-		//this.map.panBy([inEvent.offset,0],{animate: true, duration: 0});
-		var offset = inEvent.offset;
-		//this.map.invalidateSize();
-		//this.map.panBy([offset,0],{animate: true, duration: 0});
-		/*this.$.mapCont.resized();
-		this.reflow();*/
+		/*this.log();
+		this.map.panBy([inEvent.offset,0],{animate: true, duration: 0});*/
+		this.$.container.resized();
+		this.map.invalidateSize({animate: false});
+		//this.$.mapCont.resized();
+		return true;
 	},
-	/*
 
-	*/
 	panToSubmissionsGroup: function(inSender, inEvent){
 		var taskId = inEvent.taskId;
 		var offset = inEvent.offset;
-		this.$.mapCont.resized();
+		//this.$.mapCont.resized();
+		this.log();
+		this.map.panBy([offset,0],{animate: false, duration: 0});
 		this.map.invalidateSize();
-		this.map.panBy([offset,0],{animate: true, duration: 0});
 	},
-	/*
-	
-	*/
+
 	panToTaskMarkerGroup: function(inSender, inEvent){
 		var campId = inEvent.campId;
 		var offset = inEvent.offset;
-		this.$.mapCont.resized();
-		this.map.invalidateSize();
-		this.map.panBy([offset,0],{animate: true, duration: 0});
-		this.log(inEvent.offset);
+		/*this.map.invalidateSize();
+		if(offset != 0) {
+			this.map.panBy([offset,0],{animate: false, duration: 0});
+			this.$.mapCont.resized();
+			this.log();
+		}*/
 
 		return true;
 	},
@@ -944,8 +983,8 @@ enyo.kind({
 	/* -- Live Update Functions-- */
 
 	getNewSubmissions: function(){
-		//var url =  Data.getURL() + "submission.json?after="+String(this.lastSubmissionPoll);
-		var url =  "http://localhost:9080/csense/submission.json?after="+String(this.lastSubmissionPoll);
+		var url =  Data.getURL() + "submission.json?after="+String(this.lastSubmissionPoll);
+		//var url =  "http://localhost:9080/csense/submission.json?after="+String(this.lastSubmissionPoll);
 
 		var ajax = new enyo.Ajax({url: url, method: "GET", handleAs: "json", cacheBust: false});
 		ajax.response(this, "updateSubmissions"); 

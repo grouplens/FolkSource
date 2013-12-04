@@ -1,12 +1,13 @@
 enyo.kind({
 	name: "CSenseTaskDetail",
-    layoutKind: enyo.FittableRowsLayout,
+    kind: enyo.FittableRows,
 	published: {
 		task: "",
         subs: "",
 	},
     events:{
         onCSenseTaskDetailResized: "",
+		onHilightSubmission: "",
         onContentSet: "",
     },
     handlers: {
@@ -15,28 +16,20 @@ enyo.kind({
     components:[
 		{name: "popHeading", content: "", style: "font-weight: 300;"},
 		{name: "popSubHeading", content: "",},
-        {name: "popupScroller", fit: true, kind: enyo.Scroller, style: "padding: 4px;", components:[
-            {name: "spinner", kind: "onyx.Spinner", classes: "onyx-dark dark-background hidden", style: "margin-left:auto; margin-right:auto; display:block; margin-top:60px;"},
-            {kind: enyo.Repeater, onSetupItem: "setRepeaterValues", submissionIdToOwnerProxy: {}, count: 0, components: [
-                    {name: "itemCont", classes: "popup-list-item bordering standard-card", components:[
-                        {name: "itemHeading", ontap: "toggleItemDrawer", published:{index: ""}, /*classes:"popup-list-item-heading"*/},
-                        {name: "itemDrawer", kind: onyx.Drawer, open: false, orient: "v",
-                            components:[
-                                {name: "listItem", classes:"popup-list-item-body",components:[
-                                    {content: "Submitter:"},
-                                    {content: "Number of answers:"},
-                                    {content: "Location:"},
-                                ]},
-                            ]
-                        },
-                    ]},
-                ],
-            },
-        ],}
-    ],
+		{name: "spinnerDrawer", kind: onyx.Drawer, orient: "v", open: false, components: [
+			{name: "spinner", kind: "onyx.Spinner", classes: "onyx-dark dark-background hidden", style: "margin-left:auto; margin-right:auto; display:block; margin-top:60px;"},
+		]},
+		{name: "repeater", kind: enyo.List, fit: true, onSetupItem: "setRepeaterValues", submissionIdToOwnerProxy: {}, count: 0, components: [
+			{name: "itemCont", kind: enyo.FittableColumns, style: "width: 100%;", ontap: "hilightMarker", classes: "popup-list-item bordering standard-card", components:[
+				{kind: enyo.FittableRows, classes: "nice-padding", style: "height: 100%;", components: [
+					{name: "itemHeading", fit: true},
+				]},
+			]},
+		]},
+	],
 
-    /*
-    setTask: function(task){
+	/*
+	setTask: function(task){
         this.task = task;
         this.submissionIdToOwnerProxy = {} 
         this.$.repeater.setCount(this.task.submissions.length);
@@ -45,9 +38,11 @@ enyo.kind({
     },
     */
     setCont: function(subArray, heading, subheading){
+		//this.startSpinner();
         this.subs = subArray;
-        this.submissionIdToOwnerProxy = {}
+        this.submissionIdToOwnerProxy = {};
         this.$.repeater.setCount(this.subs.length);
+		this.$.repeater.reset();
 		if(heading)
 			this.totalSubs = this.subs.length;
         //if (heading){
@@ -58,16 +53,17 @@ enyo.kind({
 			this.$.popSubHeading.setContent("Click titles below to see details");
             //this.$.popSubHeading.setContent(subheading);
         }
-        this.doContentSet();
+        //this.doContentSet();
     },
-
 
     startSpinner: function(){
         this.$.spinner.removeClass("hidden");
+		this.$.spinnerDrawer.setOpen(true);
         this.$.repeater.addClass("hidden");
     },
     stopSpinner: function(){
         this.$.spinner.addClass("hidden");
+		this.$.spinnerDrawer.setOpen(false);
         this.$.repeater.removeClass("hidden");
     },
     spinFor: function(time) {
@@ -75,30 +71,19 @@ enyo.kind({
         var that = this;
         setTimeout(function(){
             that.stopSpinner();
-        }, time)
+        }, time);
     },
 
 
 
     setRepeaterValues: function (inSender, inEvent){
         var index = inEvent.index;
-        var item = inEvent.item;
-        //var sub = this.task.submissions[index];
         var sub = this.subs[index];
-
-        //this.$.repeater.subIdtoIndexMap[sub.id] = index;
-        this.$.repeater.submissionIdToOwnerProxy[sub.id] = item;
-        item.$.itemHeading.index = index;
-
-        //Setting these names might be pointless since we don't seem to be able to access these guys from the CSenseTaskDetail context anyways
-        item.$.itemHeading.setName("submissionheading-" + sub.id);
-        item.$.itemDrawer.setName("subdrawer-"+sub.id);
+		this.data = sub;
+        this.$.itemHeading.index = index;
 
 		var num = Number(index) + 1;
-        item.$.itemHeading.setContent("Submission " + num);
-        item.$.control.setContent("Submitter: "+sub.user_id);
-        item.$.control2.setContent("Number of answers: "+sub.answers.length);
-        item.$.control3.setContent("Location: "+ this.reverseGeocode(sub.gps_location));
+        this.$.itemHeading.setContent(num);
 
         return true;
     },
@@ -108,16 +93,17 @@ enyo.kind({
         this.doCSenseTaskDetailResized();
     },
 
-    reverseGeocode: function(gps_location){
-        //Insert reverse geocoding functionality here!
-        return "123 Fake St SE, Minneapolis, MN";
-    },
-
     toggleItemDrawer: function (inSender, inEvent){
         this.log("toggle item drawer called");  
-        var drawer = this.$.repeater.children[inEvent.index].$.itemDrawer
+        var drawer = this.$.repeater.children[inEvent.index].$.itemDrawer;
         drawer.setOpen(!drawer.getOpen());
+		var open = drawer.getOpen();
     },
+	hilightMarker: function(inSender, inEvent) {
+		var index = inEvent.index;
+
+		this.doHilightSubmission({sub: this.subs[index], open: open});
+	},	
 
     getItemCont: function(subId){
         return this.getOwnerProx(subId).$.itemCont;

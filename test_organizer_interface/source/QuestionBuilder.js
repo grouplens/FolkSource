@@ -21,23 +21,26 @@ enyo.kind({
 		//{kind: enyo.Signals, onDestroyedQuestion: "checkTitles"},
 		{name: "stepTitle", kind: "Title", title: "#", /*circled: true,*/ big: true, save: true, fit: true, style: "height: 100%;"},
 		{name: "questionTitle", kind: "Title", title: "Question #", classes: "nice-padding", save: false},
-		{name: "questionDrawer", kind: onyx.Drawer, open: true, orient: "v", classes: "nice-padding", components: [
+		{name: "questionDrawer", kind: onyx.Drawer, open: true, orient: "v", layoutKind: enyo.FittableRowsLayout, classes: "nice-padding", components: [
 			{name: "questionText", kind: "TitledInput", title: "What's the question?", placeholder: "Enter your question text here...", classes: "nice-padding", save: false},
 			{kind: "Title", title: "Type of Question:", classes: "nice-padding", save: false},
-			{name: "questionChoices", tag: "select", classes: "nice-padding", onchange: "questionPicked", components: [
+			{name: "questionChoices", tag: "select", classes: "nice-padding hanging-child", onchange: "questionPicked", components: [
 				{content: "Text", tag: "option"}, // index 0
 				{content: "Checkboxes", tag: "option"}, // index 1
 				{content: "Multiple Choice", tag: "option"}, // index 2
 				{content: "Counter", tag: "option"}, // index 3
 			]}, 
-			{name: "optionList", kind: enyo.List, style: "height: 100px;", count: 1, showing: false, ontap: "editOption", onSetupItem: "makeOption", components: [
-				{kind: "EditableListItem", name: "oItem"}
-			]}
+			{name: "optionList", kind: enyo.List, fit: true, style: "max-height: 50px;", count: 0, showing: false, fixedHeight: true, reorderable: false, enableSwipe: false, classes: "nice-padding hanging-child", ontap: "editOption", onSetupItem: "makeOption", components: [
+				{name: "oItem", content: "holder"},
+				//{kind: "EditableListItem", name: "oItem"}
+			]},
+			{name: "optionEntry", kind: onyx.Input, showing: false, classes: "nice-padding hanging-child", placeholder: "Hit 'enter' to add an option", onchange: "addOption"},
+			
 		]}
 	],
 	create: function(inSender, inEvent) {
 		this.inherited(arguments);
-		this.options = ["Add new option, hit 'enter' to save"];
+		this.options = [];
 		this.$.stepTitle.setTitle(this.$.stepTitle.getTitle() + this.stepIndex);
 		this.$.questionTitle.setTitle(this.$.questionTitle.getTitle() + this.questionIndex);
 		this.curType = "text";
@@ -48,6 +51,16 @@ enyo.kind({
 			this.recreate();
 		}
 	},
+	addOption: function(inSender, inEvent) {
+		this.log();
+		this.log(this.$.optionEntry.getValue());
+		this.options.push(this.$.optionEntry.getValue());
+		this.$.optionEntry.setValue('');
+		this.$.optionList.setCount(this.options.length);
+		this.$.optionList.reset();
+		this.$.optionList.resized();
+		this.$.optionList.scrollToBottom();
+	},	
 	checkTitles: function(inSender, inEvent) {
 		var sensor = inEvent.us.kind.indexOf("Sensor") > -1 ? true : false;
 		var inStepNum = inEvent.us.stepIndex;
@@ -101,8 +114,8 @@ enyo.kind({
 	},
 	editOption: function(inSender, inEvent) {
 		var index = inEvent.index;
-		this.$.optionList.prepareRow(index);
-		this.$.oItem.flip();
+		//this.$.optionList.prepareRow(index);
+		//this.$.oItem.flip();
 		return true;
 	},
 	getData: function(inSender, inEvent) {
@@ -124,10 +137,13 @@ enyo.kind({
 	makeOption: function(inSender, inEvent) {
 		var index = inEvent.index;
 		var item = inEvent.item;
-		this.$.oItem.setBuilder(false);
-		this.$.oItem.setFill(this.options[index]);
-		if(index == this.options.length - 1)
-			this.$.oItem.setBuilder(true);
+		//this.$.oItem.setBuilder(false);
+		//this.$.oItem.setFill(this.options[index]);
+		this.log(index);
+		this.log(this.options[index]);
+		this.$.oItem.setContent(this.options[index]);
+		/*if(index == this.options.length - 1)
+			this.$.oItem.setBuilder(true);*/
 		return true;
 	},
 	newOption: function(inSender, inEvent) {
@@ -137,11 +153,7 @@ enyo.kind({
 			this.options.push(inEvent.content);
 			this.options.push(tmp);
 			this.$.optionList.setCount(this.options.length);
-			this.$.optionList.reset();
-			//this.buildFakeQuestion();
 		}
-		//this.$.optionList.scrollToRow(this.options.length-2);
-		//this.$.optionList.scrollToRow(this.options.length-1);
 		return true;
 	},
 	lockList: function(inSender, inEvent) {
@@ -156,17 +168,20 @@ enyo.kind({
 		this.curType = this.decodeType(type);
 		switch (this.curType) {
 			case "multiple_choice":
-				this.$.oItem.setType("checkbox");
+				//this.$.oItem.setType("checkbox");
 				this.$.optionList.show();
+				this.$.optionEntry.show();
 				this.$.optionList.reset();
 			break;
 			case "exclusive_multiple_choice":
-				this.$.oItem.setType("radio");
+				//this.$.oItem.setType("radio");
 				this.$.optionList.show();
+				this.$.optionEntry.show();
 				this.$.optionList.reset();
 			break;
 			default:
 				this.$.optionList.hide();
+				this.$.optionEntry.hide();
 			break;
 		}
 	},
