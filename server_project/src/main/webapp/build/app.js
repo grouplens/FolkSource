@@ -7370,7 +7370,7 @@ var n = t.campId, r = t.offset;
 return !0;
 },
 getNewSubmissions: function() {
-var e = "http://localhost:9080/csense/submission.json?after=" + String(this.lastSubmissionPoll), t = new enyo.Ajax({
+var e = Data.getURL() + "submission.json?after=" + String(this.lastSubmissionPoll), t = new enyo.Ajax({
 url: e,
 method: "GET",
 handleAs: "json",
