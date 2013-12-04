@@ -9,6 +9,7 @@ import org.citizensense.model.Task;
 import org.citizensense.model.TaskDto;
 import org.citizensense.util.*;
 import org.grouplens.common.dto.DtoContainer;
+import org.hibernate.Session;
 
 import com.opensymphony.xwork2.ModelDriven;
 

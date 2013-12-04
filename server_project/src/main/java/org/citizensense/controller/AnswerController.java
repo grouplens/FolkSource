@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.io.FileUtils;
 import org.apache.struts2.ServletActionContext;
 import org.citizensense.model.AnswerDto;
-import org.citizensense.model.MediaAnswer;
+import org.citizensense.model.MediaVideoAnswer;
 import org.citizensense.util.AnswerService;
 import org.citizensense.util.SubmissionService;
 import org.grouplens.common.dto.DtoContainer;
@@ -50,7 +50,7 @@ public class AnswerController implements ModelDriven<DtoContainer<AnswerDto>>{
 		Integer id = 0;
 		String path = saveMedia();
 		
-		MediaAnswer a = new MediaAnswer(id, "media", q_id, sub_id, path, getMediaContentType());
+		MediaVideoAnswer a = new MediaVideoAnswer(id, "media", q_id, sub_id, path, getMediaContentType());
 		AnswerService.save(a);
 		
 		content.set(new AnswerDto(a));

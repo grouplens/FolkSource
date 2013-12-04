@@ -56,29 +56,49 @@ public class AnswerDto extends Dto{
 	public AnswerDto(Answer answerIn) {
 		super();
 		this.id = answerIn.id;
-		this.answer_type = answerIn.answer_type;
+		//this.answer_type = answerIn.answer_type;
 		this.q_id = answerIn.q_id;
 		this.sub_id = answerIn.sub_id;
+		this.answer = answerIn.answer_type;
 		
-		if (answerIn.answer_type.equals("text")){
+		if (answerIn instanceof TextAnswer){
+			answer_type = "text";
 			answer = ((TextAnswer)answerIn).answer;
-		} else if (answerIn.answer_type.equals("compass")){
+		} else if (answerIn instanceof CompassAnswer){
+			answer_type = "compass";
 			heading = ((CompassAnswer)answerIn).heading;
-		} else if (answerIn.answer_type.equals("media")){
-			path = ((MediaAnswer)answerIn).path;
-			mimeType = ((MediaAnswer)answerIn).mimeType;
-		} else if(answerIn.answer_type.equals("timeSpan")){
+		} else if (answerIn instanceof MediaVideoAnswer){
+			answer_type = "media_video";
+			path = ((MediaVideoAnswer)answerIn).path;
+			mimeType = ((MediaVideoAnswer)answerIn).mimeType;
+		} else if (answerIn instanceof MediaAudioAnswer){
+			answer_type = "media_audio";
+			path = ((MediaAudioAnswer)answerIn).path;
+			mimeType = ((MediaAudioAnswer)answerIn).mimeType;
+		} else if (answerIn instanceof MediaPhotoAnswer){
+			answer_type = "media_photo";
+			path = ((MediaPhotoAnswer)answerIn).path;
+			mimeType = ((MediaPhotoAnswer)answerIn).mimeType;
+		} else if(answerIn instanceof TimeSpanAnswer){
+			answer_type = "time_span";
 			milliseconds = ((TimeSpanAnswer)answerIn).milliseconds;
-		} else if(answerIn.answer_type.equals("accelerometer")){
+		} else if(answerIn instanceof AccelerometerAnswer){
 			AccelerometerAnswer a = (AccelerometerAnswer) answerIn;
+			answer_type = "accelerometer";
 			x = a.x;
 			y = a.y;
 			z = a.z;
-		} else if(answerIn.answer_type.equals("multipleChoice")){
+		} else if(answerIn instanceof MultipleChoiceAnswer){
+			answer_type = "multiple_choice";
 			choices = ((MultipleChoiceAnswer)answerIn).choices;
-		} else if(answerIn.answer_type.equals("complexCounter")){
+		} else if(answerIn instanceof ExclusiveMultipleChoiceAnswer){
+			answer_type = "exclusive_multiple_choice";
+			choices = ((ExclusiveMultipleChoiceAnswer)answerIn).choices;
+		} else if(answerIn instanceof ComplexCounterAnswer){
+			answer_type = "complex_counter";
 			counts = ((ComplexCounterAnswer)answerIn).counts;
-		} else if(answerIn.answer_type.equals("dateTime")){
+		} else if(answerIn instanceof DateTimeAnswer){
+			answer_type = "cur_time";
 			timestamp = ((DateTimeAnswer)answerIn).timestamp;
 		}
 	}
@@ -92,19 +112,25 @@ public class AnswerDto extends Dto{
 			return new TextAnswer(id, answer_type, q_id, sub_id, answer);
 		} else if (answer_type.equals("compass")){
 			return new CompassAnswer(id, answer_type, q_id, sub_id, heading);
-		}else if (answer_type.equals("media")){
-			return new MediaAnswer(id, answer_type, q_id, sub_id, path, mimeType);
-		}else if (answer_type.equals("timeSpan")){
+		} else if (answer_type.equals("media_video")){
+			return new MediaVideoAnswer(id, answer_type, q_id, sub_id, path, mimeType);
+		} else if (answer_type.equals("media_audio")){
+			return new MediaAudioAnswer(id, answer_type, q_id, sub_id, path, mimeType);
+		} else if (answer_type.equals("media_photo")){
+			return new MediaPhotoAnswer(id, answer_type, q_id, sub_id, path, mimeType);
+		} else if (answer_type.equals("time_span")){
 			return new TimeSpanAnswer(id, answer_type, q_id, sub_id, milliseconds);
-		}else if (answer_type.equals("answer")){
+		} else if (answer_type.equals("answer")){
 			return new Answer(id, answer_type, q_id, sub_id);
-		}else if (answer_type.equals("accelerometer")){
+		} else if (answer_type.equals("accelerometer")){
 			return new AccelerometerAnswer(id, answer_type, q_id, sub_id, x, y, z);
-		} else if (answer_type.equals("multipleChoice")){
+		} else if (answer_type.equals("exclusive_multiple_choice")){
+			return new ExclusiveMultipleChoiceAnswer(id, answer_type, q_id, sub_id, choices);
+		} else if (answer_type.equals("multiple_choice")){
 			return new MultipleChoiceAnswer(id, answer_type, q_id, sub_id, choices);
-		} else if (answer_type.equals("complexCounter")){
+		} else if (answer_type.equals("complex_counter")){
 			return new ComplexCounterAnswer(id, answer_type, q_id, sub_id, counts);
-		} else if (answer_type.equals("dateTime")){
+		} else if (answer_type.equals("cur_time")){
 			return new DateTimeAnswer(id, answer_type, q_id, sub_id, timestamp);
 		} else {
 			//TODO: throw an exception

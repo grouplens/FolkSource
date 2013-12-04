@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.citizensense.model.*;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 
 public class TaskService {
@@ -12,15 +13,15 @@ public class TaskService {
 	
 	public static List<Task> getTasks() {
 		List<Task> tasks;
-
-		Session session = HibernateUtil.getSession(true);
+		Session session = HibernateUtil.getSession(false);
+		tasks=session.createCriteria(Task.class).list();
+		//tasks = session.createQuery("from Task as t join fetch t.submissions s left join fetch s.answers").list();
+		//tasks = session.createQuery("from Task").list();
 		
-		tasks = session.createQuery("from Task").list();
-		
-		for(Task t: tasks) {
-			getSubmissions(t);
-			getQuestions(t);
-		}
+//		for(Task t: tasks) {
+//			getSubmissions(t);
+//			getQuestions(t);
+//		}
 		
 		return tasks;
 	}
@@ -28,7 +29,8 @@ public class TaskService {
 	public static void getSubmissions(Task t) {
 		List<Submission> submissions;
 		Session session = HibernateUtil.getSession(true);
-		submissions = session.createQuery("from Submission where task_id= " + t.getId()).list();
+		submissions = session.createCriteria(Submission.class).add(Restrictions.eq("task_id", t.getId())).list();
+		//submissions = session.createQuery("from Submission where task_id= " + t.getId()).list();
 		t.setSubmissions(submissions);
 	}
 	
@@ -36,7 +38,8 @@ public class TaskService {
 		List<Question> questions;
 		Session session = HibernateUtil.getSession(true);
 		
-		questions = session.createQuery("from Question where task_id= " + t.getId()).list();
+		questions = session.createCriteria(Question.class).add(Restrictions.eq("task_id", t.getId())).list();
+		//questions = session.createQuery("from Question where task_id= " + t.getId()).list();
 		
 		Collections.sort(questions);
 		t.setQuestions(questions);
@@ -55,14 +58,9 @@ public class TaskService {
 		}
 	}
 	
-	public static Task getTaskById(int id){
-		List<Task> tasks = getTasks();
-		Task t = null;
-		for(Task task : tasks) {
-			if(task.getId() == id)
-				t = task;
-		}
-		return t;
+	public static Task getTaskById(int id, Session session){
+		Task tasks=(Task)session.createCriteria(Task.class).add(Restrictions.idEq(id)).list().get(0);
+		return tasks;
 	}
 
 }

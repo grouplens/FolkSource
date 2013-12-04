@@ -17,7 +17,12 @@
         <Connector port="8080" protocol="HTTP/1.1"
             connectionTimeout="20000" redirectPort="8443" scheme="http"
             secure="false" SSLEnabled="false"
-            emptySessionPath="true" URIEncoding="ISO-8859-1" /> -->
+            emptySessionPath="true" URIEncoding="ISO-8859-1" 
+            compression="on" 
+			compressionMinSize="2048" 
+			noCompressionUserAgents="gozilla, traviata" 
+			compressableMimeType="text/html,text/xml,text/plain,text/css,text/javascript,text/json,application/x-javascript,application/javascript,application/json"
+		/>
 
         <!-- Define an AJP 1.3 Connector on port 9009 -->
         <!-- <Connector port="9009" protocol="AJP/1.3" scheme="https" secure="true"
@@ -33,7 +38,7 @@
                   autoDeploy="true" xmlValidation="false"
                   xmlNamespaceAware="false">
 
-                <Context path="/csense" docBase="csense.war"></Context>
+                <Context path="/" docBase="csense.war"></Context>
 
                 <!-- Uncomment this to get access logs, but since we have apache
                      access logs, this is initially disabled. -->

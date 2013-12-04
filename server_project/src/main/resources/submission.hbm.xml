@@ -18,8 +18,8 @@
 			<one-to-many class="Answer"/>
 		</array> -->
 		
-		<bag name="answers" lazy="false" inverse="true">
-			<key column="sub_id" not-null="false" />
+		<bag name="answers" inverse="true" fetch="join">
+			<key column="sub_id" not-null="true" />
 			 <!-- <index column="id" />-->
 			<one-to-many class="Answer" />
 		</bag>

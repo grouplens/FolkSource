@@ -8,23 +8,25 @@ import java.util.List;
 import org.citizensense.model.*;
 
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
 public class SubmissionService {
 
-	public static List<Submission> getSubmissions() {
+	public static List<Submission> getSubmissions(Session session) {
 		List<Submission> submissions;
 
-		Session session = HibernateUtil.getSession(true);
-
+		System.out.println("ANSWER IN");
+		//submissions = session.createCriteria(Submission.class).setFetchMode("answers", FetchMode.JOIN).list();
 		submissions = session.createQuery("from Submission").list();
+		System.out.println("ANSWER OUT");
 
 		return submissions;
 	}
 	
-	public static Submission getSubmission(int id){
-		Session session = HibernateUtil.getSession(true);
+	public static Submission getSubmission(int id, Session session){
+		//Session session = HibernateUtil.getSession(true);
 		Object obj = session.createCriteria(Submission.class)
 							.add(Restrictions.idEq(id))
 							.list().get(0);
@@ -36,10 +38,11 @@ public class SubmissionService {
 		
 	}
 	
-	public static List<Submission> getSubmissionsAfter(String date) {
+	@SuppressWarnings("unchecked")
+	public static List<Submission> getSubmissionsAfter(String date, Session session) {
 		//date should be a string representation of the milliseconds since the unix epoch
 		List<Submission> submissions;
-		Session session = HibernateUtil.getSession(true);
+		//Session session = HibernateUtil.getSession(true);
 		submissions = session.createCriteria(Submission.class)
 						.add(Restrictions.gt("timestamp", new Date(Long.parseLong(date))))
 						.list();
@@ -59,6 +62,7 @@ public class SubmissionService {
 				AnswerService.save(a);
 			}
 		}
+		@SuppressWarnings("unchecked")
 		List<User> users = session.createQuery("from User where id=" + s.getUser_id()).list();
 		users.get(0).setPoints(users.get(0).getPoints() + 1);
 		return true;
@@ -67,6 +71,7 @@ public class SubmissionService {
 	public static User getSubUser(Submission submission) {
 		Session session = HibernateUtil.getSession(false);
 		//System.out.println("CITIZENSENSE - " + submission.getUser_id());
+		@SuppressWarnings("unchecked")
 		List<User> users = session.createQuery("from User where id=" + submission.getUser_id()).list();
 		return users.get(0);
 	}

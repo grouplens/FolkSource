@@ -1,6 +1,8 @@
 package org.citizensense.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.grouplens.common.dto.Dto;
@@ -28,9 +30,9 @@ public class TaskDto extends Dto{
 		instructions = t.instructions;
 		required = t.required;
 		if (t.submissions == null){submissions = null;}
-		else{submissions = SubmissionDto.fromSubmissionArray(t.submissions);}
-		locations = LocationDto.fromLocationArray(t.locations);
-		questions = t.questions;
+		else{submissions = SubmissionDto.fromSubmissionArray(t.submissions.toArray(new Submission[t.submissions.size()]));}
+		locations = LocationDto.fromLocationArray(t.locations.toArray(new Location[t.locations.size()]));
+		questions = t.questions.toArray(new Question[t.questions.size()]);
 	}
 	public static List<TaskDto> fromList(List<Task> tasks){
 		List<TaskDto> tdtos = new ArrayList<TaskDto>();
@@ -62,7 +64,7 @@ public class TaskDto extends Dto{
 			locs = LocationDto.toLocationArray(locations);
 		}
 		
-		return new Task(id, name, instructions, required, subs, questions, locs);
+		return new Task(id, name, instructions, required, new LinkedHashSet<Submission>(Arrays.asList(subs)), new LinkedHashSet<Question>(Arrays.asList(questions)), new LinkedHashSet<Location>(Arrays.asList(locs)));
 	}
 	public static Task[] toTaskArray(TaskDto[] tdtos){
 		Task[] tasks = new Task[tdtos.length];

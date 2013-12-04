@@ -1,7 +1,9 @@
 package org.citizensense.model;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.grouplens.common.dto.Dto;
 
@@ -24,31 +26,31 @@ public class Task{
 	public Boolean getRequired() {
 		return required;
 	}
-	public void setLocations(Location[] locations) {
+	public void setLocations(Set<Location> locations) {
 		this.locations = locations;
 	}
-	public void setSubmissions(Submission[] submissions) {
+	public void setSubmissions(Set<Submission> submissions) {
 		this.submissions = submissions;
 	}
-	public void setQuestions(Question[] questions) {
+	public void setQuestions(Set<Question> questions) {
 		this.questions = questions;
 	}
 
-	public Location[] locations;
-	public Submission[] submissions;
-	public Question[] questions;	
+	public Set<Location> locations;
+	public Set<Submission> submissions;
+	public Set<Question> questions;	
 	
 	public Task(){
 		super();
 	}
 	//used by the TaskDto
-	public Task(Integer id, String name, String instructions, Boolean required, Submission[] subs, Question[] qs, Location[] locs){
+	public Task(Integer id, String name, String instructions, Boolean required, Set<Submission> subs, Set<Question> qs, Set<Location> locs){
 		super();
 		this.id = id;
 		this.name = name;
 		this.instructions = instructions;
 		this.required = required;
-		this.submissions = subs;
+		//this.submissions = subs;
 		this.questions = qs;
 		this.locations = locs;
 	}
@@ -74,18 +76,18 @@ public class Task{
 	public void setInstructions(String instructions) {
 		this.instructions = instructions;
 	}
-	public List<Submission> getSubmissions() {
+	public Set<Submission> getSubmissions() {
 		if (submissions == null){
 			return null;
 		}
-		return Arrays.asList(submissions);
+		return submissions;
 	}
 
 	public void setSubmissions(List<Submission> subs) {
 		if(subs == null) 
-			this.submissions = new Submission[0];
+			this.submissions = new HashSet<Submission>();
 		else 
-			this.submissions = subs.toArray(new Submission[subs.size()]);
+			this.submissions = new HashSet<Submission>(subs);
 	}
 
 	public Integer getId() {
@@ -104,21 +106,21 @@ public class Task{
 		this.required = required;
 	}
 
-	public List<Question> getQuestions() {
+	public Set<Question> getQuestions() {
 		if (questions == null) return null;
-		return Arrays.asList(questions);
+		return questions;
 	}
 
 	public void setQuestions(List<Question> questions) {
-		this.questions = questions.toArray(new Question[questions.size()]);
+		this.questions = new HashSet(questions);
 	}
 	
-	public List<Location> getLocations() {
-		return Arrays.asList(locations);
+	public Set<Location> getLocations() {
+		return locations;
 	}
 
 	public void setLocations(List<Location> locations) {
-		this.locations = locations.toArray((new Location[locations.size()]));
+		this.locations = new HashSet(locations);
 	}
 
 

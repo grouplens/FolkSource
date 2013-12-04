@@ -1,15 +1,15 @@
 package org.citizensense.model;
 
-public class MediaAnswer extends Answer {
+public class MediaAudioAnswer extends Answer {
 
 	public String path;
 	public String mimeType;
 	
-	public MediaAnswer(){
+	public MediaAudioAnswer(){
 		super();
 	}
 	
-	public MediaAnswer(Integer id, String answer_type, Integer q_id, Integer sub_id, String path, String mimeType) {
+	public MediaAudioAnswer(Integer id, String answer_type, Integer q_id, Integer sub_id, String path, String mimeType) {
 		super(id, answer_type, q_id, sub_id);
 		this.path = path;
 		this.mimeType = mimeType;

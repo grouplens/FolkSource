@@ -3,56 +3,96 @@
 
 <hibernate-mapping package="org.citizensense.model">
 
-<class name = "Answer" table = "answers">
+<class name="Answer" table="answers">
 	<id name="id" column="id">
     	<generator class="native"/>
     </id>
+    <discriminator column="answer_type" type="string"/>
 	<property name="sub_id" />
     <property name="q_id" />
-    <property name="answer_type" />
+    
 	
-	<joined-subclass name="TextAnswer" table="text_answers">
-    	<key column="id"/>
-    	<property name="answer"/>
-    </joined-subclass>
+	<subclass name="TextAnswer" discriminator-value="text">
+		<join table="text_answers" fetch="select">
+    		<key column="id"/>
+    		<property name="answer"/>
+    	</join>
+    </subclass>
     
-    <joined-subclass name="TimeSpanAnswer" table="time_span_answers">
-    	<key column="id"/>
-    	<property name="milliseconds"/>
-    </joined-subclass>
+    <subclass name="TimeSpanAnswer" discriminator-value="time_span"> 
+    	<join table="time_span_answers" fetch="select">
+    		<key column="id"/>
+    		<property name="milliseconds"/>
+    	</join>
+    </subclass>
     
-    <joined-subclass name="DateTimeAnswer" table="date_time_answers">
-    	<key column="id"/>
-    	<property name="timestamp" column="time_point"/>
-    </joined-subclass>
+    <subclass name="DateTimeAnswer" discriminator-value="cur_time"> 
+    	<join table="date_time_answers" fetch="select">
+    		<key column="id"/>
+    		<property name="timestamp" column="time_point"/>
+    	</join>
+    </subclass>
     
-    <joined-subclass name="CompassAnswer" table="compass_answers">
-    	<key column="id"/>
-    	<property name="heading" type="float"/>
-    </joined-subclass>
+    <subclass name="CompassAnswer" discriminator-value="compass">
+    	<join table="compass_answers" fetch="select">
+    		<key column="id"/>
+    		<property name="heading" type="float"/>
+    	</join>
+    </subclass>
     
-    <joined-subclass name="AccelerometerAnswer" table="accelerometer_answers">
-    	<key column="id"/>
-    	<property name="x" type="float"/>
-    	<property name="y" type="float"/>
-    	<property name="z" type="float"/>
-    </joined-subclass>
+    <subclass name="AccelerometerAnswer" discriminator-value="accelerometer">
+    	<join table="accelerometer_answers" fetch="select">
+    		<key column="id"/>
+    		<property name="x" type="float"/>
+    		<property name="y" type="float"/>
+    		<property name="z" type="float"/>
+    	</join>
+    </subclass>
     	
-    <joined-subclass name="MediaAnswer" table = "media_answers">
-    	<key column="id" />
-    	<property name="path"/>
-    	<property name="mimeType" column="mime_type"/>
-    </joined-subclass>
+    <subclass name="MediaAudioAnswer"  discriminator-value="media_audio">
+    	<join table = "media_answers" fetch="select">
+    		<key column="id" />
+    		<property name="path"/>
+    		<property name="mimeType" column="mime_type"/>
+    	</join>
+    </subclass>
     
-    <joined-subclass name="MultipleChoiceAnswer" table = "multiple_choice_answers">
-    	<key column="id" />
-    	<property name="choices"/>
-    </joined-subclass>
+    <subclass name="MediaPhotoAnswer"  discriminator-value="media_photo">
+    	<join table = "media_answers" fetch="select">
+    		<key column="id" />
+    		<property name="path"/>
+    		<property name="mimeType" column="mime_type"/>
+    	</join>
+    </subclass>
     
-    <joined-subclass name="ComplexCounterAnswer" table = "complex_counter_answers">
-    	<key column="id" />
-    	<property name="counts"/>
-    </joined-subclass>
+    <subclass name="MediaVideoAnswer"  discriminator-value="media_video">
+    	<join table = "media_answers" fetch="select">
+    		<key column="id" />
+    		<property name="path"/>
+    		<property name="mimeType" column="mime_type"/>
+    	</join>
+    </subclass>
+    
+    <subclass name="MultipleChoiceAnswer" discriminator-value="multiple_choice">
+    	<join table = "multiple_choice_answers" fetch="select">
+    		<key column="id" />
+    		<property name="choices"/>
+    	</join>
+    </subclass>
+    
+    <subclass name="ExclusiveMultipleChoiceAnswer" discriminator-value="exclusive_multiple_choice">
+    	<join table = "multiple_choice_answers" fetch="select">
+    		<key column="id" />
+    		<property name="choices"/>
+    	</join>
+    </subclass>
+    
+    <subclass name="ComplexCounterAnswer" discriminator-value="complex_counter">
+    	<join table="complex_counter_answers" fetch="select">
+    		<key column="id" />
+<!--     		<property name="counts"/> -->
+    	</join>
+    </subclass>
     	
 </class>
 

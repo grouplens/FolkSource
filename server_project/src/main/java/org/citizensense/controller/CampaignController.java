@@ -25,18 +25,13 @@ public class CampaignController implements ModelDriven<DtoContainer<CampaignDto>
 	
 	public String show() {
 		HttpServletResponse res = ServletActionContext.getResponse();
-//		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "*");
-		//res.addHeader("Access-Control-Allow-Methods", "GET");
 		content.set(new CampaignDto(CampaignService.getCampaign(id)));
 		
-		//return new DefaultHttpHeaders("show").disableCaching();
 		return "show";
 	}
 	
 	public void setId(String id) {
-//		if (id != null)
-//			this.camp = CampaignService.getCampaign(Integer.parseInt(id));
 		this.id = Integer.parseInt(id);		
 	}
 	
@@ -45,10 +40,7 @@ public class CampaignController implements ModelDriven<DtoContainer<CampaignDto>
 	}
 	
 	public String index() {
-		//list = CampaignService.getCampaigns();
-		//return new DefaultHttpHeaders("index").disableCaching();
 		HttpServletResponse res = ServletActionContext.getResponse();
-//		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "*");
 		content = new DtoContainer<CampaignDto>(CampaignDto.class, true);
 		content.set(CampaignDto.fromCampaignList(CampaignService.getCampaigns()));
@@ -62,11 +54,10 @@ public class CampaignController implements ModelDriven<DtoContainer<CampaignDto>
 	public String create()
 	{
 		HttpServletResponse res = ServletActionContext.getResponse();
-//		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "*");
-//		res.addHeader("Access-Control-Allow-Headers", "Content-Type");
 		Campaign c = content.getSingle().toCampaign();
 		CampaignService.save(c);
+		
 		// Note: It may not be immediately obvious why it is necessary to set the content again. The reason is, 
 		// is that the CampaignDto originally in content did not have its id set. CampaignService.save(task) may
 		// modify the Campaign.

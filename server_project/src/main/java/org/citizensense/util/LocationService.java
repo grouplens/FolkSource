@@ -5,6 +5,7 @@ import java.util.List;
 import org.citizensense.model.*;
 
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 public class LocationService {
 
@@ -21,13 +22,15 @@ public class LocationService {
 	@SuppressWarnings("unchecked")
 	public static List<Location> getLocations() {
 		Session session = HibernateUtil.getSession(false);
-		List<Location> l =  session.createQuery("from Location").list();
+		List<Location> l = session.createCriteria(Location.class).list();
+		//List<Location> l =  session.createQuery("from Location").list();
 		return l;
 	}
 	@SuppressWarnings("unchecked")
 	public static List<Location> getLocations(int id) {
 		Session session = HibernateUtil.getSession(false);
-		List<Location> l =  session.createQuery("from Location").list();
+		List<Location> l = session.createCriteria(Location.class).add(Restrictions.idEq(id)).list();
+		//List<Location> l =  session.createQuery("from Location").list();
 		return l;
 	}
 }

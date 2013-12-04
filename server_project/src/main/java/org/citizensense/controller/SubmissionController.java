@@ -7,8 +7,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 import org.citizensense.model.SubmissionDto;
 import org.citizensense.model.Submission;
+import org.citizensense.util.HibernateUtil;
 import org.citizensense.util.SubmissionService;
 import org.grouplens.common.dto.DtoContainer;
+import org.hibernate.Session;
 
 import com.opensymphony.xwork2.ModelDriven;
 
@@ -46,10 +48,11 @@ public class SubmissionController implements ModelDriven<DtoContainer<Submission
 	
 	// Handles /submission/{id} GET requests
 	public String show() {
+		Session session = HibernateUtil.getSession(true);
 		HttpServletResponse res = ServletActionContext.getResponse();
 		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "*");
-		content.set(new SubmissionDto(SubmissionService.getSubmission(id)));
+		content.set(new SubmissionDto(SubmissionService.getSubmission(id, session)));
 		return "show";//new DefaultHttpHeaders("show");
 	}
 	
@@ -63,12 +66,13 @@ public class SubmissionController implements ModelDriven<DtoContainer<Submission
 		res.addHeader("Access-Control-Allow-Origin", "*");
 		content = new DtoContainer<SubmissionDto>(SubmissionDto.class, true);
 		Map<String, String[]> paramMap = ServletActionContext.getRequest().getParameterMap();
-		
+		Session session = HibernateUtil.getSession(true);
 		if (paramMap.get("after") != null){
-			content.set(SubmissionDto.fromSubmissionList(SubmissionService.getSubmissionsAfter(paramMap.get("after")[0])));
+			content.set(SubmissionDto.fromSubmissionList(SubmissionService.getSubmissionsAfter(paramMap.get("after")[0], session)));
 		} else {
-			content.set(SubmissionDto.fromSubmissionList(SubmissionService.getSubmissions()));
+			content.set(SubmissionDto.fromSubmissionList(SubmissionService.getSubmissions(session)));
 		}
+		
 		//return new DefaultHttpHeaders("index").disableCaching();
 		return "index";
 	}

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.grouplens.common.dto.Dto;
 
@@ -22,7 +23,7 @@ public class Campaign{
 	public Integer owner_id;
 	public Integer task_id;
 
-	public Task[] tasks;
+	public Set<Task> tasks;
 	
 	/**
 	 * @param args
@@ -30,7 +31,7 @@ public class Campaign{
 	public Campaign() {
 		super();
 	}
-	public Campaign(Integer id, String title, String description, String location, Date start_date, Date end_date, String start_date_string, String end_date_string, Integer owner_id, Integer task_id, Task[] tasks){
+	public Campaign(Integer id, String title, String description, String location, Date start_date, Date end_date, String start_date_string, String end_date_string, Integer owner_id, Integer task_id, Set<Task> tasks){
 		super();
 		this.id = id;
 		this.title = title;
@@ -55,12 +56,12 @@ public class Campaign{
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	public List<Task> getTasks() {
-		if (tasks != null) { return Arrays.asList(tasks);}
+	public Set<Task> getTasks() {
+		if (tasks != null) { return tasks;}
 		return null;
 	}
-	public void setTasks(List<Task> tasks) {
-		this.tasks = tasks.toArray(new Task[tasks.size()]);
+	public void setTasks(Set<Task> tasks) {
+		this.tasks = tasks;
 	}
 	public String getDescription() {
 		return description;
