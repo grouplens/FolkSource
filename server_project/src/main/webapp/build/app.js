@@ -4625,10 +4625,9 @@ return n.description = this.$.campaignDesc.getData(), n.title = this.$.campaignT
 
 enyo.kind({
 name: "ComplexSensr",
-style: "background-color: #254048; color: white; border-color: white; height: 100%;",
+classes: "light-background",
 kind: enyo.FittableRows,
 published: {
-complex: !1,
 data: ""
 },
 events: {
@@ -4640,8 +4639,8 @@ handlers: {
 onSenseOpened: "openNext",
 onPhotoOk: "photoOk",
 onDeviceReady: "setReady",
-onDrawerOk: "openDrawer2",
-onRenderDrawer: "renderDrawer2"
+onRenderDrawer: "renderDrawer2",
+onTimerStarted: "jumpToCounter"
 },
 components: [ {
 kind: "enyo.Signals",
@@ -4650,68 +4649,86 @@ onPinClicked: "chosenLocation",
 onPhotoData: "photoData",
 onButtonGroupChosen: "renderSubmitButton"
 }, {
-name: "formDiv",
-kind: enyo.FittableRows,
+name: "doubleCheckPopup",
+kind: onyx.Popup,
+autoDismiss: !1,
+centered: !0,
+floating: !0,
+modal: !0,
+scrimWhenModal: !1,
+scrim: !0,
+classes: "light-background",
+style: "width: 80%;",
+components: [ {
+name: "doubleCheckMessage",
+content: "Are you sure you want to cancel? You will lose all observation data recorded",
+style: "padding: 5px 0px;"
+}, {
+kind: enyo.ToolDecorator,
+classes: "senseButtons",
+components: [ {
+name: "no",
+kind: onyx.Button,
+classes: "button-style button-style-negative",
+ontap: "close",
+components: [ {
+tag: "i",
+classes: "icon-ban-circle icon-large"
+} ]
+}, {
+name: "yes",
+kind: onyx.Button,
+classes: "button-style button-style-affirmative",
+ontap: "close",
+components: [ {
+tag: "i",
+classes: "icon-ok icon-large"
+} ]
+} ]
+} ]
+}, {
+name: "acc",
+kind: "enyo.Scroller",
+layoutKind: enyo.FittableRowsLayout,
+vertical: "auto",
+horizontal: "hidden",
 fit: !0,
-components: []
+strategyKind: "TouchScrollStrategy"
+}, {
+name: "buttons",
+kind: enyo.ToolDecorator,
+classes: "senseButtons",
+components: [ {
+kind: onyx.Button,
+classes: "button-style button-style-negative",
+ontap: "togglePopup",
+components: [ {
+tag: "i",
+classes: "icon-ban-circle icon-large"
+} ]
+}, {
+name: "submit",
+kind: onyx.Button,
+classes: "button-style button-style-affirmative",
+ontap: "togglePopup",
+components: [ {
+tag: "i",
+classes: "icon-ok icon-large"
+} ]
+} ]
 } ],
 create: function(e, t) {
-this.inherited(arguments), this.recreate(), this.render(), this.setTaskData(this.data), this.questions = [];
+this.inherited(arguments), this.render(), this.counterName = "";
 },
 recreate: function() {
-this.log(this.$.formDiv), this.$.formDiv === undefined && this.createComponent({
-name: "formDiv",
-kind: enyo.FittableRows,
-components: []
-}), this.complex ? this.$.formDiv.createComponent({
-kind: "enyo.FittableRows",
-kind: "enyo.Scroller",
-vertical: "scroll",
-strategyKind: "TranslateScrollStrategy",
-name: "acc",
-style: "width: 100%;",
-components: [ {
-content: "Questions about you",
-ontap: "activateFormDrawer",
-classes: "accordionHeader"
-}, {
-name: "qs",
-kind: "onyx.Drawer",
-fit: !0,
-open: !1,
-layoutKind: "enyo.FittableRowsLayout",
-style: "white-space: nowrap; overflow: scroll; height: 100%;",
-components: [ {
-kind: "enyo.Scroller",
-layoutKind: "enyo.FittableRowsLayout",
-vertical: "scroll",
-strategyKind: "TranslateScrollStrategy",
-name: "accordionItemContent",
-style: "height: 293px;",
-components: []
-} ]
-} ]
-}, {
-owner: this
-}) : (this.log("building formDiv"), this.imageOK = !0, this.$.formDiv.createComponent({
+this.log(this.$.formDiv), this.setTaskData(this.data), this.imageOK = !0, this.$.formDiv.createComponent({
 name: "qbody",
 fit: !0,
 components: []
-})), this.$.formDiv.resized();
+});
 },
 rendered: function(e, t) {
 this.inherited(arguments), this.resized(), this.reflow();
-},
-activateFormDrawer: function(e, t) {
-e.addRemoveClass("accordionHeaderHighlight", !this.$.qs.open), this.$.qs.setOpen(!this.$.qs.open);
-},
-activateFormDrawer2: function(e, t) {
-this.waterfall("on2DrawerClick", {
-name: "ComplexSensr"
-});
-},
-openDrawer2: function(e, t) {
-return this.$.draw2.reflow(), this.$.draw2.addRemoveClass("accordionHeaderHighlight", !this.$.qs1.open), this.$.qs1.setOpen(!this.$.qs1.open), !0;
 },
 currentLocation: function() {},
 chosenLocation: function(e, t) {
@@ -4740,9 +4757,6 @@ src: "./assets/leaf-2.jpg"
 renderSubmitButton: function(e, t) {
 this.$.submit.setDisabled(!1);
 },
-renderDrawer2: function(e, t) {
-this.$.draw2.reflow(), this.$.draw2.render();
-},
 onPhotoFail: function(e) {
 console.log(e);
 },
@@ -4757,69 +4771,57 @@ photoOk: function() {
 return this.log(), !0;
 },
 setTaskData: function(e) {
-this.questions = e, questionBody = [], this.$.formDiv != undefined && this.$.formDiv.getComponents().length > 0 && (this.$.formDiv.destroyClientControls(), this.$.formDiv.destroy(), this.recreate()), this.complex ? questionBody.push(this.$.accordionItemContent) : (this.log(this.$), questionBody.push(this.$.formDiv.$.qbody));
-for (i in this.questions) {
-var t = this.questions[i], n = "name_" + t.id;
-type = t.type;
+this.task = e.tasks[0], this.campTitle = e.title, questionBody = [];
+var t = -1;
+for (i in this.task.questions) {
+var n = this.task.questions[i], r = "name_" + n.id;
+type = n.type;
 if (type.indexOf("complex") != -1) {
 type = "counter";
-var r = type.search(/\d/), s = 0;
-if (r != -1) var s = type.charAt(r);
-if (s != questionBody.length && this.complex) {
-var o = "qs" + (s + 1);
-this.$.formDiv.createComponent({
-name: "draw2",
-content: "Count Bicycles and/or Pedestrians",
-ontap: "activateFormDrawer2",
-classes: "accordionHeader"
-}, {
-owner: this
-}), this.$.formDiv.createComponent({
-name: o,
-kind: "onyx.Drawer",
-open: !1,
-style: "white-space: nowrap; overflow: hidden;",
-components: [ {
-name: "accordionItemContent2",
-components: []
-} ]
-}, {
-owner: this
-}), questionBody.push(this.$.accordionItemContent2);
-}
+var s = type.search(/\d/), o = 0;
+if (s != -1) var o = type.charAt(s);
 }
 switch (type) {
 case "text":
-questionBody[0].createComponent({
-name: n,
+this.$.acc.createComponent({
+name: r,
 style: "clear: both;",
-content: t.question
-}), this.newFormText(t);
+content: n.question
+}), this.newFormText(n);
 break;
 case "exclusive_multiple_choice":
-questionBody[0].createComponent({
-name: n,
+this.$.acc.createComponent({
+name: r,
 style: "clear: both;",
-content: t.question
-}), this.newFormExclusiveChoice(t);
+content: n.question
+}), this.newFormExclusiveChoice(n);
 break;
 case "multiple_choice":
-questionBody[0].createComponent({
-name: n,
+this.$.acc.createComponent({
+name: r,
 style: "clear: both;",
-content: t.question
-}), this.newFormMultipleChoice(t);
+content: n.question
+}), this.newFormMultipleChoice(n);
 break;
 case "counter":
-this.newFormCounter(t);
+t = i;
 break;
 case "cur_time":
-this.newTime(t);
+this.newTime(n);
 break;
+case "media_camera":
+case "media_audio":
+case "media_video":
+this.newMediaReading(n);
 default:
 }
 }
-this.complex && (this.$.accordionItemContent.resized(), this.$.accordionItemContent.reflow());
+this.render();
+if (t > -1) {
+var u = this.task.questions[t];
+this.newFormCounter(u);
+}
+this.render(), this.resized();
 },
 fileEntry: function(e) {
 window.resolveLocalFileSystemURI(e, this.getImageData, null);
@@ -4831,113 +4833,233 @@ console.log(e.target.result);
 var t = read.readAsDataURL(e);
 console.log(t);
 },
+makeImageSend: function(e, t) {
+var n = btoa(this.utf8_encode(t));
+this.$.senses.createComponent({
+kind: "enyo.Image",
+src: "data:image/jpeg;base64," + n
+});
+var r = "image?", i = new Date, s = (i.getMonth() + 1).toString();
+while (s.length < 2) s = "0" + s;
+var o = i.getDate().toString();
+while (o.length < 2) o = "0" + o;
+var u = i.getFullYear().toString() + s.toString() + o.toString() + "_" + i.getHours().toString() + i.getMinutes().toString() + i.getSeconds().toString();
+r += "userName=" + Data.getUserName(LocalStorage.get("user")) + "&", r += "imageFileName=" + this.campTitle.replace(/ /g, "%20") + "_" + u + ".jpg&";
+var a = Data.getURL() + r, f = new enyo.Ajax({
+method: "POST",
+url: a,
+contentType: "image/jpeg"
+});
+f.response(this, "imageSubmission");
+},
+buildAndSendSubmission: function() {
+if (!this.$.submit.disabled) {
+var e = {
+submission: {
+task_id: this.task.id,
+gps_location: "testy test",
+user_id: 5,
+img_path: "test",
+answers: []
+}
+}, t = Data.getLocationData(), n = t.latitude + "|" + t.longitude;
+e.submission.gps_location = n, e.submission.user_id = LocalStorage.get("user");
+for (i in this.task.questions) {
+var r = this.task.questions[i];
+type = r.type;
+if (type.indexOf("complex") != -1) {
+type = "counter";
+var s = type.search(/\d/), o = 0;
+if (s != -1) var o = type.charAt(s);
+if (o != questionBody.length && this.complex) var u = "qs" + (o + 1);
+}
+var a = {
+answer: "BOOM",
+type: r.type,
+q_id: r.id,
+sub_id: 0
+};
+switch (type) {
+case "text":
+a.answer = this.readFormText(r), e.submission.answers.push(a);
+break;
+case "exclusive_multiple_choice":
+a.answer = this.readFormExclusiveChoice(r), e.submission.answers.push(a);
+break;
+case "multiple_choice":
+a.answer = this.readFormMultipleChoice(r), e.submission.answers.push(a);
+break;
+case "counter":
+var f = this.readFormCounter(r).split("|");
+for (x in f) {
+var l = {
+answer: "BOOM",
+type: r.type,
+q_id: r.id,
+sub_id: 0
+}, c = f[x].split(",");
+c.splice(0, 1), this.log(c[0]);
+var h = new Date;
+h.setTime(c[0]), this.log(h), c[0] = h, l.answer = c.join(","), e.submission.answers.push(l);
+}
+break;
+case "cur_time":
+a.answer = this.readTime(r), e.submission.answers.push(a);
+break;
+default:
+continue;
+}
+}
+this.log("SENDING TO SERVER: " + JSON.stringify(e));
+}
+},
+handlePostResponse: function(e, t) {
+this.log("SERVER RESPONSE CAME BACK"), this.log(JSON.stringify(e.xhr.responseText)), this.camComplete = !1, this.$.submit.setDisabled(!0), this.chosen_location = undefined, LocalStorage.remove("image"), this.imageOK = !1, !this.complex && this.$.imgDiv.getComponents().length > 0 && this.$.imgDiv.destroyComponents();
+},
 imageSubmission: function(e, t) {
 this.log(JSON.stringify(e)), this.log(JSON.stringify(t));
 },
+togglePopup: function(e, t) {
+var n = this.$.doubleCheckPopup.getShowing(), r = e.content;
+e.getContent() === "Submit" && (this.$.doubleCheckPopup.submit = !0, this.$.doubleCheckMessage.setContent("Are you sure you want to submit your observation to the server?")), this.$.doubleCheckPopup.setShowing(!n);
+},
+close: function(e, t) {
+return this.$.doubleCheckPopup.hide(), e.name === "yes" && (this.$.doubleCheckPopup.submit && this.buildAndSendSubmission(), this.bubble("onSubmissionMade")), !0;
+},
 testButtons: function(e, t) {
-this.log(questionBody[0].$);
-if (this.complex) {
-this.log();
-var n = questionBody[0].$.groupbox.getControls(), r = e.getContent(), t = !0, i = !0;
+var n = this.$.groupbox.getControls(), r = e.getContent(), t = !0, i = !0;
 r === "Bicycles" ? (t = !0, i = !1) : r === "Pedestrians" ? (t = !1, i = !0) : r === "Both" && (i = !0, t = !0);
 for (var s in n) {
 var o = n[s].name.split("_")[1];
 this.$["checkbox_" + o].setDisabled(!1), n[s].getContent() === "Helmet" && !t ? this.$["checkbox_" + o].setDisabled(!0) : n[s].getContent() === "Assistive" && !i && this.$["checkbox_" + o].setDisabled(!0);
 }
-}
 enyo.Signals.send("onButtonGroupChosen", e);
 },
 newFormText: function(e) {
 var t = "inputDec_" + e.id, n = "input_" + e.id;
-questionBody[0].createComponent({
+this.$.acc.createComponent({
 name: t,
 style: "clear: both;",
 kind: "onyx.InputDecorator",
 classes: "onyx-input-decorator center",
-style: "outline-color: white; border-color: white;",
 components: [ {
 name: n,
 kind: "onyx.Input",
 classes: "onyx-input"
 } ]
 }, {
-owner: questionBody[0]
+owner: this
 });
 },
 newFormExclusiveChoice: function(e) {
-var t = "input_" + e.id, n = e.options.split("|"), r = [];
-for (i in n) i == 0 ? r.push({
-content: n[i],
+var t = "input_" + e.id;
+options = e.options.split("|"), array = [];
+for (var n in options) n == 0 ? array.push({
+content: options[n],
 active: !0,
+classes: "button-style nice-padding",
 ontap: "testButtons"
-}) : r.push({
-content: n[i],
+}) : array.push({
+content: options[n],
+classes: "button-style nice-padding",
 ontap: "testButtons"
 });
-questionBody[0].createComponent({
+this.$.acc.createComponent({
 name: t,
-kind: "onyx.RadioGroup",
+kind: onyx.RadioGroup,
 classes: "center",
-components: r
+components: array
 }, {
 owner: this
 });
 },
 newTime: function(e) {
-var t = new Date, n = t.toTimeString().split(" ")[0], r = "time_" + e.id;
-questionBody[0].createComponent({
+var t = new Date;
+timeStr = t.toTimeString().split(" ")[0], name = "time_" + e.id, this.$.acc.createComponent({
 content: e.question
-}), questionBody[0].createComponent({
-name: r,
-content: n,
+}), this.$.acc.createComponent({
+name: name,
+content: timeStr,
 classes: "center",
 time: t.toTimeString()
 });
 },
 newFormMultipleChoice: function(e) {
 var t = e.options.split("|");
-questionBody[0].createComponent({
+this.$.acc.createComponent({
 name: "groupbox",
-classes: "center;",
-kind: "onyx.Groupbox",
+classes: "center",
+style: "clear: both;",
+kind: enyo.ToolDecorator,
 components: []
 }, {
-owner: questionBody[0]
+owner: this
 });
 for (i in t) {
-var n = "checkbox_" + i, r = "content_" + i, s = [];
-questionBody[0].$.groupbox.createComponent({
+var n = "checkbox_" + i, r = "content_" + i;
+this.$.groupbox.createComponent({
 name: n,
 kind: "onyx.Checkbox",
-onchange: "testButtons",
-style: "float: left; clear: left;"
+onchange: "testButtons"
 }, {
 owner: this
-}), questionBody[0].$.groupbox.createComponent({
+}), this.$.groupbox.createComponent({
 name: r,
-content: t[i],
-style: "float: left; clear: right;"
+content: t[i]
+}, {
+owner: this
 });
 }
 },
 newFormCounter: function(e) {
 var t = "name_" + e.id, n = "counter_" + e.id, r;
-for (x in this.questions) if (this.questions[x].type === "exclusive_multiple_choice") {
-r = this.questions[x].id.toString();
+for (x in this.task.questions) if (this.task.questions[x].type === "exclusive_multiple_choice") {
+var r = this.task.questions[x].id.toString();
 break;
 }
-var i = "input_" + r;
-e.type.split("_")[1].indexOf("2") === -1 ? questionBody[1].createComponent({
-name: n,
+var i = "input_" + r, s = document.body.clientHeight - 57 - 32;
+this.$.acc.createComponent({
 kind: "BikeCounter",
-title: e.question,
-style: "clear: both;"
-}) : questionBody[2].createComponent({
-name: n,
-kind: "BikeCounter",
-title: e.question,
-style: "clear: both;"
+style: "height: " + s + "px; width: 100%;"
+}, {
+owner: this
+}), this.counterName = n;
+},
+newMediaReading: function(e) {
+var t = "sensor_" + e.id, n = e.type.split("_")[1];
+this.$.acc.createComponent({
+name: t,
+kind: "MediaSensor",
+type: n,
+sendAutomatically: !1
 });
+},
+readFormText: function(e) {
+var t = "input_" + e.id;
+return this.$[t].getValue();
+},
+readFormExclusiveChoice: function(e) {
+var t = "input_" + e.id, n = this.$[t].children;
+for (x in n) if (n[x].hasClass("active")) return n[x].getContent();
+},
+readFormMultipleChoice: function(e) {
+var t = [];
+for (i in e.options.split("|")) {
+var n = "checkbox_" + i, r = "content_" + i;
+this.$[n].getValue() && t.push(questionBody[0].$.groupbox.$[r].getContent());
+}
+return t.join("|");
+},
+readFormCounter: function(e) {
+var t;
+return this.log(this.counterName), t = this.$.bikeCounter.getData(), this.log(t), t.join("|");
+},
+readTime: function(e) {
+var t = "time_" + e.id, n = this.$.acc.$[t].time;
+return n;
+},
+jumpToCounter: function(e, t) {
+this.$.acc.scrollToControl(this.$.bikeCounter);
 }
 });
 
@@ -5351,8 +5473,12 @@ onTaskMarkerClicked: "showTaskDetail",
 onViewportChanged: "updateTaskDetail",
 onClusterSelection: "updateTaskDetail",
 onReceiveNewSubmissions: "integrateNewSubmissions",
-onCleanupSelected: "removeSelectionList"
+onCleanupSelected: "removeSelectionList",
+onHilightSubmission: "setSubDetails"
 },
+components: [ {
+kind: enyo.FittableRows,
+fit: !0,
 components: [ {
 kind: enyo.FittableColumns,
 fit: !0,
@@ -5431,6 +5557,23 @@ fit: !0,
 style: "width: 200px;padding: 4px;"
 } ]
 } ]
+}, {
+name: "detailDrawer",
+kind: onyx.Drawer,
+orient: "v",
+open: !1,
+classes: "light-background",
+components: [ {
+name: "sub",
+content: "Submitter:"
+}, {
+name: "num",
+content: "Number of answers:"
+}, {
+name: "loc",
+content: "Location:"
+} ]
+} ]
 } ],
 create: function(e, t) {
 this.inherited(arguments), this.campData = [];
@@ -5474,6 +5617,22 @@ var n = t.index;
 this.showTaskDetail(null, {
 task: this.taskData[n]
 });
+},
+setSubDetails: function(e, t) {
+var n = t.sub;
+this.$.sub.setContent("Submitter: " + n.user_id), this.$.num.setContent("Number of answers: " + n.answers.length), this.getGeocode(n);
+var r = this.$.detailDrawer.getOpen();
+this.$.detailDrawer.setOpen(!r);
+},
+getGeocode: function(e) {
+var t = e.gps_location.split("|"), n = new enyo.Ajax({
+handleAs: "json",
+url: "http://open.mapquestapi.com/nominatim/v1/search?format=json&q=" + t[0] + "+" + t[1]
+});
+n.response(this, "reverseGeocode"), n.go();
+},
+reverseGeocode: function(e, t) {
+return this.log(e), this.log(t), this.$.loc.setContent("Location: " + t[0].display_name), "123 Fake St SE, Minneapolis, MN";
 },
 showTasks: function(e) {
 return this.doClearTaskSelection(), this.taskData = e, this.$.taskList.taskIdToIndex = {}, this.$.taskList.setCount(this.taskData.length), this.$.taskDrawer.setOpen(!0), this.$.taskList.reset(), this.$.taskDetailDrawer.setOpen(!1), !0;
@@ -5586,40 +5745,11 @@ components: [ {
 name: "itemHeading",
 fit: !0
 } ]
-}, {
-kind: enyo.FittableRows,
-fit: !0,
-classes: "nice-padding",
-components: [ {
-name: "sub",
-content: "Submitter:"
-}, {
-name: "num",
-content: "Number of answers:"
-}, {
-name: "loc",
-content: "Location:"
-} ]
 } ]
 } ]
 } ],
 setCont: function(e, t, n) {
 this.subs = e, this.submissionIdToOwnerProxy = {}, this.$.repeater.setCount(this.subs.length), this.$.repeater.reset(), t && (this.totalSubs = this.subs.length), this.$.popHeading.setContent("Showing " + this.subs.length + " of " + this.totalSubs + " submissions."), n && this.$.popSubHeading.setContent("Click titles below to see details");
-},
-getGeocodes: function(e) {
-var t = [], n = function(e, n) {
-var r = n[0].display_name, i = r.split(",");
-t.push(i[0] + ", " + i[1]);
-};
-for (var r in e) {
-var i = e[r].gps_location.split("|"), s = new enyo.Ajax({
-sync: !0,
-handleAs: "json",
-url: "http://open.mapquestapi.com/nominatim/v1/search?format=json&q=" + i[0] + "+" + i[1]
-});
-s.response(n), s.go();
-}
-return t;
 },
 startSpinner: function() {
 this.$.spinner.removeClass("hidden"), this.$.spinnerDrawer.setOpen(!0), this.$.repeater.addClass("hidden");
@@ -5638,13 +5768,10 @@ setRepeaterValues: function(e, t) {
 var n = t.index, r = this.subs[n];
 this.data = r, this.$.itemHeading.index = n;
 var i = Number(n) + 1;
-return this.$.itemHeading.setContent(i), this.$.sub.setContent("Submitter: " + this.subs[n].user_id), this.$.num.setContent("Number of answers: " + this.subs[n].answers.length), this.$.loc.setContent("Location: " + this.subs[n].gps_location.replace("|", ", ")), !0;
+return this.$.itemHeading.setContent(i), !0;
 },
 resizeHandler: function() {
 this.inherited(arguments), this.doCSenseTaskDetailResized();
-},
-reverseGeocode: function(e) {
-return "123 Fake St SE, Minneapolis, MN";
 },
 toggleItemDrawer: function(e, t) {
 this.log("toggle item drawer called");
@@ -5655,7 +5782,7 @@ var r = n.getOpen();
 hilightMarker: function(e, t) {
 var n = t.index;
 this.doHilightSubmission({
-id: this.subs[n].id,
+sub: this.subs[n],
 open: open
 });
 },
@@ -5681,7 +5808,7 @@ name: "Data",
 kind: "enyo.Control",
 statics: {
 getURL: function() {
-return "http://ugly-umh.cs.umn.edu:8080/csense/";
+return "http://ugly-umh.cs.umn.edu:8080/";
 },
 getUserName: function(e) {
 var t = new enyo.Ajax({
@@ -6173,9 +6300,6 @@ fit: !0
 } ]
 } ]
 }, {
-kind: onyx.MenuDecorator,
-style: "height: 34%;",
-components: [ {
 kind: onyx.Button,
 classes: "button-style",
 ontap: "buildPreview",
@@ -6189,12 +6313,18 @@ tag: "i",
 classes: "icon-mobile-phone icon-3x"
 } ]
 }, {
-name: "phonePreview",
-kind: onyx.ContextualPopup,
+name: "phonePreviewContainer",
+kind: onyx.Popup,
+style: "height: 384px; width: 288px;",
+centered: !0,
+floating: !0,
+modal: !0,
+layoutKind: enyo.FittableRowsLayout,
 classes: "dark-background-flat",
 components: [ {
-content: "test"
-} ]
+name: "phonePreview",
+kind: "ComplexSensr",
+fit: !0
 } ]
 } ]
 }, {
@@ -6239,7 +6369,10 @@ classes: "nice-padding bordering light-background"
 }), this.$.realQuestionContainer.resized(), this.$.realQuestionContainer.render(), this.$.questionContainer.resized(), this.$.questionContainer.render(), this.scrollDown(), !0;
 },
 buildPreview: function(e, t) {
-this.$.phonePreview.show();
+var n = {};
+n.tasks = [];
+var r = {};
+r.questions = this.getData(), n.tasks.push(r), this.$.phonePreview.setTaskData(n), this.$.phonePreviewContainer.show();
 },
 checkQTitles: function(e, t) {
 if (t.us.kind === "QuestionBuilder" || t.us.kind === "SensorChooser") return t.us.kind === "QuestionBuilder" && (this.numQuestions = this.numQuestion - 1), t.us.kind === "SensorChooser" && (this.numSensors = this.numSensors - 1), this.waterfallDown("onQDestroyed", {
@@ -6248,7 +6381,7 @@ us: t.us
 },
 createNewStep: function(e, t) {},
 closePopup: function(e, t) {
-this.$.phonePreview.hide();
+this.$.phonePreviewContainer.hide();
 },
 reconstituteQuestions: function(e, t) {
 this.$.spinUp.show(), this.numQuestions = 0, this.numSensors = 0;
@@ -6860,7 +6993,7 @@ create: function(e, t) {
 this.inherited(arguments), this.resized(), this.$.gps.setTimeout(this.gpsTimeout), this.lastSubmissionPoll = 0, userMoved = !1, loaded = !1, this.panZoomed = !1, this.firstTime = !0, this.notShowing = !0, this.locSuc = !1, this.loaded = !1, this.locations = [], this.addPins = !1, this.addPolygon = !1, this.addShapeFile = !1, this.events.onPins = "", this.currentTaskName = "", this.taskMarkerGroups = {}, this.taskMarkers = {}, this.submissionMarkerGroups = {}, this.currentTaskMarkerGroup = null, this.currentSubmissionsGroup = null, this.currentSubmissionsGroupTaskId = null, this.selectedCluster = null, this.stopSpinnerOnTaskDetailContSet = !1;
 },
 selectedSubmission: function(e, t) {
-var n = this.currentSubmissionsGroup._layers, r = t.id;
+var n = this.currentSubmissionsGroup._layers, r = t.sub.id;
 this.log(r);
 var i = Object.keys(n);
 for (var s in i) {
