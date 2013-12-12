@@ -17,7 +17,7 @@
 	<constant name="struts.convention.action.suffix" value="Controller" />
 	<constant name="struts.convention.action.mapAllMatches" value="true" />
 	<constant name="struts.convention.default.parent.package"
-		value="citizen-sense" />
+		value="folksource" />
 	<constant name="struts.convention.package.locators" value="controller" />
 	<constant name="struts.convention.package.locators.basePackage"
 		value="org.citizensense" />
@@ -25,7 +25,7 @@
 	<constant name="struts.rest.content.restrictToGET" value="false" />
 	<constant name="struts.rest.namespace" value=""/> 
 
-	<package name="citizen-sense" extends="rest-default">
+	<package name="folksource" extends="rest-default">
 		<!-- <result-types> <result-type name="exceptionResult" class="org.grouplens.bl.struts.result.ExceptionResult" 
 			/> <result-type name="ambiguousResult" class="org.grouplens.bl.struts.result.AmbiguousIdResult" 
 			/> <result-type name="modelDrivenDto" class="org.grouplens.bl.struts.result.ModelDrivenDtoResult" 
@@ -38,28 +38,36 @@
 				/> <interceptor name="authorization" class="org.grouplens.bl.struts.interceptor.AuthorizationInterceptor" 
 				/> -->
 				<interceptor name="hibernate" class="org.citizensense.struts.HibInterceptor" /> 
+				<interceptor name="authorization" class="org.citizensense.struts.AuthInterceptor" /> 
 				<!--  <interceptor name="resolver" class="org.grouplens.bl.struts.interceptor.ModelResolverInterceptor"> 
 				<param name="enableOauth">${user.oauth.enable}</param> </interceptor> <interceptor 
 				name="concurrentReplayer" class="org.grouplens.bl.struts.interceptor.ConcurrentReplayInterceptor"/> 
 				<interceptor name="actionConfigSupport" class="org.grouplens.bl.struts.interceptor.ActionConfigCloningInterceptor"/> -->
 
-			<interceptor-stack name="cs">
+			<interceptor-stack name="fs">
 				<interceptor-ref name="restDefaultStack" />
 
 				<!-- Content parsing goes before concurrent replay since we can only 
 					stream input once. -->
 				<!-- <interceptor-ref name="contentParser" /> <interceptor-ref name="concurrentReplayer" 
 					/> --> 
+					<interceptor-ref name="servletConfig" />
+					<interceptor-ref name="authorization">
+						<param name="excludeMethods">create,update,show,index,options</param>
+					</interceptor-ref>
 					<interceptor-ref name="hibernate" /> <!-- <interceptor-ref name="exceptionLog" 
 					/> <interceptor-ref name="authentication" /> <interceptor-ref name="authorization" 
 					/> <interceptor-ref name="resolver" /> -->
 			</interceptor-stack>
 		</interceptors>
 
-		<default-interceptor-ref name="cs" />
+		<default-interceptor-ref name="fs" />
 
 		<global-results>
 			<result name="login_success" >/login_success.jsp</result>
+			<result name = "login_fail" type="httpheader">
+				<param name="status">401</param>
+			</result>
 			<result name="login_wrong_password" >/login_password_fail.jsp</result>
 			<result name="login_no_user" >/login_fail.jsp</result>
 			<result name="register_success">/register_success.jsp</result>
