@@ -4,7 +4,7 @@
 
 <struts>
 
-	<bean name="myJson" type="org.apache.struts2.rest.handler.ContentTypeHandler" class="org.citizensense.struts.JsonDtoContentTypeHandler" />
+	<bean name="myJson" type="org.apache.struts2.rest.handler.ContentTypeHandler" class="org.folksource.struts.JsonDtoContentTypeHandler" />
 
 	<constant name="struts.rest.handlerOverride.json" value="myJson" />
 
@@ -20,7 +20,7 @@
 		value="folksource" />
 	<constant name="struts.convention.package.locators" value="controller" />
 	<constant name="struts.convention.package.locators.basePackage"
-		value="org.citizensense" />
+		value="org.folksource" />
 	<constant name="struts.convention.result.path" value="/jsp/" />
 	<constant name="struts.rest.content.restrictToGET" value="false" />
 	<constant name="struts.rest.namespace" value=""/> 
@@ -37,8 +37,8 @@
 				/> <interceptor name="authentication" class="org.grouplens.bl.struts.interceptor.AuthenticationInterceptor" 
 				/> <interceptor name="authorization" class="org.grouplens.bl.struts.interceptor.AuthorizationInterceptor" 
 				/> -->
-				<interceptor name="hibernate" class="org.citizensense.struts.HibInterceptor" /> 
-				<interceptor name="authorization" class="org.citizensense.struts.AuthInterceptor" /> 
+				<interceptor name="hibernate" class="org.folksource.struts.HibInterceptor" /> 
+<!-- 				<interceptor name="authorization" class="org.folksource.struts.AuthInterceptor" />  -->
 				<!--  <interceptor name="resolver" class="org.grouplens.bl.struts.interceptor.ModelResolverInterceptor"> 
 				<param name="enableOauth">${user.oauth.enable}</param> </interceptor> <interceptor 
 				name="concurrentReplayer" class="org.grouplens.bl.struts.interceptor.ConcurrentReplayInterceptor"/> 
@@ -52,9 +52,9 @@
 				<!-- <interceptor-ref name="contentParser" /> <interceptor-ref name="concurrentReplayer" 
 					/> --> 
 					<interceptor-ref name="servletConfig" />
-					<interceptor-ref name="authorization">
-						<param name="excludeMethods">create,update,show,index,options</param>
-					</interceptor-ref>
+<!-- 					<interceptor-ref name="authorization"> -->
+<!-- 						<param name="excludeMethods">create,update,show,index,options</param> -->
+<!-- 					</interceptor-ref> -->
 					<interceptor-ref name="hibernate" /> <!-- <interceptor-ref name="exceptionLog" 
 					/> <interceptor-ref name="authentication" /> <interceptor-ref name="authorization" 
 					/> <interceptor-ref name="resolver" /> -->
