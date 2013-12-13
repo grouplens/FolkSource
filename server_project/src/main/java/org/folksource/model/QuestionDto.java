@@ -45,6 +45,10 @@ public class QuestionDto extends Dto{
 		return qdtos;
 	}
 	
+	public static QuestionDto fromQuestion(Question question2) {
+		QuestionDto qdto = new QuestionDto(question2);
+		return qdto;
+	}
 	
 	//// Methods that create Tasks or collections of Tasks
 	public Question toQuestion(){
@@ -57,4 +61,5 @@ public class QuestionDto extends Dto{
 		}
 		return questions;
 	}
+	
 }
