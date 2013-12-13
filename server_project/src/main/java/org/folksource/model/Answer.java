@@ -6,6 +6,7 @@ public class Answer extends Dto {
 	public Integer id;
 	public String answer_type;
 	public Integer q_id;
+	public Question question;
 	public Integer sub_id;
 	
 	@Exclude(ExcludeType.EXPORT)
@@ -43,7 +44,13 @@ public class Answer extends Dto {
 	public void setQ_id(int q_id) {
 		this.q_id = q_id;
 	}
-	
+	public Question getQuestion() {
+		return question;
+	}
+
+	public void setQuestion(Question question) {
+		this.question = question;
+	}
 	public Integer getSub_id() {
 		return sub_id;
 	}

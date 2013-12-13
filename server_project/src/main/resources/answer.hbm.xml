@@ -9,7 +9,9 @@
     </id>
     <discriminator column="answer_type" type="string"/>
 	<property name="sub_id" />
-    <property name="q_id" />
+<!-- 	<property name="question"> -->
+	<many-to-one name="question" class="Question" column="q_id" fetch="join"/>
+<!--     <property name="q_id" /> -->
     
 	
 	<subclass name="TextAnswer" discriminator-value="text">
