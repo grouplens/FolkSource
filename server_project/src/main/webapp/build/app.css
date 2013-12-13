@@ -1531,7 +1531,7 @@ body {
 	background-color: white;
 }
 .bordering, .button-cancel-style, .toolbar-button-style {
-	font-weight: 100;
+	font-weight: 300;
 }
 .standard-card, .toolbar-button-style {
 	box-sizing: border-box;
@@ -1556,7 +1556,7 @@ body {
 	color: #FFF !important;
 	/*color: #C5A467 !important; /* lighter green*/
 	font-size: 11pt;
-	font-weight: 100;
+	font-weight: 300;
 	-moz-border-radius: 0px;
 	-webkit-border-radius: 0px;
 	border-radius: 0px;
@@ -1565,7 +1565,7 @@ body {
 	background: #3CAB9F !important;
 }*/
 .button-style-affirmative {
-	background-color: #70D677 !important;
+	background-color: #33862E !important;
 	color: #FFF !important;
 }
 .hilight-icons-affirmative:hover {
@@ -1580,7 +1580,7 @@ body {
 	text-shadow: 0 0 15px #DB221D;
 }
 .button-style-negative  {
-	background-color: #900D0A !important;
+	background-color: #8F0A0D !important;
 	color: #FFF !important;
 }
 /*.button-cancel-style {
@@ -1674,7 +1674,7 @@ body {
 	border: 0px;
 }
 /*.dark-background + .active {
-	font-weight: 100;
+	font-weight: 300;
 	background-color: #694225 !important;
 }*/
 .active {

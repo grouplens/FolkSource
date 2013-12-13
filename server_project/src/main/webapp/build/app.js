@@ -5577,16 +5577,10 @@ classes: "icon-remove icon-2x hilight-icons-negative",
 ontap: "closeDetailDrawer"
 } ]
 }, {
-name: "sub",
-content: "Submitter:"
-}, {
-name: "num",
-content: "Number of answers:"
-}, {
-name: "answers"
-}, {
 name: "loc",
 content: "Location:"
+}, {
+name: "answers"
 } ]
 } ]
 } ],
@@ -5635,7 +5629,7 @@ task: this.taskData[n]
 },
 setSubDetails: function(e, t) {
 var n = t.sub;
-this.$.sub.setContent("Submitter: " + n.user_id), this.$.num.setContent("Number of answers: " + n.answers.length), this.$.answers.destroyComponents();
+this.$.answers.destroyComponents();
 for (var r in n.answers) {
 this.log(n.answers[r]);
 switch (n.answers[r].answer_type) {
