@@ -5563,12 +5563,27 @@ kind: onyx.Drawer,
 orient: "v",
 open: !1,
 classes: "light-background",
+style: "max-width: 524px;",
 components: [ {
+kind: enyo.FittableColumns,
+classes: "active-card",
+components: [ {
+name: "heading",
+content: "Submission details",
+fit: !0
+}, {
+tag: "i",
+classes: "icon-remove icon-2x hilight-icons-negative",
+ontap: "closeDetailDrawer"
+} ]
+}, {
 name: "sub",
 content: "Submitter:"
 }, {
 name: "num",
 content: "Number of answers:"
+}, {
+name: "answers"
 }, {
 name: "loc",
 content: "Location:"
@@ -5620,9 +5635,52 @@ task: this.taskData[n]
 },
 setSubDetails: function(e, t) {
 var n = t.sub;
-this.$.sub.setContent("Submitter: " + n.user_id), this.$.num.setContent("Number of answers: " + n.answers.length), this.getGeocode(n);
-var r = this.$.detailDrawer.getOpen();
-this.$.detailDrawer.setOpen(!r);
+this.$.sub.setContent("Submitter: " + n.user_id), this.$.num.setContent("Number of answers: " + n.answers.length), this.$.answers.destroyComponents();
+for (var r in n.answers) {
+this.log(n.answers[r]);
+switch (n.answers[r].answer_type) {
+case "text":
+this.$.answers.createComponent({
+name: "q" + r,
+content: n.answers[r].question.question,
+style: "font-weight: bold;",
+classes: "hanging-child"
+}), this.$.answers.createComponent({
+name: "ans" + r,
+content: n.answers[r].answer,
+classes: "hanging-child"
+});
+break;
+case "multiple_choice":
+case "exclusive_multiple_choice":
+this.$.answers.createComponent({
+name: "q" + r,
+content: n.answers[r].question.question + " (" + n.answers[r].question.options.split("|").join(", ") + ")",
+style: "font-weight: bold;",
+classes: "hanging-child"
+}), this.$.answers.createComponent({
+name: "ans" + r,
+content: n.answers[r].choices,
+classes: "hanging-child"
+});
+break;
+case "complex_counter":
+this.$.answers.createComponent({
+name: "q" + r,
+content: n.answers[r].question.question,
+style: "font-weight: bold;",
+classes: "hanging-child"
+}), this.$.answers.createComponent({
+name: "ans" + r,
+content: n.answers[r].counts,
+classes: "hanging-child"
+});
+}
+}
+this.$.answers.render(), this.getGeocode(n), this.resized(), this.$.detailDrawer.setOpen(!0);
+},
+closeDetailDrawer: function(e, t) {
+this.$.detailDrawer.setOpen(!1);
 },
 getGeocode: function(e) {
 var t = e.gps_location.split("|"), n = new enyo.Ajax({
@@ -5928,8 +5986,6 @@ kind: enyo.FittableRows,
 style: "width: 100%; font-size: 11pt !important;",
 classes: "dark-background",
 components: [ {
-fit: !0
-}, {
 content: "a ",
 style: "text-align: center;"
 }, {
