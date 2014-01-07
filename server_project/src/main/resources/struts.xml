@@ -24,6 +24,8 @@
 	<constant name="struts.convention.result.path" value="/jsp/" />
 	<constant name="struts.rest.content.restrictToGET" value="false" />
 	<constant name="struts.rest.namespace" value=""/> 
+	<constant name="struts.multipart.saveDir" value="tmp" />
+	<constant name="struts.multipart.maxSize" value="5368709120" />
 
 	<package name="folksource" extends="rest-default">
 		<!-- <result-types> <result-type name="exceptionResult" class="org.grouplens.bl.struts.result.ExceptionResult" 

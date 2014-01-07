@@ -1,5 +1,6 @@
 package org.folksource.model;
 
+import org.folksource.util.QuestionService;
 import org.grouplens.common.dto.Dto;
 
 public class Answer extends Dto {
@@ -21,6 +22,7 @@ public class Answer extends Dto {
 		this.id = id;
 		this.answer_type = answer_type;
 		this.q_id = q_id;
+		this.question = QuestionService.getQuestionById(this.q_id);
 		this.sub_id = sub_id;
 	}
 	
