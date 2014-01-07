@@ -10,7 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.struts2.ServletActionContext;
+import org.folksource.model.Answer;
 import org.folksource.model.AnswerDto;
+import org.folksource.model.MediaAudioAnswer;
+import org.folksource.model.MediaPhotoAnswer;
 import org.folksource.model.MediaVideoAnswer;
 import org.folksource.util.AnswerService;
 import org.folksource.util.SubmissionService;
@@ -26,7 +29,7 @@ public class AnswerController implements ModelDriven<DtoContainer<AnswerDto>>{
 	String mimeType;
 	File media;
 	/** The base directory to save uploaded photos. */
-	public static final String BASE_DIR = "CSenseUploadedMedia/";
+	public static final String BASE_DIR = "tmp/";
 	
 	
 	@Override
@@ -44,13 +47,19 @@ public class AnswerController implements ModelDriven<DtoContainer<AnswerDto>>{
 		Map<String, String[]> params = req.getParameterMap();
 		
 		String answer_type = params.get("answer_type")[0];
-		assert(answer_type.equals("media"));
 		Integer q_id = Integer.parseInt(params.get("q_id")[0]);
 		Integer sub_id = Integer.parseInt(params.get("sub_id")[0]);
 		Integer id = 0;
 		String path = saveMedia();
 		
-		MediaVideoAnswer a = new MediaVideoAnswer(id, "media", q_id, sub_id, path, getMediaContentType());
+		Answer a;
+		if(answer_type.equals("media_audio"))
+			a = new MediaAudioAnswer(id, answer_type, q_id, sub_id, path, getMediaContentType());
+		if(answer_type.equals("media_video"))
+			a = new MediaVideoAnswer(id, "media", q_id, sub_id, path, getMediaContentType());
+		else
+			a = new MediaPhotoAnswer(id, answer_type, q_id, sub_id, path, getMediaContentType());
+		
 		AnswerService.save(a);
 		
 		content.set(new AnswerDto(a));
@@ -62,7 +71,7 @@ public class AnswerController implements ModelDriven<DtoContainer<AnswerDto>>{
 		//build the path
 		HttpServletRequest req = ServletActionContext.getRequest();
 		Map<String, String[]> params = req.getParameterMap();
-		String name = params.get("username")[0] + "-"+ params.get("q_id")[0] + "-" + new Date().getTime();
+		String name = req.getHeader("username") + "-"+ req.getHeader("q_id") + "-" + new Date().getTime();
 		//TODO: Escape/validate file name
 		String path = BASE_DIR + name + getExtension(getMediaContentType());
 		File storageLocation = new File(path);
