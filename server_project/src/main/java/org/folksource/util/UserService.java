@@ -21,9 +21,9 @@ public class UserService {
 		
 		users = session.createQuery("from User").list();
 		
-		for(User u : users) {
-			getIncentives(u);
-		}
+//		for(User u : users) {
+//			getIncentives(u);
+//		}
 		return users;
 	}
 	
@@ -46,18 +46,26 @@ public class UserService {
 		return u;
 	}
 	
-	public static void save(User u) {
-		Session session = HibernateUtil.getSession(true);
-		session.save(u);
+	public static User getUserByToken(int token) {
+		List<User> tmp = getUsers();
+		System.out.println(token);
+		
+		for(User u : tmp) {
+			if(u.getToken() != null && u.getToken().getToken().equals(token))
+				return u;
+		}
+		return null;
 	}
 	
-
+	public static void save(User u) {
+		Session session = HibernateUtil.getSession(true);
+		session.saveOrUpdate(u);
+	}
 	
 	public static User getUserByName(String name) {
 		Session session = HibernateUtil.getSession(true);
-		Query q = session.createQuery("from User where name=:username");
-		q.setParameter("username", name);
-		return (User) q.uniqueResult();
+		User u = (User)session.createQuery("from User where name='"+name+"'").list().get(0);
+		return u;
 	}
 	
 	

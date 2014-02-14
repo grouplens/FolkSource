@@ -7,12 +7,13 @@
 	<bean name="myJson" type="org.apache.struts2.rest.handler.ContentTypeHandler" class="org.folksource.struts.JsonDtoContentTypeHandler" />
 
 	<constant name="struts.rest.handlerOverride.json" value="myJson" />
+	<constant name="struts.rest.defaultExtension" value="json" />
 
 	<constant name="struts.enable.SlashesInActionNames" value="true" />
 	<constant name="struts.mapper.alwaysSelectFullNamespace"
 		value="false" />
 	<constant name="struts.mapper.class" value="rest" />
-	<constant name="struts.patternMatcher" value="regex" />
+	<constant name="struts.patternMatcher" value="namedVariable" />
 
 	<constant name="struts.convention.action.suffix" value="Controller" />
 	<constant name="struts.convention.action.mapAllMatches" value="true" />
@@ -54,7 +55,7 @@
 				<!-- <interceptor-ref name="contentParser" /> <interceptor-ref name="concurrentReplayer" 
 					/> --> 
 					<interceptor-ref name="servletConfig" />
-<!-- 					<interceptor-ref name="authorization"> -->
+					<interceptor-ref name="authorization" />
 <!-- 						<param name="excludeMethods">create,update,show,index,options</param> -->
 <!-- 					</interceptor-ref> -->
 					<interceptor-ref name="hibernate" /> <!-- <interceptor-ref name="exceptionLog" 
@@ -67,7 +68,7 @@
 
 		<global-results>
 			<result name="login_success" >/login_success.jsp</result>
-			<result name = "login_fail" type="httpheader">
+			<result name="login_fail" type="httpheader">
 				<param name="status">401</param>
 			</result>
 			<result name="login_wrong_password" >/login_password_fail.jsp</result>

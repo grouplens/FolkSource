@@ -7,20 +7,21 @@ import java.util.List;
 import org.grouplens.common.dto.Dto;
 
 public class User extends Dto{
-	private Integer Id;
-	private String name;
+	public Integer Id;
+	public String name;
 	private String password;
     /** The base64 encoded salt value used to hash the password*/
     private String salt;
-    private String email;
-	private Incentive[] tasks;
-	private Integer points;
+    public String email;
+//	private Incentive[] tasks;
+	public Integer points;
 	private String badges;	
 	/** Used to construct the link to find user's password. 
 	 * findpwid is hashed value of a string: Id+findpwtime.*/
 	private String findpwid;
 	/** The time user reports forget password.*/
 	private String findpwtime;
+	private Token token;
 
 	public Integer getId() {
 		return Id;
@@ -46,15 +47,15 @@ public class User extends Dto{
 	public void setPoints(Integer points) {
 		this.points = points;
 	}
-	public List<Incentive> getTasks() {
-		if(tasks != null)
-			return Arrays.asList(tasks);
-		
-		return new ArrayList<Incentive>();
-	}
-	public void setTasks(List<Incentive> tasks) {
-		this.tasks = tasks.toArray(new Incentive[tasks.size()]);
-	}
+//	public List<Incentive> getTasks() {
+//		if(tasks != null)
+//			return Arrays.asList(tasks);
+//		
+//		return new ArrayList<Incentive>();
+//	}
+//	public void setTasks(List<Incentive> tasks) {
+//		this.tasks = tasks.toArray(new Incentive[tasks.size()]);
+//	}
 	public void setPassword(String password) {
 		this.password = password;
 	}
@@ -84,6 +85,12 @@ public class User extends Dto{
 	}
 	public String getFindpwtime() {
 		return findpwtime;
+	}
+	public Token getToken() {
+		return token;
+	}
+	public void setToken(Token token) {
+		this.token = token;
 	}
 
 }
