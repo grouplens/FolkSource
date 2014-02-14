@@ -49,6 +49,8 @@ public class AnswerController implements ModelDriven<DtoContainer<AnswerDto>>{
 		String answer_type = params.get("answer_type")[0];
 		Integer q_id = Integer.parseInt(params.get("q_id")[0]);
 		Integer sub_id = Integer.parseInt(params.get("sub_id")[0]);
+//		System.out.println(params.get("mimeType")[0]);
+//		System.out.println(params.get("fileName")[0]);
 		Integer id = 0;
 		String path = saveMedia();
 		
@@ -56,7 +58,7 @@ public class AnswerController implements ModelDriven<DtoContainer<AnswerDto>>{
 		if(answer_type.equals("media_audio"))
 			a = new MediaAudioAnswer(id, answer_type, q_id, sub_id, path, getMediaContentType());
 		if(answer_type.equals("media_video"))
-			a = new MediaVideoAnswer(id, "media", q_id, sub_id, path, getMediaContentType());
+			a = new MediaVideoAnswer(id, answer_type, q_id, sub_id, path, getMediaContentType());
 		else
 			a = new MediaPhotoAnswer(id, answer_type, q_id, sub_id, path, getMediaContentType());
 		
@@ -90,11 +92,28 @@ public class AnswerController implements ModelDriven<DtoContainer<AnswerDto>>{
 	private String getExtension(String mimeType){
 		// We should decide on our acceptable mimeTypes and
 		// throw an exception if the mimeType is not one of our acceptable formats.
+		
+		//Images
+		//image/jpeg
 		if (mimeType.equals("image/jpeg")){
 			return ".jpg";
 		}
-		if (mimeType.equals("image/png")){
-			return ".png";
+		
+		//Video
+		//video/quicktime
+		//video/mp4
+		if(mimeType.equals("video/mp4")) {
+			return ".mp4";
+		}
+		if (mimeType.equals("video/quicktime")){
+			return ".mov";
+		}
+		
+		//Audio
+		//audio/wav
+		//audio/3gpp
+		if(mimeType.equals("audio/3gpp")) {
+			return ".3gpp";
 		}
 		if (mimeType.equals("audio/wav")){
 			return ".wav";

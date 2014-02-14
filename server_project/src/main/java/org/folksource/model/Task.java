@@ -1,11 +1,8 @@
 package org.folksource.model;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.grouplens.common.dto.Dto;
 
 public class Task{
 	public Integer id;
@@ -112,7 +109,7 @@ public class Task{
 	}
 
 	public void setQuestions(List<Question> questions) {
-		this.questions = new HashSet(questions);
+		this.questions = new HashSet<Question>(questions);
 	}
 	
 	public Set<Location> getLocations() {
@@ -120,7 +117,7 @@ public class Task{
 	}
 
 	public void setLocations(List<Location> locations) {
-		this.locations = new HashSet(locations);
+		this.locations = new HashSet<Location>(locations);
 	}
 
 

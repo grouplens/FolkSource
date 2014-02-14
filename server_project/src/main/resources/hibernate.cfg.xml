@@ -40,12 +40,14 @@
         <!-- Example: <mapping class="full.name" /> -->	
         <mapping resource="campaign.hbm.xml" />
         <mapping resource="user.hbm.xml" />
+<!--         <mapping resource="userdetails.hbm.xml" /> -->
         <mapping resource="task.hbm.xml" />
         <mapping resource="answer.hbm.xml" />
         <mapping resource="submission.hbm.xml" />
         <mapping resource="question.hbm.xml" />
         <mapping resource="leaderboard.hbm.xml" />
         <mapping resource="location.hbm.xml" />
+        <mapping resource="token.hbm.xml" />
         
     </session-factory>
 </hibernate-configuration>
