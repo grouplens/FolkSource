@@ -6,7 +6,7 @@ enyo.kind({
         gpsTimeout: "10000"
     },
     components: [
-        {name: "gps", kind: "rok.geolocation", watch: !0, enableHighAccuracy: !0,timeout: this.gpsTimeout, maximumAge: "3000", onSuccess: "locSuccess", onError: "locError"},
+		{kind: enyo.Signals, onLocationFound: "locSuccess"},
 		{name: "spinUp", kind: onyx.Popup, centered: true, floating: true, autoDismiss: false, classes: "dark-background-flat", components: [
 			{name: "spin", kind: onyx.Spinner, classes: "onyx-dark dark-background"}
 		]},
@@ -21,11 +21,11 @@ enyo.kind({
     eventStarted: !1,
     handlers: {
         onSnapping: "turnOffMap",
-        onSnapped: "resetPins"
+        onSnapped: "resetPins",
     },
     create: function (a) {
         this.inherited(arguments);
-        this.$.gps.setTimeout(this.gpsTimeout);
+        //this.$.gps.setTimeout(this.gpsTimeout);
         userMoved = false;
         loaded = false;
         this.panZoomed = false;
@@ -33,21 +33,16 @@ enyo.kind({
         this.notShowing = true;
 		this.locSuc = false;
 		this.loaded = false;
-		this.pointsLayer = L.layerGroup();
-		this.polygonsLayer = L.layerGroup();
+		this.pointsLayer = L.featureGroup();
+		this.polygonsLayer = L.featureGroup();
     },
     rendered: function () {
 		this.inherited(arguments);
-		this.$.gps.getPosition();
+		//this.$.gps.getPosition();
 
-		this.map = L.map(this.$.mapCont.id, {closePopupOnClick: false, maxZoom: 17}).setView([44.981313, -93.266569], 13);
-		//L.tileLayer("http://acetate.geoiq.com/tiles/acetate-hillshading/{z}/{x}/{y}.png", {
-		L.tileLayer("http://tile.stamen.com/watercolor/{z}/{x}/{y}.png", {}).addTo(this.map);
-		L.tileLayer("http://tile.stamen.com/toner-lines/{z}/{x}/{y}.png", {}).addTo(this.map);
-		L.tileLayer("http://tile.stamen.com/toner-labels/{z}/{x}/{y}.png", {
-		/*L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.jpg", {
-			subdomains: ['otile1', 'otile2', 'otile3', 'otile4'],*/
-			attribution: "Map data &copy; OpenStreetMap contributors",
+		this.map = L.map(this.$.mapCont.id, {maxZoom: 17}).setView([44.981313, -93.266569], 13);
+		L.tileLayer("http://tile.stamen.com/toner-lite/{z}/{x}/{y}.png", {
+			attribution: "Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.",
 		}).addTo(this.map);
 
 		this.$.spin.start();
@@ -58,12 +53,12 @@ enyo.kind({
 		this.doLoaded();
 	},
 	locSuccess: function (a, b) {
-		Data.setLocationData(b.coords);
-		this.locSuc = true;
+		//alert("MAP success");
+		var coords = b.coords;
 		if(this.locSuc && !this.loaded && !this.panZoomed) {
 			this.centerMap();
 		}
-		var latlng = new L.LatLng(b.coords.latitude, b.coords.longitude);
+		var latlng = new L.LatLng(coords.latitude, coords.longitude);
 
 		if(this.locSuc && !this.loaded && !this.panZoomed) {
 			this.centerMap();
@@ -72,12 +67,10 @@ enyo.kind({
 			this.userMarker = L.userMarker(latlng, {pulsing: true}).addTo(this.map);
 
 		this.userMarker.setLatLng(latlng);
-		this.userMarker.setAccuracy(b.coords.accuracy);
+		this.userMarker.setAccuracy(coords.accuracy);
+		this.resized();
 
         return true;
-    },
-    locError: function (a, b) {
-		this.log();
 	},
 	checkMap: function (a) {
 		this.locPlot(a);
@@ -87,7 +80,7 @@ enyo.kind({
 		this.points = [];
 		this.polygons = [];
 		this.addMarkers();
-	   },
+	},
 	inside: function (a) {
 		/*var b = this.straction.getBounds().getNorthEast(),
 		c = this.straction.getBounds().getSouthWest();
@@ -102,7 +95,6 @@ enyo.kind({
 		return this.addRemoveClass("hideMap", e !== g), !0;*/
 	},
 	turnOffMap: function(inSender, inEvent) {
-		this.log();
 		/*for(x in this.pointsLayer) {
 			this.map.removeLayer(this.pointsLayer[x]);
 		}
@@ -132,7 +124,8 @@ enyo.kind({
 	},
 	addMarkers: function () {
 		var wkt = new Wkt.Wkt();
-		for(x in this.locations) {
+		this.log("start");
+		for(var x in this.locations) {
 			var str = this.locations[x].geometryString;
 			wkt.read(str);
 			var shape = wkt.toObject();
@@ -146,6 +139,7 @@ enyo.kind({
 				points.push(shape);
 			} else if (str.indexOf("POLYGON") != -1) {
 				shape.on("click", enyo.bind(this, "makeBubbleClick"));
+				shape.setStyle({color: "#2E426F"});
 				this.polygonsLayer.addLayer(shape);
 				//this.map.addLayer(shape);
 				polygons.push(shape);
@@ -155,16 +149,23 @@ enyo.kind({
 				this.log("FAILED TO MAP");
 			}
 
-			/*if(!this.pointsLayer)
-				this.pointsLayer = L.layerGroup(points);*/
-			this.pointsLayer.addTo(this.map);
-
-			/*if(!this.polygonsLayer)
-				this.polygonsLayer = L.featureGroup(polygons);*/
-			this.polygonsLayer.addTo(this.map);
-			
 		}
+		this.pointsLayer.addTo(this.map);
+
+		this.polygonsLayer.addTo(this.map);
+
 		this.$.spinUp.hide();
+		var bounds = this.polygonsLayer.getBounds();
+		if(bounds)
+			bounds.extend(this.pointsLayer.getBounds());
+		else
+			bound = this.pointsLayer.getBounds();
+		if(this.userMarker !== undefined)
+			bounds.extend(this.userMarker.getLatLng());
+		var lat = (bounds._northEast.lat + bounds._southWest.lat) / 2;
+		var lng = (bounds._northEast.lng + bounds._southWest.lng) / 2;
+		this.map.fitBounds(bounds);
+		//this.map.panTo([lat, lng], {animate: true});
 	},
 	centerMap: function () {
 		var myLocation = Data.getLocationData();

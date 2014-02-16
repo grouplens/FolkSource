@@ -27,5 +27,6 @@ enyo.depends(
     "Timer.js",
     "Toolbar.js",
     "TryComplexSensr.js",
-    "rok.geolocation.js"
+    "rok.geolocation.js",
+	"WarnDrawer.js"
 );
