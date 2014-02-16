@@ -12,8 +12,8 @@ public class AccelerometerAnswer extends Answer {
 		super();
 	}
 	
-	public AccelerometerAnswer(Integer id, String answer_type, Integer q_id, Integer sub_id, Float x, Float y, Float z){
-		super(id, answer_type, q_id, sub_id);
+	public AccelerometerAnswer(Integer id, Integer q_id, Integer sub_id, Float x, Float y, Float z){
+		super(id, "accelerometer", q_id, sub_id);
 		this.x = x;
 		this.y = y;
 		this.z = z;

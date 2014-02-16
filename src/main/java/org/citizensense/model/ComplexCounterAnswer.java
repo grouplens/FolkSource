@@ -8,8 +8,8 @@ public class ComplexCounterAnswer extends Answer {
 		super();
 	}
 	
-	public ComplexCounterAnswer(Integer id, String answer_type, Integer q_id, Integer sub_id, String counts){
-		super(id, answer_type, q_id, sub_id);
+	public ComplexCounterAnswer(Integer id, Integer q_id, Integer sub_id, String counts){
+		super(id, "complexCounter", q_id, sub_id);
 		this.counts = counts;
 	}
 	

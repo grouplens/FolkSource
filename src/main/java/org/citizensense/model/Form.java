@@ -3,13 +3,13 @@ package org.citizensense.model;
 import java.util.ArrayList;
 
 public class Form {
-private ArrayList<Question> questions;
+private ArrayList<Old_Question> questions;
 
-public ArrayList<Question> getFields() {
+public ArrayList<Old_Question> getFields() {
 	return questions;
 }
 
-public void setFields(ArrayList<Question> fields) {
+public void setFields(ArrayList<Old_Question> fields) {
 	this.questions = fields;
 }
 }

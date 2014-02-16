@@ -16,7 +16,7 @@
     	<property name="answer"/>
     </joined-subclass>
     
-    <joined-subclass name="TimeSpanAnswer" table="time_span_answers">
+    <joined-subclass name="StopwatchAnswer" table="stopwatch_answers">
     	<key column="id"/>
     	<property name="milliseconds"/>
     </joined-subclass>
@@ -39,7 +39,7 @@
     </joined-subclass>
     	
     <joined-subclass name="MediaAnswer" table = "media_answers">
-    	<key column="id" />
+    	<key column="id"/>
     	<property name="path"/>
     	<property name="mimeType" column="mime_type"/>
     </joined-subclass>

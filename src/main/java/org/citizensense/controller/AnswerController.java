@@ -50,7 +50,7 @@ public class AnswerController implements ModelDriven<DtoContainer<AnswerDto>>{
 		Integer id = 0;
 		String path = saveMedia();
 		
-		MediaAnswer a = new MediaAnswer(id, "media", q_id, sub_id, path, getMediaContentType());
+		MediaAnswer a = new MediaAnswer(id, q_id, sub_id, path, getMediaContentType());
 		AnswerService.save(a);
 		
 		content.set(new AnswerDto(a));

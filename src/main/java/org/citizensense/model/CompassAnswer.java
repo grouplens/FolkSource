@@ -10,8 +10,8 @@ public class CompassAnswer extends Answer {
 		super();
 	}
 	
-	public CompassAnswer(Integer id, String answer_type, Integer q_id, Integer sub_id, Float heading) {
-		super(id, answer_type, q_id, sub_id);
+	public CompassAnswer(Integer id, Integer q_id, Integer sub_id, Float heading) {
+		super(id, "compass", q_id, sub_id);
 		this.heading = heading;
 	}
 	

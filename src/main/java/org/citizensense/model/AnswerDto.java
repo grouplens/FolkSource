@@ -24,7 +24,7 @@ public class AnswerDto extends Dto{
 	//CompassAnswer class fields:
 	public Float heading;
 	
-	//TimeSpanAnswer class fields:
+	//Stopwatch class fields:
 	public Integer milliseconds;
 	
 	//DateTimeAnswer class fields:
@@ -67,8 +67,8 @@ public class AnswerDto extends Dto{
 		} else if (answerIn.answer_type.equals("media")){
 			path = ((MediaAnswer)answerIn).path;
 			mimeType = ((MediaAnswer)answerIn).mimeType;
-		} else if(answerIn.answer_type.equals("timeSpan")){
-			milliseconds = ((TimeSpanAnswer)answerIn).milliseconds;
+		} else if(answerIn.answer_type.equals("stopwatch")){
+			milliseconds = ((StopwatchAnswer)answerIn).milliseconds;
 		} else if(answerIn.answer_type.equals("accelerometer")){
 			AccelerometerAnswer a = (AccelerometerAnswer) answerIn;
 			x = a.x;
@@ -89,23 +89,23 @@ public class AnswerDto extends Dto{
 	 */
 	public Answer toAnswer(){
 		if (answer_type.equals("text")){
-			return new TextAnswer(id, answer_type, q_id, sub_id, answer);
+			return new TextAnswer(id, q_id, sub_id, answer);
 		} else if (answer_type.equals("compass")){
-			return new CompassAnswer(id, answer_type, q_id, sub_id, heading);
+			return new CompassAnswer(id, q_id, sub_id, heading);
 		}else if (answer_type.equals("media")){
-			return new MediaAnswer(id, answer_type, q_id, sub_id, path, mimeType);
-		}else if (answer_type.equals("timeSpan")){
-			return new TimeSpanAnswer(id, answer_type, q_id, sub_id, milliseconds);
+			return new MediaAnswer(id, q_id, sub_id, path, mimeType);
+		}else if (answer_type.equals("stopwatch")){
+			return new StopwatchAnswer(id, q_id, sub_id, milliseconds);
 		}else if (answer_type.equals("answer")){
 			return new Answer(id, answer_type, q_id, sub_id);
 		}else if (answer_type.equals("accelerometer")){
-			return new AccelerometerAnswer(id, answer_type, q_id, sub_id, x, y, z);
+			return new AccelerometerAnswer(id, q_id, sub_id, x, y, z);
 		} else if (answer_type.equals("multipleChoice")){
-			return new MultipleChoiceAnswer(id, answer_type, q_id, sub_id, choices);
+			return new MultipleChoiceAnswer(id, q_id, sub_id, choices);
 		} else if (answer_type.equals("complexCounter")){
-			return new ComplexCounterAnswer(id, answer_type, q_id, sub_id, counts);
+			return new ComplexCounterAnswer(id, q_id, sub_id, counts);
 		} else if (answer_type.equals("dateTime")){
-			return new DateTimeAnswer(id, answer_type, q_id, sub_id, timestamp);
+			return new DateTimeAnswer(id, q_id, sub_id, timestamp);
 		} else {
 			//TODO: throw an exception
 			return null;

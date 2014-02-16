@@ -2,21 +2,21 @@ package org.citizensense.model;
 
 import java.sql.Time;
 /**
- * An answer type representing a given amount of accumulated time (at no specific point in time).
+ * An answer type representing a stopwatch time capture
  *
  */
-public class TimeSpanAnswer extends Answer {
+public class StopwatchAnswer extends Answer {
 	
 	
 	public Integer milliseconds;
 	
 	
-	public TimeSpanAnswer(){
+	public StopwatchAnswer(){
 		super();
 	}
 	
-	public TimeSpanAnswer(Integer id, String answer_type, Integer q_id, Integer sub_id, Integer milliseconds) {
-		super(id, answer_type, q_id, sub_id);
+	public StopwatchAnswer(Integer id, Integer q_id, Integer sub_id, Integer milliseconds) {
+		super(id, "stopwatch", q_id, sub_id); 
 		this.milliseconds = milliseconds;
 	}
 	

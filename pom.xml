@@ -8,8 +8,8 @@
 	<name>Citizen Sense</name>
 
 	<properties>
-		<db.username>jts</db.username>
-		<db.password></db.password>
+		<db.username>postgres</db.username>
+		<db.password>teqewrt</db.password>
 		<db.schema>public</db.schema>
 		<db.connection.driver.class>org.postgresql.Driver</db.connection.driver.class>
 		<db.url>jdbc:postgresql://localhost/postgres</db.url>
@@ -102,7 +102,7 @@
 				<configuration>
 					<container>
 						<containerId>tomcat7x</containerId>
-						<home>/Users/jts/apache-tomcat-7.0.22</home>
+						<home>/home/connor/apache-tomcat-7.0.42</home>
 						<type>installed</type>
 					</container>
 

@@ -8,8 +8,8 @@ public class TextAnswer extends Answer {
 		super();
 	}
 	
-	public TextAnswer(Integer id, String answer_type, Integer q_id, Integer sub_id, String answer) {
-		super(id, answer_type, q_id, sub_id);
+	public TextAnswer(Integer id, Integer q_id, Integer sub_id, String answer) {
+		super(id, "text", q_id, sub_id);
 		this.answer = answer;
 	}
 	

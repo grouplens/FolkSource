@@ -2,21 +2,56 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="org.citizensense.model">
-<class name="Question" table="questions">
+
+<class name = "Question" table = "new_questions">
 	<id name="id" column="id">
-		<generator class="native" />
-	</id>
-<!-- 	<many-to-one name="task" column="task_id" /> -->
-<!-- 	<property name="task_id" /> -->
-	<property name="question" />
-	<property name="type" />
-	<property name="required" />
-	<property name="options" />
+    	<generator class="native"/>
+    </id>
+    <property name="task_id"/>
+	<property name="question"/>
+    <property name="type"/>
+    <property name="required"/>
+    <property name="revisable"/>
+    <property name="time_limit"/>
 	
-<!-- 	<bag name="answers" lazy="false"> -->
-<!-- 		<key column="task_id" not-null="false"/> -->
-		<!-- <index column="id" base="1" /> -->
-<!-- 		<one-to-many class="Answer" /> -->
-<!-- 	</bag> -->
+	<joined-subclass name="TextQuestion" table="text_questions">
+    	<key column="id"/>
+    	<property name="word_limit"/>
+    </joined-subclass>
+    
+    <joined-subclass name="StopwatchQuestion" table="stopwatch_questions">
+    	<key column="id"/>
+    </joined-subclass>
+    
+    <joined-subclass name="DateTimeQuestion" table="date_time_questions">
+    	<key column="id"/>
+    </joined-subclass>
+    
+    <joined-subclass name="CompassQuestion" table="compass_questions">
+    	<key column="id"/>
+    </joined-subclass>
+    
+    <joined-subclass name="AccelerometerQuestion" table="accelerometer_questions">
+    	<key column="id"/>
+    </joined-subclass>
+    	
+    <joined-subclass name="MediaQuestion" table = "media_questions">
+    	<key column="id"/>
+    	<property name="media_type"/>
+    	<property name="size_limit"/>
+    </joined-subclass>
+    
+    <joined-subclass name="MultipleChoiceQuestion" table = "multiple_choice_questions">
+    	<key column="id" />
+    	<property name="max_choices"/>
+    	<property name="choices"/>
+    </joined-subclass>
+    
+    <joined-subclass name="ComplexCounterQuestion" table = "complex_counter_questions">
+    	<key column="id" />
+    	<property name="max_value"/>
+    </joined-subclass>
+    	
 </class>
+
 </hibernate-mapping>
