@@ -102,7 +102,8 @@ enyo.kind({
 	hilightMarker: function(inSender, inEvent) {
 		var index = inEvent.index;
 
-		this.doHilightSubmission({sub: this.subs[index], open: open});
+		enyo.Signals.send("onHilightSubmission", {sub: this.subs[index], open: open});
+		//this.doHilightSubmission({sub: this.subs[index], open: open});
 	},	
 
     getItemCont: function(subId){

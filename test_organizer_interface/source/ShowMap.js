@@ -130,6 +130,7 @@ enyo.kind({
 		onAnonymousCode: "hideLogin",
 
 		onHilightSubmission: "selectedSubmission",
+		onClearMarkerHilight: "clearClusterSelect",
 	},
 
 	create: function (inSender, inEvent) {
@@ -181,12 +182,10 @@ enyo.kind({
 			if(sub_id === point.submissionId) {
 				this.log(point);
 				this.log(this.clusterGroup.hasLayer(point.__parent));
-				this.selectCluster(point.__parent.__parent.__parent.__parent);
+				this.log(point.__parent);//.__parent.__parent.__parent);
+				this.selectCluster(point.__parent);//.__parent.__parent.__parent);
 			}
 		}
-		/*var key = Object.keys(this.currentSubmissionsGroup._layers)[inEvent.index];
-		this.log(key);
-		this.log(this.currentSubmissionsGroup._layers[key].submission);*/
 	},	
 
 	doubleCheckSend: function(inSender, inEvent) {
@@ -443,6 +442,7 @@ enyo.kind({
 		//After a short delay (to let other animations finish), repopulate the list (which will also trigger an end to the spinner)
 		enyo.job("viewChangedByZoom", enyo.bind(this, function(){
 			this.stopSpinnerOnTaskDetailContSet = true;
+			this.stopTaskDetailSpinner();
 			this.waterfallDown("onViewportChanged",{submissions: this.getVisibleSubmissions()});
 		}), 200);	
 	},
@@ -496,6 +496,7 @@ enyo.kind({
 
 		
 		this.map.on("dragend resize", function (){
+			this.log("DRAGEND OR RESIZE");
 			this.clearClusterSelect();
 			this.$.cSenseShowCampaigns.$.taskDetailDrawerContent.startSpinner();
 			this.waterfallDown("onViewportChanged",{submissions: this.getVisibleSubmissions()});
@@ -506,6 +507,7 @@ enyo.kind({
 		
 		
 		this.map.on("zoomend", function (){
+			this.log("ZOOMEND");
 			this.clearClusterSelect();
 			this.$.cSenseShowCampaigns.$.taskDetailDrawerContent.startSpinner();
 			this.clusterGroup.on("animationend", this.animationEndHandler, this);
