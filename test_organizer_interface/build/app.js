@@ -5461,7 +5461,8 @@ onDrawerToggled: "",
 onTaskDrawerOpened: "",
 onTaskDetailDrawerOpened: "",
 onAPIResponse: "",
-onResizeMap: ""
+onResizeMap: "",
+onClearMarkerHilight: ""
 },
 handlers: {
 onNewTapped: "closeDrawers",
@@ -5563,15 +5564,24 @@ kind: onyx.Drawer,
 orient: "v",
 open: !1,
 classes: "light-background",
+style: "max-width: 524px;",
 components: [ {
-name: "sub",
-content: "Submitter:"
+kind: enyo.FittableColumns,
+classes: "active-card",
+components: [ {
+name: "heading",
+content: "Submission details",
+fit: !0
 }, {
-name: "num",
-content: "Number of answers:"
+tag: "i",
+classes: "icon-remove icon-2x hilight-icons-negative",
+ontap: "closeDetailDrawer"
+} ]
 }, {
 name: "loc",
 content: "Location:"
+}, {
+name: "answers"
 } ]
 } ]
 } ],
@@ -5620,9 +5630,52 @@ task: this.taskData[n]
 },
 setSubDetails: function(e, t) {
 var n = t.sub;
-this.$.sub.setContent("Submitter: " + n.user_id), this.$.num.setContent("Number of answers: " + n.answers.length), this.getGeocode(n);
-var r = this.$.detailDrawer.getOpen();
-this.$.detailDrawer.setOpen(!r);
+this.$.answers.destroyComponents();
+for (var r in n.answers) {
+this.log(n.answers[r]);
+switch (n.answers[r].answer_type) {
+case "text":
+this.$.answers.createComponent({
+name: "q" + r,
+content: n.answers[r].question.question,
+style: "font-weight: bold;",
+classes: "hanging-child"
+}), this.$.answers.createComponent({
+name: "ans" + r,
+content: n.answers[r].answer,
+classes: "hanging-child"
+});
+break;
+case "multiple_choice":
+case "exclusive_multiple_choice":
+this.$.answers.createComponent({
+name: "q" + r,
+content: n.answers[r].question.question + " (" + n.answers[r].question.options.split("|").join(", ") + ")",
+style: "font-weight: bold;",
+classes: "hanging-child"
+}), this.$.answers.createComponent({
+name: "ans" + r,
+content: n.answers[r].choices,
+classes: "hanging-child"
+});
+break;
+case "complex_counter":
+this.$.answers.createComponent({
+name: "q" + r,
+content: n.answers[r].question.question,
+style: "font-weight: bold;",
+classes: "hanging-child"
+}), this.$.answers.createComponent({
+name: "ans" + r,
+content: n.answers[r].counts,
+classes: "hanging-child"
+});
+}
+}
+return this.$.answers.render(), this.getGeocode(n), this.resized(), this.$.detailDrawer.setOpen(!0), !0;
+},
+closeDetailDrawer: function(e, t) {
+return this.$.detailDrawer.setOpen(!1), this.doClearMarkerHilight(), !0;
 },
 getGeocode: function(e) {
 var t = e.gps_location.split("|"), n = new enyo.Ajax({
@@ -5808,7 +5861,7 @@ name: "Data",
 kind: "enyo.Control",
 statics: {
 getURL: function() {
-return "http://ugly-umh.cs.umn.edu:8080/";
+return "http://127.0.0.1:8080/";
 },
 getUserName: function(e) {
 var t = new enyo.Ajax({
@@ -5928,8 +5981,6 @@ kind: enyo.FittableRows,
 style: "width: 100%; font-size: 11pt !important;",
 classes: "dark-background",
 components: [ {
-fit: !0
-}, {
 content: "a ",
 style: "text-align: center;"
 }, {
@@ -6987,7 +7038,8 @@ onCheckLocation: "highlightMarkerPolygon",
 onSuccessCode: "hideLogin",
 onFailureCode: "",
 onAnonymousCode: "hideLogin",
-onHilightSubmission: "selectedSubmission"
+onHilightSubmission: "selectedSubmission",
+onClearMarkerHilight: "clearClusterSelect"
 },
 create: function(e, t) {
 this.inherited(arguments), this.resized(), this.$.gps.setTimeout(this.gpsTimeout), this.lastSubmissionPoll = 0, userMoved = !1, loaded = !1, this.panZoomed = !1, this.firstTime = !0, this.notShowing = !0, this.locSuc = !1, this.loaded = !1, this.locations = [], this.addPins = !1, this.addPolygon = !1, this.addShapeFile = !1, this.events.onPins = "", this.currentTaskName = "", this.taskMarkerGroups = {}, this.taskMarkers = {}, this.submissionMarkerGroups = {}, this.currentTaskMarkerGroup = null, this.currentSubmissionsGroup = null, this.currentSubmissionsGroupTaskId = null, this.selectedCluster = null, this.stopSpinnerOnTaskDetailContSet = !1;

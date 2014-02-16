@@ -1425,8 +1425,8 @@
 
 body {
 	font-size: 11pt;
-	/*font-weight: 300 !important;*/
-	background: white; /* lighter green*/
+	font-weight: 300 !important;
+	background: #2E426F; /* lighter green*/
 	color: black;
 }
 /****************************************/
@@ -1531,7 +1531,7 @@ body {
 	background-color: white;
 }
 .bordering, .button-cancel-style, .toolbar-button-style {
-	/*font-weight: 100;*/
+	font-weight: 300;
 }
 .standard-card, .toolbar-button-style {
 	box-sizing: border-box;
@@ -1556,7 +1556,7 @@ body {
 	color: #FFF !important;
 	/*color: #C5A467 !important; /* lighter green*/
 	font-size: 11pt;
-	/*font-weight: 100;*/
+	font-weight: 300;
 	-moz-border-radius: 0px;
 	-webkit-border-radius: 0px;
 	border-radius: 0px;
@@ -1565,7 +1565,7 @@ body {
 	background: #3CAB9F !important;
 }*/
 .button-style-affirmative {
-	background-color: #18AC21 !important;
+	background-color: #33862E !important;
 	color: #FFF !important;
 }
 .hilight-icons-affirmative:hover {
@@ -1580,7 +1580,7 @@ body {
 	text-shadow: 0 0 15px #DB221D;
 }
 .button-style-negative  {
-	background-color: #DB221E !important;
+	background-color: #8F0A0D !important;
 	color: #FFF !important;
 }
 /*.button-cancel-style {
@@ -1633,7 +1633,8 @@ body {
 }
 .active-card {
 	box-sizing: border-box;
-	background: #EDEC7C !important;
+	background: #EDDB7C !important;
+	/*background: #EDEC7C !important;*/
 	color: #2E426F !important;
 }
 .task-builder, .question-builder, .location-builder {
@@ -1667,24 +1668,26 @@ body {
 }
 .dark-background-flat {
 	background: #2E426F !important; /* darker green */
-	color: #FFF !important;
+	color: #DB701E !important;
 	font-size: 11pt;
 	//text-shadow: -1px -1px 0 rgba(0,0,0,0.2);
 	border: 0px;
 }
 /*.dark-background + .active {
-	font-weight: 100;
+	font-weight: 300;
 	background-color: #694225 !important;
 }*/
 .active {
 	/*font-size: 13pt;*/
-	/*background: #3CAB9F !important; /* lighter green*/
-	background: #EDEC7C !important; /* lighter green*/
+	background: #EDDB7C !important; /* lighter green*/
 	color: #2E426F !important;
 	border-top: 3px white solid;
 	-webkit-box-shadow: 0 0 0 0 white;
 	-moz-box-shadow: 0 0 0 0 white;
 	box-shadow: 0 0 0 0 white;
+}
+.color-icon { 
+	color: #DB701E;
 }
 .map-pin {
 	color: #25426F;
@@ -1920,12 +1923,12 @@ table, tr, td {
 	padding: 5px 0px;
 }
 .highlight {
-	background-color: yellow;
+	background-color: #EDBA53;
 	color: black;
 	opacity: 0.8;
 }
 .highlight * {
-	background-color: yellow;
+	background-color: #EDBA53;
 }
 
 

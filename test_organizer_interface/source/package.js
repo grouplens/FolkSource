@@ -15,6 +15,7 @@ enyo.depends(
 	"CSenseTaskDetail.js",
 	"Data.js",
 	"Destroyable.js",
+	"DetailsDrawer.js",
 	"EditableListItem.js",
 	"GrouplensBrand.js",
 	"Helpable.js",

@@ -11,7 +11,8 @@ enyo.kind({
 		onTaskDetailDrawerOpened: "",
 
 		onAPIResponse: "",
-		onResizeMap: ""
+		onResizeMap: "",
+		onClearMarkerHilight: ""
 	},
 	handlers: {
 		onNewTapped: "closeDrawers",
@@ -24,7 +25,7 @@ enyo.kind({
 		onClusterSelection: "updateTaskDetail",
 		onReceiveNewSubmissions: "integrateNewSubmissions",
 		onCleanupSelected: "removeSelectionList",
-		onHilightSubmission: "setSubDetails",
+		//onHilightSubmission: "setSubDetails",
 	},
 	components:[
 		//TODO: finish making the user thing work
@@ -67,11 +68,28 @@ enyo.kind({
 					{name: "taskDetailDrawerContent", kind: "CSenseTaskDetail", fit: true, style: "width: 200px;padding: 4px;"},
 				]},
 			]},
-			{name: "detailDrawer", kind: onyx.Drawer, orient: "v", open: false, classes: "light-background", components: [
-				{name: "sub", content: "Submitter:"},
-				{name: "num", content: "Number of answers:"},
-				{name: "loc", content: "Location:"},
-			]}
+			{kind: "DetailsDrawer"},
+			/*{name: "detailDrawer", kind: onyx.Drawer, orient: "v", open: false, classes: "light-background", style: "max-width: 524px;", components: [
+				{kind: enyo.FittableColumns, classes: "active-card", components: [
+					{name: "heading", content: "Submission details", fit: true,},
+					{tag: "i", classes: "icon-remove icon-2x hilight-icons-negative", ontap: "closeDetailDrawer"},
+				]},
+				{kind: onyx.RadioGroup, onActivate: "switchDetails", style: "margin-left: auto; margin-right: auto", components: [
+					{content: "Answers"},
+					{content: "User"},
+				]},
+				{name: "detailsPanels", kind: enyo.Panels, arrangerKind: enyo.CarouselArranger, copmonents: [
+					{name: "answersPane", kind: enyo.FittableRows, components: [
+						{name: "loc", content: "Location:"},
+						{name: "answers"},
+					]},
+					{name: "userPane", kind: enyo.FittableRows, components: [
+						{name: "user"},
+						{name: "points"},
+						{name: "email"},
+					]},
+				]}
+			]}*/
 	]}
 	],
 
@@ -163,14 +181,44 @@ enyo.kind({
 		this.showTaskDetail(null, {task: this.taskData[index]/*, offset: 200*/}); //I am calling an event handler directly, is this bad?
 	},
 
-	setSubDetails: function(inSender, inEvent) {
+	switchDetails: function(inSender, inEvent) {
+		var string = inEvent.originator.getContent();
+		/*if(string === "Answers")
+			this.$.detailsPanels.setIndex(0);
+		else if(string === "User")
+			this.$.detailsPanels.setIndex(1);*/
+	},	
+	/*setSubDetails: function(inSender, inEvent) {
 		var data = inEvent.sub;
-        this.$.sub.setContent("Submitter: "+data.user_id);
-        this.$.num.setContent("Number of answers: "+data.answers.length);
+		this.log(data);
+		this.$.answers.destroyComponents();
+		for(var x in data.answers) {
+			this.log(data.answers[x]);
+			this.$.answers.createComponent({name: "q"+x, content: data.answers[x].question.question, style: "font-weight: bold;", classes: "hanging-child"}, {owner: this});
+			switch(data.answers[x].answer_type) {
+				case "text":
+					this.$.answers.createComponent({name: "ans"+x, content: data.answers[x].answer, classes: "hanging-child"}, {owner: this});
+				break;
+				case "multiple_choice":
+				case "exclusive_multiple_choice":
+					this.$.answers.createComponent({name: "ans"+x, content: data.answers[x].choices, classes: "hanging-child"}, {owner: this});
+				break;
+				case "complex_counter":
+					this.$.answers.createComponent({name: "ans"+x, content: data.answers[x].counts, classes: "hanging-child"}, {owner: this});
+				break;
+			}
+		}
+		this.$.answers.render();
 		this.getGeocode(data);
-		var truth = this.$.detailDrawer.getOpen();
-		this.$.detailDrawer.setOpen(!truth);
+		this.resized();
+		this.$.detailDrawer.setOpen(true);
+		return true;
 	},
+	closeDetailDrawer: function(inSender, inEvent) {
+		this.$.detailDrawer.setOpen(false);
+		this.doClearMarkerHilight();
+		return true;
+	},	
 	getGeocode: function(sub) {
 		var loc = sub.gps_location.split("|");
 		var ajax = new enyo.Ajax({handleAs: "json", url: "http://open.mapquestapi.com/nominatim/v1/search?format=json&q=" + loc[0] + "+" + loc[1]});
@@ -183,7 +231,7 @@ enyo.kind({
         //Insert reverse geocoding functionality here!
 		this.$.loc.setContent("Location: " + inEvent[0].display_name);
         return "123 Fake St SE, Minneapolis, MN";
-    },
+    },*/
 	/*
 		Builds the contents of the tasks pane
 	*/
@@ -334,7 +382,8 @@ enyo.kind({
 			this.$.taskDetailDrawer.currentTaskId = task.id;
 			//this.$.taskDetailDrawerContent.stopSpinner();
 		}
-		this.doResizeMap();
+		if(drawer.name !== "detailsPanels")
+			this.doResizeMap();
 	},
 });
 
