@@ -8,7 +8,7 @@ enyo.kind({
     components: [
         {name: "taskDesc", tag: "div", content: "test"},
         {name: "taskValue", /*style: "color: #FF0000;", */content: "testval"}, 
-        {name: "button", kind: onyx.Button, content: "Do It!", classes: "button-style nice-padding", ontap: "buttonHit"}],
+        {name: "button", kind: onyx.Button, content: "Do It!", classes: "dark-background-flat button-style", ontap: "buttonHit"}],
     events: {
         onDoObservation: ""
     },

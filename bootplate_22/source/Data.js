@@ -3,9 +3,10 @@ enyo.kind({
     kind: "enyo.Control",
     statics: {
         getURL: function () {
-            //return "http://ugly-umh.cs.umn.edu:8080/csense/";
-            //return "http://131.212.229.184.xip.io:8080/";
-            return "http://192.168.0.3:8080/";
+            //return "http://ugly-umh.cs.umn.edu/api/";
+            //return "http://131.212.238.32.xip.io:8080/";
+            //return "http://192.168.0.3.xip.io:8080/";
+            return "http://127.0.0.1:8080/";
         },
         getUserName: function (a) {
             var b = new enyo.Ajax({
@@ -15,8 +16,9 @@ enyo.kind({
             });
             b.response(this, function (a, b) {
                 this.users = b.leaderboardEntrys;
-            }), b.go();
-            for (x in this.users) {
+            });
+			b.go();
+            for (var x in this.users) {
                 if (this.users[x].id == a) {
                     this.log(a);
                     return this.users[x].name;
@@ -47,8 +49,8 @@ enyo.kind({
                                 output.unshift("assisted");
                         }
                     }
-                } else if (i == 3 || i == 5) {
-                    if(j == 0 || j == 2)
+                } else if (i === 3 || i === 5) {
+                    if(j === 0 || j === 2)
                         output.push("male");
                     else
                         output.push("female");
@@ -63,7 +65,7 @@ enyo.kind({
                 }
             } else {
                 if(gender) {
-                    if(j == 0 || j == 2)
+                    if(j === 0 || j === 2)
                         output.push("male");
                     else
                         output.push("female");
@@ -88,7 +90,7 @@ enyo.kind({
         },
         countAdd: function(inputArray) {
             var countData = LocalStorage.get("countData");
-            if(countData == undefined) {
+            if(countData === undefined) {
                 countData = [];
             }
             countData.unshift(inputArray);
@@ -105,7 +107,8 @@ enyo.kind({
             LocalStorage.set("countData", countData);
         },
         countGetAtIndex: function(index) {
-            if(ret = LocalStorage.get("countData"))
+			var ret = LocalStorage.get("countData");
+            if(ret)
                 return ret[index];
             else 
                 return -1;

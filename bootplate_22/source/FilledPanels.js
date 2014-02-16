@@ -12,22 +12,23 @@ enyo.kind({
         onDoObservation: "hidePopup"
     },
     components: [
-    	{kind: "Signals", onPinClicked: "popupTriggered"},
+		{kind: "Signals", onPinClicked: "popupTriggered"},
 		{name: "mapUp", kind: "onyx.Popup", style: "width: 80%; position: fixed; z-index: 2;", classes: "light-background onyx-popup", centered: true, floating: true, modal: true, scrim: true, scrimWhenMobal: false, components: [
 			{name: "pview", kind: "PinView", classes: "mapHide"}
 		]},
 		//{kind: enyo.FittableColumns, fit: true, components: [
 			{name: "body", kind: enyo.FittableRows, fit: true, components: [
+				{kind: "WarnDrawer", warning: "filler"},
 				{name: "cols", style: "height: 30%;", kind: enyo.FittableColumns, components: [
 					{name: "leftButton", kind: onyx.Button, slide: "prev", ontap: "buttonTapHandler", classes: "button-style filledButtons", disabled: !0, components: [
-						{tag: "i", classes: "icon-chevron-left icon-large"}
+						{tag: "i", classes: "icon-chevron-left icon-2x color-icon"}
 					]},
 					{kind: enyo.FittableRows, fit: true, components: [
-						{name: "panels", kind: "Panels", arrangerKind: "CarouselArranger", onTransitionFinish: "transitionFinishHandler", onTransitionStart: "transitionStartHandler", classes: "filledPanels", layoutKind: enyo.FittableColumnsLayout, classes: "light-background", fit: true},
+						{name: "panels", kind: "Panels", arrangerKind: "CarouselArranger", onTransitionFinish: "transitionFinishHandler", onTransitionStart: "transitionStartHandler", classes: "filledPanels light-background", layoutKind: enyo.FittableColumnsLayout, fit: true},
 						//{content: "Tap the pin/region on the map to help!", style: "font-size: 11pt; font-weight: 100; text-align: center;", classes: "light-background"},
 					]},
 					{name: "rightButton", kind: onyx.Button, slide: "next", ontap: "buttonTapHandler", classes: "button-style filledButtons", components: [
-						{tag: "i", classes: "icon-chevron-right icon-large"}
+						{tag: "i", classes: "icon-chevron-right icon-2x color-icon"}
 					]}, 
 				]}
 				//{kind: "NewMap", fit: true}
@@ -40,12 +41,13 @@ enyo.kind({
 		//this.$.mapUp.show();
 		var c = Data.getURL() + "campaign.json";
 		var d = new enyo.Ajax({method: "GET", cacheBust: false, url: c, handleAs: "json"});
-		d.go().response(this, "renderResponse");; 
+		d.go().response(this, "renderResponse");
 		this.$.panels.$.animator.setDuration(150);
 	},
 	renderResponse: function (a, b) {
 		this.campaignArray = b.campaigns;
 		this.log(this.campaignArray);
+		var remove = [];
 		for (var c in this.campaignArray) {
 			var currentCampaign = this.campaignArray[c];
 			var e = "panel_" + currentCampaign.id;
@@ -62,20 +64,28 @@ enyo.kind({
 			var endDate = Date.parse(new Date(en[0], en[1]-1, en[2], en[3], en[4], en[5]));*/
 
 			//if(endDate >= date) { // "closed" campaigns shouldn't show up
-			this.$.panels.createComponent(
-				{name: e, classes: "panelItem", fit: true, kind: enyo.FittableRows, components: [
-					{name: f, kind: "CampaignItem", title: "" + currentCampaign.title, description: "" + currentCampaign.description},
-					//{name: g, fit: true, kind: "NewMap"}
-			]});
+			//if(currentCampaign.title !== undefined) {
+				this.$.panels.createComponent(
+					{name: e, classes: "panelItem", fit: true, kind: enyo.FittableRows, components: [
+						{name: f, kind: "CampaignItem", title: "" + currentCampaign.title, description: "" + currentCampaign.description},
+					]}
+				);
+			/*} else 
+				remove.push(c);*/
 			this.$.panels.resized();
 
 		}
+		/*for (var x in remove) {
+			this.campaignArray.splice(remove[x], 1);
+		}*/
 		this.$.body.createComponent({name: "map", kind: "NewMap", fit: true}, {owner: this});
 		this.$.body.resized();
 		this.$.body.render();
 		this.$.cols.resized();
 		this.$.cols.render();
 		this.checkSides(); // make sure the arrow buttons work
+		this.drawMap();
+		//navigator.splashscreen.hide();
 	},
 	buttonTapHandler: function (a, b) {
 		if(a.slide === "prev")
@@ -88,9 +98,9 @@ enyo.kind({
     transitionFinishHandler: function (a, b) {
         var c = this.$.panels.getIndex();
 		this.log();
-        this.waterfall("onSnapped", undefined, c);
+        this.waterfallDown("onSnapped", undefined, c);
 		this.drawMap();
-       	this.checkSides();
+		this.checkSides();
     },
     transitionStartHandler: function (a, b) {
         var c = this.$.panels.getIndex();
@@ -103,8 +113,8 @@ enyo.kind({
 		var adjSize = size - 1; //adjust for counting at 0 vs. 1
 		this.$.rightButton.setDisabled(false);
 		this.$.leftButton.setDisabled(false);
-		if (this.campaignArray != undefined) {
-			if (index == 0) {
+		if (this.campaignArray !== undefined) {
+			if (index === 0) {
 				this.$.rightButton.setDisabled(false);
 				this.$.leftButton.setDisabled(true);
 			} else if (Number(index) === adjSize) {
@@ -114,12 +124,13 @@ enyo.kind({
 		}
 	},
     drawMap: function (inSender, inEvent) { //inSender = a, inEvent = b;
+		this.log();
         var panels = this.$.panels.getPanels();
         var d = 0;
         var e;
 		//var name = inEvent.originator.name.split("_")[1];
 		//var tmp = [];
-        for (x in panels) {
+        for (var x in panels) {
 			this.sendTasks();
 			/*var curName = panels[x].name.split("_")[1];
 			if(curName === name) {
@@ -137,7 +148,7 @@ enyo.kind({
 	sendTasks: function(inSender, inEvent) {
 		var tasks = this.campaignArray[this.$.panels.getIndex()].tasks;
 		var tmp = [];
-		for(y in tasks) {
+		for(var y in tasks) {
 			tmp.push(tasks[y].locations);
 		}
 		var tmp2 = [];
