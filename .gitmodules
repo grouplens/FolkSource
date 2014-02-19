@@ -19,3 +19,12 @@
 [submodule "web/assets/heatmap"]
 	path = web/assets/heatmap
 	url = https://github.com/pa7/heatmap.js
+[submodule "mobile/assets/leaflet"]
+	path = mobile/assets/leaflet
+	url = https://github.com/Leaflet/Leaflet
+[submodule "mobile/assets/leaflet-usermarker"]
+	path = mobile/assets/leaflet-usermarker
+	url = https://github.com/heyman/leaflet-usermarker
+[submodule "mobile/assets/Wicket"]
+	path = mobile/assets/Wicket
+	url = https://github.com/arthur-e/Wicket
