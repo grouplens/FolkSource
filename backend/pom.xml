@@ -8,11 +8,11 @@
 	<name>FolkSource</name>
 
 	<properties>
-		<db.username>jts</db.username>
-		<db.password></db.password>
+		<db.username>[DB_USERNAME]</db.username>
+		<db.password>[DB_PASSWORD]</db.password>
 		<db.schema>public</db.schema>
 		<db.connection.driver.class>org.postgresql.Driver</db.connection.driver.class>
-		<db.url>jdbc:postgresql://localhost/jts</db.url>
+		<db.url>jdbc:postgresql://localhost/[DB_NAME]</db.url>
 		<db.dialect>org.hibernate.spatial.dialect.postgis.PostgisDialect</db.dialect>
 <!-- 		<db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect> -->
 		<db.connection.maxcount>40</db.connection.maxcount>
@@ -102,7 +102,7 @@
 				<configuration>
 					<container>
 						<containerId>tomcat7x</containerId>
-						<home>/Users/jts/apache-tomcat-7.0.22</home>
+						<home>[PATH TO TOMCAT INSTALL]</home>
 						<type>installed</type>
 					</container>
 
