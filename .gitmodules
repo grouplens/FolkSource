@@ -28,3 +28,9 @@
 [submodule "mobile/assets/Wicket"]
 	path = mobile/assets/Wicket
 	url = https://github.com/arthur-e/Wicket
+[submodule "font-awesome"]
+	path = font-awesome
+	url = https://github.com/FortAwesome/Font-Awesome.git
+[submodule "mobile/assets/font-awesome"]
+	path = mobile/assets/font-awesome
+	url = https://github.com/FortAwesome/Font-Awesome.git
