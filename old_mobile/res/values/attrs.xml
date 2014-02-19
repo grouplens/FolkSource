@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2006-2011 Regents of the University of Minnesota.
-   For licensing terms, see the file LICENSE. -->
-<resources>
-    <declare-styleable name="CampaignGallery">
-        <attr name="android:galleryItemBackground" />
-    </declare-styleable>
-</resources>

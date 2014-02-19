@@ -1,8 +1,0 @@
-<list>
-  <org.citizensense.model.Incentive>
-    <type>points</type>
-    <id>5</id>
-    <task__id>5</task__id>
-    <value>2.0</value>
-  </org.citizensense.model.Incentive>
-</list>
