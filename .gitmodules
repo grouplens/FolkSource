@@ -1,0 +1,9 @@
+[submodule "bootplate_22/assets/leaflet"]
+	path = bootplate_22/assets/leaflet
+	url = https://github.com/Leaflet/Leaflet
+[submodule "bootplate_22/assets/leaflet-usermarker"]
+	path = bootplate_22/assets/leaflet-usermarker
+	url = https://github.com/heyman/leaflet-usermarker
+[submodule "bootplate_22/assets/Wicket"]
+	path = bootplate_22/assets/Wicket
+	url = https://github.com/arthur-e/Wicket
