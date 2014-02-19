@@ -7,3 +7,24 @@
 [submodule "bootplate_22/assets/Wicket"]
 	path = bootplate_22/assets/Wicket
 	url = https://github.com/arthur-e/Wicket
+[submodule "web/assets/Leaflet"]
+	path = web/assets/Leaflet
+	url = https://github.com/Leaflet/Leaflet
+[submodule "web/assets/Leaflet.markercluster"]
+	path = web/assets/Leaflet.markercluster
+	url = https://github.com/Leaflet/Leaflet.markercluster
+[submodule "web/assets/Wicket"]
+	path = web/assets/Wicket
+	url = https://github.com/arthur-e/Wicket
+[submodule "web/assets/Leaflet.draw"]
+	path = web/assets/Leaflet.draw
+	url = https://github.com/Leaflet/Leaflet.draw
+[submodule "web/assets/Leaflet.label"]
+	path = web/assets/Leaflet.label
+	url = https://github.com/Leaflet/Leaflet.label
+[submodule "web/assets/OverlappingMarkerSpiderfier-Leaflet"]
+	path = web/assets/OverlappingMarkerSpiderfier-Leaflet
+	url = https://github.com/jawj/OverlappingMarkerSpiderfier-Leaflet
+[submodule "web/assets/heatmap"]
+	path = web/assets/heatmap
+	url = https://github.com/pa7/heatmap.js
