@@ -9,15 +9,19 @@ In order to setup the back-end server, you'll need a few things to start:
 ## installing Egit
 In Elipse
 > Help -> Install New Software...
+
 Search for 
 > egit
+
 and install everything that comes up.
 
 ## installing M2Eclipse
 In Eclipse
 > Help -> Install New Software...
+
 and in the URL box, put 
 > http://www.eclipse.org/m2e/download/
+
 and then install everything that seems related to Maven.
 
 ## setting up your repository
