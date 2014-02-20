@@ -24,6 +24,7 @@ and then install everything that seems related to Maven.
 * Clone the repository, and remember the path to it.
 * In Eclipse
 > Window -> Show View -> Other
+
 Then search for "git", and chose the
 > Git Repositories
 
