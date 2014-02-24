@@ -46,7 +46,7 @@ In order to setup the back-end server, you'll need a few things to start:
 * Once it finishes cloning your fork:
 	* Navigate that tree, and find the
 
-		> Working Directory -> backend 
+	> Working Directory -> backend 
 
 	directory. 
 	* Right click, and choose the
