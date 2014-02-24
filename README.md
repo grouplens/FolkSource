@@ -24,34 +24,41 @@ and in the URL box, put
 
 and then install everything that seems related to Maven.
 
-## setting up your repository
-* Clone the repository, and remember the path to it.
+## Setting up your repository
+* Fork http://github.com/grouplens/FolkSource through the GitHub site
 * In Eclipse
 > Window -> Show View -> Other
 
-Then search for "git", and chose the
-> Git Repositories
-
-view.
-
-This will open a git repository view, you'll then choose the third icon in from
+* Then search for "git", and chose the 'Git Repositories' view
+This will open a git repository view, you'll then choose the fourth icon in from
 the left, that has the tooltip
-> Add and existing local Git Repository to this view
+> Clone a Git Repository and add the clone to this view
 
-and point it to the clone you made earlier.
+* In the URI field, put http://github.com/<your-username>/FolkSource.git. 
+** The rest should fill in. It probably makes sense to save your authenitcation (github username and password) now, but you don't need to. 
+* Click Next
+* Uncheck all branches, except the 'master' branch (since it's your fork, the rest don't matter). 
+* Click Next
+* Choose the path where where you want to checkout your clone. Decide if you
+  want to change the name of the 'Remote Name' (you probably don't need to).
+** Make sure the "clone submodules" checkbox is checked
+* Click Finish
+* Once it finishes cloning your fork:
+** Navigate that tree, and find the
+> Working Directory -> backend 
 
-Then you can navigate that tree, and find the 'backend' directory. Right click,
-and choose the
+directory. 
+** Right click, and choose the
 >Import projects
 
 menu item.
 
-This will present you with an import wizard, choose the
+** This will present you with an import wizard, choose the
 > Import as a general project
 
 radio button. Choose 'next', and give your project a name.
 
-This should then create an eclipse project. Right click on it, and choose
+** This should then create an eclipse project. Right click on it, and choose
 > Team -> Switch to... -> New Branch.
 
 Ensure that "Source ref" is set to 
@@ -59,7 +66,7 @@ Ensure that "Source ref" is set to
 
 and that the "Checkout new branch" check box is checked.
 
-Name your branch
+** Name your branch
 > lastName_description_of_feature
 
 and then go ahead and finish. 
