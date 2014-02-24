@@ -74,7 +74,7 @@ In order to setup the back-end server, you'll need a few things to start:
 
 		Ensure that "Source ref" is set to 
 
-			> refs/heads/master
+		> refs/heads/master
 
 		and that the "Checkout new branch" check box is checked.
 
