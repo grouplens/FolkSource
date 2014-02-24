@@ -1,5 +1,6 @@
 # Backend Server
 In order to setup the back-end server, you'll need a few things to start:
+
 1. a postgressql installation (>9.2)
 2. a postGIS installation (>= 2.0)
 3. Download and unzip a version of tomcat from https://tomcat.apache.org/download-70.cgi, and remember the path
