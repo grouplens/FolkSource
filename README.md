@@ -40,7 +40,7 @@ In order to setup the back-end server, you'll need a few things to start:
 
 	> Clone a Git Repository and add the clone to this view
 
-* In the URI field, put http://github.com/<your-username>/FolkSource.git. 
+* In the URI field, put http://github.com/\<your-username\>/FolkSource.git. 
 	* The rest should fill in. It probably makes sense to save your authenitcation (github username and password) now, but you don't need to. 
 * Click Next
 * Uncheck all branches, except the 'master' branch (since it's your fork, the rest don't matter). 
