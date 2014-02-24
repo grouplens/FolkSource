@@ -7,71 +7,77 @@ In order to setup the back-end server, you'll need a few things to start:
 * Maven2Eclipse installed in Eclipse (and a local isntallation of maven).
 
 ## installing Egit
-In Elipse
-> Help -> Install New Software...
+* In Elipse
+	j> Help -> Install New Software...
 
-Search for 
-> egit
+* Search for 
+	> egit
 
-and install everything that comes up.
+	and install everything that comes up.
 
 ## installing M2Eclipse
-In Eclipse
-> Help -> Install New Software...
+* In Eclipse
+	> Help -> Install New Software...
 
-and in the URL box, put 
-> http://www.eclipse.org/m2e/download/
-
-and then install everything that seems related to Maven.
-
+	and in the URL box, put 
+	> http://www.eclipse.org/m2e/download/
+	
+	and then install everything that seems related to Maven.
+	
 ## Setting up your repository
 * Fork http://github.com/grouplens/FolkSource through the GitHub site
 * In Eclipse
-> Window -> Show View -> Other
+	> Window -> Show View -> Other
 
 * Then search for "git", and chose the 'Git Repositories' view
-This will open a git repository view, you'll then choose the fourth icon in from
-the left, that has the tooltip
-> Clone a Git Repository and add the clone to this view
+	This will open a git repository view, you'll then choose the fourth icon in from
+	the left, that has the tooltip
+	> Clone a Git Repository and add the clone to this view
 
 * In the URI field, put http://github.com/<your-username>/FolkSource.git. 
-** The rest should fill in. It probably makes sense to save your authenitcation (github username and password) now, but you don't need to. 
+	* The rest should fill in. It probably makes sense to save your authenitcation (github username and password) now, but you don't need to. 
 * Click Next
 * Uncheck all branches, except the 'master' branch (since it's your fork, the rest don't matter). 
 * Click Next
 * Choose the path where where you want to checkout your clone. Decide if you
-  want to change the name of the 'Remote Name' (you probably don't need to).
-** Make sure the "clone submodules" checkbox is checked
+	want to change the name of the 'Remote Name' (you probably don't need to).
+	* Make sure the "clone submodules" checkbox is checked
 * Click Finish
 * Once it finishes cloning your fork:
-** Navigate that tree, and find the
-> Working Directory -> backend 
+	* Navigate that tree, and find the
 
-directory. 
-** Right click, and choose the
->Import projects
+		> Working Directory -> backend 
 
-menu item.
+	directory. 
+	* Right click, and choose the
 
-** This will present you with an import wizard, choose the
-> Import as a general project
+	> Import projects
 
-radio button. Choose 'next', and give your project a name.
+	menu item.
 
-** This should then create an eclipse project. Right click on it, and choose
-> Team -> Switch to... -> New Branch.
+	* This will present you with an import wizard, choose the
 
-Ensure that "Source ref" is set to 
-> refs/heads/master
+	> Import as a general project
 
-and that the "Checkout new branch" check box is checked.
+	radio button. Choose 'next', and give your project a name.
 
-** Name your branch
-> lastName_description_of_feature
+	* This should then create an eclipse project. Right click on it, and choose
 
-and then go ahead and finish. 
+	> Team -> Switch to... -> New Branch.
 
-You should now be setup proplery to edit the server backed in Eclipse.
+	Ensure that "Source ref" is set to 
+
+	> refs/heads/master
+
+	and that the "Checkout new branch" check box is checked.
+
+	* Name your branch
+
+	> lastName_description_of_feature
+
+	and then go ahead and finish. 
+
+You should now be setup properly to edit the server backed in Eclipse.
 
 # Web
 
