@@ -40,7 +40,7 @@ In order to setup the back-end server, you'll need a few things to start:
 
 	and in the URL box, put 
 
-	> http://www.eclipse.org/m2e/download/
+	> http://download.eclipse.org/technology/m2e/releases
 	
 	and then install everything that seems related to Maven.
 	
