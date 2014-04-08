@@ -37,3 +37,6 @@
 [submodule "web/assets/font-awesome"]
 	path = web/assets/font-awesome
 	url = https://github.com/FortAwesome/Font-Awesome.git
+[submodule "mobile/assets/leaflet-pip"]
+	path = mobile/assets/leaflet-pip
+	url = https://github.com/mapbox/leaflet-pip
