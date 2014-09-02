@@ -41,7 +41,7 @@
 				/> <interceptor name="authorization" class="org.grouplens.bl.struts.interceptor.AuthorizationInterceptor" 
 				/> -->
 				<interceptor name="hibernate" class="org.folksource.struts.HibInterceptor" /> 
-<!-- 				<interceptor name="authorization" class="org.folksource.struts.AuthInterceptor" />  -->
+				<interceptor name="authorization" class="org.folksource.struts.AuthInterceptor" /> 
 				<!--  <interceptor name="resolver" class="org.grouplens.bl.struts.interceptor.ModelResolverInterceptor"> 
 				<param name="enableOauth">${user.oauth.enable}</param> </interceptor> <interceptor 
 				name="concurrentReplayer" class="org.grouplens.bl.struts.interceptor.ConcurrentReplayInterceptor"/> 

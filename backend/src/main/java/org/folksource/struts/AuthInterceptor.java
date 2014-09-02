@@ -22,6 +22,7 @@ public class AuthInterceptor extends MethodFilterInterceptor/*AbstractIntercepto
 	public String doIntercept(ActionInvocation invocation) throws Exception {
 		try {
 			HttpServletRequest req = ServletActionContext.getRequest();
+			HttpServletResponse res = ServletActionContext.getResponse();
 			User u;
 			
 			String controllerName = invocation.getAction().getClass().getSimpleName();
@@ -32,6 +33,9 @@ public class AuthInterceptor extends MethodFilterInterceptor/*AbstractIntercepto
 			}
 			
 			String token = req.getHeader("AuthToken");
+			res.setHeader("Access-Control-Allow-Origin", "*");
+			res.addHeader("Access-Control-Expose-Headers", "Authorization, AuthToken");
+			res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
 			
 			//try login token first
 			if(token != null && TokenService.checkTokenExists(token)) {
@@ -50,20 +54,22 @@ public class AuthInterceptor extends MethodFilterInterceptor/*AbstractIntercepto
 					u = UserService.getUserByName(username);
 					
 					//user doesn't exist or wrong password
-					if (u == null || !UserService.isPasswordValid(u, password))
+					if (u == null || !UserService.isPasswordValid(u, password)) {
+						System.out.println("WRONG PASSWORD");
 						return "login_fail";
-					if(u.getToken() == null)
+					} if(u.getToken() == null)
 						u.setToken(TokenService.getNewToken());
 						
-				} else 
+				} else {
 					//none of the required headers
+					System.out.println("NO HEADERS");
 					return "login_fail";	
+				}
 			}
 			//one of the two cases succeeded, save updated state
 			UserService.save(u);
 			
 			//add the token to the response header
-			HttpServletResponse res = ServletActionContext.getResponse();
 			res.addHeader("AuthToken", u.getToken().getToken().toString());
 			
 			return invocation.invoke();

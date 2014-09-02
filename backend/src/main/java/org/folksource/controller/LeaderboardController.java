@@ -24,33 +24,22 @@ public class LeaderboardController implements ModelDriven<DtoContainer<Leaderboa
 		return content;
 	}
 	
-//	public HttpHeaders show() {
-//		return new DefaultHttpHeaders("show");
-//	}
-	
-//	public void setId(String id) {
-//		if (id != null)
-//			this.entry = IncentiveService.getIncentives().get(Integer.parseInt(id)-1);
-//		this.id = Integer.parseInt(id);		
-//	}
-//	
-//	public int getId() {
-//		return this.id;
-//	}
-	
 	public String index() {
 		HttpServletResponse res = ServletActionContext.getResponse();
-		res.addHeader("Access-Control-Allow-Origin", "*");
+		res.setHeader("Access-Control-Allow-Origin", "*");
+		res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
+		res.addHeader("Access-Control-Expose-Headers", "Authorization, AuthToken");
 		content = new DtoContainer<LeaderboardEntry>(LeaderboardEntry.class, true);
 		content.set(LeaderboardService.getLeaderboard());
 		//list = LeaderboardService.getLeaderboard();
 		return "index";
 	}
-	
-//	public HttpHeaders create()
-//	{
-//		IncentiveService.save(entry);
-//		return new DefaultHttpHeaders("create");
-//	}
 
+	public String options() {
+		HttpServletResponse res = ServletActionContext.getResponse();
+		res.setHeader("Access-Control-Allow-Origin", "*");
+		res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
+		res.addHeader("Access-Control-Expose-Headers", "Authorization, AuthToken");
+		return "options_success";
+	}
 }

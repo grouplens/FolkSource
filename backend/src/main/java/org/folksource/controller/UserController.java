@@ -33,7 +33,7 @@ public class UserController extends ActionSupport implements ModelDriven<DtoCont
 	public String show() {//get
 		HttpServletResponse res = ServletActionContext.getResponse();
 //		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-		res.addHeader("Access-Control-Allow-Origin", "http://localhost:8000");
+//		res.addHeader("Access-Control-Allow-Origin", "http://localhost:8000");
 		content = new DtoContainer<UserDto>(UserDto.class, false);
 		User user = UserService.getUserByName(id);
 		UserDto u = new UserDto(user);
@@ -45,7 +45,7 @@ public class UserController extends ActionSupport implements ModelDriven<DtoCont
 	public String index() {
 		HttpServletResponse res = ServletActionContext.getResponse();
 //		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-		res.addHeader("Access-Control-Allow-Origin", "*");
+//		res.addHeader("Access-Control-Allow-Origin", "*");
 		content = new DtoContainer<UserDto>(UserDto.class, true);
 		content.set(UserDto.fromUserList(UserService.getUsers()));
 
@@ -56,7 +56,7 @@ public class UserController extends ActionSupport implements ModelDriven<DtoCont
 	public String create() {// deal with register
 		HttpServletResponse response = ServletActionContext.getResponse();
 		HttpServletRequest req = ServletActionContext.getRequest();
-		response.addHeader("Access-Control-Allow-Origin", "*");
+//		response.addHeader("Access-Control-Allow-Origin", "*");
 		User inUser = content.getSingle().toUser();
 		User u = UserService.getUserByName(inUser.getName());
 		if (u == null) {// user name doesn't exist, could register
@@ -84,8 +84,9 @@ public class UserController extends ActionSupport implements ModelDriven<DtoCont
 	public String token() {
 		HttpServletResponse res = ServletActionContext.getResponse();
 //		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-		res.addHeader("Access-Control-Allow-Origin", "http://localhost:8000");
+		res.setHeader("Access-Control-Allow-Origin", "*");
 		res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
+		res.addHeader("Access-Control-Expose-Headers", "Authorization, AuthToken");
 		content = new DtoContainer<UserDto>(UserDto.class, false);
 		User user = UserService.getUserByName(id);
 		if(user.getToken() == null) {
@@ -107,8 +108,9 @@ public class UserController extends ActionSupport implements ModelDriven<DtoCont
 	public String options() {
 		HttpServletResponse res = ServletActionContext.getResponse();
 //		res.addHeader("Allow", "*");
-		res.addHeader("Access-Control-Allow-Origin", "http://localhost:8000");
+//		res.addHeader("Access-Control-Allow-Origin", "*");
 		res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
+		res.addHeader("Access-Control-Expose-Headers", "Authorization, AuthToken");
 		return "options_success";
 	}
 
