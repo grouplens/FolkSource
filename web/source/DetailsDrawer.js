@@ -86,7 +86,7 @@ enyo.kind({
 	},	
 	getGeocode: function(sub) {
 		var loc = sub.gps_location.split("|");
-		var ajax = new enyo.Ajax({handleAs: "json", url: "http://open.mapquestapi.com/nominatim/v1/search?format=json&q=" + loc[0] + "+" + loc[1]});
+		var ajax = new enyo.Ajax({handleAs: "json", url: "FIND NEW GEOCODER URL" + loc[0] + "+" + loc[1]});
 		ajax.response(this, "reverseGeocode");
 		ajax.go();
 	},	
