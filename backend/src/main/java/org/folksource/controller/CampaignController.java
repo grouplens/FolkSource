@@ -25,7 +25,7 @@ public class CampaignController implements ModelDriven<DtoContainer<CampaignDto>
 	
 	public String show() {
 		HttpServletResponse res = ServletActionContext.getResponse();
-		res.addHeader("Access-Control-Allow-Origin", "*");
+		res.setHeader("Access-Control-Allow-Origin", "*");
 		content.set(new CampaignDto(CampaignService.getCampaign(id)));
 		
 		return "show";
@@ -41,20 +41,25 @@ public class CampaignController implements ModelDriven<DtoContainer<CampaignDto>
 	
 	public String index() {
 		HttpServletResponse res = ServletActionContext.getResponse();
-		res.addHeader("Access-Control-Allow-Origin", "*");
+		res.setHeader("Access-Control-Allow-Origin", "*");
+		res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
+		res.addHeader("Access-Control-Expose-Headers", "Authorization, AuthToken");
 		content = new DtoContainer<CampaignDto>(CampaignDto.class, true);
 		content.set(CampaignDto.fromCampaignList(CampaignService.getCampaigns()));
 		return "index";
 	}
 	public String options() {
 		HttpServletResponse res = ServletActionContext.getResponse();
-		res.addHeader("Access-Control-Allow-Origin", "*");
-		return "options";
+		res.setHeader("Access-Control-Allow-Origin", "*");
+		res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
+		res.addHeader("Access-Control-Expose-Headers", "Authorization, AuthToken");
+		return "options_success";
 	}
 	public String create()
 	{
 		HttpServletResponse res = ServletActionContext.getResponse();
-		res.addHeader("Access-Control-Allow-Origin", "*");
+		res.setHeader("Access-Control-Allow-Origin", "*");
+		res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
 		Campaign c = content.getSingle().toCampaign();
 		CampaignService.save(c);
 		
