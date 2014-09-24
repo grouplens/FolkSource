@@ -33,24 +33,29 @@ enyo.kind({
 				]},
 			]}
 		]},
-		{name: "sendingPopup", kind: onyx.Popup, autoDismiss: false, centered: true, floating: true, modal: true, scrimWhenModla: false, scrim: true, classes: "dark-background-flat white-text", style: "width: 80%;", components: [
-			{name: "sendMessage", content: "Sending submission"},
-			{name: "sendProgress", kind: onyx.ProgressBar, animateBars: true, progress: 0, barClasses: "color-progress"}
+		{name: "sendingPopup", kind: onyx.Drawer, orient: "v", style: "width: 100%;", layoutKind: enyo.FittableRowsLayout, open: false, components: [
+			{name: "sendProgress", kind: "CustomProgress", progress: 0, fit: true, components: [
+				{name: "sendMessage", content: "Sending submission"},
+			]}
 		]},
-		{name: "acc", kind: "enyo.Scroller", layoutKind: enyo.FittableRowsLayout, vertical: "auto", horizontal: "hidden", fit: true, strategyKind: "TouchScrollStrategy"},
-		{name: "buttons", kind: enyo.ToolDecorator, classes: "senseButtons", components: [
-			{name: "remove", kind: onyx.Button, classes: "button-style button-style-negative", ontap: "togglePopup", components: [
-				{tag: "i", classes: "icon-ban-circle icon-large"}
-			]},
-			{name: "submit", kind: onyx.Button, classes: "button-style button-style-affirmative", ontap: "togglePopup", components: [
-				{tag: "i", classes: "icon-ok icon-large"}
+		{kind: enyo.FittableRows, fit: true, components: [
+			{name: "taskDesc", content: "", style: "font-size: 11pt; font-weight: 100; text-align: center; padding: 3px;", classes: "light-background"},
+			{name: "scrim", kind: onyx.Scrim, floating: false, showing: false, classes: "onyx-scrim-translucent"},
+			{name: "acc", kind: "enyo.Scroller", layoutKind: enyo.FittableRowsLayout, vertical: "auto", horizontal: "hidden", fit: true, strategyKind: "TouchScrollStrategy"},
+			{name: "buttons", kind: enyo.ToolDecorator, classes: "senseButtons", components: [
+				{name: "remove", kind: onyx.Button, classes: "button-style button-style-negative", ontap: "togglePopup", components: [
+					{tag: "i", classes: "icon-ban-circle icon-large"}
+				]},
+				{name: "submit", kind: onyx.Button, classes: "button-style button-style-affirmative", ontap: "togglePopup", components: [
+					{tag: "i", classes: "icon-ok icon-large"}
+				]}
 			]}
 		]}
 	],
 	create: function(a, b) {
 		this.inherited(arguments);
 		this.setTaskData(this.data);
-		this.render();
+		//this.render();
 		this.counterName = "";
 	},
     recreate: function() {
@@ -63,7 +68,7 @@ enyo.kind({
     },
     rendered: function(inSender, inEvent) {
         this.inherited(arguments);
-        this.resized();
+        //this.resized();
         this.reflow();
     },
 	saveLocation: function(inSender, inEvent) {
@@ -86,6 +91,7 @@ enyo.kind({
     },
     setTaskData: function(a) {
         this.task = a.tasks[0];
+		this.$.taskDesc.setContent(this.task.instructions);
         this.campTitle = a.title;
         questionBody = [];
 
@@ -103,13 +109,13 @@ enyo.kind({
             }
 			counter = this.makeQuestion(type, b, i);
         }
-		this.render();
+		//this.render();
 		if(counter > -1) {
 			var data = this.task.questions[counter];
 			this.newFormCounter(data);
 		}
-		this.render();
-		this.resized();
+		/*this.render();
+		this.resized();*/
 	},
 	makeQuestion: function(type, question, index) {
 		var counter = -1;
@@ -134,9 +140,12 @@ enyo.kind({
 				this.newTime(question);
 				break;
 			case "media_camera":
-				case "media_audio":
-				case "media_video":
+			case "media_audio":
+			case "media_video":
 				this.newMediaReading(question);
+				break;
+			case "osm_reverse_geocoder":
+				this.newReverseGeocoder(question);
 				break;
 			default:
 				break;
@@ -157,7 +166,8 @@ enyo.kind({
         console.log(b);
     },
 	buildAndSendSubmission: function() {
-		this.$.sendingPopup.setShowing(true);
+		this.$.sendingPopup.setOpen(true);
+		this.$.scrim.setShowing(true);
 		this.log("A");
 		if (!this.$.submit.disabled) {
 			this.log("B");
@@ -172,40 +182,54 @@ enyo.kind({
 			this.log(this.gps);
 			var gps_location = this.gps.coords;
 			this.log(gps_location);
-			var coords = gps_location.latitude + "|" + gps_location.longitude;
-			sub.submission.gps_location = coords;
-			sub.submission.user_id = LocalStorage.get("user").uid;
+			if(gps_location) {
+				var coords = gps_location.latitude + "|" + gps_location.longitude;
+				sub.submission.gps_location = coords;
+				sub.submission.user_id = LocalStorage.get("user").uid;
 
-			for (var i in this.task.questions) {
-				this.log("C");
-				var question = this.task.questions[i];
-				type = question.type;
-				if (type.indexOf("complex") != -1) {
-					type = "counter";
-					var d = type.search(/\d/);
-					var e = 0;
-					if (d != -1)
-						e = type.charAt(d);
-					if (e != questionBody.length && this.complex) var f = "qs" + (e + 1);
+				for (var i in this.task.questions) {
+					this.log("C");
+					var question = this.task.questions[i];
+					type = question.type;
+					if (type.indexOf("complex") != -1) {
+						type = "counter";
+						var d = type.search(/\d/);
+						var e = 0;
+						if (d != -1)
+							e = type.charAt(d);
+						if (e != questionBody.length && this.complex) var f = "qs" + (e + 1);
+					}
+					var tmp = sub.submission.answers.concat(this.buildAnswer(type, question));
+					sub.submission.answers = tmp;
 				}
-				var tmp = sub.submission.answers.concat(this.buildAnswer(type, question));
-				sub.submission.answers = tmp;
+				this.log("D");
+				this.log("SENDING TO SERVER: " + JSON.stringify(sub));
+				var url = Data.getURL() + "submission.json"; 
+				var ajax = new enyo.Ajax({
+					contentType: "application/json",
+					method: "POST",
+					url: url,
+					postBody: JSON.stringify(sub),
+					headers: {AuthToken: LocalStorage.get("authtoken")},
+					cacheBust: false,
+					handleAs: "json"
+				});
+				ajax.response(this, "handlePostResponse");
+				ajax.go();
+			} else {
+				this.$.sendProgress.fail();
+				this.$.sendMessage.setContent("FAILED");
+				window.setTimeout(enyo.bind(this, "sendFailed"), 3000);
+				//this.sendFailed();
 			}
-			this.log("D");
-			this.log("SENDING TO SERVER: " + JSON.stringify(sub));
-			var url = Data.getURL() + "submission.json"; 
-			var ajax = new enyo.Ajax({
-				contentType: "application/json",
-				method: "POST",
-				url: url,
-				postBody: JSON.stringify(sub),
-				cacheBust: false,
-				handleAs: "json"
-			});
-			ajax.response(this, "handlePostResponse");
-			ajax.go();
 		}
 	},
+	sendFailed: function(inSender, inEvent) {
+		this.$.sendingPopup.setOpen(false);
+		this.$.sendProgress.reset();
+		this.$.sendMessage.setContent("Sending submission");
+		this.$.scrim.setShowing(false);
+	},	
 	buildAnswer: function(type, question) {
 		var out = [];
 		var ans = {
@@ -250,6 +274,10 @@ enyo.kind({
 				ans.answer = this.readTime(question);
 				out.push(ans);
 				break;
+			case "osm_reverse_geocoder":
+				ans.answer=this.readGeocode(question);
+				out.push(ans);
+				break;
 			default:
 				break;
 		}
@@ -282,7 +310,8 @@ enyo.kind({
 		}
 		this.$.sendProgress.animateProgressTo((count+1)*this.progressInterval);
 		if(count === this.files) {
-			this.$.sendingPopup.setShowing(false);
+			this.$.sendingPopup.setOpen(false);
+			this.$.scrim.setShowing(false);
 			this.bubble("onSubmissionMade");
 		}
 
@@ -314,7 +343,7 @@ enyo.kind({
 	},
 	testButtons: function(inSender, inEvent) {
 		var controls = this.$.groupbox.getControls();
-		var inName = a.getContent();
+		var inName = inSender.getContent();
 		var bike = true;
 		var ped = true;
 		if(inName === "Bicycles") {
@@ -342,7 +371,7 @@ enyo.kind({
 		var decName = "inputDec_" + input.id;
 		var inputName = "input_" + input.id;
 		this.$.acc.createComponent({name: decName, style: "clear: both;", kind: "onyx.InputDecorator", classes: "onyx-input-decorator center", components: [
-								   {name: inputName, kind: "onyx.Input", classes: "onyx-input" }
+									{name: inputName, kind: "onyx.Input", classes: "onyx-input" }
 		]}, {owner: this});
 	},
 	newFormExclusiveChoice: function(input) {
@@ -395,6 +424,10 @@ enyo.kind({
 		var type = input.type.split("_")[1];
 		this.$.acc.createComponent({name: name, kind: "MediaSensor", type: type, sendAutomatically: false});
 	},
+	newReverseGeocoder: function(input) {
+		var name = "geocode_" + input.id;
+		this.$.acc.createComponent({name: name, kind: "TapMap"});
+	},	
 	readFormText: function(input) {
 		var name = "input_" + input.id;
 		return this.$[name].getValue();
@@ -426,6 +459,10 @@ enyo.kind({
         var time = "time_" + input.id;
 		var ret = this.$.acc.$[time].time;
 		return ret;
+	},
+	readGeocode: function(input) {
+		var geocode = "geocode_"+input.id;
+		var ret = this.$.acc.$[geocode].getData();
 	},
 	jumpToCounter: function(inSender, inEvent) {
 		this.$.acc.scrollToControl(this.$.bikeCounter);
