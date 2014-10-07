@@ -98,7 +98,13 @@ enyo.kind({
 
 		//get CampaignData
 		this.campData = [];
-		var ajax = new enyo.Ajax({url: Data.getURL() + "campaign.json", method: "GET", handleAs: "json"});
+
+    /*
+     * This is 
+     */
+    var md5 = window.btoa("anonymous:"+Math.random());
+    var auth = "Basic " + md5;
+		var ajax = new enyo.Ajax({url: Data.getURL() + "campaign.json", method: "GET", handleAs: "json", cacheBust: false, headers: {Authorization: auth}});
 		ajax.response(this, "handleResponse");
 		ajax.go();
 

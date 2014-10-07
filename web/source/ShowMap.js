@@ -120,7 +120,7 @@ enyo.kind({
 		onAPIResponse: "updateLastSubmissionPollTime",
 
 		onContentSet: "stopTaskDetailSpinner",
-		
+
 		onResizeMap: "adjustMapSize",
 
 		onCheckLocation: "highlightMarkerPolygon",
@@ -137,12 +137,12 @@ enyo.kind({
 
 		this.inherited(arguments);
 
-		this.resized();
+		//this.resized();
 		this.$.gps.setTimeout(this.gpsTimeout);
 
 		this.lastSubmissionPoll = 0;
 		//enyo.job("submissionPoll", enyo.bind(this, "getNewSubmissions"), 1500);
-		
+
 		userMoved = false;
 		loaded = false;
 		this.panZoomed = false;
@@ -151,16 +151,16 @@ enyo.kind({
 		this.locSuc = false;
 		this.loaded = false;
 		this.locations = [];
-	
+
 		//buttons
 		this.addPins = false;
 		this.addPolygon = false;
 		this.addShapeFile = false;
-	
+
 		this.events.onPins = '';
 		this.currentTaskName = "";
 
-		
+
 		this.taskMarkerGroups = {}; //keys: campaign ids, values: L.FeatureGroups holding task markers/polygons
 		this.taskMarkers = {}; //keys: task ids, values: L.Layers holding task marker or polygon
 		this.submissionMarkerGroups = {}; //Keys: task ids, values: L.FeatureGroups holding submission markers
@@ -186,27 +186,27 @@ enyo.kind({
 				this.selectCluster(point.__parent);//.__parent.__parent.__parent);
 			}
 		}
-	},	
+	},
 
 	doubleCheckSend: function(inSender, inEvent) {
 		this.$.doubleCheckSendPopup.show();
-	},	
+	},
 	hideDoubleCheckSend: function(inSender, inEvent) {
 		this.$.doubleCheckSendPopup.hide();
-	},	
+	},
 	hideDoubleCheckCancel: function(inSender, inEvent) {
 		this.$.doubleCheckCancelPopup.hide();
-	},	
+	},
 	doubleCheckCancel: function(inSender, inEvent) {
 		this.$.doubleCheckCancelPopup.show();
-	},	
+	},
 	hideLogin: function(inSender, inEvent) {
 		if(LocalStorage.get("username") !== undefined) {
 			this.$.username.setContent(LocalStorage.get("username").toString());
 		}
 		this.$.toolbar.resized();
 		this.$.loginRegister.hide();
-	},	
+	},
 	resizeContainer: function(inSender, inEvent) {
 		//this.$.container.resized();
 	},
@@ -310,12 +310,13 @@ enyo.kind({
 			if(layerCont.layerType === "polygon") {
 				if(inEvent.selected)
 					layer.setStyle({color: "#DB221D"});
-				else 
+				else {
 					layer.setStyle({color: "#2E426F"});
+        }
 			}
 		}
 		return true;
-	},	
+	},
 	undo: function(){
 		var action = this.undoStack.pop();
 
@@ -372,7 +373,7 @@ enyo.kind({
 		Data.setLocationData(b.coords);
 		this.centerMap();
 		*/
-		this.Map.setView([b.coords[latitude], b.coords[longitude]], 11, true);
+		this.map.setView([b.coords[latitude], b.coords[longitude]], 11, true);
 		return true;
 	},
 
@@ -433,7 +434,7 @@ enyo.kind({
 				this.waterfallDown("onViewportChanged",{submissions: this.getVisibleSubmissions()});
 			}
 		}
-		
+
 	},
 
 	animationEndHandler: function(e){
@@ -444,7 +445,7 @@ enyo.kind({
 			this.stopSpinnerOnTaskDetailContSet = true;
 			this.stopTaskDetailSpinner();
 			this.waterfallDown("onViewportChanged",{submissions: this.getVisibleSubmissions()});
-		}), 200);	
+		}), 200);
 	},
 
 	stopTaskDetailSpinner: function(inSender, inEvent){
@@ -456,7 +457,7 @@ enyo.kind({
 
 	rendered: function () {
 		this.inherited(arguments);
-		this.$.gps.getPosition();		
+		this.$.gps.getPosition();
 
 		//-- Create the map --//
 		this.map = L.map(this.$.mapCont.id, {closePopupOnClick: false, minZoom: 1, maxZoom: 16}).setView([44.981313, -93.266569], 12);
@@ -466,8 +467,7 @@ enyo.kind({
 
 
 		//-- markerCluster initilization --//
-		var that = this;
-		this.clusterGroup = new L.MarkerClusterGroup({maxClusterRadius: 35, singleMarkerMode: true, showCoverageOnHover: true, spiderfyOnMaxZoom: false, iconCreateFunction: this.clusterIconCreateFunc.bind(this)});
+		this.clusterGroup = new L.MarkerClusterGroup({maxClusterRadius: 35, singleMarkerMode: true, showCoverageOnHover: true, spiderfyOnMaxZoom: false, iconCreateFunction: enyo.bind(this, "clusterIconCreateFunc")});
 		this.map.addLayer(this.clusterGroup);
 		//Bring cluster to front on hover
 		this.clusterGroup.on('clustermouseover', function (a) {
@@ -486,15 +486,7 @@ enyo.kind({
 			}
 		}, this);
 
-		/*
-		this.map.on("moveend", function(e){ //"moveend dragend zoomend resize"
-			this.clearClusterSelect();
-			this.$.cSenseShowCampaigns.$.taskDetailDrawerContent.startSpinner();
-			this.clusterGroup.on("animationend", this.myAnimationEndFunction, this);
-		}, this);
-		*/
 
-		
 		this.map.on("dragend resize", function (){
 			this.log("DRAGEND OR RESIZE");
 			this.clearClusterSelect();
@@ -504,8 +496,8 @@ enyo.kind({
 				this.$.cSenseShowCampaigns.$.taskDetailDrawerContent.stopSpinner();
 			}), 500);
 		}, this);
-		
-		
+
+
 		this.map.on("zoomend", function (){
 			this.log("ZOOMEND");
 			this.clearClusterSelect();
@@ -542,10 +534,10 @@ enyo.kind({
 				circle: false,
 				polygon: false,
 				marker: false
-			}, 
-			marker: {
-				icon: new L.DivIcon({iconSize: new L.Point(27,91), html: "<i class=\"icon-map-marker icon-4x\"></i>", className: "map-pin"})
 			},
+			/*marker: {
+				icon: new L.DivIcon({iconSize: new L.Point(27,91), html: "<i class=\"icon-map-marker icon-4x\"></i>", className: "map-pin"})
+			},*/
 			polygon: {
 				shapeOptions: {
 					color: "#2E426F"
@@ -555,7 +547,7 @@ enyo.kind({
 		this.map.addControl(this.drawControl);
 
 		//Remove one of the default tooltips
-		L.drawLocal.edit.tooltip.subtext = null;
+		//L.drawLocal.edit.tooltip.subtext = null;
 
 		//Create Draw objects to be enabled later by our buttons
 		this.drawPolygon = new L.Draw.Polygon(this.map, this.drawControl.options.polygon);
@@ -610,9 +602,10 @@ enyo.kind({
 		L.DomEvent.disableClickPropagation(this.$.finishAddingButton.hasNode());
 		L.DomEvent.disableClickPropagation(this.$.finishEditingButton.hasNode());
 
-		if(LocalStorage.get("user") === undefined)
+    this.log(LocalStorage.get("user"));
+		if(LocalStorage.get("user") === undefined) {
 			this.$.loginRegister.show();
-		else {
+    } else {
 			this.$.username.setContent(LocalStorage.get("username"));
 			this.$.toolbar.resized();
 			//this.$.addButton.setDisabled(false);

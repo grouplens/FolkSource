@@ -81,37 +81,37 @@ enyo.kind({
 		var button = this.$.taskButton.hasNode().offsetHeight;
 
 		return total - header - button;
-	},	
+	},
 	getData: function(inSender, inEvent) {
 		var campaign = {};
 		campaign.id = 0;
-		campaign.start_date = "";
+		campaignNn.start_date = "";
 		campaign.end_date = "";
 		enyo.mixin(campaign, this.$.header.getData());
 		campaign.tasks = this.getTasks();
 		campaign.owner_id = LocalStorage.get("user");
 		return campaign;
-	},	
+	},
 	getTasks: function(inSender, inEvent) {
 		var tmp = [];
 		enyo.forEach(this.$.realContainer.getPanels(), function(inSender, inEvent) {
 			tmp.push(inSender.getData());
 		}, this);
 		return tmp;
-	},	
+	},
 	gotoTask: function(inSender, inEvent) {
 		this.log();
 		var index = inSender.getContent();
 		this.$.realContainer.setIndex(Number(index)-1);
-	},	
+	},
 	newLocation: function(inSender, inEvent) {
 		var index = this.$.realContainer.index;
 		this.$.realContainer.getPanels()[index].newLocation(inEvent);
 		return true;
-	},	
+	},
 	openQuestionDrawer: function(inSender, inEvent) {
 		this.$.questionDrawer.setOpen(true);
-	},	
+	},
 	scrollDown: function(inSender, inEvent) {
 		this.$.nodeContainer.scrollToBottom();
 	},

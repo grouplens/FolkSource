@@ -144,7 +144,7 @@ enyo.kind({
 		this.taskData.incentive = 1;
 		this.taskData.required = true;
 		return this.taskData;
-	},	
+	},
 	getLocations: function(inSender, inEvent) {
 		var tmp = [];
 		var wkt = new Wkt.Wkt();
@@ -166,7 +166,7 @@ enyo.kind({
 			tmp.push(obj);
 		}, this);
 		return tmp;
-	},	
+	},
 	handleExpand: function(inSender, inEvent) {
 		this.log(inSender.expanded);
 		if(!inSender.expanded) {
