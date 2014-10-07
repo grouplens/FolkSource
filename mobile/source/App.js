@@ -12,13 +12,10 @@ enyo.kind({
 	create: function(inSender, inEvent) {
 		this.inherited(arguments);
 		this.log();
-		if(enyo.platform.ios === 7) {
+		if(enyo.platform.ios === 7 || enyo.platform.ios === 8) {
 			this.$.bar.setShowing(true);
 		}
 		//LocalStorage.remove("loc");
-    window.addEventListener('load', function() {
-      localStorage.clear();
-    }, false);
 	},
 	rendered: function(inSender, inEvent) {
 		this.inherited(arguments);
@@ -31,8 +28,8 @@ enyo.kind({
 		this.log();
 		enyo.Signals.send("onLocationFound", {coords: locData.coords});//doLocationFound();
 		Data.setLocationData(this.coords);
-    },
-    locError: function (a, b) {
+  },
+  locError: function (a, b) {
 		this.log();
 		enyo.Signals.send("onNoLocationFound");//doLocationFound();
 	},

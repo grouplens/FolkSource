@@ -12,9 +12,9 @@ enyo.kind({
 	fail: function(inSender, inEvent) {
 		this.setBarClasses("color-progress-negative");
 		this.setProgress(100);
-	},	
+	},
 	reset: function(inSender, inEvent) {
 		this.setBarClasses("color-progress");
 		this.setProgress(0);
-	},	
+	},
 });
