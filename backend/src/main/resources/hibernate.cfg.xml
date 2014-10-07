@@ -34,12 +34,12 @@
         <property name="show_sql">true</property>
         <property name="org.hibernate.sql">debug</property>
         <!--  let hibernate manage the DB schema -->
-        <!-- <property name="hibernate.hbm2ddl.auto">create</property> -->
+         <!--<property name="hibernate.hbm2ddl.auto">create</property>-->
 
         <!-- Mapping files -->
-        <!-- Example: <mapping class="full.name" /> -->	
-        <mapping resource="campaign.hbm.xml" />
+        <!-- Example: <mapping class="full.name" /> -->
         <mapping resource="user.hbm.xml" />
+        <mapping resource="campaign.hbm.xml" />
 <!--         <mapping resource="userdetails.hbm.xml" /> -->
         <mapping resource="task.hbm.xml" />
         <mapping resource="answer.hbm.xml" />

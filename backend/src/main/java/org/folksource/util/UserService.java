@@ -13,13 +13,14 @@ public class UserService {
 	
 	// 8 bytes should be a good enough salt for our purposes.
     private static final int SALT_LENGTH = 8;
-	
-	@SuppressWarnings("unchecked")
+
 	public static List<User> getUsers() {
 		List<User> users;
 		Session session = HibernateUtil.getSession(true);
 		
-		users = session.createQuery("from User").list();
+		Query q = session.createQuery("from User where name != :name");
+        q.setParameter("name", "anonymous");
+        users = q.list();
 		
 //		for(User u : users) {
 //			getIncentives(u);
@@ -64,8 +65,10 @@ public class UserService {
 	
 	public static User getUserByName(String name) {
 		Session session = HibernateUtil.getSession(true);
-		User u = (User)session.createQuery("from User where name='"+name+"'").list().get(0);
-		return u;
+        System.out.println(name);
+        Query q = session.createQuery("from User where name=:name");
+        q.setParameter("name", name);
+        return (User) q.uniqueResult();
 	}
 	
 	
@@ -90,7 +93,11 @@ public class UserService {
 	public static boolean isPasswordValid(User u, String pwWithoutHash) {
 		// get the hashed value for the password
 		String saltedPassword = HashUtil.getSaltedPassword(pwWithoutHash,u.getSalt());
-		return u.getPassword().equals(saltedPassword);
+        if(u.getName().equals("anonymous")) {
+            return true;
+        } else {
+            return u.getPassword().equals(saltedPassword);
+        }
 	}
 	
     public static PasswordHashAndSalt getPasswordHash(String pwWithoutHash, SecureRandom rng) {

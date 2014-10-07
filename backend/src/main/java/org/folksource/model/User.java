@@ -1,13 +1,9 @@
 package org.folksource.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.grouplens.common.dto.Dto;
 
 public class User extends Dto{
-	public Integer Id;
+	public Integer id;
 	public String name;
 	private String password;
     /** The base64 encoded salt value used to hash the password*/
@@ -17,17 +13,17 @@ public class User extends Dto{
 	public Integer points;
 	private String badges;	
 	/** Used to construct the link to find user's password. 
-	 * findpwid is hashed value of a string: Id+findpwtime.*/
+	 * findpwid is hashed value of a string: id+findpwtime.*/
 	private String findpwid;
 	/** The time user reports forget password.*/
 	private String findpwtime;
 	private Token token;
 
 	public Integer getId() {
-		return Id;
+		return id;
 	}
 	public void setId(Integer id) {
-		Id = id;
+		this.id = id;
 	}
 	public String getBadges() {
 		return badges;

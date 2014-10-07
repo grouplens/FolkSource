@@ -22,6 +22,7 @@ public class QuestionService {
 
 	public static void save(Question q) {
 		Session session = HibernateUtil.getSession(true);
+        System.out.println(q.getTask_id());
 		session.save(q);
 		
 	}

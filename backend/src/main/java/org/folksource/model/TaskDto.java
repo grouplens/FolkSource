@@ -54,16 +54,17 @@ public class TaskDto extends Dto{
 	//// Methods that create Tasks or collections of Tasks
 	public Task toTask(){
 		
-		Submission[] subs = null;
+		Submission[] subs = new Submission[0];
 		if (submissions != null){
 			subs = SubmissionDto.toSubmissionArray(submissions);
 		}
 		
-		Location[] locs = null;
+		Location[] locs = new Location[0];
 		if (locations != null) {
 			locs = LocationDto.toLocationArray(locations);
 		}
-		
+
+        System.out.println("QUESTIONS: " + questions.length);
 		return new Task(id, name, instructions, required, new LinkedHashSet<Submission>(Arrays.asList(subs)), new LinkedHashSet<Question>(Arrays.asList(questions)), new LinkedHashSet<Location>(Arrays.asList(locs)));
 	}
 	public static Task[] toTaskArray(TaskDto[] tdtos){

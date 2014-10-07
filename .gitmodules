@@ -37,3 +37,6 @@
 [submodule "web/assets/Leaflet.draw"]
 	path = web/assets/Leaflet.draw
 	url = https://github.com/Leaflet/Leaflet.draw.git
+[submodule "web/assets/Leaflet"]
+	path = web/assets/Leaflet
+	url = https://github.com/Leaflet/Leaflet.git

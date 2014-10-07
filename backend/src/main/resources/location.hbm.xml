@@ -2,20 +2,27 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="org.folksource.model">
-<class name="Location">
-	<id name="id">
+
+<class name="Location" table="location">
+	<id name="id" column="id">
 		<generator class="native" />
 	</id>
-	<property name="task_id" />
+    <discriminator column="location_type" type="string"/>
 
-	<joined-subclass name="PolygonLocation" table="location_regions">
-		<key column="id"></key>
-		<property name="geometry" type="org.hibernate.spatial.GeometryType" column="polygon" />
-	</joined-subclass>
+    <many-to-one name="task" class="Task" column="task_id" fetch="join"/>
 
-	<joined-subclass name="PointLocation" table="location_points" extends="Location">
-		<key column="id"></key>
-		<property name="geometry" type="org.hibernate.spatial.GeometryType" column="point" />
-	</joined-subclass>
+	<subclass name="PolygonLocation" discriminator-value="region">
+        <join table="location_regions" fetch="select">
+		    <key column="id"></key>
+		    <property name="geometry" type="org.hibernate.spatial.GeometryType" column="polygon" />
+        </join>
+	</subclass>
+
+	<subclass name="PointLocation" discriminator-value="point">
+        <join table="location_points" fetch="select">
+		    <key column="id"></key>
+		    <property name="geometry" type="org.hibernate.spatial.GeometryType" column="point" />
+        </join>
+	</subclass>
 </class>
 </hibernate-mapping>

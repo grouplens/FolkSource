@@ -5,6 +5,7 @@ import com.vividsolutions.jts.geom.Geometry;
 public class Location{
 	public Integer id;
 	public Integer task_id;
+    public Task task;
 //	@Exclude(ExcludeType.EXPORT)
 	private Geometry geometry;
 	
@@ -18,24 +19,31 @@ public class Location{
 		this.geometry = geometry2;
 	}
 	public Integer getId() {
-		return this.id;
+        return this.id;
 	}
 	public void setId(Integer id) {
-		this.id = id;
+        this.id = id;
 	}
 	public Integer getTask_id() {
 		return this.task_id;
 	}
 	public void setTask_id(Integer task_id){
-		this.task_id = task_id;
+        this.task_id = task_id;
 	}
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
 	
 	public Geometry getGeometry() {
-		return geometry;
+        return geometry;
 	}
 
 	public void setGeometry(Geometry geometry) {
-		this.geometry = geometry;
+        this.geometry = geometry;
 	}
 }
 

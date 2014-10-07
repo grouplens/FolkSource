@@ -1,8 +1,6 @@
 package org.folksource.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import org.grouplens.common.dto.Dto;
@@ -23,7 +21,7 @@ public class UserDetailDto extends Dto{
 	 */
 	public UserDetailDto(User s){
 		super();
-		this.id = s.Id;
+		this.id = s.id;
 		this.name = s.name;
 		this.email = s.email;
 		this.points = s.points;

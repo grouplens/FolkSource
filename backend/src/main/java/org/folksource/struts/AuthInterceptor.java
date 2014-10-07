@@ -56,6 +56,7 @@ public class AuthInterceptor extends MethodFilterInterceptor/*AbstractIntercepto
 					//user doesn't exist or wrong password
 					if (u == null || !UserService.isPasswordValid(u, password)) {
 						System.out.println("WRONG PASSWORD");
+                        System.out.println(u);
 						return "login_fail";
 					} if(u.getToken() == null)
 						u.setToken(TokenService.getNewToken());
