@@ -4,7 +4,7 @@ In order to setup the back-end server, you'll need a few things to start:
 1. a postgressql installation (>9.2)
 2. a postGIS installation (>= 2.0)
 3. Download and unzip a version of tomcat from https://tomcat.apache.org/download-70.cgi, and remember the path
-4. a clone of the DB (talk to @jtsmn)
+4. a clone of the DB (talk to [@jtsmn](https://github.com/jtsmn))
 5. EGit installed in Eclipse
 6. Maven2Eclipse installed in Eclipse (and a local isntallation of maven).
 
