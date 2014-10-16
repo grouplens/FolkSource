@@ -40,6 +40,7 @@ public class AuthInterceptor extends MethodFilterInterceptor/*AbstractIntercepto
 			//try login token first
 			if(token != null && TokenService.checkTokenExists(token)) {
 				u = UserService.getUserByToken(Integer.parseInt(token));
+                System.out.println("TRYING TO LOG USER IN");
 				if(u != null)
 					TokenService.updateTtl(u.getToken());
 			} else {

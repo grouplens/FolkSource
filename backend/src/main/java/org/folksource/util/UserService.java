@@ -18,8 +18,8 @@ public class UserService {
 		List<User> users;
 		Session session = HibernateUtil.getSession(true);
 		
-		Query q = session.createQuery("from User where name != :name");
-        q.setParameter("name", "anonymous");
+		Query q = session.createQuery("from User");
+//        q.setParameter("name", "anonymous");
         users = q.list();
 		
 //		for(User u : users) {
@@ -50,8 +50,13 @@ public class UserService {
 	public static User getUserByToken(int token) {
 		List<User> tmp = getUsers();
 		System.out.println(token);
+        System.out.println("LIST: " + tmp.size());
 		
 		for(User u : tmp) {
+            System.out.println(u.getName());
+            System.out.println(u.getToken().getId());
+            System.out.println(u.getToken().getToken() + " : " + token);
+            System.out.println(u.getToken() == null);
 			if(u.getToken() != null && u.getToken().getToken().equals(token))
 				return u;
 		}
@@ -93,11 +98,7 @@ public class UserService {
 	public static boolean isPasswordValid(User u, String pwWithoutHash) {
 		// get the hashed value for the password
 		String saltedPassword = HashUtil.getSaltedPassword(pwWithoutHash,u.getSalt());
-        if(u.getName().equals("anonymous")) {
-            return true;
-        } else {
-            return u.getPassword().equals(saltedPassword);
-        }
+        return u.getName().equals("anonymous") || u.getPassword().equals(saltedPassword);
 	}
 	
     public static PasswordHashAndSalt getPasswordHash(String pwWithoutHash, SecureRandom rng) {
