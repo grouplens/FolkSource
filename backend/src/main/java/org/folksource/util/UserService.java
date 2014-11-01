@@ -79,8 +79,7 @@ public class UserService {
 	
 	public static User getUserByEmail(String email) {
 		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
-		session.beginTransaction();
-		Query q = session.createQuery("from User where email=:email");
+        Query q = session.createQuery("from User where email=:email");
 		q.setParameter("email", email);
 		return (User) q.uniqueResult();
 	}
