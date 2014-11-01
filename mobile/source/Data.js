@@ -3,10 +3,8 @@ name: "Data",
   kind: "enyo.Control",
   statics: {
     getURL: function () {
-      //return "http://ugly-umh.cs.umn.edu/api/";
-      //return "http://131.212.238.32.xip.io:8080/";
-      //return "http://192.168.0.3.xip.io:8080/";
-      return "http://127.0.0.1:8080/";
+      return "http://folksource.grouplens.org/api/";
+      //return "http://127.0.0.1:8080/";
     },
     getUserName: function (a) {
       var b = new enyo.Ajax({

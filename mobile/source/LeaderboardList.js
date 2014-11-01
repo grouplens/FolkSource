@@ -16,7 +16,6 @@ enyo.kind({
     this.inherited(arguments);
   },
   fetchData: function() {
-    this.log("Leader Fetching");
     var url = Data.getURL() + "leaderboard.json";
     var req = new enyo.Ajax({method: "GET", cacheBust: !1, url: url, handleAs: "json", headers: {AuthToken: LocalStorage.get("authtoken")}});
     req.go();
@@ -25,7 +24,6 @@ enyo.kind({
   renderResponse: function (inSender, inEvent) {
     this.leaderboardArray = inEvent.leaderboardEntrys;
     this.refreshList();
-    this.log("Leader Fetched")
     enyo.Signals.send("onLeaderLoaded");
   },
   setupItem: function (inSender, inEvent) {

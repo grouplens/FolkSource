@@ -1,9 +1,6 @@
 [submodule "web/assets/Leaflet.markercluster"]
 	path = web/assets/Leaflet.markercluster
 	url = https://github.com/Leaflet/Leaflet.markercluster
-[submodule "web/assets/Wicket"]
-	path = web/assets/Wicket
-	url = https://github.com/arthur-e/Wicket
 [submodule "web/assets/Leaflet.label"]
 	path = web/assets/Leaflet.label
 	url = https://github.com/Leaflet/Leaflet.label

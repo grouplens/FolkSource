@@ -117,7 +117,6 @@ enyo.kind({
         }
     },
     handleResponse: function (inSender, inEvent) {
-      this.log(inSender);
       var status = inSender.xhrResponse.status;
       var authToken = inSender.xhrResponse.headers.authtoken;
       var body = JSON.parse(inSender.xhrResponse.body);
@@ -138,7 +137,6 @@ enyo.kind({
       }
     },
     updateProgress: function() {
-      this.log("updating progress");
       var prog = this.$.sendProgress.getProgress();
       if(prog > 50) {
         prog++;

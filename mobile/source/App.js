@@ -11,7 +11,6 @@ enyo.kind({
 	],
 	create: function(inSender, inEvent) {
 		this.inherited(arguments);
-		this.log();
 		if(enyo.platform.ios === 7 || enyo.platform.ios === 8) {
 			this.$.bar.setShowing(true);
 		}
@@ -25,12 +24,10 @@ enyo.kind({
 	locSuccess: function (locData) {
 		//Data.setLocationData(b.coords);
 		this.coords = locData.coords;
-		this.log();
 		enyo.Signals.send("onLocationFound", {coords: locData.coords});//doLocationFound();
 		Data.setLocationData(this.coords);
   },
   locError: function (a, b) {
-		this.log();
 		enyo.Signals.send("onNoLocationFound");//doLocationFound();
 	},
 });
