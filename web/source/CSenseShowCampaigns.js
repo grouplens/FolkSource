@@ -99,20 +99,18 @@ enyo.kind({
 		//get CampaignData
 		this.campData = [];
 
-    /*
-     * This is 
-     */
-    var md5 = window.btoa("anonymous:"+Math.random());
-    var auth = "Basic " + md5;
-		var ajax = new enyo.Ajax({url: Data.getURL() + "campaign.json", method: "GET", handleAs: "json", cacheBust: false, headers: {Authorization: auth}});
-		ajax.response(this, "handleResponse");
-		ajax.go();
-
 		this.selectedCampIndex = null;
 	},
 	rendered: function(inSender, inEvent) {
 		this.inherited(arguments);
 	},
+
+  fetchCampaigns: function() {
+    var token = LocalStorage.get("authtoken");
+		var ajax = new enyo.Ajax({url: Data.getURL() + "campaign.json", method: "GET", handleAs: "json", cacheBust: false, headers: {AuthToken: token}});
+		ajax.response(this, "handleResponse");
+		ajax.go();
+  },
 
 	integrateNewSubmissions: function(inSender, inEvent){
 		//If the campaign and task associated with the new submission(s) does not exist,
@@ -125,7 +123,7 @@ enyo.kind({
 			var sub = inEvent.submissions[i];
 			var j=0;
 			var notDone = true;
-			while(j<this.campData.length && notDone){ 
+			while(j<this.campData.length && notDone){
 				var camp = this.campData[j];
 				var k=0;
 				while(k<camp.tasks.length && notDone){
@@ -145,7 +143,7 @@ enyo.kind({
 		if(this.$.taskDetailDrawer.getOpen()){ //Is this a bad way of checking if we are showing anything in the detail pane?
 			this.$.taskDetailDrawerContent.setCont(inEvent.submissions);
 		}
-	},	
+	},
 
 	/*
 		Called when the ajax response arrives. Initializes the campaign pane contents.
@@ -193,7 +191,7 @@ enyo.kind({
 			this.$.detailsPanels.setIndex(0);
 		else if(string === "User")
 			this.$.detailsPanels.setIndex(1);*/
-	},	
+	},
 	/*setSubDetails: function(inSender, inEvent) {
 		var data = inEvent.sub;
 		this.log(data);

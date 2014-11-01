@@ -38,6 +38,7 @@ enyo.kind({
     },
     onPosition: function (a) {
         var b = {};
+        this.log(a);
         b.timestamp = new Date(a.timestamp), b.coords = a.coords, this.doSuccess(b);
     },
     onFailure: function (a) {

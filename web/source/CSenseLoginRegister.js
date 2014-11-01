@@ -69,48 +69,63 @@ enyo.kind({
   },
   buildURL: function () {
     this.log();
+
     if (this.checkFields()) {
       this.$.logButton.setDisabled(!1);
-      var a = "login?";
+      var tmp = {};
+      var ajax;
+      serverURL = Data.getURL() + "user";
       if(this.register) {
-        a = "user?";
-        a += "email=" + this.$.email.getValue() + "&";
+        tmp.name = this.$.usernameRegister.getValue();
+        tmp.password = this.$.passwordRegister.getValue();
+        tmp.email = this.$.emailRegister.getValue();
+        var user = {user: tmp};
+        this.log(JSON.stringify(user));
+        ajax = new enyo.Ajax({url: serverURL, method: "POST", postBody: JSON.stringify(user), contentType: "application/json", cacheBust: false});
+      } else {
+        var auth = "Basic " + window.btoa(this.$.usernameLogin.getValue() + ":" + this.$.passwordLogin.getValue());
+        this.log(auth);
+        ajax = new enyo.Ajax({url: serverURL + "/"+this.$.usernameLogin.getValue()+"/token", method: "GET", headers: {Authorization: auth}, cacheBust: false});
       }
-      a += "name=" + this.$.username.getValue() + "&";
-      a += "password=" + this.$.password.getValue();
-      var b = (new enyo.Ajax({
-        method: "POST",
-        url: Data.getURL() + a,
-        headers: {"Cache-Control": "no-cache"},
-        cacheBust: true,
-        handleAs: "text"
-      })).go().response(this, "handleResponse");
+
+      ajax.response(this, "handleResponse");
+      ajax.go();
     }
   },
-  handleResponse: function (a, b) {
-    this.log(a.xhr);
-    if (a.xhr.status === 200) {
-      var incoming = JSON.parse(a.xhr.responseText);
-      this.log(incoming.points);
-      this.log(incoming.uid);
-      this.log("WEEE");
-      this.hide();
-      LocalStorage.set("points", JSON.stringify(incoming.points));
-      LocalStorage.set("user", JSON.stringify(incoming.uid));
-      LocalStorage.set("username", JSON.stringify(incoming.name));
-      if(this.$.memoryBox.getValue())
-        LocalStorage.set("remember", true);
-      this.doSuccessCode();
-    } else {
-      this.log(JSON.stringify(a));
-      this.log(a.xhr.status);
-      this.log("BOOO");
-      this.doFailureCode();
-    }
+
+  handleResponse: function(inSender, inEvent) {
+      var status = inSender.xhrResponse.status;
+      var authToken = inSender.xhrResponse.headers.authtoken;
+      var body = JSON.parse(inSender.xhrResponse.body);
+      this.log(authToken);
+      this.log(body);
+      if(status === 200) {
+        LocalStorage.set("authtoken", authToken);
+        LocalStorage.set("user", body);
+        LocalStorage.set("username", JSON.stringify(body.user.name));
+        if(this.$.memoryBox.getValue()) {
+          LocalStorage.set("remember", true);
+        }
+        if(body.user.name === "anonymous") {
+          this.doAnonymousCode();
+        } else {
+          this.doSuccessCode();
+        }
+      } else {
+        this.log(JSON.stringify(a));
+        this.log(a.xhr.status);
+        this.log("BOOO");
+        this.doFailureCode();
+      }
   },
   hidePopup: function(inSender, inEvent) {
-    this.doAnonymousCode();
-  },	
+    var auth = "Basic " + window.btoa("anonymous:" + Math.random());
+    var serverURL = Data.getURL() + "user";
+    this.log(auth);
+    ajax = new enyo.Ajax({url: serverURL + "/anonymous/token", method: "GET", headers: {Authorization: auth}, cacheBust: false});
+    ajax.response(this, "handleResponse");
+    ajax.go();
+  },
   emailRegexCheck: function () {
     var a = /^\w+([\.\+]\w+)*@\w+(\.\w+)*(\.\w{2,})$/;
     return a.test(this.$.email.getValue()) ? (this.$.email.applyStyle("color", "black"), !0) : (this.$.email.applyStyle("color", "red"), !1);

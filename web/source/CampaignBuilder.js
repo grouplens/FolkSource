@@ -85,7 +85,7 @@ enyo.kind({
 	getData: function(inSender, inEvent) {
 		var campaign = {};
 		campaign.id = 0;
-		campaignNn.start_date = "";
+		campaign.start_date = "";
 		campaign.end_date = "";
 		enyo.mixin(campaign, this.$.header.getData());
 		campaign.tasks = this.getTasks();
