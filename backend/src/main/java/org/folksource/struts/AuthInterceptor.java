@@ -1,7 +1,5 @@
 package org.folksource.struts;
 
-import java.sql.Timestamp;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -12,7 +10,6 @@ import org.folksource.util.TokenService;
 import org.folksource.util.UserService;
 
 import com.opensymphony.xwork2.ActionInvocation;
-import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.interceptor.MethodFilterInterceptor;
 
 @SuppressWarnings("serial")
@@ -22,10 +19,9 @@ public class AuthInterceptor extends MethodFilterInterceptor/*AbstractIntercepto
 	public String doIntercept(ActionInvocation invocation) throws Exception {
 		try {
 			HttpServletRequest req = ServletActionContext.getRequest();
-<<<<<<< HEAD
-=======
+
 			HttpServletResponse res = ServletActionContext.getResponse();
->>>>>>> upstream/master
+
 			User u;
 			
 			String controllerName = invocation.getAction().getClass().getSimpleName();
@@ -36,16 +32,13 @@ public class AuthInterceptor extends MethodFilterInterceptor/*AbstractIntercepto
 			}
 			
 			String token = req.getHeader("AuthToken");
-<<<<<<< HEAD
-=======
+
 			res.setHeader("Access-Control-Allow-Origin", "*");
 			res.addHeader("Access-Control-Expose-Headers", "Authorization, AuthToken");
 			res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
->>>>>>> upstream/master
 			
 			//try login token first
-			if(token != null && TokenService.checkTokenExists(token)) {
-				u = UserService.getUserByToken(Integer.parseInt(token));
+			if(token != null && TokenService.checkTokenExists(token)) {				u = UserService.getUserByToken(Integer.parseInt(token));
 				if(u != null)
 					TokenService.updateTtl(u.getToken());
 			} else {
@@ -60,16 +53,7 @@ public class AuthInterceptor extends MethodFilterInterceptor/*AbstractIntercepto
 					u = UserService.getUserByName(username);
 					
 					//user doesn't exist or wrong password
-<<<<<<< HEAD
-					if (u == null || !UserService.isPasswordValid(u, password))
-						return "login_fail";
-					if(u.getToken() == null)
-						u.setToken(TokenService.getNewToken());
-						
-				} else 
-					//none of the required headers
-					return "login_fail";	
-=======
+
 					if (u == null || !UserService.isPasswordValid(u, password)) {
 						System.out.println("WRONG PASSWORD");
 						return "login_fail";
@@ -81,16 +65,13 @@ public class AuthInterceptor extends MethodFilterInterceptor/*AbstractIntercepto
 					System.out.println("NO HEADERS");
 					return "login_fail";	
 				}
->>>>>>> upstream/master
+
 			}
 			//one of the two cases succeeded, save updated state
 			UserService.save(u);
 			
 			//add the token to the response header
-<<<<<<< HEAD
-			HttpServletResponse res = ServletActionContext.getResponse();
-=======
->>>>>>> upstream/master
+
 			res.addHeader("AuthToken", u.getToken().getToken().toString());
 			
 			return invocation.invoke();

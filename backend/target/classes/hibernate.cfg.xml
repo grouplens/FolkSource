@@ -5,9 +5,9 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-        <property name="hibernate.connection.password"></property>
-        <property name="hibernate.connection.url">jdbc:postgresql://localhost/postgres</property>
-        <property name="hibernate.connection.username">jts</property>
+        <property name="hibernate.connection.password">Mfk8r8r9</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost/folksource</property>
+        <property name="hibernate.connection.username">postgres</property>
         <property name="hibernate.default_schema">public</property>
         <property name="hibernate.dialect">org.hibernate.spatial.dialect.postgis.PostgisDialect</property>
         
@@ -40,12 +40,14 @@
         <!-- Example: <mapping class="full.name" /> -->	
         <mapping resource="campaign.hbm.xml" />
         <mapping resource="user.hbm.xml" />
+<!--         <mapping resource="userdetails.hbm.xml" /> -->
         <mapping resource="task.hbm.xml" />
         <mapping resource="answer.hbm.xml" />
         <mapping resource="submission.hbm.xml" />
         <mapping resource="question.hbm.xml" />
         <mapping resource="leaderboard.hbm.xml" />
         <mapping resource="location.hbm.xml" />
+        <mapping resource="token.hbm.xml" />
         
     </session-factory>
 </hibernate-configuration>

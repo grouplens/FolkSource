@@ -41,11 +41,7 @@
 				/> <interceptor name="authorization" class="org.grouplens.bl.struts.interceptor.AuthorizationInterceptor" 
 				/> -->
 				<interceptor name="hibernate" class="org.folksource.struts.HibInterceptor" /> 
-<<<<<<< HEAD
-<!-- 				<interceptor name="authorization" class="org.folksource.struts.AuthInterceptor" />  -->
-=======
-				<interceptor name="authorization" class="org.folksource.struts.AuthInterceptor" /> 
->>>>>>> upstream/master
+				<!-- <interceptor name="authorization" class="org.folksource.struts.AuthInterceptor" /> -->
 				<!--  <interceptor name="resolver" class="org.grouplens.bl.struts.interceptor.ModelResolverInterceptor"> 
 				<param name="enableOauth">${user.oauth.enable}</param> </interceptor> <interceptor 
 				name="concurrentReplayer" class="org.grouplens.bl.struts.interceptor.ConcurrentReplayInterceptor"/> 
@@ -59,7 +55,7 @@
 				<!-- <interceptor-ref name="contentParser" /> <interceptor-ref name="concurrentReplayer" 
 					/> --> 
 					<interceptor-ref name="servletConfig" />
-					<interceptor-ref name="authorization" />
+					<!-- <interceptor-ref name="authorization" /> -->
 <!-- 						<param name="excludeMethods">create,update,show,index,options</param> -->
 <!-- 					</interceptor-ref> -->
 					<interceptor-ref name="hibernate" /> <!-- <interceptor-ref name="exceptionLog" 

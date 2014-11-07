@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping package="org.citizensense.model">
+<hibernate-mapping package="org.folksource.model">
 
 <class name="Answer" table="answers">
 	<id name="id" column="id">
@@ -9,7 +9,9 @@
     </id>
     <discriminator column="answer_type" type="string"/>
 	<property name="sub_id" />
-    <property name="q_id" />
+<!-- 	<property name="question"> -->
+	<many-to-one name="question" class="Question" column="q_id" fetch="join"/>
+<!--     <property name="q_id" /> -->
     
 	
 	<subclass name="TextAnswer" discriminator-value="text">
@@ -90,7 +92,7 @@
     <subclass name="ComplexCounterAnswer" discriminator-value="complex_counter">
     	<join table="complex_counter_answers" fetch="select">
     		<key column="id" />
-<!--     		<property name="counts"/> -->
+    		<property name="counts"/>
     	</join>
     </subclass>
     	
