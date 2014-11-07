@@ -38,7 +38,10 @@ public class AuthInterceptor extends MethodFilterInterceptor/*AbstractIntercepto
 			res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
 			
 			//try login token first
-			if(token != null && TokenService.checkTokenExists(token)) {				u = UserService.getUserByToken(Integer.parseInt(token));
+
+			if(token != null && TokenService.checkTokenExists(token)) {
+				u = UserService.getUserByToken(Integer.parseInt(token));
+                System.out.println("TRYING TO LOG USER IN");
 				if(u != null)
 					TokenService.updateTtl(u.getToken());
 			} else {
@@ -56,6 +59,7 @@ public class AuthInterceptor extends MethodFilterInterceptor/*AbstractIntercepto
 
 					if (u == null || !UserService.isPasswordValid(u, password)) {
 						System.out.println("WRONG PASSWORD");
+                        System.out.println(u);
 						return "login_fail";
 					} if(u.getToken() == null)
 						u.setToken(TokenService.getNewToken());

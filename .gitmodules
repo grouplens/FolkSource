@@ -1,15 +1,6 @@
-[submodule "web/assets/Leaflet"]
-	path = web/assets/Leaflet
-	url = https://github.com/Leaflet/Leaflet
 [submodule "web/assets/Leaflet.markercluster"]
 	path = web/assets/Leaflet.markercluster
 	url = https://github.com/Leaflet/Leaflet.markercluster
-[submodule "web/assets/Wicket"]
-	path = web/assets/Wicket
-	url = https://github.com/arthur-e/Wicket
-[submodule "web/assets/Leaflet.draw"]
-	path = web/assets/Leaflet.draw
-	url = https://github.com/Leaflet/Leaflet.draw
 [submodule "web/assets/Leaflet.label"]
 	path = web/assets/Leaflet.label
 	url = https://github.com/Leaflet/Leaflet.label
@@ -37,3 +28,15 @@
 [submodule "web/assets/font-awesome"]
 	path = web/assets/font-awesome
 	url = https://github.com/FortAwesome/Font-Awesome.git
+<<<<<<< HEAD
+=======
+[submodule "mobile/assets/leaflet-pip"]
+	path = mobile/assets/leaflet-pip
+	url = https://github.com/mapbox/leaflet-pip
+[submodule "web/assets/Leaflet.draw"]
+	path = web/assets/Leaflet.draw
+	url = https://github.com/Leaflet/Leaflet.draw.git
+[submodule "web/assets/Leaflet"]
+	path = web/assets/Leaflet
+	url = https://github.com/Leaflet/Leaflet.git
+>>>>>>> refs/remotes/alt/master

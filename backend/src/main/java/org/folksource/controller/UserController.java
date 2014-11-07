@@ -74,8 +74,7 @@ public class UserController extends ActionSupport implements ModelDriven<DtoCont
 			inUser.setSalt(pw.getSalt());
 			inUser.setPoints(0);
 
-			UserService.save(inUser);
-			content.set(new UserDto(inUser));
+            getUserTokenAndSave(response, inUser);
 			return "create";
 		} else {
 			// user name does exist, couldn't register
@@ -93,23 +92,27 @@ public class UserController extends ActionSupport implements ModelDriven<DtoCont
 		res.addHeader("Access-Control-Expose-Headers", "Authorization, AuthToken");
 		content = new DtoContainer<UserDto>(UserDto.class, false);
 		User user = UserService.getUserByName(id);
-		if(user.getToken() == null) {
-			Token t = TokenService.getNewToken();
-			System.out.println(t.getId());
-			user.setToken(t);	
-		}
-		
-		res.setIntHeader("AuthToken", user.getToken().getToken());
-		TokenService.updateTtl(user.getToken());
-		
-		UserService.save(user);
-		System.out.println(user.getToken().getId());
-		content.set(new UserDto(user));
-		
+        getUserTokenAndSave(res, user);
+
 		return "success";
 	}
 
-	public String options() {
+    private void getUserTokenAndSave(HttpServletResponse res, User user) {
+        if(user.getToken() == null) {
+            Token t = TokenService.getNewToken();
+            System.out.println(t.getId());
+            user.setToken(t);
+        }
+
+        res.setIntHeader("AuthToken", user.getToken().getToken());
+        TokenService.updateTtl(user.getToken());
+
+        UserService.save(user);
+        System.out.println(user.getToken().getId());
+        content.set(new UserDto(user));
+    }
+
+    public String options() {
 		HttpServletResponse res = ServletActionContext.getResponse();
 //		res.addHeader("Allow", "*");
 //		res.addHeader("Access-Control-Allow-Origin", "*");
