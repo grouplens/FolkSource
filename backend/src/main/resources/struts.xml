@@ -4,9 +4,15 @@
 
 <struts>
 
-	<bean name="myJson" type="org.apache.struts2.rest.handler.ContentTypeHandler" class="org.folksource.struts.JsonDtoContentTypeHandler" />
+	<!-- <bean name="myJson" type="org.apache.struts2.rest.handler.ContentTypeHandler" class="org.folksource.struts.JsonDtoContentTypeHandler" /> -->
 
-	<constant name="struts.rest.handlerOverride.json" value="myJson" />
+	<constant name="struts.convention.action.mapAllMatches" value = "true" />
+	<constant name="struts.convention.action.alwaysMapExecute" value = "false" /> 
+   	<constant name="struts.patternMatcher" value="namedVariable"/>
+	<constant name="struts.enable.SlashesInActionNames" value="true"/>
+	<constant name="struts.mapper.alwaysSelectFullNamespace" value="false"/>
+
+<!-- 	<constant name="struts.rest.handlerOverride.json" value="myJson" />
 	<constant name="struts.rest.defaultExtension" value="json" />
 
 	<constant name="struts.enable.SlashesInActionNames" value="true" />
@@ -26,9 +32,9 @@
 	<constant name="struts.rest.content.restrictToGET" value="false" />
 	<constant name="struts.rest.namespace" value=""/> 
 	<constant name="struts.multipart.saveDir" value="tmp" />
-	<constant name="struts.multipart.maxSize" value="5368709120" />
+	<constant name="struts.multipart.maxSize" value="5368709120" /> -->
 
-	<package name="folksource" extends="rest-default">
+	<package name="folksource" extends="struts-default">
 		<!-- <result-types> <result-type name="exceptionResult" class="org.grouplens.bl.struts.result.ExceptionResult" 
 			/> <result-type name="ambiguousResult" class="org.grouplens.bl.struts.result.AmbiguousIdResult" 
 			/> <result-type name="modelDrivenDto" class="org.grouplens.bl.struts.result.ModelDrivenDtoResult" 
@@ -48,7 +54,7 @@
 				<interceptor name="actionConfigSupport" class="org.grouplens.bl.struts.interceptor.ActionConfigCloningInterceptor"/> -->
 
 			<interceptor-stack name="fs">
-				<interceptor-ref name="restDefaultStack" />
+				<!-- <interceptor-ref name="restDefaultStack" /> -->
 
 				<!-- Content parsing goes before concurrent replay since we can only 
 					stream input once. -->
@@ -121,7 +127,10 @@
 			result="bad_request"/> </global-exception-mappings> -->
 
 	</package>
-
-
-
+	
+	<package name="unsecured-pkg" extends="struts-default">
+        <result-types>
+            <result-type name="json" class="org.apache.struts2.json.JSONResult"/>         
+        </result-types>
+	</package>
 </struts>

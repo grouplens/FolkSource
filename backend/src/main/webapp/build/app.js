@@ -5461,7 +5461,8 @@ onDrawerToggled: "",
 onTaskDrawerOpened: "",
 onTaskDetailDrawerOpened: "",
 onAPIResponse: "",
-onResizeMap: ""
+onResizeMap: "",
+onClearMarkerHilight: ""
 },
 handlers: {
 onNewTapped: "closeDrawers",
@@ -5671,10 +5672,10 @@ classes: "hanging-child"
 });
 }
 }
-this.$.answers.render(), this.getGeocode(n), this.resized(), this.$.detailDrawer.setOpen(!0);
+return this.$.answers.render(), this.getGeocode(n), this.resized(), this.$.detailDrawer.setOpen(!0), !0;
 },
 closeDetailDrawer: function(e, t) {
-this.$.detailDrawer.setOpen(!1);
+return this.$.detailDrawer.setOpen(!1), this.doClearMarkerHilight(), !0;
 },
 getGeocode: function(e) {
 var t = e.gps_location.split("|"), n = new enyo.Ajax({
@@ -5860,7 +5861,7 @@ name: "Data",
 kind: "enyo.Control",
 statics: {
 getURL: function() {
-return "http://ugly-umh.cs.umn.edu:8080/";
+return "http://127.0.0.1:8080/";
 },
 getUserName: function(e) {
 var t = new enyo.Ajax({
@@ -7037,7 +7038,8 @@ onCheckLocation: "highlightMarkerPolygon",
 onSuccessCode: "hideLogin",
 onFailureCode: "",
 onAnonymousCode: "hideLogin",
-onHilightSubmission: "selectedSubmission"
+onHilightSubmission: "selectedSubmission",
+onClearMarkerHilight: "clearClusterSelect"
 },
 create: function(e, t) {
 this.inherited(arguments), this.resized(), this.$.gps.setTimeout(this.gpsTimeout), this.lastSubmissionPoll = 0, userMoved = !1, loaded = !1, this.panZoomed = !1, this.firstTime = !0, this.notShowing = !0, this.locSuc = !1, this.loaded = !1, this.locations = [], this.addPins = !1, this.addPolygon = !1, this.addShapeFile = !1, this.events.onPins = "", this.currentTaskName = "", this.taskMarkerGroups = {}, this.taskMarkers = {}, this.submissionMarkerGroups = {}, this.currentTaskMarkerGroup = null, this.currentSubmissionsGroup = null, this.currentSubmissionsGroupTaskId = null, this.selectedCluster = null, this.stopSpinnerOnTaskDetailContSet = !1;
