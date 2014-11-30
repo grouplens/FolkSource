@@ -1,46 +1,37 @@
 package org.folksource.service.impl;
 
 import org.folksource.service.WikimediaService;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
- 
-
+import java.net.URL; 
 
 import javax.net.ssl.HttpsURLConnection;
 
+@Service
+@Configurable
 public class WikimediaServiceImpl implements WikimediaService{
 	 
 	private final String USER_AGENT = "Mozilla/5.0";
 	
 	public String connect() {
- 
-		WikimediaServiceImpl http = new WikimediaServiceImpl();
- 
-//		System.out.println("Testing 1 - Send Http GET request");
-//		try {
-//			http.sendGet();
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
- 
-		System.out.println("\nTesting 2 - Send Http POST request");
+		//return "Some message";
+		String response = null;
 		try {
-			http.sendPost();
+			response = sendPost();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return "Some message";
- 
+		return response;
 	}
  
 	// HTTP GET request
+	@SuppressWarnings("unused")
 	private void sendGet() throws Exception {
  
 		String url = "https://www.mediawiki.org/w/api.php?action=login&lgname=user&lgpassword=1234";
@@ -74,18 +65,19 @@ public class WikimediaServiceImpl implements WikimediaService{
 	}
  
 	// HTTP POST request
-	private void sendPost() throws Exception {
+	private String sendPost() throws Exception {
  
-		String url = "https://www.mediawiki.org/w/api.php?action=login&lgname=user&lgpassword=1234";
+		//String url = "https://www.mediawiki.org/w/api.php";
+		String url = "https://en.wikipedia.org/w/api.php";
 		URL obj = new URL(url);
 		HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
  
-		//add reuqest header
+		//add request header
 		con.setRequestMethod("POST");
 		con.setRequestProperty("User-Agent", USER_AGENT);
 		con.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
  
-		String urlParameters = "sn=C02G8416DRJM&cn=&locale=&caller=&num=12345";
+		String urlParameters = "action=login&lgname=user&lgpassword=password&lgtoken=123ABC&format=json";
  
 		// Send post request
 		con.setDoOutput(true);
@@ -111,6 +103,7 @@ public class WikimediaServiceImpl implements WikimediaService{
  
 		//print result
 		System.out.println(response.toString());
+		return response.toString();
  
 	}
 	 

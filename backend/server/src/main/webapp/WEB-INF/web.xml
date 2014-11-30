@@ -7,6 +7,30 @@
 	
 	<display-name>FolkSource</display-name>	
 	
+    <!--
+		=======================================================================
+		contextConfigLocation - specifies the locations
+		that the container can bootstrap the Spring context from.
+		=======================================================================
+	-->
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value> classpath:*-context.xml </param-value>
+    </context-param>
+    
+	<listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
+	<listener>
+        <listener-class>org.apache.struts2.dispatcher.ng.listener.StrutsListener</listener-class>
+    </listener>
+	
 	<filter>
 	    <filter-name>struts2</filter-name>
 	    <filter-class>
@@ -47,8 +71,7 @@
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
 	
-	<listener>
-        <listener-class>org.apache.struts2.dispatcher.ng.listener.StrutsListener</listener-class>
-    </listener>
+
+
 	
 </web-app>
