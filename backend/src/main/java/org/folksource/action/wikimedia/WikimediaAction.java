@@ -20,16 +20,25 @@ public class WikimediaAction extends ActionSupport /*implements SessionAware */{
 	 * 
 	 */
 	private String token;
+	private Object dataObject;
 	//@Autowired
-	//private WikimediaService wikimediaService;
-	
+	private WikimediaService wikimediaService;
+
 	private static final long serialVersionUID = 1L;
 
-	@Action(value="connect", results = {
+	@Action(value="query", results = {
 		@Result(name = SUCCESS, type="json", params = {"root","token"})
 	})
 	public String connect() {
-		//token = "coke-cola";
+		//WikimediaService wikimediaService = new WikimediaServiceImpl();
+		setDataObject(wikimediaService.connect());
+		return SUCCESS;
+	}
+	
+	@Action(value="login", results = {
+		@Result(name = SUCCESS, type="json", params = {"root","token"})
+	})
+	public String login() {
 		WikimediaService wikimediaService = new WikimediaServiceImpl();
 		token = wikimediaService.connect();
 		return SUCCESS;
@@ -43,12 +52,20 @@ public class WikimediaAction extends ActionSupport /*implements SessionAware */{
 		this.token = token;
 	}
 
-//	public WikimediaService getWikimediaService() {
-//		return wikimediaService;
-//	}
-//
-//	public void setWikimediaService(WikimediaService wikimediaService) {
-//		this.wikimediaService = wikimediaService;
-//	}
+	public Object getDataObject() {
+		return dataObject;
+	}
+
+	public void setDataObject(Object dataObject) {
+		this.dataObject = dataObject;
+	}
+
+	public WikimediaService getWikimediaService() {
+		return wikimediaService;
+	}
+
+	public void setWikimediaService(WikimediaService wikimediaService) {
+		this.wikimediaService = wikimediaService;
+	}
 	
 }
