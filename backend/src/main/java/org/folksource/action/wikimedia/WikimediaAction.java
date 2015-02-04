@@ -21,7 +21,6 @@ public class WikimediaAction extends ActionSupport /*implements SessionAware */{
 	 */
 	private String token;
 	private Object dataObject;
-	//@Autowired
 	private WikimediaService wikimediaService;
 
 	private static final long serialVersionUID = 1L;
@@ -30,8 +29,7 @@ public class WikimediaAction extends ActionSupport /*implements SessionAware */{
 		@Result(name = SUCCESS, type="json", params = {"root","token"})
 	})
 	public String connect() {
-		//WikimediaService wikimediaService = new WikimediaServiceImpl();
-		setDataObject(wikimediaService.connect());
+		token = wikimediaService.connect();
 		return SUCCESS;
 	}
 	
