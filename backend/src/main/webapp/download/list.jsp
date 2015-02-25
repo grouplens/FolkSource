@@ -1,5 +1,5 @@
-<%@page import="org.citizensense.model.*"%>
-<%@page import="org.citizensense.util.*"%>
+<%--<%@page import="org.citizensense.model.*"%>--%>
+<%--<%@page import="org.citizensense.util.*"%>--%>
 <%@page import="net.sf.json.JSONObject"%>
 <%@page import="java.util.*;" %>
 
@@ -15,13 +15,13 @@
 </head>
 <body>
 <ul>
-<%
+<%--<%
 List<Campaign> l = CampaignService.getCampaigns();
 for (Campaign c : l) {
 	response.getWriter().write("<li><a href=\"data.jsp?id="+c.getId() + "\">" + c.getTitle() + "</a></li>");
 }
 
-%>
+%>--%>
 </ul>
 </body>
 </html>
