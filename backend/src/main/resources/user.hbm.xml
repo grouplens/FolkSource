@@ -11,7 +11,7 @@
         <property name="salt"/>
         <property name="email"/>
         <!-- 	<bag name="tasks" lazy="false"> -->
-        <!-- 		<key column="camp_id" not-null="false"/> -->
+        <!-- 		<key column="campaign_id" not-null="false"/> -->
         <!-- <index column="id" base="1" /> -->
         <!-- 		<one-to-many class="Task" /> -->
         <!-- 	</bag> -->
@@ -20,5 +20,9 @@
         <property name="findpwid"/>
         <property name="findpwtime"/>
         <many-to-one name="token" class="Token" column="token" cascade="save-update, delete"/>
+        <!--<set name="log_actions" fetch="select">-->
+            <!--<key column="campaign_id" not-null="false"/>-->
+            <!--<one-to-many class="ActionLog" />-->
+        <!--</set>-->
     </class>
 </hibernate-mapping>

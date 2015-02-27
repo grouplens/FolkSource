@@ -46,11 +46,12 @@ public class TaskController implements ModelDriven<DtoContainer<TaskDto>>{
 	{
 		HttpServletResponse res = ServletActionContext.getResponse();
 		res.addHeader("Access-Control-Allow-Origin", "*");
-		Task task = content.getSingle().toTask();
-		TaskService.save(task);
+        //TODO FIX THIS WHEN DEALING WITH DEFINING CAMPAIGNS
+//		Task task = content.getSingle().toTask();
+//		TaskService.save(task);
 		// Note: It may not be immediately obvious why it is necessary to set the content again. The reason is, is that
 		// the TaskDto originally in content did not have its id set. TaskService.save(task) may modify the task.
-		content.set(new TaskDto(task));
+//		content.set(new TaskDto(task));
 		return "create";
 	}
 

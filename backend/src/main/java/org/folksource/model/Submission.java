@@ -15,12 +15,13 @@ public class Submission{
 	public Answer[] answers;
 	public Date timestamp;
 	public String img_path;
+    public Integer location_id;
 
 	public Submission(){
 		super();
 	}
 	
-	public Submission(Integer id, Integer task_id, Integer user_id, String gps_location, Answer[] answers, Date timestamp, String img_path){
+	public Submission(Integer id, Integer task_id, Integer user_id, String gps_location, Answer[] answers, Date timestamp, String img_path, Integer location_id){
 		super();
 		this.id = id;
 		this.task_id = task_id;
@@ -29,6 +30,7 @@ public class Submission{
 		this.answers = answers;
 		this.timestamp = timestamp;
 		this.img_path = img_path;
+        this.location_id = location_id;
 	}
 	
 	public Integer getId() {
@@ -75,4 +77,12 @@ public class Submission{
 	public void setImg_path(String img_path) {
 		this.img_path = img_path;
 	}
+
+    public Integer getLocation_id() {
+        return location_id;
+    }
+
+    public void setLocation_id(Integer location_id) {
+        this.location_id = location_id;
+    }
 }

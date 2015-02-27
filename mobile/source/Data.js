@@ -1,10 +1,13 @@
 enyo.kind({
-name: "Data",
+  name: "Data",
   kind: "enyo.Control",
   statics: {
     getURL: function () {
-      return "http://folksource.grouplens.org/api/";
-      //return "http://127.0.0.1:8080/";
+      //return "http://folksource.grouplens.org/api/";
+      return "http://127.0.0.1:8081/";
+    },
+    getTileURL: function(string) {
+      return "http://ugly-umh.cs.umn.edu/api/" + string;
     },
     getUserName: function (a) {
       var b = new enyo.Ajax({
@@ -98,33 +101,34 @@ name: "Data",
       /*db = window.openDatabase("countData", 1, "Count Data", 10000000);
         db.executeSql("CREATE TABLE IF NOT EXISTS data (id unique, timestamp, data)");
         db.executeSql("INSERT INTO data (id, timestamp data) VALUES ()"):*/
-              },
-countRemove: function(index) {
-               var countData = LocalStorage.get("countData");
-               countData.splice(index, 1);
-               LocalStorage.set("countData", countData);
-             },
-countGetAtIndex: function(index) {
-                   var ret = LocalStorage.get("countData");
-                   if(ret)
-                     return ret[index];
-                   else 
-                     return -1;
-                 }, 
-countSize: function() {
-             return LocalStorage.get("countData").length;
-           },
-setLocationData: function(inVar) {
-                   LocalStorage.set("loc", inVar);
-                 },
-getLocationData: function() {
-                   return LocalStorage.get("loc");
-                 },
-setIsReady: function(ready) {
-              LocalStorage.set("ready", ready);
-            },
-getIsReady: function() {
-              return LocalStorage.get("ready");
-            }
+    },
+    countRemove: function(index) {
+      var countData = LocalStorage.get("countData");
+      countData.splice(index, 1);
+      LocalStorage.set("countData", countData);
+    },
+    countGetAtIndex: function(index) {
+      var ret = LocalStorage.get("countData");
+      if(ret) {
+        return ret[index];
+      } else {
+        return -1;
+      }
+    },
+    countSize: function() {
+      return LocalStorage.get("countData").length;
+    },
+    setLocationData: function(inVar) {
+      LocalStorage.set("loc", inVar);
+    },
+    getLocationData: function() {
+      return LocalStorage.get("loc");
+    },
+    setIsReady: function(ready) {
+      LocalStorage.set("ready", ready);
+    },
+    getIsReady: function() {
+      return LocalStorage.get("ready");
+    }
   }
 });

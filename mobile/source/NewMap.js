@@ -6,30 +6,30 @@ enyo.kind({
     gpsTimeout: "10000"
   },
   components: [
-    {kind: enyo.Signals, onLocationFound: "locSuccess", onPinClicked: "popupTriggered", onLoggedIn: "fetchData"},
+    {kind: enyo.Signals, onLocationFound: "locSuccess", onPinClicked: "popupTriggered", onLoggedIn: "fetchData", onSearchedLocation: "mapCenterFromSearch"},
     /*{name: "spinUp", kind: onyx.Popup, centered: true, floating: true, autoDismiss: false, classes: "dark-background-flat", components: [
       {name: "spin", kind: onyx.Spinner, classes: "onyx-dark dark-background"}
     ]},*/
-    //{content: "Tap the pin/region on the map to help!", style: "font-size: 11pt; font-weight: 100; text-align: center; padding: 3px;", classes: "lighgt-background"},
-    {name: "camps", kind: enyo.Popup, modal: false, floating: true, autoDismiss: false, showTransitions: true, style: "height: 125px; width: 80%; margin-left: 10%; margin-right: 10%; box-shadow: 2px 2px 2px  #222;", layoutKind: enyo.FittableRowsLayout, components: [
+    {content: "Tap the pin/region on the map to help!", style: "font-size: 11pt; font-weight: 100; text-align: center; padding: 3px;", classes: "light-background"},
+    {name: "camps", kind: enyo.Popup, modal: false, floating: true, autoDismiss: false, showTransitions: true, style: "height: 75px; width: 80%; margin-left: 10%; margin-right: 10%; box-shadow: 2px 2px 2px  #222;", layoutKind: enyo.FittableRowsLayout, components: [
       {kind: enyo.Panels, name: "taskpanels", arrangerKind: enyo.CardArranger, fit: true, style: "min-height: 100%;", components: [
         {kind: enyo.FittableColumns, style: "height: 100%;", components: [
           {name: "leftButton", kind: onyx.Button, slide: "prev", ontap: "buttonTapHandler", classes: "button-style filledButtons", disabled: !0, components: [
-            {tag: "i", classes: "icon-chevron-left icon-2x color-icon"}
+            {tag: "i", classes: "fa fa-chevron-left fa-2x color-icon"}
           ]},
           {name: "panels", kind: enyo.Panels, arrangerKind: "CarouselArranger", fit: true, onTransitionFinish: "transitionFinishHandler", onTransitionStart: "transitionStartHandler", classes: "filledPanels light-background", layoutKind: enyo.FittableColumnsLayout},
           {name: "rightButton", kind: onyx.Button, slide: "next", ontap: "buttonTapHandler", classes: "button-style filledButtons", components: [
-            {tag: "i", classes: "icon-chevron-right icon-2x color-icon"}
+            {tag: "i", classes: "fa fa-chevron-right fa-2x color-icon"}
           ]},
         ]},
         {name: "task_content", kind: enyo.FittableRows, components: [
           {name: "task_description", fit: true, classes: "dark-background", content: "test"},
           {name: "buttons", kind: enyo.ToolDecorator, classes: "senseButtons", components: [
             {name: "remove", kind: onyx.Button, classes: "button-style button-style-negative", ontap: "cancelTask", components: [
-              {tag: "i", classes: "icon-ban-circle icon-large"}
+              {tag: "i", classes: "fa fa-ban fa-large"}
             ]},
-            {name: "submit", kind: onyx.Button, classes: "button-style button-style-affirmative", ontap: "doTask", components: [
-              {tag: "i", classes: "icon-ok icon-large"}
+            {name: "submit", kind: onyx.Button, classes: "button-style button-style-affirmative", ontap: "triggerTask", components: [
+              {tag: "i", classes: "fa fa-check fa-large"}
             ]}
           ]}
         ]},
@@ -64,11 +64,15 @@ enyo.kind({
     this.firstTime = true;
     this.notShowing = true;
     this.locSuc = false;
+    this.panned = false;
+    this.dragged = false;
     this.loaded = false;
     this.logged_in = false;
     this.pointsLayer = L.featureGroup();
     this.polygonsLayer = L.featureGroup();
     this.$.taskpanels.getAnimator().setDuration(750);
+    this.hideCamps();
+    this.lastTime = -1;
   },
   buttonTapHandler: function (a, b) {
     if(a.slide === "prev") {
@@ -84,8 +88,11 @@ enyo.kind({
     //this.$.gps.getPosition();
 
     this.map = L.map(this.$.mapCont.id, {maxZoom: 17}).setView([44.981313, -93.266569], 13);
-    L.tileLayer("http://tile.stamen.com/toner-lite/{z}/{x}/{y}.png", {
-      attribution: "Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.",
+    this.map.on('resize', enyo.bind(this, "resizeMap"));
+    this.map.on('zoomend', enyo.bind(this, "resetZoomed"));
+    this.map.on('dragend', enyo.bind(this, "resetPanned"));
+    L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',{
+      attribution: 'Map tiles by <a href="http://cartodb.com/attributions#basemaps">CartoDB</a>, under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. Data by <a href="http://www.openstreetmap.org/">OpenStreetMap</a>, under ODbL.'
     }).addTo(this.map);
 
     //this.$.spin.start();
@@ -98,10 +105,23 @@ enyo.kind({
   cancelTask: function(inSender, inEvent) {
     this.$.taskpanels.setIndex(0);
   },
-  doTask: function(inSender, inEvent) {
+  drawMap: function (inSender, inEvent) { //inSender = a, inEvent = b;
+    var panels = this.$.panels.getPanels();
+    var d = 0;
+    var e;
+    if(this.logged_in === true) {
+      for (var x in panels) {
+        this.sendTasks();
+      }
+    }
+    this.map.invalidateSize();
+    return !0;
+  },
+  triggerTask: function(inSender, inEvent) {
     //figure out
     this.log(this.$.task_description.data);
-    this.doPlaceChosen({data: this.$.task_description.data});
+    this.bubbleUp("onPlaceChosen", {data: this.$.task_description.data});
+    //this.doPlaceChosen({data: this.$.task_description.data});
   },
   setTasks: function(inSender, inEvent) {
     var i = inEvent.index;
@@ -123,10 +143,8 @@ enyo.kind({
     ajax.go();
   },
   renderResponse: function (a, b) {
-    this.log(b);
     this.campaignArray = b.campaigns;
     var remove = [];
-    this.log(this.campaignArray.length);
     for (var c in this.campaignArray) {
       var currentCampaign = this.campaignArray[c];
       var e = "panel_" + currentCampaign.id;
@@ -151,19 +169,23 @@ enyo.kind({
       /*} else {
         remove.push(c);
         }*/
-      this.$.panels.resized();
     }
 
     enyo.Signals.send("onCampLoaded");
 
     this.$.panels.render();
     this.checkSides(); // make sure the arrow buttons work
+    this.showCamps();
     this.drawMap();
   },
+  showTasks: function(inSender, inEvent) {
+    this.$.taskpanels.setIndex(1);
+  },
   showCamps: function() {
+    this.map.invalidateSize();
     this.$.taskpanels.setIndex(0);
     var height = parent.innerHeight;
-    var real_height = -3*(height/4); //put the bottom of the campaign list at 4/5 the height of the map
+    var real_height = -5*(height/6); //put the bottom of the campaign list at 4/5 the height of the map
     this.$.camps.showAtPosition({bottom: real_height});
   },
   hideCamps: function(inSender, inEvent) {
@@ -203,21 +225,29 @@ enyo.kind({
   locSuccess: function (a, b) {
     //alert("MAP success");
     var coords = b.coords;
-    if(this.locSuc && !this.loaded && !this.panZoomed) {
-      this.centerMap();
-    }
     var latlng = new L.LatLng(coords.latitude, coords.longitude);
 
-    if(this.locSuc && !this.loaded && !this.panZoomed) {
-      this.centerMap();
+    if (!this.userMarker) {
+      this.userMarker = L.userMarker(latlng, {smallIcon: true}).addTo(this.map);
     }
-    if (!this.userMarker)
-      this.userMarker = L.userMarker(latlng, {pulsing: true}).addTo(this.map);
 
     this.userMarker.setLatLng(latlng);
     this.userMarker.setAccuracy(coords.accuracy);
     this.resized();
+    if(this.lastTime === -1) {
+      this.lastTime = Date.now();
+    }
+    var nowTime = Date.now();
+    if(nowTime - this.lastTime > 5000) {
+      var url = "http://nominatim.openstreetmap.org/reverse?format=json&osm_type=W&lat="+coords.latitude+"&lon="+coords.longitude+"&zoom=18"
+      var ajax = new enyo.Ajax({url: url, method: "GET", cacheBust: false});
+      ajax.response(this, "nominatimResponse");
+      ajax.go();
+    }
 
+    if(!this.dragged && !this.panned) {
+      this.map.setView(latlng, 15, {animate: true});
+    }
     return true;
   },
   checkMap: function (a) {
@@ -265,14 +295,34 @@ enyo.kind({
 	resetPins: function(inSender, inEvent) {
 		//re-create markers
 	},
+  resetPanned: function() {
+    this.panned=true;
+    this.log();
+    return;
+  },
+  resizeMap: function() {
+    this.map.invalidateSize();
+    return;
+  },
+  resetZoomed: function() {
+    this.zoomed=true;
+    this.log();
+    return;
+  },
 	makeFilter: function () {
 		if(this.loaded)
       this.panZoomed = true;
     //this.addMarkers();
   },
   addMarkers: function () {
-    //var wkt = new Wkt.Wkt();
-    for(var x in this.locations) {
+    this.makeBubbleClick();
+    for (var x in this.locations) {
+      var url = Data.getTileURL() + this.locations[x] + "/{z}/{x}/{y}.geojson";
+      //var layer = new L.TileLayer.d3_geoJSON(url, {minZoom: 14, maxNativeZoom: 14, unloadInvisibleTiles: true});
+      //layer.addTo(this.map);
+
+    }
+    /*for(var x in this.locations) {
       var str = this.locations[x].geometryString;
       //wkt.read(str);
       var data = Terraformer.WKT.parse(str);
@@ -319,19 +369,12 @@ enyo.kind({
     this.map.fitBounds(bounds);*/
     //this.map.panTo([lat, lng], {animate: true});
   },
-  centerMap: function () {
-    var myLocation = Data.getLocationData();
-    this.map.setView([myLocation.latitude, myLocation.longitude], 15);
-    if(!this.loaded)
-      this.mapLoaded();
-  },
   makeBubbleClick: function (inEvent) {
-    this.log(inEvent);
-    loc = inEvent.latlng;
+    //loc = inEvent.latlng;
     /*loc.lat = loc.lat.toPrecision(8);
     loc.lng = loc.lng.toPrecision(8);*/
     //enyo.Signals.send("onPinClicked", loc);
-    //this.$.taskpanels.setIndex(1);
+    this.$.taskpanels.setIndex(1);
     this.tasks = this.campaignArray[this.$.panels.getIndex()].tasks;
     if(this.tasks.length > 1) {
       this.$.tasks.setCount(this.tasks.length);
@@ -352,16 +395,18 @@ enyo.kind({
     loaded = !0;
     this.doLoaded();
   },
-  drawMap: function (inSender, inEvent) { //inSender = a, inEvent = b;
-    var panels = this.$.panels.getPanels();
-    var d = 0;
-    var e;
-    if(this.logged_in === true) {
-      for (var x in panels) {
-        this.sendTasks();
-      }
-    }
-    return !0;
+  mapCenterFromSearch: function(inSender, inEvent) {
+    this.log(inEvent);
+    this.map.setView([inEvent.lat, inEvent.lon], 15);
+  },
+  nominatimResponse: function(inSender, inEvent) {
+    var out = inEvent.display_name;
+    enyo.Signals.send("onGPSCoordLookup", {display: out});
+    return;
+  },
+  userCenter: function() {
+    var ll = this.userMarker.getLatLng();
+    this.map.setView(ll, 15, {animate: true});
   },
   sendTasks: function() {
     var tasks = this.campaignArray[this.$.panels.getIndex()].tasks;
@@ -375,3 +420,5 @@ enyo.kind({
   },
 
 });
+
+

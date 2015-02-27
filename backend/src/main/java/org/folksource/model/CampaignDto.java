@@ -31,7 +31,7 @@ public class CampaignDto extends Dto{
 		id = c.id;
 		title = c.title;
 		description = c.description;
-		location = c.location;
+//		location = c.location;
 		start_date = c.start_date;
 		end_date = c.end_date;
 		start_date_string = c.start_date_string;

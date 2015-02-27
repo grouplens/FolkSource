@@ -1,4 +1,4 @@
-body {
+Nnbody {
   font-size: 11pt;
   font-weight: 300 !important;
   background: #2E426F; /* lighter green*/
@@ -212,6 +212,14 @@ background: #3CAB9F !important;
   /*background: #EDEC7C !important;*/
   color: #2E426F !important;
 }
+.need-answer {
+  background-color: #DB701E;
+  transition: background-color 1000ms ease-in;
+  -moz-transition: background-color 1000ms ease-in;
+  -webkit-transition: background-color 1000ms ease-in;
+  -o-transition: background-color 1000ms ease-in;
+  -ms-transition: background-color 1000ms ease-in;
+}
 .task-builder, .question-builder, .location-builder {
   /*width: 100%;*/
   opacity: 1;
@@ -227,7 +235,7 @@ background: #3CAB9F !important;
 /*.mod-onyx-background {
 background: #;
 }*/
-  .light-background, .panelItem {
+  .light-background {
     background-color: #738DC9 !important;
     /*background-color: #EDEC7C !important;*/
     color: #FFF !important;
@@ -235,16 +243,23 @@ background: #;
     /*text-shadow: -1px -1px 0 rgba(0,0,0,0.2);*/
     /*color: #694225 !important;*/
   }
-  .dark-background {
+  .dark-background, .panelItem {
     background-color: #2E426F !important; /* darker green */
     font-size: 11pt;
     color: #FFF !important;
     /*color: #C5A467 !important;*/
   }
-  .dark-background-flat {
+  .dark-background-flat, .dark-background-flat-menu {
     background: #2E426F !important; /* darker green */
     color: #DB701E !important;
+    border: 0px;
+  }
+  .dark-background-flat, .light-background-flat {
     font-size: 11pt;
+  }
+  .light-background-flat, .light-background-flat-menu {
+    background: #738DC9 !important; /* darker green */
+    color: #FFF !important;
     border: 0px;
   }
   .white-text {
@@ -258,7 +273,7 @@ background: #;
     /*font-size: 13pt;*/
     background: #EDDB7C !important; /* lighter green*/
     color: #2E426F !important;
-    border-top: 3px white solid;
+    border-bottom: 3px #DB701E solid;
     -webkit-box-shadow: 0 0 0 0 white;
     -moz-box-shadow: 0 0 0 0 white;
     box-shadow: 0 0 0 0 white;
@@ -312,8 +327,8 @@ background: #;
   }
 
   .campTitle {
-    /*color: #9A7A34;*/
-    display:inline;
+    /*color: #9A7A34;
+    display:inline;*/
     padding: 0.5%;
   }
   .leaderTable {
@@ -337,11 +352,10 @@ background: #;
   }
   .campDesc {
     /*font-weight: bold;*/
-    /*font-size: 0.65em;
-    color: #CC7967;*/
-  font-size: 13pt;
-  display: clear;
-  overflow-y: hidden;
+    font-size: 0.8em;
+    color: #DB701E;
+    display: clear;
+    overflow-y: hidden;
 }
 .leaderItem {
   height: 100%;
@@ -361,8 +375,8 @@ background: #;
   /*clear: both;*/
 }
 .filledPanels {
-  /*height: 100%;
-  width: 90%;*/
+  height: 100%;
+  width: 100%;
 }
 .filledButtons {
   /*background-color: #0B333E;

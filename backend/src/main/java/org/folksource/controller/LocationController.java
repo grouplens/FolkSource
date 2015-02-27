@@ -34,6 +34,7 @@ public class LocationController implements ModelDriven<DtoContainer<LocationDto>
 			if(s.getId().equals(id))
 				content.set(new LocationDto(s));
 		}
+        LocationService.invalidateAllTiles(id);
 		return "show";//new DefaultHttpHeaders("show");
 	}
 
@@ -63,6 +64,7 @@ public class LocationController implements ModelDriven<DtoContainer<LocationDto>
 //		}
 		ArrayList<LocationDto> l = new ArrayList<LocationDto>();
 		for(Location m : LocationService.getLocations()) {
+			System.out.println(m.getId());
 			l.add(new LocationDto(m));
 		}
 		content.set(l);

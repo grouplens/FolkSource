@@ -8,21 +8,41 @@
 		<generator class="native" />
 	</id>
     <discriminator column="location_type" type="string"/>
+	<property name="allowed" column="allowed"></property>
+	<property name="imgURL" column="imgURL"></property>
+    <many-to-one name="member_layer" class="LocationLayer" column="member_layer" cascade="save-update, delete"/>
+    <bag name="submissions" fetch="subselect">
+        <key column="location_id" not-null="true" />
+        <!-- <index column="id" />-->
+        <one-to-many class="Submission" />
+    </bag>
 
-    <many-to-one name="task" class="Task" column="task_id" fetch="join"/>
+    <!--<many-to-one name="task" class="Task" column="task_id" fetch="join"/>-->
 
-	<subclass name="PolygonLocation" discriminator-value="region">
-        <join table="location_regions" fetch="select">
+	<subclass name="PolygonLocation" discriminator-value="location_regions" lazy="false">
+        <join table="location_regions" fetch="join" inverse="true">
 		    <key column="id"></key>
 		    <property name="geometry" type="org.hibernate.spatial.GeometryType" column="polygon" />
         </join>
 	</subclass>
 
-	<subclass name="PointLocation" discriminator-value="point">
-        <join table="location_points" fetch="select">
+	<subclass name="PointLocation" discriminator-value="location_points" lazy="false">
+        <join table="location_points" fetch="join" inverse="true">
 		    <key column="id"></key>
 		    <property name="geometry" type="org.hibernate.spatial.GeometryType" column="point" />
         </join>
+	</subclass>
+	<subclass name="OSMPointLocation" discriminator-value="nodes" lazy="false">
+		<join table="nodes" fetch="join" inverse="true">
+			<key column="location_id"></key>
+			<property name="geometry" type="org.hibernate.spatial.GeometryType" column="geom" />
+		</join>
+	</subclass>
+	<subclass name="OSMWayLocation" discriminator-value="ways" lazy="false">
+		<join table="ways" fetch="join" inverse="true">
+			<key column="location_id"></key>
+			<property name="geometry" type="org.hibernate.spatial.GeometryType" column="linestring" />
+		</join>
 	</subclass>
 </class>
 </hibernate-mapping>

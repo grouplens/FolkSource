@@ -52,16 +52,50 @@ public class SubmissionService {
 	public static boolean save(Submission s) {
 		Session session = HibernateUtil.getSession(true);
 		s.setTimestamp(new Date());
-		
+
 		session.save(s);
 
-		if (s.getAnswers() != null) {
-			for (Answer a : s.getAnswers()) {
+        if (s.getAnswers() != null) {
+            for (Answer a : s.getAnswers()) {
 
-				a.setSub_id(s.getId());
-				AnswerService.save(a);
-			}
-		}
+                a.setSub_id(s.getId());
+                AnswerService.save(a);
+            }
+        }
+
+        // This should only apply for the current gun-law campaign. Any of those others don't deserve it
+        if(s.getTask_id() == 59) {
+            Location l = LocationService.getLocationById(s.getLocation_id());
+            Submission[] submissions = l.getSubmissions();
+            boolean agreed = false;
+            if (submissions.length > 1) {
+                String firstAnswer = "";
+                for (int i = 0; i < submissions.length; i++) {
+                    List<Answer> answers = submissions[i].getAnswers();
+                    for (int j = 0; j < answers.size(); j++) {
+                        Answer a = answers.get(j);
+                        if (a instanceof MultipleChoiceAnswer) {
+                            if (i == 0) {
+                                firstAnswer = ((MultipleChoiceAnswer) answers.get(j)).getChoices();
+                            } else {
+                                if (firstAnswer.equalsIgnoreCase(((MultipleChoiceAnswer) answers.get(j)).getChoices())) {
+                                    agreed = false;
+                                } else {
+                                    agreed = true;
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+            if (agreed) {
+                l.setAllowed("y");
+                LocationService.save(l);
+            }
+        }
+
+
 		@SuppressWarnings("unchecked")
 		List<User> users = session.createQuery("from User where id=" + s.getUser_id()).list();
 		users.get(0).setPoints(users.get(0).getPoints() + 1);

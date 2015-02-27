@@ -34,13 +34,13 @@ enyo.kind({
 		]},
 		{name: "loginRegister", kind: "CSenseLoginRegister"},
 		{name: "toolbar", kind: onyx.Toolbar, layoutKind: enyo.FittableColumnsLayout, classes: "dark-background-flat", components: [
-      {kind: enyo.Image, src: "./assets/folk_source_logo.png", alt: "FolkSource logo", position: "center", style: "height: 60px;"},
+      {kind: enyo.Image, src: "./assets/a_folksource_logo.png", alt: "FolkSource logo", position: "center", style: "height: 60px;"},
 			{name: "showButton", kind: onyx.Button, classes: "button-style light-background", disabled: true, ontap: "showCampaigns", attributes: {title: "Click here to see campaigns and their submissions."}, components: [
 				{name: "spin", showing: true, tag: "i", classes: "icon-refresh icon-spin"},
 				{name: "menuIcon", tag: "i", classes: "icon-list-ul icon-large", showing: false}
 			]},
 			{name: "brand", kind: "GrouplensBrand", fit: true},
-			{content: "Logged in as: "},
+			/*{content: "Logged in as: "},
 			{name: "username", content: "anonymous"},
 			{name: "newButton", kind: onyx.Button, classes: "button-style light-background", showing: true, ontap: "showNewMap", attributes: {title: "Click here to create a new campaign"}, components: [
 				{tag: "i", classes: "icon-plus icon-large"}
@@ -52,7 +52,7 @@ enyo.kind({
 				{name: "saveButton", kind: onyx.Button, classes: "light-background button-style-affirmative", attributes: {title: "Finish the campaign you were making."}, style: "width: 50%;", showing: false, ontap: "doubleCheckSend", components: [
 					{tag: "i", classes: "icon-ok icon-large"},
 				]}
-			]}
+			]}*/
 		]},
 		{name: "container", kind: enyo.FittableColumns, fit: true, components: [
 			{name: "showCamps", kind: "CSenseShowCampaigns"},
@@ -205,7 +205,7 @@ enyo.kind({
 		if(LocalStorage.get("username") instanceof String) {
 			this.$.username.setContent(LocalStorage.get("username").toString());
 		}
-    this.$.username.resized();
+    //this.$.username.resized();
     this.$.toolbar.resized();
 		this.$.toolbar.reflow();
 		this.$.loginRegister.hide();
@@ -461,16 +461,36 @@ enyo.kind({
 		}
 	},
 
+  testResponse: function(inSender, inEvent) {
+    var geojson = inEvent;
+    //LocalStorage.set("geojson", geojson);
+    this.log(geojson);
+    this.renderPointsViaD3(geojson);
+  },
+
 	rendered: function () {
 		this.inherited(arguments);
 		//this.$.gps.getPosition();
     //navigator.geolocation.getCurrentPosition(enyo.bind(this, "locSuccess"), enyo.bind(this, "locError"));
 
 		//-- Create the map --//
-		this.map = L.map(this.$.mapCont.id, {closePopupOnClick: false, minZoom: 1, maxZoom: 16}).setView([44.981313, -93.266569], 12);
-		L.tileLayer("http://tile.stamen.com/toner-lite/{z}/{x}/{y}.jpg", {
-			attribution: "Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA."
-		}).addTo(this.map);
+		this.map = L.map(this.$.mapCont.id, {closePopupOnClick: false}).setView([44.981313, -93.266569], 13);
+    L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',{
+      attribution: 'Map tiles by <a href="http://cartodb.com/attributions#basemaps">CartoDB</a>, under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. Data by <a href="http://www.openstreetmap.org/">OpenStreetMap</a>, under ODbL.'
+    }).addTo(this.map);
+    this.map._initPathRoot();
+    var test = new L.TileLayer.d3_geoJSON('http://folksource.grouplens.org/tiles/vector-polygons/{z}/{x}/{y}.geojson', {minZoom: 14, maxNativeZoom: 14, unloadInvisibleTiles: true});
+    test.addTo(this.map);
+
+    /*var test2 = new L.TileLayer.d3_geoJSON('http://localhost:8080/vector-points/{z}/{x}/{y}.geojson', {minZoom: 13});
+    test2.addTo(this.map);
+
+    /*if(LocalStorage.get("geojson")) {
+      this.renderPointsViaD3(LocalStoage.get("geojson"));
+    }*/
+    /*var ajax = new enyo.Ajax({url: Data.getURL() + "locations", method: "GET", handleAs: "json"});
+    ajax.response(this, "testResponse");
+    ajax.go();*/
 
 
 		//-- markerCluster initilization --//
@@ -507,6 +527,8 @@ enyo.kind({
 
 		this.map.on("zoomend", function (){
 			this.log("ZOOMEND");
+      this.log(this.map.getBounds());
+      this.log(this.map.getZoom());
 			this.clearClusterSelect();
 			this.$.showCamps.$.taskDetailDrawerContent.startSpinner();
 			this.clusterGroup.on("animationend", this.animationEndHandler, this);
@@ -613,13 +635,13 @@ enyo.kind({
 		if(LocalStorage.get("user") === undefined) {
 			this.$.loginRegister.show();
     } else {
-			this.$.username.setContent(LocalStorage.get("username"));
+			//this.$.username.setContent(LocalStorage.get("username"));
 			this.$.toolbar.resized();
       this.$.toolbar.reflow();
       this.hideLogin(null, null);
 			//this.$.addButton.setDisabled(false);
 		}
-		//this.$.toolbar.resized();
+		this.$.toolbar.resized();
 	},
 	savePoint: function(inEvent) {
 		/*var tmp = LocalStorage.get(this.currentTaskName);
@@ -660,6 +682,97 @@ enyo.kind({
 		this.$.toolbar.resized();
 		this.$.toolbar.render();
 	},
+  renderPointsViaD3: function(points) {
+    //           <!-- Code was based on the D3 and leaflet implementations at http://bost.ocks.org/mike/leaflet/ and  http://bost.ocks.org/mike/map/ and http://jsfiddle.net/7DgUh/-->
+    var bannedColor = "#7b3294";
+    var allowedColor = "#008837";
+    var notEnoughInformationColor = "#707070";
+    var zoomLimit = 9;
+    var displayUnknownLocations = 16;
+
+    this.getLocationsInformation(points.features);
+
+    collection = points;
+    transform = d3.geo.transform({point: function(x,y) {
+      var point = this.map.latLngToLayerPoint(new L.LatLng(y, x));
+      this.stream.point(point.x, point.y);
+    }
+    });
+    path = d3.geo.path().projection(transform);
+
+    var feature;
+
+    //this.map.on("viewreset", enyo.bind(this, 
+    this.log(path);
+    resetPoints(this.map);
+    function resetPoints(map, path, collection) {
+      d3.select("svg").remove();
+      svg = d3.select(map.getPanes().overlayPane).append("svg");
+      g = svg.append("g").attr("class", "leaflet-zoom-hide");
+
+      var bounds = path.bounds(collection), topLeft = bounds[0], bottomRight = bounds[1];
+      svg.attr("width", bottomRight[0] - topLeft[0]).attr("height", bottomRight[1] - topLeft[1]).style("left", topLeft[0] + "px").style("top", topLeft[1] + "px");
+
+      if (map.getZoom() >= zoomLimit) {
+        feature = g.selectAll("path").data(collection.features).enter().append("path");
+      }
+      path.pointRadius(12);
+      feature.filter(function (d) {
+        return d.properties.allowed != "u"
+      }).attr("d", path).attr("fill", function (d) {
+        if (d.properties.allowed == "y")
+          return allowedColor;
+        else
+          return bannedColor;
+      }).attr("opacity", .6);
+
+      feature.filter(function (d) {
+        return d.geometry.type == "Polygon" && d.properties.allowed == "u" && map.getZoom() >= displayUnknownLocations})
+        .attr("d", path).attr("stroke", "black").attr("fill", "grey").attr("opacity", .4);
+
+        g.selectAll("div").data(collection.features).enter().append('circle')
+        .filter(function (d) {
+          return d.geometry.type == "Point" && d.properties.allowed == "u" && map.getZoom() >= displayUnknownLocations
+        }).attr("cx", function (d) {
+          centroidOfPoint = path.centroid(d);
+          return centroidOfPoint[0];
+        }).attr("cy", function (d) {
+          centroidOfPoint = path.centroid(d);
+          return centroidOfPoint[1];
+        }).attr("r", 12).attr("fill", "grey").attr("opacity",.4).attr("stroke", notEnoughInformationColor).attr("stroke-width", 3) ;
+
+        g.selectAll("div") .data(collection.features).enter().append('text')
+        .filter(function (d) {
+          return d.properties.allowed == "u" && map.getZoom() >= displayUnknownLocations
+        }).attr("x", function (d) {
+          centroidOfPolygon = path.centroid(d);
+          return centroidOfPolygon[0];
+        }).attr("y", function (d) {
+          centroidOfPolygon = path.centroid(d);
+          return centroidOfPolygon[1];
+        }).attr("dx", "-.25em").attr("dy", ".40em").attr("style", "font-size: 1.75em; font-weight: 800; fill: #fc8d59;").text("?");
+
+        g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+    };
+  },
+  getLocationsInformation: function(inputLocations) {
+    var locationInformation = [];
+    for (inputLocationIndex in inputLocations) {
+      inputLocations[inputLocationIndex].properties = {allowed: this.getClassification(inputLocations[inputLocationIndex]).allowed};
+    }
+  },
+  getClassification: function(location){
+    //returns one of the 6 strings below
+    classificationNumber = Math.floor(Math.random() * 3);
+    switch(classificationNumber){
+      case 0:
+        return  {allowed: "n"};
+      case 1:
+        return  {allowed: "y"};
+      case 2:
+        return  {allowed: "u"};
+    }
+  },
 	resetTasksAndQuestions: function(inSender, inEvent) {
 		this.$.doubleCheckCancelPopup.hide();
 		this.waterfallDown("onNewTapped");
@@ -680,9 +793,9 @@ enyo.kind({
 		this.$.doubleCheckSendPopup.hide();
 		this.log(JSON.stringify(this.$.campaignBuilder.getData()));
 		var campaign = {campaign: this.$.campaignBuilder.getData()};
-		var ajax = new enyo.Ajax({url: Data.getURL()+"campaign.json", method: "POST", contentType: "application/json", handleAs: "json", cacheBust: false, postBody: campaign});
+		/*var ajax = new enyo.Ajax({url: Data.getURL()+"campaign.json", method: "POST", contentType: "application/json", handleAs: "json", cacheBust: false, postBody: campaign});
 		ajax.response(this, "handleResponse");
-		ajax.go();
+		ajax.go();*/
 	},
 	handleResponse: function(inSender, inEvent) {
 		if(inSender.failed) {

@@ -26,12 +26,15 @@ enyo.kind({
 			{name: "doubleCheckMessage", content: "Are you sure you want to cancel? You will lose all observation data recorded", style: "padding: 5px 0px;"},
 			{kind: enyo.ToolDecorator, classes: "senseButtons", components: [
 				{name: "no", kind: onyx.Button, classes: "button-style-negative", ontap: "close", components: [
-					{tag: "i", classes: "icon-ban-circle icon-large"}
+					{tag: "i", classes: "fa fa-ban fa-large"}
 				]},
 				{name: "yes", kind: onyx.Button, classes: "button-style-affirmative", ontap: "close", components: [
-					{tag: "i", classes: "icon-ok icon-large"}
+					{tag: "i", classes: "fa fa-check fa-large"}
 				]},
 			]}
+		]},
+		{name: "locationPopup", kind: onyx.Drawer, orient: "v", style: "width: 100%;", layoutKind: enyo.FittableRowsLayout, classes: "dark-background-flat", open: true, components: [
+      {content: "Finding location...", style: "margin-left: auto; margin-right: auto; text-align: center;", classes: "nice-padding"},
 		]},
 		{name: "sendingPopup", kind: onyx.Drawer, orient: "v", style: "width: 100%;", layoutKind: enyo.FittableRowsLayout, open: false, components: [
 			{name: "sendProgress", kind: "CustomProgress", progress: 0, fit: true, components: [
@@ -44,10 +47,10 @@ enyo.kind({
 			{name: "acc", kind: "enyo.Scroller", layoutKind: enyo.FittableRowsLayout, vertical: "auto", horizontal: "hidden", fit: true, strategyKind: "TouchScrollStrategy"},
 			{name: "buttons", kind: enyo.ToolDecorator, classes: "senseButtons", components: [
 				{name: "remove", kind: onyx.Button, classes: "button-style button-style-negative", ontap: "togglePopup", components: [
-					{tag: "i", classes: "icon-ban-circle icon-large"}
+					{tag: "i", classes: "fa fa-ban fa-large"}
 				]},
-				{name: "submit", kind: onyx.Button, classes: "button-style button-style-affirmative", ontap: "togglePopup", components: [
-					{tag: "i", classes: "icon-ok icon-large"}
+				{name: "submit", kind: onyx.Button, classes: "button-style button-style-affirmative", disabled: true, ontap: "togglePopup", components: [
+					{tag: "i", classes: "fa fa-check fa-large"}
 				]}
 			]}
 		]}
@@ -73,6 +76,8 @@ enyo.kind({
   },
 	saveLocation: function(inSender, inEvent) {
 		this.coords = inEvent.coords;
+    this.renderSubmitButton();
+    this.$.locationPopup.setOpen(false);
 	},
   chosenLocation: function(a, b) {
     this.chosen_location = b;
@@ -109,7 +114,7 @@ enyo.kind({
       }
       counter = this.makeQuestion(type, b, i);
     }
-    //this.render();
+    this.render();
     if(counter > -1) {
       var data = this.task.questions[counter];
       this.newFormCounter(data);
@@ -123,36 +128,36 @@ enyo.kind({
     switch (type) {
       case "text":
         this.$.acc.createComponent({name: name, style: "clear: both;", content: question.question});
-      this.newFormText(question);
-      break;
+        this.newFormText(question);
+        break;
       case "exclusive_multiple_choice":
         this.$.acc.createComponent({name: name, style: "clear: both;", content: question.question});
-      this.newFormExclusiveChoice(question);
-      break;
+        this.newFormExclusiveChoice(question);
+        break;
       case "multiple_choice":
         this.$.acc.createComponent({name: name, style: "clear: both;", content: question.question});
-      this.newFormMultipleChoice(question);
-      break;
+        this.newFormMultipleChoice(question);
+        break;
       case "counter":
         counter = index;
-      break;
+        break;
       case "cur_time":
         this.newTime(question);
-      break;
+        break;
       case "media_camera":
         case "media_audio":
         case "media_video":
         this.newMediaReading(question);
-      break;
+        break;
       case "osm_reverse_geocoder":
         this.newReverseGeocoder(question);
-      break;
+        break;
       default:
         break;
     }
 
     return counter;
-  Nn},
+  },
   fileEntry: function(a) {
     window.resolveLocalFileSystemURI(a, this.getImageData, null);
   },
@@ -166,8 +171,6 @@ enyo.kind({
     console.log(b);
   },
   buildAndSendSubmission: function() {
-    this.$.sendingPopup.setOpen(true);
-    this.$.scrim.setShowing(true);
     this.log("A");
     if (!this.$.submit.disabled) {
       this.log("B");
@@ -179,13 +182,13 @@ enyo.kind({
         answers: []
       }
       };
-      this.log(this.gps);
-      var gps_location = this.gps.coords;
+      var gps_location = this.coords;
       this.log(gps_location);
       if(gps_location) {
         var coords = gps_location.latitude + "|" + gps_location.longitude;
         sub.submission.gps_location = coords;
-        sub.submission.user_id = LocalStorage.get("user").uid;
+        this.log(LocalStorage.get("user"));
+        sub.submission.user_id = LocalStorage.get("user").user.id;
 
         for (var i in this.task.questions) {
           this.log("C");
@@ -199,9 +202,31 @@ enyo.kind({
               e = type.charAt(d);
             if (e != questionBody.length && this.complex) var f = "qs" + (e + 1);
           }
+          var ans = this.buildAnswer(type, question);
+          if(!ans) {
+            return;
+          }
           var tmp = sub.submission.answers.concat(this.buildAnswer(type, question));
           sub.submission.answers = tmp;
         }
+        //move this below the building of the answers
+
+        var tmpComp = this.$.acc.getComponents();
+        for(var x in tmpComp) {
+          if(tmpComp[x].kind === "MediaSensor") {
+            this.log(tmpComp[x].readyToUpload);
+            if(!tmpComp[x].readyToUpload) {
+              this.$.acc.$[tmpComp[x].name].addRemoveClass("need-answer", true);
+              //tmpComp.addRemoveClass("need-answer", true);
+              return;
+            }
+          }
+        }
+
+
+        this.$.sendingPopup.setOpen(true);
+        this.$.scrim.setShowing(true);
+
         this.log("D");
         this.log("SENDING TO SERVER: " + JSON.stringify(sub));
         var url = Data.getURL() + "submission.json"; 
@@ -241,49 +266,67 @@ enyo.kind({
     switch (type) {
       case "text":
         ans.answer = this.readFormText(question);
-      out.push(ans);
-      break;
+        if(!ans.answer) {
+          return false;
+        }
+        out.push(ans);
+        break;
       case "exclusive_multiple_choice":
         ans.answer = this.readFormExclusiveChoice(question);
-      out.push(ans);
-      break;
+        if(!ans.answer) {
+          return false;
+        }
+        out.push(ans);
+        break;
       case "multiple_choice":
         ans.answer = this.readFormMultipleChoice(question);
-      out.push(ans);
-      break;
+        if(!ans.answer) {
+          return false;
+        }
+        out.push(ans);
+        break;
       case "counter":
         //var tmp = this.readFormCounter(c);
         var array = this.readFormCounter(question).split("|");
-      for (var x in array) {
-        var tmpAns = {
-          answer: "BOOM",
-          type: question.type,
-          q_id: question.id,
-          sub_id: 0
-        };
-        var again = array[x].split(",");
-        again.splice(0,1);
-        var date = new Date();
-        date.setTime(again[0]);
-        again[0]=date;
-        tmpAns.answer=again.join(",");
-        out.push(ans);
-      }
-      break;
+        for (var x in array) {
+          var tmpAns = {
+            answer: "BOOM",
+            type: question.type,
+            q_id: question.id,
+            sub_id: 0
+          };
+          var again = array[x].split(",");
+          again.splice(0,1);
+          var date = new Date();
+          date.setTime(again[0]);
+          again[0]=date;
+          tmpAns.answer=again.join(",");
+          if(!tmpAns.answer) {
+            return false;
+          }
+          out.push(ans);
+        }
+        break;
       case "cur_time":
         ans.answer = this.readTime(question);
-      out.push(ans);
-      break;
+        if(!ans.answer) {
+          return false;
+        }
+        out.push(ans);
+        break;
       case "osm_reverse_geocoder":
         ans.answer=this.readGeocode(question);
-      out.push(ans);
-      break;
+        if(!ans.answer) {
+          return false;
+        }
+        out.push(ans);
+        break;
       default:
         break;
     }
 
     return out;
-  },	
+  },
   handlePostResponse: function(a, b) {
     this.log("SERVER RESPONSE CAME BACK");
     if(a.xhr.status === 200) {
@@ -304,9 +347,11 @@ enyo.kind({
     var tmpComp = this.$.acc.getComponents();
     var count = 0;
     for(var x in tmpComp) {
-      if(tmpComp[x].kind === "MediaSensor")
-        if(tmpComp[x].completed)
+      if(tmpComp[x].kind === "MediaSensor") {
+        if(tmpComp[x].completed) {
           count++;
+        }
+      }
     }
     this.$.sendProgress.animateProgressTo((count+1)*this.progressInterval);
     if(count === this.files) {
@@ -379,11 +424,14 @@ enyo.kind({
     var name = "input_" + input.id;
     options = input.options.split("|");
     array = [];
-    for (var i in options) { 
-      if(i === 0)
-        array.push({content: options[i], active: !0, classes: "dark-background-flat", ontap: "testButtons"});
-      else
+    for (var i in options) {
+      // this allows us to set a default value for the multiple choice question
+      if(options[i].indexOf('*') !== -1) {
+        var text = options[i].replace('*', '');
+        array.push({content: text, active: !0, classes: "dark-background-flat", ontap: "testButtons"});
+      } else {
         array.push({content: options[i], classes: "dark-background-flat", ontap: "testButtons"});
+      }
     }
     this.$.acc.createComponent({name: name, kind: onyx.RadioGroup, classes: "center nice-padding", components: array}, {owner: this});
   },
@@ -400,8 +448,15 @@ enyo.kind({
     for (var i in options) {
       var checkName = "checkbox_" + i;
       var contName = "content_" + i;
-      this.$.groupbox.createComponent({name: checkName, kind: "onyx.Checkbox", onchange: "testButtons"}, {owner: this});
-      this.$.groupbox.createComponent({name: contName, content: options[i]}, {owner: this});
+      if(options[i].indexOf('*') !== -1) {
+        var text = options[i].replace('*', '');
+        array.push({content: text, active: !0, classes: "dark-background-flat", ontap: "testButtons"});
+        this.$.groupbox.createComponent({name: checkName, kind: "onyx.Checkbox", onchange: "testButtons"}, {owner: this});
+        this.$.groupbox.createComponent({name: contName, content: options[i]}, {owner: this});
+      } else {
+        this.$.groupbox.createComponent({name: checkName, kind: "onyx.Checkbox", onchange: "testButtons"}, {owner: this});
+        this.$.groupbox.createComponent({name: contName, content: options[i]}, {owner: this});
+      }
     }
   },
   newFormCounter: function(input) {
@@ -417,7 +472,7 @@ enyo.kind({
     var inputName = "input_" + qID;
     var test = document.body.clientHeight - 57 - 32;
     //this.log(this.$.buttons.node.clientHeight);
-    this.$.acc.createComponent({/*name: countName, */kind: "BikeCounter", style: "height: " + test + "px; width: 100%;"}, {owner: this}); 
+    this.$.acc.createComponent({/*name: countName, */kind: "BikeCounter", style: "height: " + test + "px; width: 100%;"}, {owner: this});
     this.counterName = countName;
   },
   newMediaReading: function(input) {
@@ -428,42 +483,77 @@ enyo.kind({
   newReverseGeocoder: function(input) {
     var name = "geocode_" + input.id;
     this.$.acc.createComponent({name: name, kind: "TapMap"});
-  },	
+  },
   readFormText: function(input) {
     var name = "input_" + input.id;
+    var out = this.$[name].getValue();
+    if(!out) {
+      this.$[name].addRemoveClass("need-answer", true);
+      return false;
+    } else {
+      this.$[name].addRemoveClass("need-answer", false);
+    }
     return this.$[name].getValue();
   },
   readFormExclusiveChoice: function(input) {
     var name = "input_" + input.id;
     var kids = this.$[name].children;
-    for (var x in kids) 
-      if (kids[x].hasClass("active")) 
+    for (var x in kids) {
+      if (kids[x].hasClass("active")) {
+        var out = kids[x].getContent();
+        this.log(out);
+        this.$[name].addRemoveClass("need-answer", false);
         return kids[x].getContent();
+      }
+    }
+    this.$[name].addRemoveClass("need-answer", true);
+    return false;
   },
   readFormMultipleChoice: function(input) {
     var arr = [];
     for (var i in input.options.split("|")) {
       var check = "checkbox_" + i;
       var cont = "content_" + i;
-      if(this.$[check].getValue)
+      if(this.$[check].getValue) {
         arr.push(questionBody[0].$.groupbox.$[cont].getContent());
+      }
+    }
+    var out = arr.join("|");
+    if(!out) {
+      for (var i in input.options.split("|")) {
+        var check = "checkbox_" + i;
+        var cont = "content_" + i;
+        this.$[check].addRemoveClass("need-answer", true);
+        this.$[cont].addRemoveClass("need-answer", true);
+      }
+      return false;
     }
     return arr.join("|");
   },
   readFormCounter: function(input) {
     var out = this.$.bikeCounter.getData();
-    this.log(out);
-
+    if(!out) {
+      this.$.bikeCounter.addRemoveClass("need-answer", true);
+      return false;
+    }
     return out.join("|");
   },
   readTime: function(input) {
     var time = "time_" + input.id;
-    var ret = this.$.acc.$[time].time;
-    return ret;
+    var out = this.$.acc.$[time].time;
+    if(!out) {
+      this.$.acc.$[time].addRemoveClass("need-answer", true);
+      return false;
+    }
+    return out;
   },
   readGeocode: function(input) {
     var geocode = "geocode_"+input.id;
-    var ret = this.$.acc.$[geocode].getData();
+    var out = this.$.acc.$[geocode].getData();
+    if(!out) {
+      this.$.acc.$[geocode].addRemoveClass("need-answer", true);
+      return false;
+    }
   },
   jumpToCounter: function(inSender, inEvent) {
     this.$.acc.scrollToControl(this.$.bikeCounter);

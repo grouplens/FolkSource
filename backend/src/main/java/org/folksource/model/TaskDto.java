@@ -15,7 +15,7 @@ public class TaskDto extends Dto{
 	public Boolean required;
 
 	public SubmissionDto[] submissions;
-	public LocationDto[] locations;
+	public String[] locations;
 	public Question[] questions;
 	
 	
@@ -31,7 +31,8 @@ public class TaskDto extends Dto{
 		required = t.required;
 		if (t.submissions == null){submissions = null;}
 		else{submissions = SubmissionDto.fromSubmissionArray(t.submissions.toArray(new Submission[t.submissions.size()]));}
-		locations = LocationDto.fromLocationArray(t.locations.toArray(new Location[t.locations.size()]));
+        locations = LocationDto.fromLocationLayerArray(t.getLocations().toArray(new LocationLayer[t.getLocations().size()]));
+//		locations = LocationDto.fromLocationArray(new Location[0]);
 		questions = t.questions.toArray(new Question[t.questions.size()]);
 	}
 	public static List<TaskDto> fromList(List<Task> tasks){
@@ -59,13 +60,13 @@ public class TaskDto extends Dto{
 			subs = SubmissionDto.toSubmissionArray(submissions);
 		}
 		
-		Location[] locs = new Location[0];
-		if (locations != null) {
-			locs = LocationDto.toLocationArray(locations);
-		}
+		String[] locs = new String[0];
+//		if (locations != null) {
+//			locs = LocationDto.toLocationArray(locations);
+//		}
 
         System.out.println("QUESTIONS: " + questions.length);
-		return new Task(id, name, instructions, required, new LinkedHashSet<Submission>(Arrays.asList(subs)), new LinkedHashSet<Question>(Arrays.asList(questions)), new LinkedHashSet<Location>(Arrays.asList(locs)));
+		return new Task(id, name, instructions, required, new LinkedHashSet<Submission>(Arrays.asList(subs)), new LinkedHashSet<Question>(Arrays.asList(questions)), new LinkedHashSet<LocationLayer>(/*Arrays.asList(locs)*/));
 	}
 	public static Task[] toTaskArray(TaskDto[] tdtos){
 		Task[] tasks = new Task[tdtos.length];

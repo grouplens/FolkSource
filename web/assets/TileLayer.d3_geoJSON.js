@@ -27,18 +27,22 @@ L.TileLayer.d3_geoJSON =  L.TileLayer.extend({
       tile.nodes = d3.select();
       tile.xhr = d3.json(this.getTileUrl(tilePoint),function(d) {
         tile.xhr = null;
-        tile.nodes = self.g.append("path")
-          .datum(d)
+        tile.nodes = self.g//.append("path")
+          .data(d.features)
+          .enter()
+          .append("path")
           .attr("d",self._path)
           //.attr("stroke", "black")
           .attr("fill", function(d) {
-            if(d.properties.allowed === 'y') {
+            console.log("hello: " + d);
+            return "#7B3294";
+            /*if(d.properties.allowed === 'y') {
               return "#008837";
             } else if(d.properties.allowed === 'n') {
               return "#7B3294";
             } else {
               return "grey";
-            }
+            }*/
           })
           .attr("opacity", .6)
           .attr("class",self.options.class);
@@ -48,3 +52,4 @@ L.TileLayer.d3_geoJSON =  L.TileLayer.extend({
     }
   }
 })
+

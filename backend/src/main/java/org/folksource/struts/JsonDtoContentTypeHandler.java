@@ -18,23 +18,7 @@ public class JsonDtoContentTypeHandler implements ContentTypeHandler {
 	
 	@Override
 	public void toObject(Reader in, Object target) throws IOException {
-		
 		handler.fromString(in, (DtoContainer) target);
-		
-		/*
-		DtoContainer foo = (DtoContainer) target;
-		
-		System.out.println(target.getClass().getCanonicalName());
-		
-		System.out.println(foo.getDtoType().getName());
-		
-		Submission s = (Submission) foo.getSingle();
-		Answer a = s.answers[0];
-		System.out.println(a.getClass());
-		TextAnswer b = (TextAnswer) a;
-		System.out.println(b.getClass());
-		*/
-		
 	}
 
 	@Override

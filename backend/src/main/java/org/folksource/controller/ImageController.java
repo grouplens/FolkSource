@@ -25,7 +25,8 @@ public class ImageController {
 	private String userName;
 
 	/** The base directory to save the uploaded image. */
-	public static String base_dir = "./UploadImage/";
+	public static String base_dir = "/export/scratch/FolkSource/images/";
+//    public static String base_dir = "/Users/jts/FolkSource_server/images/";
 
 
 

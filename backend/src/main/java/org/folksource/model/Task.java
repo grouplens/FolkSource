@@ -4,26 +4,45 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Task{
+public class Task {
 	public Integer id;
 	public String name;
 	public String instructions;
 	public Boolean required;
-	public Integer camp_id;
+	public Integer campaign_id;
 //	private String requirements; // possibly wrong datatype, but for now
 //	private Form form;
 //	private Location loc;
+//    public Set<String> locations;
+    public Set<Submission> submissions;
+    public Set<Question> questions;
+    public Set<LocationLayer> locations;
 
-	public Integer getCamp_id() {
-		return camp_id;
+    public Task(){
+        super();
+    }
+    //used by the TaskDto
+    public Task(Integer id, String name, String instructions, Boolean required, Set<Submission> subs, Set<Question> qs, Set<LocationLayer> locs){
+        super();
+        this.id = id;
+        this.name = name;
+        this.instructions = instructions;
+        this.required = required;
+        //this.submissions = subs;
+        this.questions = qs;
+        this.locations = locs;
+    }
+
+    public Integer getCampaign_id() {
+		return campaign_id;
 	}
-	public void setCamp_id(Integer camp_id) {
-		this.camp_id = camp_id;
+	public void setCampaign_id(Integer campaign_id) {
+		this.campaign_id = campaign_id;
 	}
 	public Boolean getRequired() {
 		return required;
 	}
-	public void setLocations(Set<Location> locations) {
+	public void setLocations(Set<LocationLayer> locations) {
 		this.locations = locations;
 	}
 	public void setSubmissions(Set<Submission> submissions) {
@@ -32,34 +51,6 @@ public class Task{
 	public void setQuestions(Set<Question> questions) {
 		this.questions = questions;
 	}
-
-	public Set<Location> locations;
-	public Set<Submission> submissions;
-	public Set<Question> questions;	
-	
-	public Task(){
-		super();
-	}
-	//used by the TaskDto
-	public Task(Integer id, String name, String instructions, Boolean required, Set<Submission> subs, Set<Question> qs, Set<Location> locs){
-		super();
-		this.id = id;
-		this.name = name;
-		this.instructions = instructions;
-		this.required = required;
-		//this.submissions = subs;
-		this.questions = qs;
-		this.locations = locs;
-	}
-	
-	
-//	public Location getLocation() {
-//		return loc;
-//	}
-//
-//	public void setLocation(Location loc) {
-//		this.loc = loc;
-//	}
 	
 	public String getName() {
 		return name;
@@ -112,12 +103,12 @@ public class Task{
 		this.questions = new HashSet<Question>(questions);
 	}
 	
-	public Set<Location> getLocations() {
+	public Set<LocationLayer> getLocations() {
 		return locations;
 	}
 
-	public void setLocations(List<Location> locations) {
-		this.locations = new HashSet<Location>(locations);
+	public void setLocations(List<LocationLayer> locations) {
+		this.locations = new HashSet<LocationLayer>(locations);
 	}
 
 

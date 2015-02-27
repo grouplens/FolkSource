@@ -12,9 +12,9 @@
 	<property name="description" />
 <!-- 	<property name="task_id" /> -->
 	<property name="owner_id" />
-	<property name="location" />
+	<!--<property name="location" />-->
 	<set name="tasks" fetch="select">
-		<key column="camp_id" not-null="false"/>
+		<key column="campaign_id" not-null="false"/>
 		<one-to-many class="Task" />
 	</set>
 </class>

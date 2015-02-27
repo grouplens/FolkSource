@@ -3,8 +3,9 @@ enyo.kind({
   kind: "enyo.Control",
   statics: {
     getURL: function () {
-      return "http://folksource.grouplens.org/api/";
-      //return "http://localhost:8080/";
+      //return "http://folksource.grouplens.org/api/";
+      //return "http://localhost:3000/";
+      return "http://localhost:8081/";
       //return "http://134.84.121.213.xip.ip:8080/";
     },
     getUserName: function (a) {

@@ -7,7 +7,7 @@
 			<generator class="native" />
 		</id>
 		<property name="instructions" />
-		<property name="camp_id" />
+		<!--<property name="campaign_id" />-->
 		<property name="required" />
 		<set name="submissions" inverse="true" fetch="subselect" lazy="false">
 			<key column="task_id" not-null="true"/>
@@ -17,10 +17,14 @@
 			<key column="task_id" not-null="true"/>
 			<one-to-many class="Question" />
 		</set>
-		<set name="locations" inverse="true" fetch="subselect">
-			<key column="task_id" not-null="true"/>
-			<one-to-many class="Location" />
-		</set>
+        <set name="locations" inverse="true" fetch="subselect">
+            <key column="task_id" not-null="true" />
+            <one-to-many class="LocationLayer" />
+        </set>
+		<!--<set name="locations" inverse="true" fetch="subselect">-->
+			<!--<key column="task_id" not-null="true"/>-->
+			<!--<one-to-many class="Location" />-->
+		<!--</set>-->
 <!-- 		<bag name="points" lazy="false"> -->
 <!-- 			<key column="task_id" /> -->
 <!-- 			<one-to-many class="GeomPoint" -->

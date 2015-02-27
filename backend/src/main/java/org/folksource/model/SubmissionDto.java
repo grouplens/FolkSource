@@ -17,6 +17,7 @@ public class SubmissionDto extends Dto{
 	public AnswerDto[] answers;
 	public Date timestamp;
 	public String img_path;
+    public Integer location_id;
 	
 	
 	
@@ -36,6 +37,7 @@ public class SubmissionDto extends Dto{
 		this.gps_location = s.gps_location;
 		this.timestamp = s.timestamp;
 		this.img_path = s.img_path;
+        this.location_id = s.location_id;
 		
 		AnswerDto[] newAnswers = new AnswerDto[s.answers.length]; 
 		for (int i=0; i < s.answers.length; i++){
@@ -82,7 +84,7 @@ public class SubmissionDto extends Dto{
 		for (int i=0; i < answers.length; i++){
 			newAnswers[i] = answers[i].toAnswer();
 		}
-		return new Submission(id, task_id, user_id, gps_location, newAnswers, timestamp, img_path);
+		return new Submission(id, task_id, user_id, gps_location, newAnswers, timestamp, img_path, location_id);
 	}
 	
 	// Is the name of this method clear? Should it even be here? I guess I put it here instead of in

@@ -1,0 +1,16 @@
+.rwatkins-pivotmenu-header {
+  white-space: nowrap;
+}
+
+.rwatkins-pivotmenu-header-item {
+  display: inline-block;
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}
+
+.rwatkins-pivotmenu-header-item.active {
+  opacity: 1;
+  filter: alpha(opacity=100);
+}
+
+ 

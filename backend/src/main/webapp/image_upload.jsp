@@ -10,7 +10,7 @@
 </head>
 <body>
 	<s:form action="image" method="post" enctype="multipart/form-data">
-		<s:file name="image" label="image" />
+		<s:file type="image" label="image" />
 		<s:submit />
 	</s:form>
 </body>

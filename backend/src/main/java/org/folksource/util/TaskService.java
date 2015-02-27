@@ -52,10 +52,10 @@ public class TaskService {
 			q.setTask_id(t.getId());
 			QuestionService.save(q);
 		}
-		for(Location l : t.getLocations()) {
-			l.setTask_id(t.getId());
-			LocationService.save(l);
-		}
+//		for(Location l : t.getLocations()) {
+//			l.setTask_id(t.getId());
+//			LocationService.save(l);
+//		}
 	}
 	
 	public static Task getTaskById(int id, Session session){

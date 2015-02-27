@@ -40,13 +40,14 @@
         <!-- Example: <mapping class="full.name" /> -->
         <mapping resource="user.hbm.xml" />
         <mapping resource="campaign.hbm.xml" />
-<!--         <mapping resource="userdetails.hbm.xml" /> -->
+        <mapping resource="actionlog.hbm.xml" />
         <mapping resource="task.hbm.xml" />
         <mapping resource="answer.hbm.xml" />
         <mapping resource="submission.hbm.xml" />
         <mapping resource="question.hbm.xml" />
         <mapping resource="leaderboard.hbm.xml" />
         <mapping resource="location.hbm.xml" />
+        <mapping resource="location_layer.hbm.xml" />
         <mapping resource="token.hbm.xml" />
         
     </session-factory>
