@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.grouplens.common.dto.Dto;
+import org.hibernate.annotations.Entity;
 
 public class User extends Dto{
 	public Integer Id;

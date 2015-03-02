@@ -18,7 +18,7 @@ public class WikimediaAction extends ActionSupport /*implements SessionAware */{
 	
 	private Message response;
 	private WikimediaService wikimediaService;
-	private String verifier;
+	private String oauth_verifier;
 
 	private static final long serialVersionUID = 1L;
 
@@ -31,9 +31,9 @@ public class WikimediaAction extends ActionSupport /*implements SessionAware */{
 		@Result(name = SUCCESS, type="json", params = {"root","response"})
 	})
 	public String connect() {
-		Message resp = new Message();
-		resp.setMessage(wikimediaService.getAuthUri());
-		response = resp;
+		Message message = new Message();
+		message.setMessage(wikimediaService.getAuthUri());
+		response = message;
 		return SUCCESS;
 	}
 
@@ -41,8 +41,9 @@ public class WikimediaAction extends ActionSupport /*implements SessionAware */{
 		@Result(name = SUCCESS, type="json", params = {"root","response"})
 	})
 	public String callback() {
-		//Response resp = new Response();
-		wikimediaService.verify(verifier);
+		Message message = new Message();
+		message.setMessage(wikimediaService.verify(oauth_verifier));
+		response = message;
 		return SUCCESS;
 	}
 	
@@ -80,12 +81,13 @@ public class WikimediaAction extends ActionSupport /*implements SessionAware */{
 		this.wikimediaService = wikimediaService;
 	}
 
-	public String getVerifier() {
-		return verifier;
+	public String getOauth_verifier() {
+		return oauth_verifier;
 	}
 
-	public void setVerifier(String verifier) {
-		this.verifier = verifier;
+	public void setOauth_verifier(String oauth_verifier) {
+		this.oauth_verifier = oauth_verifier;
 	}
+
 	
 }

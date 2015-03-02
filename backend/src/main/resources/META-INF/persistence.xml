@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+  <persistence-unit name="com.ftw.pu" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+    <!--  list all managed classes here  -->
+    <class>org.folksource.entities.User</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>
+    
+    <properties>
+      <!-- the EMF, datasource, transaction provider, and connection pooler are
+           all configured in Spring. -->
+      <!-- 
+      property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/mydb"/>
+      <property name="javax.persistence.jdbc.password" value="pwd"/>
+      <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+      <property name="javax.persistence.jdbc.user" value="user"/ -->
+ 
+<!--       <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/> -->
+      <property name="hibernate.hbm2ddl.auto" value="validate" />
+      <property name="hibernate.show_sql" value="false"/>
+      <property name="hibernate.cache.provider_class" value="org.hibernate.cache.EhCacheProvider"/>
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
+      <property name="hibernate.cache.use_second_level_cache" value="true"/>
+      <property name="hibernate.cache.use_query_cache" value="false"/>
+
+	  <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.EhCacheRegionFactory" />
+
+	  <!--  may need to comment out later if necessary for performance  -->
+      <property name="hibernate.generate_statistics" value="true" />
+      <property name="hibernate.cache.use_structure_entries" value="true" />
+      
+<!--   one of the following should be used w/ Hibernate 3.3
+	  <property name="hibernate.cache.region.factory_class" value="net.sf.ehcache.hibernate.SingletonEhCacheRegionFactory"/>      
+	  <property name="hibernate.cache.region.factory_class" value="net.sf.ehcache.hibernate.EhCacheRegionFactory">
+ 
+ 	   Following is for Hibernate 4.x
+ 	         
+	  <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory" />
+ 	   
+ -->
+       
+      <!-- optional properties:
+
+            Enbale query cache
+            (but see this first: http://tech.puredanger.com/2009/07/10/hibernate-query-cache/)
+      <property name="hibernate.cache.use_query_cache" value="false"/>
+
+           Statistics
+      <property name="hibernate.generate_statistics" value="true" />
+      <property name="hibernate.cache.use_structure_entries" value="true" />
+      -->
+    </properties>
+  </persistence-unit>
+</persistence>
