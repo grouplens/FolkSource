@@ -3,7 +3,8 @@ package org.folksource.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.folksource.service.WikimediaService;
-import org.forksource.entities.User;
+import org.folksource.dao.jpa.UserDao;
+import org.folksource.entities.User;
 import org.glassfish.jersey.client.oauth1.AccessToken;
 import org.glassfish.jersey.client.oauth1.ConsumerCredentials;
 import org.glassfish.jersey.client.oauth1.OAuth1AuthorizationFlow;
@@ -12,6 +13,7 @@ import org.glassfish.jersey.client.oauth1.OAuth1ClientSupport;
 public class WikimediaServiceImpl implements WikimediaService {
 	final static Logger logger = LoggerFactory.getLogger(WikimediaServiceImpl.class);
 	private OAuth1AuthorizationFlow authFlow;
+	private UserDao userDao;
 	
 	public String getAuthUri() {
 		String consumerKey = "1048fb96026e256cb6efa76d7ab198b3";
@@ -32,12 +34,13 @@ public class WikimediaServiceImpl implements WikimediaService {
 	
 	public String verify(String verifier){
 
-		AccessToken accessToken = this.getAuthFlow().finish(verifier);
-		User user = new User();
-		
-		
-		return accessToken.getAccessTokenSecret();
-		
+		//AccessToken accessToken = this.getAuthFlow().finish(verifier);
+		User user = userDao.find(1);
+		user.setName("Tyler");
+		userDao.merge(user);
+
+		//return accessToken.getAccessTokenSecret();
+		return "test";
 	}
 	
 	public OAuth1AuthorizationFlow getAuthFlow() {
@@ -46,5 +49,13 @@ public class WikimediaServiceImpl implements WikimediaService {
 
 	public void setAuthFlow(OAuth1AuthorizationFlow authFlow) {
 		this.authFlow = authFlow;
+	}
+
+	public UserDao getUserDao() {
+		return userDao;
+	}
+
+	public void setUserDao(UserDao userDao) {
+		this.userDao = userDao;
 	}
 }

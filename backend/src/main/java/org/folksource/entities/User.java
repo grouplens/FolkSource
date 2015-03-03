@@ -1,4 +1,4 @@
-package org.forksource.entities;
+package org.folksource.entities;
 
 import java.io.Serializable;
 

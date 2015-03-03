@@ -107,27 +107,4 @@ public interface TypedJpaDao<T, ID extends Serializable> extends GenericJpaDao {
 	 */
 	T findByObjectId(String objectId);
 
-    /**
-     * Find all objects for a given entity filtered by the workspaceId
-     * there must exist a field on the at entity called "workspaceId"
-     * WorkspaceId is extracted from current thread local storage
-     * 
-     * @param Object[] - a 2 entry array, 1st entry is the field name, 2nd is the value
-     * @return
-     */
-
-	List<T> findAllByWorkspace(Object[]... params);
-
-	/**
-     * Find all objects for a given entity filtered by the workspaceId
-     * there must exist a field on the at entity called "workspaceId"
-     * WorkspaceId is specified instead of extracted from GlobalContext
-     * This is used when a global workspace is not available and must
-     * come from a contained object
-	 * @param workspaceId
-	 * @param params
-	 * @return
-	 */
-	List<T> findAllBySpecificWorkspace(int workspaceId, Object[]... params);
-
 }

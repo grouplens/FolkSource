@@ -1,5 +1,7 @@
 package org.folksource.dao.jpa;
 
-public class UserDao {
+import org.folksource.entities.User;
+
+public interface UserDao extends TypedJpaDao<User, Integer>{
 
 }
