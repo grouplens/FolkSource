@@ -2,7 +2,7 @@ package org.folksource.model;
 
 import org.grouplens.common.dto.Dto;
 
-import com.mchange.v2.c3p0.stmt.GooGooStatementCache;
+//import com.mchange.v2.c3p0.stmt.GooGooStatementCache;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import com.vividsolutions.jts.geom.Polygon;

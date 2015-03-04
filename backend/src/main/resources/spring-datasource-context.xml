@@ -14,19 +14,20 @@
 	http://www.springframework.org/schema/jee/spring-jee-3.0.xsd"
 	default-autowire="byName">
 	
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
-		destroy-method="close" abstract="true">
-		<property name="driverClassName" value="org.hibernate.dialect.PostgreSQLDialect" />
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<!-- <property name="driverClassName" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" /> -->
+		<!-- <property name="driverClassName" value="org.hibernate.dialect.PostgreSQLDialect" /> -->
 		<!-- <property name="url" value="${db.url}" /> -->
+		<property name="url" value="jdbc:postgresql://localhost:5432/folksource" />
 		<property name="username" value="postgres" />
 		<property name="password" value="Mfk8r8r9" />
-		<property name="defaultAutoCommit" value="false" />
 	</bean>
 
 	<!-- every environment will have at minimum one default db -->
-	<bean id="ds_folksource" parent="dataSource">
-		<property name="url" value="jdbc:postgresql://localhost/folksource" />
-	</bean>
+	<!-- <bean id="ds_folksource" parent="dataSource">
+		
+	</bean>-->
 	<!-- 
 		if we need to switch to using JNDI lookups then use the following 
 		instead of manually created datasource and set it into the datasources
@@ -50,7 +51,7 @@
 
 	<bean id="entityManagerFactory"
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="dataSource" ref="ds_folksource" />
+		<property name="dataSource" ref="dataSource"/>
 		<!-- <property name="persistenceUnitName" value="com.ftw" /> -->
 		<!-- all entities are defined in persistence.xml explicitly -->
 		<!-- <property name="packagesToScan"> -->

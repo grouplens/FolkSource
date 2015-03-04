@@ -14,7 +14,7 @@
 	http://www.springframework.org/schema/context/spring-context-3.0.xsd
 	http://www.springframework.org/schema/jee 
 	http://www.springframework.org/schema/jee/spring-jee-3.0.xsd"
-	>
+	default-autowire="byName">
 	<!-- ======================================================================= 
 		Application Context Bootstrap File Place application level configuration 
 		in this file, try and keep things with business logic associated to them 

@@ -8,16 +8,17 @@
 	<name>FolkSource</name>
 
 	<properties>
-		<db.username>postgres</db.username>
-		<db.password>Mfk8r8r9</db.password>
-		<db.schema>public</db.schema>
-		<db.connection.driver.class>org.postgresql.Driver</db.connection.driver.class>
-		<db.url>jdbc:postgresql://localhost/folksource</db.url>
-		<db.dialect>org.hibernate.spatial.dialect.postgis.PostgisDialect</db.dialect>
-<!-- 		<db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect> -->
-		<db.connection.maxcount>40</db.connection.maxcount>
+		<!--<db.username>postgres</db.username>-->
+		<!--<db.password>Mfk8r8r9</db.password>-->
+		<!--<db.schema>public</db.schema>-->
+		<!--<db.connection.driver.class>org.postgresql.Driver</db.connection.driver.class>-->
+		<!--<db.url>jdbc:postgresql://localhost/folksource</db.url>-->
+		<!--<db.dialect>org.hibernate.spatial.dialect.postgis.PostgisDialect</db.dialect>-->
+		<!-- <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect> -->
+		<!--<db.connection.maxcount>40</db.connection.maxcount>-->
 		<spring.amqp.version>1.2.1.RELEASE</spring.amqp.version>
 		<slf4jVersion>1.6.0</slf4jVersion>
+		<hibernate.version>4.3.8.Final</hibernate.version>
 	</properties>
 
 	<profiles>
@@ -198,6 +199,11 @@
         </repository>
     </repositories>
 	<dependencies>
+		<!-- <dependency>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-compiler-plugin</artifactId>
+		    <version>2.5.1</version>
+		</dependency> -->
 	    <dependency>
 	        <groupId>org.slf4j</groupId>
 	        <artifactId>slf4j-api</artifactId>
@@ -225,16 +231,7 @@
 			<artifactId>struts2-rest-plugin</artifactId>
 			<version>2.3.4</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.hibernate</groupId> -->
-<!-- 			<artifactId>hibernate-annotations</artifactId> -->
-<!-- 			<version>3.5.6-Final</version> -->
-<!-- 		</dependency> -->
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-c3p0</artifactId>
-			<version>4.2.5.Final</version>
-		</dependency>
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -252,18 +249,6 @@
 			<artifactId>javassist</artifactId>
 			<version>3.12.1.GA</version>
 		</dependency>
-<!-- 	<dependency>
-			<groupId>com.github.mcpat.slf4j</groupId>
-			<artifactId>slf4cldc-simple</artifactId>
-			<version>1.6.0</version>
-		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>postgresql</groupId> -->
-<!-- 			<artifactId>postgresql</artifactId> -->
-<!-- 			<version>8.4-702.jdbc3</version> -->
-<!-- 			<type>jar</type> -->
-<!-- 			<scope>runtime</scope> -->
-<!-- 		</dependency> -->
 		<dependency>
 			<groupId>org.grouplens.common</groupId>
 			<artifactId>common-hash</artifactId>
@@ -282,37 +267,48 @@
 			<version>0.5</version>
 		</dependency>
 		<dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-spatial</artifactId>
-            <version>4.0-M1</version>
-        </dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.3-1103-jdbc3</version>
+		</dependency>
+		<dependency> 
+			<groupId>org.postgis</groupId> 
+			<artifactId>postgis-jdbc</artifactId> 
+			<version>1.5.2</version> 
+		</dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
-            <version>4.2.5.Final</version>
+            <version>${hibernate.version}</version>
         </dependency>
         <dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-ehcache</artifactId>
-			<version>4.2.5.Final</version>
+			<version>${hibernate.version}</version>
 		</dependency>
+		<!-- <dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency> -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>4.2.0.Final</version>
+            <version>4.3.2.Final</version>
         </dependency>
-        <dependency> 
-			<groupId>org.postgis</groupId> 
-			<artifactId>postgis-jdbc</artifactId> 
-			<version>1.5.2</version> 
-			<scope>compile</scope> 
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-spatial</artifactId>
+			<version>4.3</version>
 		</dependency>
+
         <!-- the postgresql driver -->
-        <dependency>
+        <!-- <dependency>
             <groupId>postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>8.4-701.jdbc3</version>
-        </dependency>
+        </dependency> -->
+
         <dependency>
 			<groupId>org.apache.struts</groupId>
 			<artifactId>struts2-json-plugin</artifactId>
