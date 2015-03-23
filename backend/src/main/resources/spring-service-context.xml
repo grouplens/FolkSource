@@ -14,7 +14,7 @@
 	http://www.springframework.org/schema/context/spring-context-3.0.xsd
 	http://www.springframework.org/schema/jee 
 	http://www.springframework.org/schema/jee/spring-jee-3.0.xsd"
-	>
+	default-autowire="byName">
 	<!-- see spring-datasource-context.xml -->
 
 	<tx:annotation-driven />
@@ -37,6 +37,11 @@
 		<!-- <context:exclude-filter type="regex" expression=".*FooServiceImpl"/> -->
 			
 	</context:component-scan>
+
+	<bean id="serviceHelper" class="org.folksource.service.ServiceHelper"
+		autowire="byName">
+		<property name="appProperties" ref="appProperties" />
+	</bean>
 
 	<!-- example of explicit wiring -->
 	<!-- <bean id="fooService" class="org.folksource.service.impl.FooServiceImpl"> -->

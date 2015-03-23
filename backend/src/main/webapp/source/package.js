@@ -7,7 +7,7 @@ enyo.depends(
 	"App.js",
 	"CampaignBuilder.js",
 	"CampaignHeader.js",
-	"ComplexSensr.js",
+	//"ComplexSensr.js",
 	"CreateMap.js",
 	"CSenseCreateCampaign.js",
 	"CSenseLoginRegister.js",

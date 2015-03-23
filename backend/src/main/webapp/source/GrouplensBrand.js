@@ -1,15 +1,15 @@
 enyo.kind({
 	name: "GrouplensBrand",
-	kind: enyo.FittableRows,
-	style: "width: 100%; font-size: 11pt !important;",
-	classes: "dark-background",
+	//style: "font-size: 13pt !important;",
 	components: [
-		//{fit: true}, 
-		{content: "a ", style: "text-align: center;"},
-		{kind: enyo.Image, src: "assets/GL-Logo.png", style: "display: block !important; height: 1em; margin-left: auto; margin-right: auto;"},
-		{content: " project", style: "text-align: center;"},
+		{content: "a ", style: "text-align: center; height: 1em; display: block;", classes: "dark-background"},
+		{style: "width: 100%; display: block;", classes: "dark-background", components: [
+			{kind: enyo.Image, src: "assets/GL-Logo.png", style: "height: 1em; margin-left: auto; margin-right: auto; display: block;", classes: "dark-background"},
+		]},
+		{content: "project", style: "text-align: center; height: 1em;", classes: "dark-background"},
 	],
 	create: function(inSender, inEvent) {
 		this.inherited(arguments);
 	}
 });
+

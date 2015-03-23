@@ -5,6 +5,12 @@ import com.vividsolutions.jts.geom.Geometry;
 public class Location{
 	public Integer id;
 	public Integer task_id;
+    public Task task;
+    public String allowed;
+    public String imgURL;
+    public LocationLayer member_layer;
+    public Submission[] submissions;
+
 //	@Exclude(ExcludeType.EXPORT)
 	private Geometry geometry;
 	
@@ -37,6 +43,38 @@ public class Location{
 	public void setGeometry(Geometry geometry) {
 		this.geometry = geometry;
 	}
+
+    public String getAllowed() {
+        return allowed;
+    }
+
+    public void setAllowed(String allowed) {
+        this.allowed = allowed;
+    }
+
+    public String getImgURL() {
+        return imgURL;
+    }
+
+    public void setImgURL(String imgURL) {
+        this.imgURL = imgURL;
+    }
+
+    public LocationLayer getMember_layer() {
+        return member_layer;
+    }
+
+    public void setMember_layer(LocationLayer member_layer) {
+        this.member_layer = member_layer;
+    }
+
+    public Submission[] getSubmissions() {
+        return submissions;
+    }
+
+    public void setSubmissions(Submission[] submissions) {
+        this.submissions = submissions;
+    }
 }
 
 

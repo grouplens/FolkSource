@@ -193,10 +193,10 @@
             <url>http://www.hibernatespatial.org/repository</url>
         </repository>
         <!-- add JBOSS repository for easy access to Hibernate libraries -->
-        <repository>
+        <!-- <repository>
             <id>JBOSS</id>
             <url>https://repository.jboss.org/nexus/content/repositories/releases/</url>
-        </repository>
+        </repository> -->
     </repositories>
 	<dependencies>
 		<!-- <dependency>
@@ -269,13 +269,13 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.3-1103-jdbc3</version>
+			<version>9.4-1201-jdbc4</version>
 		</dependency>
-		<dependency> 
+		<!-- <dependency> 
 			<groupId>org.postgis</groupId> 
 			<artifactId>postgis-jdbc</artifactId> 
 			<version>1.5.2</version> 
-		</dependency>
+		</dependency> -->
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
@@ -296,11 +296,12 @@
             <artifactId>hibernate-validator</artifactId>
             <version>4.3.2.Final</version>
         </dependency>
-		<dependency>
+        
+		<!-- <dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-spatial</artifactId>
 			<version>4.3</version>
-		</dependency>
+		</dependency> -->
 
         <!-- the postgresql driver -->
         <!-- <dependency>
@@ -354,11 +355,11 @@
 			<artifactId>spring-core</artifactId>
 			<version>3.2.8.RELEASE</version>
 		</dependency>
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
 			<version>3.2.8.RELEASE</version>
-		</dependency>
+		</dependency> -->
 		<!-- dependency> <groupId>org.springframework</groupId> <artifactId>spring-jmx</artifactId> 
 			</dependency -->
 		<dependency>

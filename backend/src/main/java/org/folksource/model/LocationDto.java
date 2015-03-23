@@ -45,20 +45,30 @@ public class LocationDto extends Dto{
 			return new Location(this.id, this.task_id, this.geometry);
 		}
 	}
-	public static Location[] toLocationArray(LocationDto[] ldtos){
-		Location[] locations = new Location[ldtos.length];
-		for (int i = 0; i < locations.length; i++) {
-			locations[i] = ldtos[i].toLocation();
-		}
+	public static String[] toLocationArray(LocationDto[] ldtos){
+		String[] locations = {"vector-points", "vector-polygons"};//new Location[ldtos.length];
+//		for (int i = 0; i < locations.length; i++) {
+//			locations[i] = ldtos[i].toLocation();
+//		}
 		return locations;
 	}
 	
-	public static LocationDto[] fromLocationArray(Location[] locs){
-		LocationDto[] locDtos = new LocationDto[locs.length];
-		for (int i=0; i < locs.length; i++){
-			locDtos[i] = new LocationDto(locs[i]);
-		}
+	public static String[] fromLocationArray(Location[] locs){
+		String[] locDtos = {"vector-points", "vector-polygons"};//new LocationDto[locs.length];
+//		for (int i=0; i < locs.length; i++){
+//			locDtos[i] = new LocationDto(locs[i]);
+//		}
 		return locDtos;
 	}
 
+    public static String[] fromLocationLayerArray(LocationLayer[] locationLayers) {
+        String[] locDtos = new String[locationLayers.length];
+        for(int i = 0; i < locationLayers.length; i++) {
+            System.out.println(locationLayers[i].getName());
+            locDtos[i] = locationLayers[i].getName();
+        }
+
+        return locDtos;
+
+    }
 }

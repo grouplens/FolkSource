@@ -236,57 +236,6 @@ enyo.kind({
 		this.$.loc.setContent("Location: " + inEvent[0].display_name);
         return "123 Fake St SE, Minneapolis, MN";
     },*/
-	switchDetails: function(inSender, inEvent) {
-		var string = inEvent.originator.getContent();
-		/*if(string === "Answers")
-			this.$.detailsPanels.setIndex(0);
-		else if(string === "User")
-			this.$.detailsPanels.setIndex(1);*/
-	},	
-	/*setSubDetails: function(inSender, inEvent) {
-		var data = inEvent.sub;
-		this.log(data);
-		this.$.answers.destroyComponents();
-		for(var x in data.answers) {
-			this.log(data.answers[x]);
-			this.$.answers.createComponent({name: "q"+x, content: data.answers[x].question.question, style: "font-weight: bold;", classes: "hanging-child"}, {owner: this});
-			switch(data.answers[x].answer_type) {
-				case "text":
-					this.$.answers.createComponent({name: "ans"+x, content: data.answers[x].answer, classes: "hanging-child"}, {owner: this});
-				break;
-				case "multiple_choice":
-				case "exclusive_multiple_choice":
-					this.$.answers.createComponent({name: "ans"+x, content: data.answers[x].choices, classes: "hanging-child"}, {owner: this});
-				break;
-				case "complex_counter":
-					this.$.answers.createComponent({name: "ans"+x, content: data.answers[x].counts, classes: "hanging-child"}, {owner: this});
-				break;
-			}
-		}
-		this.$.answers.render();
-		this.getGeocode(data);
-		this.resized();
-		this.$.detailDrawer.setOpen(true);
-		return true;
-	},
-	closeDetailDrawer: function(inSender, inEvent) {
-		this.$.detailDrawer.setOpen(false);
-		this.doClearMarkerHilight();
-		return true;
-	},	
-	getGeocode: function(sub) {
-		var loc = sub.gps_location.split("|");
-		var ajax = new enyo.Ajax({handleAs: "json", url: "http://open.mapquestapi.com/nominatim/v1/search?format=json&q=" + loc[0] + "+" + loc[1]});
-		ajax.response(this, "reverseGeocode");
-		ajax.go();
-	},	
-    reverseGeocode: function(inSender, inEvent){
-		this.log(inSender);
-		this.log(inEvent);
-        //Insert reverse geocoding functionality here!
-		this.$.loc.setContent("Location: " + inEvent[0].display_name);
-        return "123 Fake St SE, Minneapolis, MN";
-    },*/
 	/*
 		Builds the contents of the tasks pane
 	*/
@@ -310,26 +259,16 @@ enyo.kind({
 		var task = inEvent.task;
 		this.$.taskDetailDrawerContent.startSpinner();
 		this.$.taskDetailDrawer.setOpen(true);
-		this.$.taskDetailDrawerContent.startSpinner();
-		this.$.taskDetailDrawer.setOpen(true);
 		this.$.taskList.select(this.getTaskListIndex(task.id));
-		this.$.taskDetailDrawerContent.stopSpinner();
 		this.$.taskDetailDrawerContent.stopSpinner();
 
 		//this.$.taskDetailDrawerContent.setTask(task);
-		this.$.taskDetailDrawerContent.setCont(task.submissions,"Task "+task.id,task.instructions);
-		this.$.taskDetailDrawer.currentTaskId = task.id;
-		var detailDrawerOpen = this.$.taskDetailDrawer.getOpen();
-		this.$.taskDetailDrawer.setOpen(true);
-		this.$.taskDetailDrawerContent.setCont(task.submissions,"Task "+task.id,task.instructions);		this.$.taskDetailDrawer.currentTaskId = task.id;		var detailDrawerOpen = this.$.taskDetailDrawer.getOpen();		this.$.taskDetailDrawer.setOpen(true);		//this.$.taskDetailDrawerContent.setCont(task.submissions,"Task "+task.id,task.instructions);
-		//this.$.taskDetailDrawer.currentTaskId = task.id;
 		//this.$.taskDetailDrawerContent.setCont(task.submissions,"Task "+task.id,task.instructions);
 		//this.$.taskDetailDrawer.currentTaskId = task.id;
 		//this.$.choices.resized();
 		//this.$.choices.setOpen(true);
 
-		this.doSelectTask({task: task, taskDetail: this.$.taskDetailDrawerContent, offset: inEvent.offset});
-		this.doSelectTask({task: task, taskDetail: this.$.taskDetailDrawerContent, offset: inEvent.offset});	},
+	},
 
 	/*
 		Given a task id, returns that tasks index in the task list.
@@ -362,8 +301,6 @@ enyo.kind({
 		}
 
 		return true;
-
-		return true;
 		//this.$.campList.reset();
 	},
 	toggleChoiceDrawer: function(inSender, inEvent) {
@@ -378,7 +315,6 @@ enyo.kind({
 		this.$.campaignDrawer.setOpen(false);
 		this.$.taskDrawer.setOpen(false);
 		this.$.taskDetailDrawer.setOpen(false);
-
 		this.doClearTaskSelection();
 	},
 
@@ -386,8 +322,6 @@ enyo.kind({
 		CampList setup function
 	*/
 	setupCampList: function(inSender, inEvent) {
-		var index = inEvent.index
-		var index = inEvent.index		var index = inEvent.index;
 		var index = inEvent.index;
 		var camp = this.campData[index];
 		//this.$.campIndex.setContent(Number(index+1));
@@ -435,8 +369,6 @@ enyo.kind({
 		var drawer = inEvent.originator.owner;
 		//Fix map size
 		//Pan
-		if (drawer.name === "campaignDrawer" && drawer.open === true){
-		if (drawer.name === "campaignDrawer" && drawer.open === true){		/*if (drawer.name === "campaignDrawer" && drawer.open === true){
 		/*if (drawer.name === "campaignDrawer" && drawer.open === true){
 			//var campId = this.campData[this.selectedCampIndex].id;
 			this.doTaskDrawerOpened({campId: campId, offset: 0});
@@ -444,8 +376,6 @@ enyo.kind({
 		if (drawer.name === "taskDrawer" && drawer.open === true){
 			var campId = this.campData[this.selectedCampIndex].id;
 			this.doTaskDrawerOpened({campId: campId, offset: 150});
-		}
-		}		}*/
 		}*/
 		if (drawer.name === "taskDetailDrawer" && drawer.open === true){
 			/*var taskId = inEvent.originator.owner.currentTaskId;
@@ -455,16 +385,7 @@ enyo.kind({
 			this.$.taskDetailDrawerContent.setCont(task.submissions,"Task "+task.id,task.instructions);
 			this.$.taskDetailDrawer.currentTaskId = task.id;
 			//this.$.taskDetailDrawerContent.stopSpinner();
-			/*var taskId = inEvent.originator.owner.currentTaskId;
-			this.doTaskDetailDrawerOpened({taskId: taskId, offset: 0});*/
-			this.doSelectTask({task: task, taskDetail: this.$.taskDetailDrawerContent/*, offset: inEvent.offset*/});
-			this.$.taskDetailDrawerContent.startSpinner();
-			this.$.taskDetailDrawerContent.setCont(task.submissions,"Task "+task.id,task.instructions);
-			this.$.taskDetailDrawer.currentTaskId = task.id;
-			//this.$.taskDetailDrawerContent.stopSpinner();
 		}
-		if(drawer.name !== "detailsPanels")
-			this.doResizeMap();
 		if(drawer.name !== "detailsPanels")
 			this.doResizeMap();
 	},

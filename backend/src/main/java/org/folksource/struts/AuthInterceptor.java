@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
-import org.folksource.model.User;
+import org.folksource.entities.User;
 import org.folksource.util.Base64;
 import org.folksource.util.TokenService;
 import org.folksource.util.UserService;
@@ -33,11 +33,16 @@ public class AuthInterceptor extends MethodFilterInterceptor/*AbstractIntercepto
 			
 			String token = req.getHeader("AuthToken");
 
+
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            res.addHeader("Access-Control-Expose-Headers", "Authorization, AuthToken");
+            res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
+
+            //try login token first
+
 			res.setHeader("Access-Control-Allow-Origin", "*");
 			res.addHeader("Access-Control-Expose-Headers", "Authorization, AuthToken");
 			res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
-			
-			//try login token first
 
 			if(token != null && TokenService.checkTokenExists(token)) {
 				u = UserService.getUserByToken(Integer.parseInt(token));
@@ -57,6 +62,15 @@ public class AuthInterceptor extends MethodFilterInterceptor/*AbstractIntercepto
 					
 					//user doesn't exist or wrong password
 
+					if (u == null || !UserService.isPasswordValid(u, password))
+						return "login_fail";
+					if(u.getToken() == null)
+						u.setToken(TokenService.getNewToken());
+						
+				} else 
+					//none of the required headers
+					return "login_fail";	
+
 					if (u == null || !UserService.isPasswordValid(u, password)) {
 						System.out.println("WRONG PASSWORD");
                         System.out.println(u);
@@ -69,12 +83,12 @@ public class AuthInterceptor extends MethodFilterInterceptor/*AbstractIntercepto
 					System.out.println("NO HEADERS");
 					return "login_fail";	
 				}
-
 			}
 			//one of the two cases succeeded, save updated state
 			UserService.save(u);
 			
 			//add the token to the response header
+			HttpServletResponse res = ServletActionContext.getResponse();
 
 			res.addHeader("AuthToken", u.getToken().getToken().toString());
 			

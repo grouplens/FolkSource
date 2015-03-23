@@ -64,13 +64,14 @@ enyo.kind({
 		this.question.task_id = 0;
 		this.question.required = true;
 		this.question.options = "";
-		if(this.curType === "Photo") 
+		if(this.curType === "Photo") {
 			this.question.question = "Take ";
-		else
+    } else {
 			this.question.question = "Record ";
+    }
 		this.question.question += this.curType;
 		this.question.type = this.curType;
-		
+
 		this.log(this.question);
 		return this.question;
 	},

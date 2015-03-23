@@ -21,9 +21,9 @@
 		(like DAOs and services) outside of this file. 
 		======================================================================= -->
 
-<!-- 	<context:property-placeholder location="classpath:folksource.properties" /> -->
+	<context:property-placeholder location="classpath:folksource.properties" />
 
-	<!-- <context:component-scan base-package="com.ftw"> -->
+	<!-- <context:component-scan base-package="com.folksource"> -->
 	<!-- If application startup starts to get too slow, define an exclusion -->
 	<!-- filter here to prevent Spring from looking everywhere -->
 	<!-- </context:component-scan> -->
@@ -31,12 +31,13 @@
 	<!-- Exposing all app props via this bean -->
 	<!-- any bean dynamically looking for properties should declare a setAppProperties 
 		method -->
-	<!-- Application specific properties for the future. -->
-<!-- 	<bean id="appProperties" -->
-<!-- 		class="org.springframework.beans.factory.config.PropertiesFactoryBean"> -->
-<!-- 		<property name="location"> -->
-<!-- 			<value>classpath:folksource.properties -->
-<!-- 			</value> -->
-<!-- 		</property> -->
-<!-- 	</bean> -->
+	<bean id="appProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="location">
+			<value>classpath:folksource.properties
+			</value>
+		</property>
+	</bean>
+	
+
 </beans>

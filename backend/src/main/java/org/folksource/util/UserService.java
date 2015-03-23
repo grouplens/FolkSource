@@ -4,7 +4,7 @@ import java.security.SecureRandom;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
-import org.folksource.model.User;
+import org.folksource.entities.User;
 import org.grouplens.common.util.HashUtil;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -51,7 +51,8 @@ public class UserService {
 		System.out.println(token);
 		
 		for(User u : tmp) {
-			if(u.getToken() != null && u.getToken().getToken().equals(token))
+			//not sure why it was getToken twice
+			if(u.getToken() != null && u.getToken().equals(token))
 				return u;
 		}
 		return null;

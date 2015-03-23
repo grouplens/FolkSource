@@ -6876,7 +6876,7 @@ kind: "GrouplensBrand",
 fit: !0,
 vertical: !1
 }, {
-content: "Logged in as123: "
+content: "Logged in as: "
 }, {
 name: "username",
 content: "anonymous"

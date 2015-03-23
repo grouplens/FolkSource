@@ -14,13 +14,12 @@
 	http://www.springframework.org/schema/context/spring-context-3.0.xsd
 	http://www.springframework.org/schema/jee 
 	http://www.springframework.org/schema/jee/spring-jee-3.0.xsd"
-	>
+	default-autowire="byName">
 
 <!-- new JPA2 DAOs -->
     <!-- typed DAOs -->
     <context:component-scan base-package="org.folksource.dao.jpa.impl">
         <context:include-filter type="assignable" expression="org.folksource.dao.jpa.impl.GenericJpaDaoImpl" />
-        <context:include-filter type="regex" expression=".*DaoImpl" />
     </context:component-scan>
 
 

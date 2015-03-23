@@ -54,7 +54,7 @@ enyo.kind({
 				]},
 			]},
 			{name: "questionSection", kind: enyo.FittableRows, fit: true, showing: false, components: [
-				{name: "taskInstructions", kind: "TitledInput", placeholder: "General instructions about the task", instructions: "Enter general instructions about the task below", title: "3b. Build the task"}, 
+				{name: "taskInstructions", kind: "TitledInput", placeholder: "General instructions about the task", instructions: "Enter general instructions about the task below", title: "3b. Build the task"},
 				{kind: "QuestionDrawer", classes: "nice-padding", fit: true}
 			]},
 		]}
@@ -103,7 +103,7 @@ enyo.kind({
 		//hide button
 		//this.toggleEditingDrawer();
 	},
-	
+
 	clickToAddShapeFile: function(inSender, inEvent) {
 		if(inSender.hasClass("active")) {
 			inSender.addRemoveClass("active", false);
@@ -144,16 +144,20 @@ enyo.kind({
 		this.taskData.incentive = 1;
 		this.taskData.required = true;
 		return this.taskData;
-	},	
+	},
 	getLocations: function(inSender, inEvent) {
+    this.log(inSender);
+    this.log(inEvent);
 		var tmp = [];
-		var wkt = new Wkt.Wkt();
+		//var wkt = new Wkt.Wkt();
 		enyo.forEach(this.$.realLocationList.getControls(), function(inSender, inEvent) {
 			var obj = {};
 			obj.id = 0;
 			obj.task_id = 0;
-			if(inSender.data.layerType === "marker") {
-				var marker = new L.Marker(inSender.data.layer._latlng);
+			/*if(inSender.data.layerType === "marker") {
+        //
+				//var marker = new L.Marker(inSender.data.layer._latlng);
+        var marker = inSender.data.layer;
 				wkt.fromObject(marker);
 				obj.geometryString = wkt.write();
 			}
@@ -162,11 +166,13 @@ enyo.kind({
 				var poly = new L.Polygon(inSender.data.layer._latlngs);
 				wkt.fromObject(poly);
 				obj.geometryString = wkt.write();
-			}
+			}*/
+      var wkt_txt = Terraformer.WKT.convert(inSender.data.geometry);
+      this.log(wkt_txt);
 			tmp.push(obj);
 		}, this);
 		return tmp;
-	},	
+	},
 	handleExpand: function(inSender, inEvent) {
 		this.log(inSender.expanded);
 		if(!inSender.expanded) {
@@ -180,11 +186,11 @@ enyo.kind({
 			this.$.questionSection.resized();
 		}
 		if(inLocation.layerType === "marker") {
-			this.$.realLocationList.createComponent({tag: "i", kind: "Destroyable", classes: "icon-map-marker icon-3x location-builder nice-padding", style: "width: 100%; display: block; text-align: center;", data: inLocation, ontap: "readLocationData"}, {owner: this});
+			this.$.realLocationList.createComponent({tag: "i", kind: "Destroyable", classes: "icon-map-marker icon-3x location-builder nice-padding", style: "width: 100%; display: block; text-align: center;", data: inLocation.layer.toGeoJSON(), ontap: "readLocationData"}, {owner: this});
 			this.$.realLocationList.render();
 		}
 		if(inLocation.layerType === "polygon") {
-			this.$.realLocationList.createComponent({tag: "i", kind: "Destroyable", classes: "icon-globe icon-3x location-builder nice-padding", style: "width: 100%; display: block; text-align: center;", data: inLocation, ontap: "readLocationData"}, {owner: this});
+			this.$.realLocationList.createComponent({tag: "i", kind: "Destroyable", classes: "icon-globe icon-3x location-builder nice-padding", style: "width: 100%; display: block; text-align: center;", data: inLocation.layer.toGeoJSON(), ontap: "readLocationData"}, {owner: this});
 			this.$.realLocationList.render();
 		}
 	},

@@ -43,7 +43,7 @@ package org.folksource.util;
  *   something that has bad characters in it.</li>
  *  <li>v2.3.6 - Fixed bug when breaking lines and the final byte of the encoded
  *   string ended in the last column; the buffer was not properly shrunk and
- *   contained an extra (null) byte that made it into the string.</li>
+ *   contained an category (null) byte that made it into the string.</li>
  *  <li>v2.3.5 - Fixed bug in {@link #encodeFromFile} where estimated buffer size
  *   was wrong for files of size 31, 34, and 37 bytes.</li>
  *  <li>v2.3.4 - Fixed bug when working with gzipped streams whereby flushing
@@ -946,7 +946,7 @@ public class Base64
             // we save a bunch of memory.
             int encLen = ( len / 3 ) * 4 + ( len % 3 > 0 ? 4 : 0 ); // Bytes needed for actual encoding
             if( breakLines ){
-                encLen += encLen / MAX_LINE_LENGTH; // Plus extra newline characters
+                encLen += encLen / MAX_LINE_LENGTH; // Plus category newline characters
             }
             byte[] outBuff = new byte[ encLen ];
 
@@ -977,7 +977,7 @@ public class Base64
             if( e <= outBuff.length - 1 ){
                 // If breaking lines and the last byte falls right at
                 // the line length (76 bytes per line), there will be
-                // one extra byte, and the array will need to be resized.
+                // one category byte, and the array will need to be resized.
                 // Not too bad of an estimate on array size, I'd say.
                 byte[] finalOut = new byte[e];
                 System.arraycopy(outBuff,0, finalOut,0,e);
@@ -1648,7 +1648,7 @@ public class Base64
         private int     lineLength;
         private boolean breakLines;     // Break lines at less than 80 characters
         private int     options;        // Record options used to create the stream.
-        private byte[]  decodabet;      // Local copies to avoid extra method calls
+        private byte[]  decodabet;      // Local copies to avoid category method calls
         
         
         /**
@@ -1778,7 +1778,7 @@ public class Base64
                 }   // end if
                 else {
                     lineLength++;   // This isn't important when decoding
-                                    // but throwing an extra "if" seems
+                                    // but throwing an category "if" seems
                                     // just as wasteful.
                     
                     int b = buffer[ position++ ];
@@ -1862,7 +1862,7 @@ public class Base64
         private byte[]  b4;         // Scratch used in a few places
         private boolean suspendEncoding;
         private int     options;    // Record for later
-        private byte[]  decodabet;  // Local copies to avoid extra method calls
+        private byte[]  decodabet;  // Local copies to avoid category method calls
         
         /**
          * Constructs a {@link Base64.OutputStream} in ENCODE mode.

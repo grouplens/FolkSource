@@ -33,6 +33,7 @@ public class UserController extends ActionSupport implements ModelDriven<DtoCont
 	public String show() {//get
 		HttpServletResponse res = ServletActionContext.getResponse();
 //		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+
 //		res.addHeader("Access-Control-Allow-Origin", "http://localhost:8000");
 
 		content = new DtoContainer<UserDto>(UserDto.class, false);
@@ -46,7 +47,7 @@ public class UserController extends ActionSupport implements ModelDriven<DtoCont
 	public String index() {
 		HttpServletResponse res = ServletActionContext.getResponse();
 //		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-//		res.addHeader("Access-Control-Allow-Origin", "*");
+		res.addHeader("Access-Control-Allow-Origin", "*");
 
 		content = new DtoContainer<UserDto>(UserDto.class, true);
 		content.set(UserDto.fromUserList(UserService.getUsers()));
@@ -59,7 +60,7 @@ public class UserController extends ActionSupport implements ModelDriven<DtoCont
 		HttpServletResponse response = ServletActionContext.getResponse();
 		HttpServletRequest req = ServletActionContext.getRequest();
 
-//		response.addHeader("Access-Control-Allow-Origin", "*");
+		response.addHeader("Access-Control-Allow-Origin", "*");
 
 		User inUser = content.getSingle().toUser();
 		User u = UserService.getUserByName(inUser.getName());
@@ -87,9 +88,11 @@ public class UserController extends ActionSupport implements ModelDriven<DtoCont
 	public String token() {
 		HttpServletResponse res = ServletActionContext.getResponse();
 //		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+
 		res.setHeader("Access-Control-Allow-Origin", "*");
 		res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
 		res.addHeader("Access-Control-Expose-Headers", "Authorization, AuthToken");
+
 		content = new DtoContainer<UserDto>(UserDto.class, false);
 		User user = UserService.getUserByName(id);
         getUserTokenAndSave(res, user);
@@ -115,9 +118,11 @@ public class UserController extends ActionSupport implements ModelDriven<DtoCont
     public String options() {
 		HttpServletResponse res = ServletActionContext.getResponse();
 //		res.addHeader("Allow", "*");
+
 //		res.addHeader("Access-Control-Allow-Origin", "*");
 		res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
 		res.addHeader("Access-Control-Expose-Headers", "Authorization, AuthToken");
+
 		return "options_success";
 	}
 

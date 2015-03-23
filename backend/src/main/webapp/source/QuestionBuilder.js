@@ -29,13 +29,12 @@ enyo.kind({
 				{content: "Checkboxes", tag: "option"}, // index 1
 				{content: "Multiple Choice", tag: "option"}, // index 2
 				{content: "Counter", tag: "option"}, // index 3
-			]}, 
+			]},
 			{name: "optionList", kind: enyo.List, fit: true, style: "max-height: 50px;", count: 0, showing: false, fixedHeight: true, reorderable: false, enableSwipe: false, classes: "nice-padding hanging-child", ontap: "editOption", onSetupItem: "makeOption", components: [
 				{name: "oItem", content: "holder"},
 				//{kind: "EditableListItem", name: "oItem"}
 			]},
 			{name: "optionEntry", kind: onyx.Input, showing: false, classes: "nice-padding hanging-child", placeholder: "Hit 'enter' to add an option", onchange: "addOption"},
-			
 		]}
 	],
 	create: function(inSender, inEvent) {
@@ -60,7 +59,7 @@ enyo.kind({
 		this.$.optionList.reset();
 		this.$.optionList.resized();
 		this.$.optionList.scrollToBottom();
-	},	
+	},
 	checkTitles: function(inSender, inEvent) {
 		var sensor = inEvent.us.kind.indexOf("Sensor") > -1 ? true : false;
 		var inStepNum = inEvent.us.stepIndex;
