@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/util 
+	http://www.springframework.org/schema/util/spring-util-3.0.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/jee 
+	http://www.springframework.org/schema/jee/spring-jee-3.0.xsd"
+	default-autowire="byName">
+	
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<!-- <property name="driverClassName" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" /> -->
+		<!-- <property name="driverClassName" value="org.hibernate.dialect.PostgreSQLDialect" /> -->
+		<!-- <property name="url" value="${db.url}" /> -->
+		<property name="url" value="jdbc:postgresql://localhost:5432/folksource" />
+		<property name="username" value="postgres" />
+		<property name="password" value="Mfk8r8r9" />
+	</bean>
+
+	<!-- every environment will have at minimum one default db -->
+	<!-- <bean id="ds_folksource" parent="dataSource">
+		
+	</bean>-->
+	<!-- 
+		if we need to switch to using JNDI lookups then use the following 
+		instead of manually created datasource and set it into the datasources
+		map.  In fact using spring profiles we can manage the prod version
+		that uses JNDI and dev version that uses non jndi datasources
+	<jee:jndi-lookup id="ds_ftw" expected-type="javax.sql.DataSource" jndi-name="jdbc/ftw" />
+	 -->
+
+	<!-- to add more, refer to file spring-datasource-extra-context.xml -->
+
+	<util:map id="emptyDataSources" key-type="java.lang.String"
+		value-type="java.lang.Object" map-class="java.util.HashMap">
+	</util:map>
+
+
+
+	<!-- JPA2 -->
+
+
+
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<!-- <property name="persistenceUnitName" value="com.ftw" /> -->
+		<!-- all entities are defined in persistence.xml explicitly -->
+		<!-- <property name="packagesToScan"> -->
+		<!-- <list> -->
+		<!-- <value>com.ftw.entities</value> -->
+		<!-- </list> -->
+		<!-- </property> -->
+		<!-- hibernate is defined as a provider in persistence.xml - hence following 
+			is not needed -->
+		<!-- <property name="jpaVendorAdapter"> -->
+		<!-- <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"> -->
+		<!-- <property name="showSQL" value="true" /> -->
+		<!-- </bean> -->
+		<!-- </property> -->
+
+	</bean>
+		<!-- New JPA2 -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+        <!-- required so JDBC and JPA can participate in the same transaction -->
+        <property name="jpaDialect">
+        	<bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect" />
+        </property>
+    </bean>
+
+
+</beans>

@@ -1,0 +1,6 @@
+#properties example
+
+db.url=jdbc:postgresql://localhost:5432/folksource
+db.username=postgres
+db.password=password1
+db.driver=org.postgresql.Driver
