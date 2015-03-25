@@ -67,7 +67,10 @@ public class TaskDto extends Dto{
 
         System.out.println("QUESTIONS: " + questions.length);
 		return new Task(id, name, instructions, required, new LinkedHashSet<Submission>(Arrays.asList(subs)), new LinkedHashSet<Question>(Arrays.asList(questions)), new LinkedHashSet<LocationLayer>(/*Arrays.asList(locs)*/));
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/grouplens/master
 	}
 	public static Task[] toTaskArray(TaskDto[] tdtos){
 		Task[] tasks = new Task[tdtos.length];

@@ -10,7 +10,10 @@ public class Location{
     public String imgURL;
     public LocationLayer member_layer;
     public Submission[] submissions;
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/grouplens/master
 //	@Exclude(ExcludeType.EXPORT)
 	private Geometry geometry;
 	

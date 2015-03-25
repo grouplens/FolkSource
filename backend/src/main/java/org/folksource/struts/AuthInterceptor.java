@@ -32,6 +32,7 @@ public class AuthInterceptor extends MethodFilterInterceptor/*AbstractIntercepto
 			}
 			
 			String token = req.getHeader("AuthToken");
+<<<<<<< HEAD
 
 
             res.setHeader("Access-Control-Allow-Origin", "*");
@@ -44,6 +45,13 @@ public class AuthInterceptor extends MethodFilterInterceptor/*AbstractIntercepto
 			res.addHeader("Access-Control-Expose-Headers", "Authorization, AuthToken");
 			res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
 
+=======
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            res.addHeader("Access-Control-Expose-Headers", "Authorization, AuthToken");
+            res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
+
+            //try login token first
+>>>>>>> refs/remotes/grouplens/master
 			if(token != null && TokenService.checkTokenExists(token)) {
 				u = UserService.getUserByToken(Integer.parseInt(token));
                 System.out.println("TRYING TO LOG USER IN");

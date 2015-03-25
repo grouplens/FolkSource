@@ -1,4 +1,5 @@
 enyo.depends(
+<<<<<<< HEAD
     "$lib/layout",
     "$lib/onyx",
     "App.css",
@@ -31,4 +32,41 @@ enyo.depends(
     "TryComplexSensr.js",
     "rok.geolocation.js",
 	"WarnDrawer.js"
+=======
+  "$lib/layout",
+  "$lib/onyx",
+  "App.css",
+  "App.js",
+  "BikeCounter.js",
+  "BottomLensMenu.js",
+  "CSenseLoginRegister.js",
+  "CSenseMenuPane.js",
+  "CampaignItem.js",
+  "CampaignList.js",
+  "ComplexSensr.js",
+  "Counter.js",
+  "CustomProgress.js",
+  "Data.js",
+  "GrouplensBrand.js",
+  "LeaderboardItem.js",
+  "LeaderboardList.js",
+  "LensShifter.js",
+  "LocalStorage.js",
+  "MediaSensor.js",
+  "menupane",
+  "NewMap.js",
+  "PinView.js",
+  "pivotmenu/source",
+  "Sensr.js",
+  "SimpleSensr.js",
+  "SpaceUsageToolbar.js",
+  "TallyCounter.js",
+  "TapMap.js",
+  "TickerList.js",
+  "Timer.js",
+  "Toolbar.js",
+  "TryComplexSensr.js",
+  "rok.geolocation.js",
+  "WarnDrawer.js"
+>>>>>>> refs/remotes/grouplens/master
 );
