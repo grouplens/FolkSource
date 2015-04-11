@@ -26,10 +26,6 @@
     <!-- generic DAO for flush(), clear() -->
     <bean id="genericJpaDao" class="org.folksource.dao.jpa.impl.GenericJpaDaoImpl" />
 
-    <!-- JDBC DAO beans -->
-<!--     <bean id="appUsageMetricReportingDao" class="com.ftw.dao.jdbc.impl.SampleJDBCDao"> -->
-<!--         <property name="dataSource" ref="databaseDataSource" /> -->
-<!--     </bean> -->
 
 
 </beans>

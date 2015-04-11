@@ -10,7 +10,7 @@ import org.folksource.service.WikimediaService;
  * Would be nice to have a base abstract class for all actions.
  */
 
-@ParentPackage("folksource-norest-pkg")
+
 public class WikimediaAction extends BaseAction /*implements SessionAware */{
 
 	protected String partial;

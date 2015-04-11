@@ -1,4 +1,4 @@
-package org.folksource.controller;
+package org.folksource.action.controller;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,50 +6,25 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
+import org.folksource.action.BaseAction;
 import org.folksource.entities.Location;
 import org.folksource.model.LocationDto;
 import org.folksource.util.LocationService;
 import org.grouplens.common.dto.DtoContainer;
 
-import com.opensymphony.xwork2.ModelDriven;
-
-public class TokenController implements ModelDriven<DtoContainer<LocationDto>> {
-
-	//private Collection<Location> list;
-	private int id;
-	//private Location Location = new Location();
-
-	private DtoContainer<LocationDto> content = new DtoContainer<LocationDto>(LocationDto.class, true);
-	
-	@Override
-	public DtoContainer<LocationDto> getModel() {
-		return content;
-	}
+public class LocationAction extends BaseAction{
 
 	// Handles /Location/{id} GET requests
 	public String show() {
 		HttpServletResponse res = ServletActionContext.getResponse();
 		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "*");
-		for (Location s : LocationService.getLocations()) {
-			if(s.getId().equals(id))
-				content.set(new LocationDto(s));
-		}
+//		for (Location s : LocationService.getLocations()) {
+//			if(s.getId().equals(id))
+//				content.set(new LocationDto(s));
+//		}
+        //LocationService.invalidateAllTiles(id);
 		return "show";//new DefaultHttpHeaders("show");
-	}
-
-	public void setId(String id) {
-		//if (id != null)
-		//	for (Location s : LocationService.getLocations()) {
-		//		if (s.getId() == Integer.parseInt(id))
-		//			this.Location = s;
-		//	}
-		// LocationService.getLocations()..get(Integer.parseInt(id)-1);
-		this.id = Integer.parseInt(id);
-	}
-
-	public int getId() {
-		return this.id;
 	}
 
 	// Handles /Location GET requests
@@ -58,15 +33,16 @@ public class TokenController implements ModelDriven<DtoContainer<LocationDto>> {
 		HttpServletResponse res = ServletActionContext.getResponse();
 		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "*");
-		content = new DtoContainer<LocationDto>(LocationDto.class, true);
+		//content = new DtoContainer<LocationDto>(LocationDto.class, true);
 //		for (Location m : LocationService.getLocations()) {
 //			m.getGeometryString();
 //		}
 		ArrayList<LocationDto> l = new ArrayList<LocationDto>();
 		for(Location m : LocationService.getLocations()) {
+			System.out.println(m.getId());
 			l.add(new LocationDto(m));
 		}
-		content.set(l);
+		//content.set(l);
 		//return new DefaultHttpHeaders("index").disableCaching();
 		return "index";
 	}
@@ -77,10 +53,10 @@ public class TokenController implements ModelDriven<DtoContainer<LocationDto>> {
 //		res.addHeader("Access-Control-Expose-Headers", "X-Points");
 //		res.addHeader("Access-Control-Expose-Headers", "X-Uid");
 //		res.addIntHeader("X-Points", LocationService.getSubUser(content.getSingle()).getPoints());
-		List<LocationDto> locs = content.get();
-		for(LocationDto l : locs) {
-			LocationService.save(l.toLocation());
-		}
+		//List<LocationDto> locs = content.get();
+//		for(LocationDto l : locs) {
+//			LocationService.save(l.toLocation());
+//		}
 		return "create";//new DefaultHttpHeaders("create");
 	}
 	

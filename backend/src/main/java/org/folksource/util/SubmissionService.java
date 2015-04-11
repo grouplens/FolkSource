@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.folksource.entities.Location;
 import org.folksource.model.*;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;

@@ -1,6 +1,8 @@
 package org.folksource.model;
 
+import org.folksource.entities.Location;
 import org.grouplens.common.dto.Dto;
+
 
 //import com.mchange.v2.c3p0.stmt.GooGooStatementCache;
 import com.vividsolutions.jts.geom.Geometry;

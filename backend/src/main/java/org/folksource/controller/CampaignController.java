@@ -12,7 +12,6 @@ import com.opensymphony.xwork2.ModelDriven;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.ParentPackage;
 
-@ParentPackage("folksource")
 public class CampaignController implements ModelDriven<DtoContainer<CampaignDto>>{
 	
 	DtoContainer<CampaignDto> content = new DtoContainer<CampaignDto>(CampaignDto.class, false);

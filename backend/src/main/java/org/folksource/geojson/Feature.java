@@ -1,8 +1,9 @@
 package org.folksource.geojson;
 
 import com.vividsolutions.jts.geom.*;
+
+import org.folksource.entities.Location;
 import org.folksource.model.*;
-import org.folksource.model.Location;
 import org.grouplens.common.dto.Dto;
 
 //"type":"Point","crs":{"type":"name","properties":{"name":"EPSG:4326"}},"coordinates":[-87.6292744211119,41.8844803313794]}
@@ -16,7 +17,7 @@ public class Feature extends Dto {
 		super();
 		this.setGeometry(input);
 	}
-	public Feature(org.folksource.model.Location input) {
+	public Feature(org.folksource.entities.Location input) {
 		super();
 		this.setGeometry(input.getGeometry());
 		this.setProperties(input);

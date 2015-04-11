@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.grouplens.common.dto.Dto;
 
+
+//move this to the dao for campaign
 public class CampaignDto extends Dto{
 	
 	public Integer id;

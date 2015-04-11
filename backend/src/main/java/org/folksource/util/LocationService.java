@@ -9,10 +9,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-
 import com.vividsolutions.jts.geom.*;
+
+import org.folksource.entities.Location;
 import org.folksource.model.*;
-import org.folksource.model.Location;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.spatial.criterion.SpatialRestrictions;

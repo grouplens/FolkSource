@@ -5,6 +5,12 @@
 
     <!--  list all managed classes here  -->
     <class>org.folksource.entities.User</class>
+    <class>org.folksource.entities.Campaign</class>
+    <class>org.folksource.entities.Task</class>
+    <class>org.folksource.entities.Submission</class>
+    <class>org.folksource.entities.Answer</class>
+    <class>org.folksource.entities.Location</class>
+    <class>org.folksource.entities.Question</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <shared-cache-mode>NONE</shared-cache-mode>
     

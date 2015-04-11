@@ -10,7 +10,7 @@ import org.hibernate.criterion.Restrictions;
 public class CampaignService {
 
 	
-	public static List<Campaign> getCampaigns() {
+	public List<Campaign> getCampaigns() {
 		List<Campaign> campaigns;
 		Session session = HibernateUtil.getSession(true);
 		campaigns = session.createCriteria(Campaign.class).list();

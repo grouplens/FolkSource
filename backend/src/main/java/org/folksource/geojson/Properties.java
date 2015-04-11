@@ -1,6 +1,6 @@
 package org.folksource.geojson;
 
-import org.folksource.model.Location;
+import org.folksource.entities.Location;
 import org.grouplens.common.dto.Dto;
 
 /**

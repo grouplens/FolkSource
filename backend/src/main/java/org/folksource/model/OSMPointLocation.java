@@ -1,5 +1,7 @@
 package org.folksource.model;
 
+import org.folksource.entities.Location;
+
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 

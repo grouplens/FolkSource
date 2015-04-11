@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts2.ServletActionContext;
-import org.folksource.model.Location;
+import org.folksource.entities.Location;
 import org.folksource.model.LocationDto;
 import org.folksource.util.LocationService;
 import org.grouplens.common.dto.DtoContainer;
