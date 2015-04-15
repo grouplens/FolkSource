@@ -1,9 +1,20 @@
 package org.folksource.service.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.Feature;
+import javax.ws.rs.core.Response;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.apache.commons.io.IOUtils;
+import org.folksource.service.ServiceHelper;
 import org.folksource.service.WikimediaService;
 import org.folksource.dao.jpa.GenericJpaDao;
 import org.folksource.dao.jpa.UserDao;
@@ -19,16 +30,18 @@ public class WikimediaServiceImpl implements WikimediaService {
 	@Autowired
 	private UserDao userDao;
 	
+	private ServiceHelper serviceHelper;
+	
 	public String getAuthUri() {
-		String consumerKey = "1048fb96026e256cb6efa76d7ab198b3";
-		String consumerSecret = "d62c6c875d7c501dc90301fde56c982a84463e9c";
-		
+		String consumerKey = serviceHelper.getAppProperties().getProperty("wiki.key");
+		String consumerSecret = serviceHelper.getAppProperties().getProperty("wiki.secret");
+		String wikiUrl = serviceHelper.getAppProperties().getProperty("wiki.url");
 		ConsumerCredentials consumerCredentials = new ConsumerCredentials(consumerKey, consumerSecret);
 		authFlow = OAuth1ClientSupport.builder(consumerCredentials)
 			    .authorizationFlow(
-			        "http://localhost:5555/mediawiki/index.php?title=Special%3AOAuth%2Finitiate",
-			        "http://localhost:5555/mediawiki/index.php?title=Special%3AOAuth%2Ftoken",
-			        "http://localhost:5555/mediawiki/index.php?title=Special%3AOAuth%2Fauthorize")
+			    	wikiUrl + "index.php?title=Special%3AOAuth%2Finitiate",
+			    	wikiUrl + "index.php?title=Special%3AOAuth%2Ftoken",
+			    	wikiUrl + "index.php?title=Special%3AOAuth%2Fauthorize")
 			    .build();
 		String authorizationUri = authFlow.start();
 		this.setAuthFlow(authFlow);
@@ -38,15 +51,29 @@ public class WikimediaServiceImpl implements WikimediaService {
 	
 	@Transactional
 	public String verify(String verifier){
-
-		//AccessToken accessToken = this.getAuthFlow().finish(verifier);
-
-		User user = userDao.find(1);
-		user.setName("Tyler");
+		OAuth1AuthorizationFlow authFlow = this.getAuthFlow();
 		
-		User newuser = new User();
-		newuser.setName("Tyler");
-		userDao.merge(user);
+		AccessToken accessToken = authFlow.finish(verifier);
+		Feature feature = authFlow.getOAuth1Feature();
+		Client client = ClientBuilder.newBuilder().register(feature).build();
+		
+		Response resp = client.target("http://localhost:5555/mediawiki/index.php?title=Special%3AOAuth%2Fidentify").request().get();
+		
+		
+		StringWriter writer = new StringWriter();
+		try {
+			IOUtils.copy((InputStream) resp.getEntity(), writer, "UTF-8");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String thestring = writer.toString();
+		//User user = userDao.find(1);
+		//user.setName("Tyler");
+		
+		//User newuser = new User();
+		//newuser.setName("Tyler");
+		//userDao.merge(user);
 
 		//return accessToken.getAccessTokenSecret();
 		return "test";
@@ -66,6 +93,14 @@ public class WikimediaServiceImpl implements WikimediaService {
 
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
+	}
+
+	public ServiceHelper getServiceHelper() {
+		return serviceHelper;
+	}
+
+	public void setServiceHelper(ServiceHelper serviceHelper) {
+		this.serviceHelper = serviceHelper;
 	}
 
 }
