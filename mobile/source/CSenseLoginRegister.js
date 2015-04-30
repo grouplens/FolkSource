@@ -97,6 +97,7 @@ enyo.kind({
           ajax = new enyo.Ajax({url: serverURL + "/"+this.$.usernameLogin.getValue()+"/token", method: "GET", headers: {Authorization: auth}, cacheBust: false});
         }
         ajax.response(this, "handleResponse");
+        ajax.error(this, "handleError");
         this.$.trying.setShowing(true);
         this.$.sendingPopup.setOpen(true);
         ajax.go();
@@ -117,6 +118,8 @@ enyo.kind({
         }
     },
     handleResponse: function (inSender, inEvent) {
+      this.log(inSender);
+      this.log(inEvent);
       var status = inSender.xhrResponse.status;
       var authToken = inSender.xhrResponse.headers.authtoken;
       var body = JSON.parse(inSender.xhrResponse.body);
@@ -131,10 +134,14 @@ enyo.kind({
         this.$.sendMessage.setContent("Loading data...");
       } else {
         this.log("ERROR: " + status + " " + inSender.xhrResponse.body);
-        this.bubble("onFailureCode");
-        this.$.trying.setShowing(false);
-        this.$.sendingPopup.setOpen(false);
       }
+    },
+    handleError: function(inSender, inEvent) {
+      this.log(inSender);
+      this.log(inEvent);
+      //this.bubble("onFailureCode");
+      this.$.trying.setShowing(false);
+      this.$.sendingPopup.setOpen(false);
     },
     updateProgress: function() {
       var prog = this.$.sendProgress.getProgress();

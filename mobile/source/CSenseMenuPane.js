@@ -191,6 +191,7 @@ enyo.kind({
   rendered: function(inSender, inEvent) {
     this.inherited(arguments);
     if(LocalStorage.get("user") === undefined) {
+      this.$.map.hideCamps();
       this.$.appPanels.setIndex(0);
     } else {
       this.setupProfile(null, LocalStorage.get("user"));

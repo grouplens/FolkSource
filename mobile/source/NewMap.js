@@ -32,11 +32,11 @@ enyo.kind({
               {tag: "i", classes: "fa fa-check fa-large"}
             ]}
           ]}
-        ]},
+        ]}/*,
         {name: "tasks", kind: enyo.List, fit: true, onSetupItem: "setTasks", orient: "v", components: [
           {name: "task_desc", content: "fill", style: "height: 45px;", ontap: "makeButtonBubbleClick", classes: "dark-background"},
           {tag: "hr"}
-        ]}
+        ]}*/
       ]}
     ]},
     {name: "mapCont", fit: true, style: "position: relative;"}
@@ -87,7 +87,7 @@ enyo.kind({
     this.inherited(arguments);
     //this.$.gps.getPosition();
 
-    this.map = L.map(this.$.mapCont.id, {maxZoom: 17}).setView([44.981313, -93.266569], 13);
+    this.map = L.map(this.$.mapCont.id).setView([44.981313, -93.266569], 15);
     this.map.on('resize', enyo.bind(this, "resizeMap"));
     this.map.on('zoomend', enyo.bind(this, "resetZoomed"));
     this.map.on('dragend', enyo.bind(this, "resetPanned"));
@@ -95,8 +95,46 @@ enyo.kind({
       attribution: 'Map tiles by <a href="http://cartodb.com/attributions#basemaps">CartoDB</a>, under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. Data by <a href="http://www.openstreetmap.org/">OpenStreetMap</a>, under ODbL.'
     }).addTo(this.map);
 
+
+    L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png').addTo(this.map);
+    var vectors = new L.TileLayer.MVTSource({
+      url: 'http://innsbruck-umh.cs.umn.edu:8080/tiles/buildings/{z}/{x}/{y}.mapbox',
+      style: function(feature, context) {
+        var style={};
+        if(feature.type === 1) {
+          style.radius = 3;
+        }
+        if(feature.properties.allowed === 'n') {
+          style.color = "rgba(123,50,148,0.7)";
+          style.size=5;
+        } else if(feature.properties.allowed === 'y') {
+          style.color = "rgba(0,136,55,0.7)";
+          style.size=5;
+        } else {
+          style.color = "rgba(64,64,64,0.7)";
+          style.size=5;
+        }
+        return style;
+      },
+      mutexToggle: true,
+      getIDForLayerFeature: function(feature) {
+        if(feature.type === 2) {
+          feature.type = 3;
+        }
+        feature.properties.task_id=59;
+        //return Number(feature.properties.id);
+        return Number(feature.properties.uid);
+      },
+      onClick: enyo.bind(this, "makeBubbleClick")
+    });
+    this.map.addLayer(vectors);
+
+
     //this.$.spin.start();
     this.showCamps();
+  },
+  testClick: function(inEvent) {
+      console.log("CLICK");
   },
   mapLoaded: function() {
     this.loaded = true;
@@ -257,7 +295,7 @@ enyo.kind({
     this.locations = a;
     this.points = [];
     this.polygons = [];
-    this.addMarkers();
+    //this.addMarkers();
   },
   inside: function (a) {
     /*var b = this.straction.getBounds().getNorthEast(),
@@ -306,7 +344,7 @@ enyo.kind({
   },
   resetZoomed: function() {
     this.zoomed=true;
-    this.log();
+    this.log(this.map.getZoom());
     return;
   },
 	makeFilter: function () {
@@ -370,6 +408,7 @@ enyo.kind({
     //this.map.panTo([lat, lng], {animate: true});
   },
   makeBubbleClick: function (inEvent) {
+    this.log(inEvent);
     //loc = inEvent.latlng;
     /*loc.lat = loc.lat.toPrecision(8);
     loc.lng = loc.lng.toPrecision(8);*/

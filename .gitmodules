@@ -37,3 +37,6 @@
 [submodule "web/assets/Leaflet"]
 	path = web/assets/Leaflet
 	url = https://github.com/Leaflet/Leaflet.git
+[submodule "mobile/assets/Leaflet.MapboxVectorTile"]
+	path = mobile/assets/Leaflet.MapboxVectorTile
+	url = https://github.com/SpatialServer/Leaflet.MapboxVectorTile.git

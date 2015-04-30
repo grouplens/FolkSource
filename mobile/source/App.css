@@ -244,13 +244,15 @@ background: #;
     /*color: #694225 !important;*/
   }
   .dark-background, .panelItem {
-    background-color: #2E426F !important; /* darker green */
+    background-color: #5E6300 !important; /* beta color */
+    /*background-color: #2E426F !important; /* */
     font-size: 11pt;
     color: #FFF !important;
     /*color: #C5A467 !important;*/
   }
   .dark-background-flat, .dark-background-flat-menu {
-    background: #2E426F !important; /* darker green */
+    background: #5E6300 !important; /* beta color */
+    /*background: #2E426F !important; /* */
     color: #DB701E !important;
     border: 0px;
   }
@@ -258,7 +260,7 @@ background: #;
     font-size: 11pt;
   }
   .light-background-flat, .light-background-flat-menu {
-    background: #738DC9 !important; /* darker green */
+    background: #738DC9 !important;
     color: #FFF !important;
     border: 0px;
   }
