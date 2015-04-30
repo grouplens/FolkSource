@@ -22,22 +22,23 @@
     <script src="build/enyo.js"></script>
     <script src="build/app.js" onerror="alert('No application build found, redirecting to debug.html.'), location='debug.html';"></script>
 		<script src="assets/leaflet/dist/leaflet.js"></script>
-    <script src="assets/TileLayer.d3_geoJSON.js"></script>
+    <script src='assets/Leaflet.MapboxVectorTile/dist/Leaflet.MapboxVectorTile.min.js'></script>
 		<script src="assets/leaflet-usermarker/src/leaflet.usermarker.js"></script>
     <script type="text/javascript" src="assets/terraformer/terraformer-1.0.3.min.js"></script>
     <script type="text/javascript" src="assets/terraformer/terraformer-wkt-parser.min.js"></script>
-		<!-- <script src="cordova.js"></script> -->
+     <script src="cordova.js"></script>
 
   </head>
     <body class="enyo-unselectable">
         <script>
-			//document.addEventListener('deviceready', onDeviceReady, false);
-            //enyo.dispatcher.listen(document, "deviceready");
+      enyo.dispatcher.listen(document, "deviceready");
+			document.addEventListener('deviceready', onDeviceReady, false);
 
-			//function onDeviceReady() {
+			function onDeviceReady() {
 				//navigator.splashscreen.show();
+        //StatusBar.show();
 				new App({fit: true}).renderInto(document.body);
-			//}
+			}
         </script>
     </body>
 </html>
