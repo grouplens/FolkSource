@@ -77,15 +77,9 @@ public class SubmissionService {
                         if (a instanceof MultipleChoiceAnswer) {
                             if (i == 0) {
                                 firstAnswer = ((MultipleChoiceAnswer) answers.get(j)).getChoices();
-                            } else {
-                                if (firstAnswer.equalsIgnoreCase(((MultipleChoiceAnswer) answers.get(j)).getChoices())) {
-                                    agreed = false;
-                                } else {
-                                    agreed = true;
-                                }
-                            }
+                            } else
+								agreed = !firstAnswer.equalsIgnoreCase(((MultipleChoiceAnswer) answers.get(j)).getChoices());
                         }
-
                     }
                 }
             }

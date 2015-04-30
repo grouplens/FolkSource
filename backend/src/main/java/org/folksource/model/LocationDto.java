@@ -62,11 +62,12 @@ public class LocationDto extends Dto{
 	}
 
     public static String[] fromLocationLayerArray(LocationLayer[] locationLayers) {
-        String[] locDtos = new String[locationLayers.length];
-        for(int i = 0; i < locationLayers.length; i++) {
-            System.out.println(locationLayers[i].getName());
-            locDtos[i] = locationLayers[i].getName();
-        }
+        String[] locDtos = new String[0];
+//        String[] locDtos = new String[locationLayers.length];
+//        for(int i = 0; i < locationLayers.length; i++) {
+//            System.out.println(locationLayers[i].getName());
+//            locDtos[i] = locationLayers[i].getName();
+//        }
 
         return locDtos;
 

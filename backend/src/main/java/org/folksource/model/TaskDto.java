@@ -15,7 +15,7 @@ public class TaskDto extends Dto{
 	public Boolean required;
 
 	public SubmissionDto[] submissions;
-	public String[] locations;
+//	public String[] locations;
 	public Question[] questions;
 	
 	
@@ -31,7 +31,7 @@ public class TaskDto extends Dto{
 		required = t.required;
 		if (t.submissions == null){submissions = null;}
 		else{submissions = SubmissionDto.fromSubmissionArray(t.submissions.toArray(new Submission[t.submissions.size()]));}
-        locations = LocationDto.fromLocationLayerArray(t.getLocations().toArray(new LocationLayer[t.getLocations().size()]));
+//        locations = LocationDto.fromLocationLayerArray(t.getLocations().toArray(new LocationLayer[t.getLocations().size()]));
 //		locations = LocationDto.fromLocationArray(new Location[0]);
 		questions = t.questions.toArray(new Question[t.questions.size()]);
 	}

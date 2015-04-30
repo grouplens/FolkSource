@@ -49,7 +49,6 @@ public class LocationService {
 //		List<Location> l = session.createQuery("from Location l where within(l.geometry, :filter) is true").setParameter("filter", p).list();
 		List<Location> l = session.createCriteria(Location.class).add(SpatialRestrictions.filter("geometry", e, 4326))
 				.list();
-//		SpatialRestrictions.
 		Location[] locationArray = new Location[l.size()];
 		System.out.println(l.size());
 		l.toArray(locationArray);
@@ -70,38 +69,29 @@ public class LocationService {
         Envelope e = l.getGeometry().getEnvelopeInternal();
         String type  = l.getGeometry().getGeometryType();
 
-//        for(int i = 13; i < 18; i++) {
-//            urls.add(LocationService.getTileURL(i, e.getMaxX(), e.getMinY()));
-//            urls.add(LocationService.getTileURL(i, e.getMaxX(), e.getMaxY()));
-//            urls.add(LocationService.getTileURL(i, e.getMinX(), e.getMinY()));
-//            urls.add(LocationService.getTileURL(i, e.getMinX(), e.getMaxY()));
-//        }
+        for(int i = 8; i < 18; i++) {
+            urls.add(LocationService.getTileURL(i, e.getMaxX(), e.getMinY()));
+            urls.add(LocationService.getTileURL(i, e.getMaxX(), e.getMaxY()));
+            urls.add(LocationService.getTileURL(i, e.getMinX(), e.getMinY()));
+            urls.add(LocationService.getTileURL(i, e.getMinX(), e.getMaxY()));
+        }
 
-        urls.add(LocationService.getTileURL(12, e.getMaxX(), e.getMinY()));
-        urls.add(LocationService.getTileURL(12, e.getMaxX(), e.getMaxY()));
-        urls.add(LocationService.getTileURL(12, e.getMinX(), e.getMinY()));
-        urls.add(LocationService.getTileURL(12, e.getMinX(), e.getMaxY()));
-
-        urls.add(LocationService.getTileURL(14, e.getMaxX(), e.getMinY()));
-        urls.add(LocationService.getTileURL(14, e.getMaxX(), e.getMaxY()));
-        urls.add(LocationService.getTileURL(14, e.getMinX(), e.getMinY()));
-        urls.add(LocationService.getTileURL(14, e.getMinX(), e.getMaxY()));
 
         Iterator<String> iter = urls.iterator();
         while(iter.hasNext()) {
             String ext = iter.next();
             try {
-                URL url = new URL("http://localhost:8080/vector-points" + ext);
-                URL url2 = new URL("http://localhost:8080/vector-polygons" + ext);
+                URL url = new URL("http://localhost:8080/all" + ext);
+//                URL url2 = new URL("http://localhost:8080/vector-polygons" + ext);
                 BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-                BufferedReader br2 = new BufferedReader(new InputStreamReader(url2.openStream()));
+//                BufferedReader br2 = new BufferedReader(new InputStreamReader(url2.openStream()));
                 String strTemp = "";
                 while (null != (strTemp = br.readLine())) {
                     System.out.println(strTemp);
                 }
-                while (null != (strTemp = br2.readLine())) {
-                    System.out.println(strTemp);
-                }
+//                while (null != (strTemp = br2.readLine())) {
+//                    System.out.println(strTemp);
+//                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -111,7 +101,7 @@ public class LocationService {
     }
 
     public static String getTileURL(Integer zoom, Double lon, Double lat) {
-        return "/" + zoom + "/" + long2tile(lon, zoom) + "/" + lat2tile(lat, zoom) + ".geojson?ignore_cached=1";
+        return "/" + zoom + "/" + long2tile(lon, zoom) + "/" + lat2tile(lat, zoom) + ".mapbox?ignore_cached=1";
     }
 
     public static Integer long2tile(Double lon, Integer zoom) {
@@ -123,6 +113,6 @@ public class LocationService {
     }
 
     public static Location getLocationById(Integer location_id) {
-        return getLocations((int)location_id).get(location_id);
+        return getLocations(location_id).get(location_id);
     }
 }

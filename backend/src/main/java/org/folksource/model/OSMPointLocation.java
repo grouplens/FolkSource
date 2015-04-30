@@ -12,7 +12,7 @@ public class OSMPointLocation extends Location {
 
 	public OSMPointLocation(Integer id, Integer task_id, Geometry read) {
 		super(id, task_id, read);
-		this.setGeometry((Point) read);
+		this.setGeometry(read);
 	}
 
 	@Override

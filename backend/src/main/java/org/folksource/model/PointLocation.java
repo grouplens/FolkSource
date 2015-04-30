@@ -14,7 +14,7 @@ public class PointLocation extends Location {
 
 	public PointLocation(Integer id, Integer task_id, Geometry read) {
 		super(id, task_id, read);
-		this.setGeometry((Point) read);
+		this.setGeometry(read);
 	}
 	
 	@Override

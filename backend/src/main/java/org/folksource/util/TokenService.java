@@ -30,9 +30,7 @@ public class TokenService {
 		Session session = HibernateUtil.getSession(false);
 		@SuppressWarnings("unchecked")
 		List<Token> tmp = session.createQuery("from Token where token=" + Integer.parseInt(token)).list();
-		if(tmp.size() == 0)
-			return false;
-		else 
-			return true;
+		return tmp.size() != 0;
+
 	}
 }

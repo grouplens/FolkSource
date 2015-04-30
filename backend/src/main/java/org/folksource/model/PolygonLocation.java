@@ -14,7 +14,7 @@ public class PolygonLocation extends Location {
 
 	public PolygonLocation(Integer id, Integer task_id, Geometry read) {
 		super(id, task_id, read);
-		this.setGeometry((Polygon) read);
+		this.setGeometry(read);
 	}
 
 	@Override
