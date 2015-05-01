@@ -53,19 +53,22 @@ public class SubmissionService {
 		Session session = HibernateUtil.getSession(true);
 		s.setTimestamp(new Date());
 
+		Location l = LocationService.getLocationById(s.getLocation_id());
+		l.setSubmissions(new Submission[]{s});
+		LocationService.save(l);
+
 		session.save(s);
 
-        if (s.getAnswers() != null) {
-            for (Answer a : s.getAnswers()) {
+		if (s.getAnswers() != null) {
+			for (Answer a : s.getAnswers()) {
 
-                a.setSub_id(s.getId());
-                AnswerService.save(a);
-            }
-        }
+				a.setSub_id(s.getId());
+				AnswerService.save(a);
+			}
+		}
 
         // This should only apply for the current gun-law campaign. Any of those others don't deserve it
         if(s.getTask_id() == 59) {
-            Location l = LocationService.getLocationById(s.getLocation_id());
             Submission[] submissions = l.getSubmissions();
             boolean agreed = false;
             if (submissions.length > 1) {

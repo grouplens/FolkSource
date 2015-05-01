@@ -8,7 +8,7 @@ public class Location{
     public Task task;
     public String allowed;
     public String imgURL;
-    public LocationLayer member_layer;
+    //public LocationLayer member_layer;
     public Submission[] submissions;
 //	@Exclude(ExcludeType.EXPORT)
 	private Geometry geometry;
@@ -66,13 +66,13 @@ public class Location{
         this.imgURL = imgURL;
     }
 
-    public LocationLayer getMember_layer() {
-        return member_layer;
-    }
-
-    public void setMember_layer(LocationLayer member_layer) {
-        this.member_layer = member_layer;
-    }
+//    public LocationLayer getMember_layer() {
+//        return member_layer;
+//    }
+//
+//    public void setMember_layer(LocationLayer member_layer) {
+//        this.member_layer = member_layer;
+//    }
 
     public Submission[] getSubmissions() {
         return submissions;

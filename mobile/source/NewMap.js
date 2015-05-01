@@ -11,7 +11,7 @@ enyo.kind({
       {name: "spin", kind: onyx.Spinner, classes: "onyx-dark dark-background"}
     ]},*/
     {content: "Tap the pin/region on the map to help!", style: "font-size: 11pt; font-weight: 100; text-align: center; padding: 3px;", classes: "light-background"},
-    {name: "camps", kind: enyo.Popup, modal: false, floating: true, autoDismiss: false, showTransitions: true, style: "height: 75px; width: 80%; margin-left: 10%; margin-right: 10%; box-shadow: 2px 2px 2px  #222;", layoutKind: enyo.FittableRowsLayout, components: [
+    {name: "camps", kind: enyo.Popup, modal: false, floating: true, autoDismiss: false, showTransitions: true, style: "height: 85px; width: 90%; margin-left: 5%; margin-right: 5%; box-shadow: 2px 2px 2px  #222;", layoutKind: enyo.FittableRowsLayout, components: [
       {kind: enyo.Panels, name: "taskpanels", arrangerKind: enyo.CardArranger, fit: true, style: "min-height: 100%;", components: [
         {kind: enyo.FittableColumns, style: "height: 100%;", components: [
           {name: "leftButton", kind: onyx.Button, slide: "prev", ontap: "buttonTapHandler", classes: "button-style filledButtons", disabled: !0, components: [
@@ -98,7 +98,7 @@ enyo.kind({
 
     L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png').addTo(this.map);
     var vectors = new L.TileLayer.MVTSource({
-      url: 'http://innsbruck-umh.cs.umn.edu:8080/tiles/buildings/{z}/{x}/{y}.mapbox',
+      url: 'http://innsbruck-umh.cs.umn.edu/tiles/buildings/{z}/{x}/{y}.mapbox',
       style: function(feature, context) {
         var style={};
         if(feature.type === 1) {
@@ -158,7 +158,7 @@ enyo.kind({
   triggerTask: function(inSender, inEvent) {
     //figure out
     this.log(this.$.task_description.data);
-    this.bubbleUp("onPlaceChosen", {data: this.$.task_description.data});
+    this.bubbleUp("onPlaceChosen", {data: this.$.task_description.data, location_id: this.$.task_description.location_id});
     //this.doPlaceChosen({data: this.$.task_description.data});
   },
   setTasks: function(inSender, inEvent) {
@@ -423,6 +423,7 @@ enyo.kind({
       this.$.task_description.setContent(this.tasks[0].instructions);
       this.$.taskpanels.setIndex(1);
       this.$.task_description.data = this.tasks[0];
+      this.$.task_description.location_id = inEvent.feature.properties.uid;
     }
   },
   makeButtonBubbleClick: function(inEvent) {

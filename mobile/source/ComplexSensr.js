@@ -4,6 +4,7 @@ enyo.kind({
 	kind: enyo.FittableRows,
 	published: {
 			data: "",
+      location_id: "",
 			gps: "",
 	},
 	events: {
@@ -60,6 +61,7 @@ enyo.kind({
 		this.setTaskData(this.data);
 		//this.render();
 		this.counterName = "";
+    this.log(this.location_id);
 	},
   recreate: function() {
     this.log(this.$.formDiv);
@@ -177,6 +179,7 @@ enyo.kind({
       var sub = {submission: {
         task_id: this.task.id,
         gps_location: "testy test",
+        location_id: this.location_id,
         user_id: 5,
         img_path: "test",
         answers: []
@@ -240,6 +243,7 @@ enyo.kind({
           handleAs: "json"
         });
         ajax.response(this, "handlePostResponse");
+        aja.error(this, "handleError");
         ajax.go();
       } else {
         this.$.sendProgress.fail();
@@ -326,6 +330,10 @@ enyo.kind({
     }
 
     return out;
+  },
+  handleError: function(inSender, inEvent) {
+    this.log(JSON.stringify(inEvent));
+    this.sendFailed();
   },
   handlePostResponse: function(a, b) {
     this.log("SERVER RESPONSE CAME BACK");

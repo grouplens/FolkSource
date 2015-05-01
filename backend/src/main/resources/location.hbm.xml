@@ -10,7 +10,6 @@
     <discriminator column="location_type" type="string"/>
 	<property name="allowed" column="allowed"></property>
 	<property name="imgURL" column="imgURL"></property>
-    <many-to-one name="member_layer" class="LocationLayer" column="member_layer" cascade="save-update, delete"/>
     <bag name="submissions" fetch="subselect">
         <key column="location_id" not-null="true" />
         <!-- <index column="id" />-->

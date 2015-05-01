@@ -28,7 +28,7 @@ enyo.kind({
             {style: "border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; margin: 5px; vertical-align: middle;", classes: "light-background", components: [
               {tag: "i", classes: "fa fa-smile-o fa-2x fa-fw color-icon", style: "padding: 5px 5px; vertical-align: middle;"},
             ]},
-            {name: "user", content: "username"},
+            {name: "user", content: "username", style: "font-size: 11pt;"},
           ]},
           {name: "userDrawer", kind: onyx.Drawer, orient: "v", open: false, classes: "light-background", components: [
             {name: "logout", kind: enyo.FittableColumns, ontap: "userLogout", classes: "slidein-option button-style dark-background", components: [
@@ -180,7 +180,7 @@ enyo.kind({
       gps = Data.getLocationData();
     }
 
-    this.$.sense.createComponent({name: "sensr", kind: "ComplexSensr", fit: true, data: task, classes: "content"});
+    this.$.sense.createComponent({name: "sensr", kind: "ComplexSensr", fit: true, data: task, location_id: inEvent.location_id, classes: "content"});
     this.$.sense.render();
     this.resized();
     this.waterfallDown("onHideCampaigns");
