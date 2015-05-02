@@ -243,7 +243,7 @@ enyo.kind({
           handleAs: "json"
         });
         ajax.response(this, "handlePostResponse");
-        aja.error(this, "handleError");
+        ajax.error(this, "handleError");
         ajax.go();
       } else {
         this.$.sendProgress.fail();
