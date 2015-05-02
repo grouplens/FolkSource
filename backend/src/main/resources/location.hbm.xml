@@ -7,7 +7,7 @@
 	<id name="id" column="id">
 		<generator class="native" />
 	</id>
-    <discriminator column="location_type" type="string"/>
+    <discriminator column="location_type" type="string" force="true"/>
 	<property name="allowed" column="allowed"></property>
 	<property name="imgURL" column="imgURL"></property>
     <bag name="submissions" fetch="subselect">
@@ -31,13 +31,13 @@
 		    <property name="geometry" type="org.hibernate.spatial.GeometryType" column="point" />
         </join>
 	</subclass>
-	<subclass name="OSMPointLocation" discriminator-value="nodes" lazy="false">
+	<subclass name="OSMPointLocation" discriminator-value="osm_node" lazy="false">
 		<join table="nodes" fetch="join" inverse="true">
 			<key column="location_id"></key>
 			<property name="geometry" type="org.hibernate.spatial.GeometryType" column="geom" />
 		</join>
 	</subclass>
-	<subclass name="OSMWayLocation" discriminator-value="ways" lazy="false">
+	<subclass name="OSMWayLocation" discriminator-value="osm_way" lazy="false">
 		<join table="ways" fetch="join" inverse="true">
 			<key column="location_id"></key>
 			<property name="geometry" type="org.hibernate.spatial.GeometryType" column="linestring" />

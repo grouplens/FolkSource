@@ -15,7 +15,7 @@ public class Submission{
 	public Answer[] answers;
 	public Date timestamp;
 	public String img_path;
-    public Integer location_id;
+  public Integer location_id;
 
 	public Submission(){
 		super();

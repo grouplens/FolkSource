@@ -54,9 +54,14 @@ public class SubmissionService {
 		s.setTimestamp(new Date());
 
 		Location l = LocationService.getLocationById(s.getLocation_id());
-		l.setSubmissions(new Submission[]{s});
-		LocationService.save(l);
-
+    l.getSubmissions().add(s);
+		/*l.setSubmissions(new Submission[]{s});
+		if(l instanceof OSMWayLocation) {
+			LocationService.save((OSMWayLocation)l);
+		} else {
+			System.out.println("WWWWWWWW");
+		}
+*/
 		session.save(s);
 
 		if (s.getAnswers() != null) {
@@ -69,12 +74,12 @@ public class SubmissionService {
 
         // This should only apply for the current gun-law campaign. Any of those others don't deserve it
         if(s.getTask_id() == 59) {
-            Submission[] submissions = l.getSubmissions();
+            List<Submission> submissions = l.getSubmissions();
             boolean agreed = false;
-            if (submissions.length > 1) {
+            if (submissions.size() > 1) {
                 String firstAnswer = "";
-                for (int i = 0; i < submissions.length; i++) {
-                    List<Answer> answers = submissions[i].getAnswers();
+                for (int i = 0; i < submissions.size(); i++) {
+                    List<Answer> answers = submissions.get(i).getAnswers();
                     for (int j = 0; j < answers.size(); j++) {
                         Answer a = answers.get(j);
                         if (a instanceof MultipleChoiceAnswer) {

@@ -1,6 +1,7 @@
 package org.folksource.model;
 
 import com.vividsolutions.jts.geom.Geometry;
+import java.util.List;
 
 public class Location{
 	public Integer id;
@@ -9,7 +10,7 @@ public class Location{
     public String allowed;
     public String imgURL;
     //public LocationLayer member_layer;
-    public Submission[] submissions;
+    public List<Submission> submissions;
 //	@Exclude(ExcludeType.EXPORT)
 	private Geometry geometry;
 	
@@ -74,11 +75,11 @@ public class Location{
 //        this.member_layer = member_layer;
 //    }
 
-    public Submission[] getSubmissions() {
+    public List<Submission> getSubmissions() {
         return submissions;
     }
 
-    public void setSubmissions(Submission[] submissions) {
+    public void setSubmissions(List<Submission> submissions) {
         this.submissions = submissions;
     }
 }

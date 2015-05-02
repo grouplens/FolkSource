@@ -32,32 +32,17 @@ public class LocationService {
 	@SuppressWarnings("unchecked")
 	public static Location[] getLocations() {
 		Session session = HibernateUtil.getSession(true);
-		GeometryFactory gf = new GeometryFactory();
-		Coordinate[] c = {
-				new Coordinate(-93.50189208984375, 44.75453548416007),
-				new Coordinate(-93.50189208984375, 45.15686396890044),
-				new Coordinate(-92.900390625, 45.15686396890044),
-				new Coordinate(-92.900390625, 44.75453548416007),
-				new Coordinate(-93.50189208984375, 44.75453548416007)
-		};
-		LinearRing lr = gf.createLinearRing(c);
-		lr.setSRID(4326);
-		Polygon p = gf.createPolygon(lr, new LinearRing[0]);
-		p.setSRID(4326);
-		System.out.println(p);
-		Envelope e = new Envelope(-93.501892, 44.754535, -92.900390, 45.156863);
-//		List<Location> l = session.createQuery("from Location l where within(l.geometry, :filter) is true").setParameter("filter", p).list();
-		List<Location> l = session.createCriteria(Location.class).add(SpatialRestrictions.filter("geometry", e, 4326))
-				.list();
+		List<Location> l = session.createCriteria(Location.class).list();
 		Location[] locationArray = new Location[l.size()];
 		System.out.println(l.size());
 		l.toArray(locationArray);
 		return locationArray;
 	}
 	@SuppressWarnings("unchecked")
-	public static List<Location> getLocations(int id) {
+	public static List<Location> getLocations(Integer id) {
 		Session session = HibernateUtil.getSession(true);
-		List<Location> l = session.createCriteria(Location.class).add(Restrictions.idEq(id)).list();
+		//List<Location> l = session.createCriteria(Location.class).add(Restrictions.idEq(id)).list();
+    List<Location> l = session.createQuery("from Location where id="+id).list();
 		//List<Location> l =  session.createQuery("from Location").list();
 		return l;
 	}
@@ -113,6 +98,13 @@ public class LocationService {
     }
 
     public static Location getLocationById(Integer location_id) {
-        return getLocations(location_id).get(location_id);
+      return getLocations(location_id).get(0);
+        /*Location[] ls = getLocations();
+        for(int i = 0; i < ls.length; i++) {
+          if(ls[i].getId() == location_id) {
+            return ls[i];
+          }
+        }
+        return null;*/
     }
 }
