@@ -65,7 +65,7 @@ enyo.kind({
     } /*else {
       path = this.mediaFile.fullPath.replace("file:/", "file://");
     }*/
-    window.resolveLocalFileSystemURL(path, enyo.bind(this, "fileEntrySuccess"), enyo.bind(this, "fileEntryFail"));
+    window.resolveLocalFileSystemURI(path, enyo.bind(this, "fileEntrySuccess"), enyo.bind(this, "fileEntryFail"));
   },
   captureError: function(error) {
     this.log(error.message);
