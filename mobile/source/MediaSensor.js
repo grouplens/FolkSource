@@ -55,11 +55,12 @@ enyo.kind({
     //this is a stupid hack
     var path = "";
     if(enyo.platform.ios) { // iOS doesn't use a file:/ URI for file paths so we have to do this differently
-      if(this.type === "video")
+      if(this.type === "video") {
         path = "file:/" + this.mediaFile.fullPath;
-        else */
-       this.log(this.mediaFile.fullPath);
-      path = "file://" + this.mediaFile.fullPath;
+      } else {
+        this.log(this.mediaFile.fullPath);
+        path = "file://" + this.mediaFile.fullPath;
+      }
     } else {
       path = this.mediaFile.fullPath.replace("file:/", "file://");
     }
