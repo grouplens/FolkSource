@@ -59,7 +59,8 @@ enyo.kind({
         path = "file:/" + this.mediaFile.fullPath;
       } else {
         this.log(this.mediaFile.fullPath);
-        path = "file://" + this.mediaFile.fullPath;
+        //path = "file://" + this.mediaFile.fullPath;
+        path = "file://./assets/folk_source_logo.png";
       }
     } else {
       path = this.mediaFile.fullPath.replace("file:/", "file://");
