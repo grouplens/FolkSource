@@ -54,6 +54,7 @@ enyo.kind({
     this.mediaFile = mediaFiles[0];
     //this is a stupid hack
     var path = "";
+    alert(this.mediaFile.fullPath);
     if(enyo.platform.ios) { // iOS doesn't use a file:/ URI for file paths so we have to do this differently
       if(this.type === "video") {
         path = "file:/" + this.mediaFile.fullPath;
@@ -61,9 +62,9 @@ enyo.kind({
         this.log(this.mediaFile.fullPath);
         path = "file://" + this.mediaFile.fullPath;
       }
-    } else {
+    } /*else {
       path = this.mediaFile.fullPath.replace("file:/", "file://");
-    }
+    }*/
     window.resolveLocalFileSystemURL(path, enyo.bind(this, "fileEntrySuccess"), enyo.bind(this, "fileEntryFail"));
   },
   captureError: function(error) {
