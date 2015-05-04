@@ -284,7 +284,8 @@ enyo.kind({
     }
 
     if(!this.dragged && !this.panned) {
-      this.map.setView(latlng, 15, {animate: true});
+      // TODO fix back in MN
+      //this.map.setView(latlng, 15, {animate: true});
     }
     return true;
   },

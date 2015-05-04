@@ -4,7 +4,8 @@ enyo.kind({
   statics: {
     getURL: function () {
       //return "http://folksource.grouplens.org/api/";
-      return "http://127.0.0.1:8081/";
+      return "http://innsbruck-umh.cs.umn.edu/api/";
+      //return "http://127.0.0.1:8081/";
     },
     getTileURL: function(string) {
       return "http://ugly-umh.cs.umn.edu/api/" + string;

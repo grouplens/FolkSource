@@ -348,7 +348,11 @@ enyo.kind({
     }
     this.progressInterval = 100/(this.files+1);
     this.$.sendProgress.animateProgressTo(this.progressInterval);
-    this.waterfallDown("onSendFiles", {sub_id: submission.sub_id, questions: this.task.questions});
+    if(this.files.length > 0) {
+      this.waterfallDown("onSendFiles", {sub_id: submission.sub_id, questions: this.task.questions});
+    } else {
+      this.downCount();
+    }
     this.chosen_location = undefined;
   },
   downCount: function(inSender, inEvent) {
