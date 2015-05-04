@@ -77,6 +77,7 @@ enyo.kind({
 
 		switch(this.type) {
 			case "camera":
+        alert(this.fileEntry.toURL());
 				this.$.img.setSrc(this.fileEntry.toURL());
 				this.$.img.setShowing(true);
 				this.$.img.render();
