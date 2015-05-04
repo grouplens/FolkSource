@@ -59,8 +59,7 @@ enyo.kind({
         path = "file:/" + this.mediaFile.fullPath;
       } else {
         this.log(this.mediaFile.fullPath);
-        //path = "file://" + this.mediaFile.fullPath;
-        path = "file://./assets/folk_source_logo.png";
+        path = "file://" + this.mediaFile.fullPath;
       }
     } else {
       path = this.mediaFile.fullPath.replace("file:/", "file://");
@@ -76,14 +75,12 @@ enyo.kind({
 	fileEntrySuccess: function(input) {
 		this.fileEntry = input;
 
-    alert("A");
-    alert(this.fileEntry.toURL());
 		switch(this.type) {
 			case "camera":
         alert(this.fileEntry.toURL());
 				this.$.img.setSrc(this.fileEntry.toURL());
-				this.$.img.setShowing(true);
 				this.$.img.render();
+				this.$.img.setShowing(true);
 				break;
 			case "video":
 				this.log(JSON.stringify(this.mediaFile));
