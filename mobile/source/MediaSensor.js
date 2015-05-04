@@ -75,6 +75,8 @@ enyo.kind({
 	fileEntrySuccess: function(input) {
 		this.fileEntry = input;
 
+    alert("A");
+    alert(this.fileEntry.toURL());
 		switch(this.type) {
 			case "camera":
         alert(this.fileEntry.toURL());
