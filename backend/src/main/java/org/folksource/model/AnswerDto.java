@@ -61,7 +61,7 @@ public class AnswerDto extends Dto{
 		this.q_id = answerIn.q_id;
 		this.sub_id = answerIn.sub_id;
 		this.answer = answerIn.answer_type;
-		this.question = QuestionDto.fromQuestion(answerIn.getQuestion());
+//		this.question = QuestionDto.fromQuestion(answerIn.getQuestion());
 		
 		if (answerIn instanceof TextAnswer){
 			answer_type = "text";
