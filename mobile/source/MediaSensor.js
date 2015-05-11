@@ -40,7 +40,7 @@ enyo.kind({
 	},
 	rendered: function(inSender, inEvent) {
 		this.inherited(arguments);
-		this.log(this.$.img.hasNode());
+		this.log("RENDERED: " + this.$.img.hasNode());
 	},
 	captureImage: function() {
     navigator.device.capture.captureImage(enyo.bind(this, "captureSuccess"), enyo.bind(this, "captureError"), {limit: 1});
@@ -55,23 +55,22 @@ enyo.kind({
     this.mediaFile = mediaFiles[0];
     //this is a stupid hack
     var path = "";
+    this.log("CAPTURE SUCCESS: " + this.mediaFile.fullPath);
     if(enyo.platform.ios) { // iOS doesn't use a file:/ URI for file paths so we have to do this differently
       if(this.type === "video") {
         path = "file:/" + this.mediaFile.fullPath;
       } else {
-        this.log(this.mediaFile.fullPath);
         path = "file://" + this.mediaFile.fullPath;
       }
-    } /*else {
-      path = this.mediaFile.fullPath.replace("file:/", "file://");
-    }*/
-    window.resolveLocalFileSystemURI(path, enyo.bind(this, "fileEntrySuccess"), enyo.bind(this, "fileEntryFail"));
+    } else {
+      path = this.mediaFile.fullPath.replace("file:/", "file:///");
+    }
+    window.resolveLocalFileSystemURL(path, enyo.bind(this, "fileEntrySuccess"), enyo.bind(this, "fileEntryFail"));
   },
   captureError: function(error) {
-    this.log(error.message);
-    this.log(error.code);
-    this.log(JSON.Stringify(error));
-    alert("CAPTURE FAILED");
+    this.log("CAPTURE ERROR: " + error.message);
+    this.log("CAPTURE ERROR: " + error.code);
+    this.log("CAPTURE ERROR: " + JSON.Stringify(error));
   },
 	fileEntrySuccess: function(input) {
 		this.fileEntry = input;
@@ -83,11 +82,11 @@ enyo.kind({
 				this.$.img.setShowing(true);
 				break;
 			case "video":
-				this.log(JSON.stringify(this.mediaFile));
+				this.log("FILE ENTRY SUCCESS VIDEO: " + JSON.stringify(this.mediaFile));
 				this.$.video.setAttributes({src: this.fileEntry.toURL()});
 				this.$.video.render();
 				this.$.videoCont.render();
-				this.log(this.hasNode().innerHTML);
+				this.log("FILE ENTRY SUCCESS VIDEO: " + this.hasNode().innerHTML);
 				this.$.videoCont.setShowing(true);
 				break;
 			case "audio":
@@ -104,8 +103,8 @@ enyo.kind({
 		return true;
 	},
 	fileEntryFail: function(input) {
-		alert("FILE FAIL");
-		alert(JSON.stringify(input));
+		this.log("FILE FAIL");
+		this.log(JSON.stringify(input));
 	},
 	parseAndRecordSensor: function(inSender, inEvent) {
 		switch(this.type) {

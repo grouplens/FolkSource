@@ -263,7 +263,6 @@ enyo.kind({
     this.turnOffMap();
   },
   locSuccess: function (a, b) {
-    //alert("MAP success");
     var coords = b.coords;
     var latlng = new L.LatLng(coords.latitude, coords.longitude);
 
@@ -413,11 +412,12 @@ enyo.kind({
     //this.map.panTo([lat, lng], {animate: true});
   },
   makeBubbleClick: function (inEvent) {
-    this.log(inEvent);
     //loc = inEvent.latlng;
     /*loc.lat = loc.lat.toPrecision(8);
     loc.lng = loc.lng.toPrecision(8);*/
     //enyo.Signals.send("onPinClicked", loc);
+    if(inEvent.feature !== null) {
+    this.log(inEvent);
     this.$.taskpanels.setIndex(1);
     this.tasks = this.campaignArray[this.$.panels.getIndex()].tasks;
     if(this.tasks.length > 1) {
@@ -429,6 +429,7 @@ enyo.kind({
       this.$.taskpanels.setIndex(1);
       this.$.task_description.data = this.tasks[0];
       this.$.task_description.location_id = inEvent.feature.properties.uid;
+    }
     }
   },
   makeButtonBubbleClick: function(inEvent) {

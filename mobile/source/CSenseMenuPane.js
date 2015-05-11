@@ -21,7 +21,7 @@ enyo.kind({
   components: [
     {name: "appPanels", kind: enyo.Panels, fit: true, narrowFit: true, index: 0, draggable: false, layoutKind: enyo.FittbaleRowslayout, components: [
       {name: "loginer", kind: "CSenseLoginRegister"},
-      {name: "menuDrawer", kind: enyo.Panels, fit: true, narrowFit: false, index: 1, draggable: false, margin: 0, arrangerKind: enyo.CollapsingArranger, layoutKind: enyo.FittableColumnsLayout, onTransitionStart: "drawerStartTransition", onTransitionFinish: "drawerEndTransition", components: [
+      {name: "menuDrawer", kind: enyo.Panels, fit: true, narrowFit: false, index: 1, draggable: false, margin: 0, arrangerKind: enyo.CollapsingArranger, layoutKind: enyo.FittableColumnsLayout, onTransitionFinish: "drawerEndTransition", components: [
         {kind: enyo.FittableRows, style: "height: 100%; width: 50%;", classes: "dark-background", components: [ //index 0
           {name: "profile", kind: onyx.Toolbar, layoutKind: enyo.FittableColumnsLayout, ontap: "showDetails", classes: "active-card", components: [
             {style: "border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; margin: 5px; vertical-align: middle;", classes: "light-background", components: [
@@ -58,7 +58,7 @@ enyo.kind({
             {name: "clist", kind: enyo.FittableRows, components: [
               //{name: "androidDiv"},
               {name: "lenses", kind: "LensShifter"},
-              {name: "map", kind: "NewMap", fit: true},
+              {name: "map", kind: "NewMap", onHide: "handleCampsHide", onShow: "handleCampsShow", fit: true},
               //{name: "iosDiv"},
             ]},
             {name: "llist", kind: enyo.FittableRows, components: [
@@ -80,7 +80,7 @@ enyo.kind({
     }
   },
   closeSense: function (a, b) {
-    this.$.menupane.previous();
+    this.$.menupane.setIndex(0);
     this.$.sense.destroyComponents();
     this.waterfallDown("onShowCampaigns");
     this.$.locateMe.addRemoveClass("tableHideKeep", false);
@@ -127,27 +127,22 @@ enyo.kind({
      }*/
     //this.$.taskpanels.getAnimator().setDuration(750);
   },
-  drawerStartTransition: function(inSender, inEvent) {
-    if(inEvent.toIndex === 0) {
-      this.$.map.hideCamps();
-    }
-  },
   drawerEndTransition: function(inSender, inEvent) {
     if(inEvent.originator.name === "menuDrawer") {
       if(inEvent.toIndex === 1) { // closing drawer, this is where target comes in
         if(this.panelTarget === 'c') {
           this.log('c');
-          this.panelTarget = '';
           this.$.locateMe.addRemoveClass("tableHideKeep", false);
           this.$.menupane.setIndex(0);
-          this.showMenu();
+          //this.$.menuDrawer.setIndex(1);
+          //this.showMenu();
           this.$.map.showCamps();
         } else if(this.panelTarget === 'l') {
           this.log('l');
-          this.panelTarget = '';
           this.$.locateMe.addRemoveClass("tableHideKeep", true);
           this.$.menupane.setIndex(1);
-          this.showMenu();
+          //this.$.menuDrawer.setIndex(1);
+          //this.showMenu();
         } else {
           if(this.$.menupane.getIndex() === 0) {
             //this.$.map.showCamps();
@@ -164,6 +159,13 @@ enyo.kind({
     var ajax = new enyo.Ajax({method: "GET", cacheBust: false, url: url, handleAs: "json", headers: {AuthToken: LocalStorage.get("authtoken")}});
     ajax.response(this, "renderResponse");
     ajax.go();
+  },
+  handleCampsHide: function(inSender, inEvent) {
+    this.log("CAUGHT HIDE");
+    return true;
+  },
+  handleCampsShow: function(inSender, inEvent) {
+    return true;
   },
   handleCenter: function() {
     this.$.map.userCenter();
@@ -291,11 +293,15 @@ enyo.kind({
   },
   showMenu: function(inSender, inEvent) {
     var index = this.$.menuDrawer.getIndex();
+    this.$.map.hideCamps();
     if(index == 1) {
       this.$.menuDrawer.setIndex(0);
     } else {
-      this.$.menuDrawer.setIndex(1);
-
+      if(this.$.menupane.getIndex() === 0) {
+        this.showCampaignList();
+      } else {
+        this.showLeaderboard();
+      }
     }
     this.$.userDrawer.setOpen(false);
   },
