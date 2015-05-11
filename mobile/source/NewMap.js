@@ -17,7 +17,7 @@ enyo.kind({
           {name: "leftButton", kind: onyx.Button, slide: "prev", ontap: "buttonTapHandler", classes: "button-style filledButtons", disabled: !0, components: [
             {tag: "i", classes: "fa fa-chevron-left fa-2x color-icon"}
           ]},
-          {name: "panels", kind: enyo.Panels, arrangerKind: "CarouselArranger", fit: true, onTransitionFinish: "transitionFinishHandler", onTransitionStart: "transitionStartHandler", classes: "filledPanels light-background", layoutKind: enyo.FittableColumnsLayout},
+          {name: "panels", kind: enyo.Panels, arrangerKind: enyo.CarouselArranger, fit: true, onTransitionFinish: "transitionFinishHandler", onTransitionStart: "transitionStartHandler", classes: "filledPanels light-background", layoutKind: enyo.FittableColumnsLayout},
           {name: "rightButton", kind: onyx.Button, slide: "next", ontap: "buttonTapHandler", classes: "button-style filledButtons", components: [
             {tag: "i", classes: "fa fa-chevron-right fa-2x color-icon"}
           ]},
@@ -32,11 +32,7 @@ enyo.kind({
               {tag: "i", classes: "fa fa-check fa-large"}
             ]}
           ]}
-        ]}/*,
-        {name: "tasks", kind: enyo.List, fit: true, onSetupItem: "setTasks", orient: "v", components: [
-          {name: "task_desc", content: "fill", style: "height: 45px;", ontap: "makeButtonBubbleClick", classes: "dark-background"},
-          {tag: "hr"}
-        ]}*/
+        ]}
       ]}
     ]},
     {name: "mapCont", fit: true, style: "position: relative;"}
@@ -45,7 +41,6 @@ enyo.kind({
     onLoaded: "",
     onPinClicked: "",
     onGPSSet: "",
-    onCheckCamps: "",
     onPlaceChosen: ""
   },
   eventStarted: !1,
@@ -57,6 +52,7 @@ enyo.kind({
   },
   create: function (a) {
     this.inherited(arguments);
+    this.doneRendering = false;
     //this.$.gps.setTimeout(this.gpsTimeout);
     userMoved = false;
     loaded = false;
@@ -71,6 +67,7 @@ enyo.kind({
     this.pointsLayer = L.featureGroup();
     this.polygonsLayer = L.featureGroup();
     this.$.taskpanels.getAnimator().setDuration(750);
+    this.$.panels.getAnimator().setDuration(750);
     this.hideCamps();
     this.lastTime = -1;
   },
@@ -132,6 +129,7 @@ enyo.kind({
 
     //this.$.spin.start();
     this.showCamps();
+    this.doneRendering = true;
   },
   testClick: function(inEvent) {
       console.log("CLICK");
@@ -152,7 +150,9 @@ enyo.kind({
         this.sendTasks();
       }
     }
-    this.map.invalidateSize();
+    if(this.doneRendering) {
+      this.map.invalidateSize();
+    }
     return !0;
   },
   triggerTask: function(inSender, inEvent) {
@@ -220,10 +220,12 @@ enyo.kind({
     this.$.taskpanels.setIndex(1);
   },
   showCamps: function() {
-    this.map.invalidateSize();
+    if(this.doneRendering) {
+      this.map.invalidateSize();
+    }
     this.$.taskpanels.setIndex(0);
     var height = parent.innerHeight;
-    var real_height = -5*(height/6); //put the bottom of the campaign list at 4/5 the height of the map
+    var real_height = -4*(height/5); //put the bottom of the campaign list at 4/5 the height of the map
     this.$.camps.showAtPosition({bottom: real_height});
   },
   hideCamps: function(inSender, inEvent) {
@@ -318,10 +320,12 @@ enyo.kind({
       for(x in this.polygonsLayer) {
       this.map.removeLayer(this.polygonsLayer[x]);
 		}*/
-		this.pointsLayer.clearLayers();
-		this.map.removeLayer(this.pointsLayer);
-		this.polygonsLayer.clearLayers();
-		this.map.removeLayer(this.polygonsLayer);
+    if(this.doneRendering) {
+      this.pointsLayer.clearLayers();
+      this.map.removeLayer(this.pointsLayer);
+      this.polygonsLayer.clearLayers();
+      this.map.removeLayer(this.polygonsLayer);
+    }
 		//remove all markers
 		/*for(x in this.points) {
 			this.map.removeLayer(this.points[x]);

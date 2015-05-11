@@ -244,15 +244,15 @@ background: #;
     /*color: #694225 !important;*/
   }
   .dark-background, .panelItem {
-    background-color: #5E6300 !important; /* beta color */
-    /*background-color: #2E426F !important; /* */
+    /*background-color: #5E6300 !important; /* beta color */
+    background-color: #2E426F !important; /* */
     font-size: 11pt;
     color: #FFF !important;
     /*color: #C5A467 !important;*/
   }
   .dark-background-flat, .dark-background-flat-menu {
-    background: #5E6300 !important; /* beta color */
-    /*background: #2E426F !important; /* */
+    /*background: #5E6300 !important; /* beta color */
+    background: #2E426F !important; /* */
     color: #DB701E !important;
     border: 0px;
   }

@@ -31,6 +31,7 @@ enyo.depends(
   "TickerList.js",
   "Timer.js",
   "Toolbar.js",
+  "Try.js",
   "TryComplexSensr.js",
   "rok.geolocation.js",
   "WarnDrawer.js"

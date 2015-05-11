@@ -8,15 +8,16 @@ enyo.kind({
 		completed: false,
 	},
 	handlers: {
-		onSendFiles: "uploadFile",
+		//onSendFiles: "uploadFile",
 	},
 	events: {
 		onComplete: "",
 		onFailed: ""
 	},
 	components: [
+    {kind: enyo.Signals, onSendFiles: "uploadFile"},
 		{name: "mediaDiv", components: [
-			{name: "img", kind: enyo.Image, src: "filler", style: "width: 100%;", showing: false},
+			{name: "img", kind: enyo.Image, src: "filler", style: "width: 80%; margin-left: 10%; margin-right: 10%", showing: false},
 			{name: "videoCont", tag: "video", showing: false, style: "width: 100%;", attributes: {width: "320", autobuffer: "", controls: ""}, ontap: function() {this.play();}, components: [
 				{name: "video", tag: "source", attributes: {src: "filler"}}
 			]},
@@ -54,17 +55,16 @@ enyo.kind({
     this.mediaFile = mediaFiles[0];
     //this is a stupid hack
     var path = "";
-    alert(this.mediaFile.fullPath);
     if(enyo.platform.ios) { // iOS doesn't use a file:/ URI for file paths so we have to do this differently
-      /*if(this.type === "video") {
+      if(this.type === "video") {
         path = "file:/" + this.mediaFile.fullPath;
-      } else {*/
-        //this.log(this.mediaFile.fullPath);
+      } else {
+        this.log(this.mediaFile.fullPath);
         path = "file://" + this.mediaFile.fullPath;
-      //}
-    } else {
+      }
+    } /*else {
       path = this.mediaFile.fullPath.replace("file:/", "file://");
-    }
+    }*/
     window.resolveLocalFileSystemURI(path, enyo.bind(this, "fileEntrySuccess"), enyo.bind(this, "fileEntryFail"));
   },
   captureError: function(error) {
@@ -79,7 +79,6 @@ enyo.kind({
 		switch(this.type) {
 			case "camera":
 				this.$.img.setSrc(this.fileEntry.toURL());
-        alert(this.$.img.getSrc());
 				this.$.img.render();
 				this.$.img.setShowing(true);
 				break;
@@ -149,6 +148,8 @@ enyo.kind({
 	},
   uploadFile: function(inSender, inEvent) {
 		this.log("UPLOAD");
+    this.log(inSender);
+    this.log(inEvent.sub_id);
 		var mimeType = this.mediaFile.type;
 		var path     = this.mediaFile.fullPath;
 		var filename = this.mediaFile.name;
@@ -160,7 +161,7 @@ enyo.kind({
 			options.mimeType = "audio/wav";
     } else {
 			options.mimeType = mimeType;
-      options.params   = {"username": "username", "q_id": "100", "sub_id": "9001", "answer_type": "media_" + this.type};
+      options.params   = {"username": "username", "q_id": "100", "sub_id": inEvent.sub_id, "answer_type": "media_" + this.type};
     }
 
 		if(this.fileEntry !== undefined) {
@@ -178,6 +179,6 @@ enyo.kind({
   uploadError: function(error) {
     this.log("upload error source " + error.source);
     this.log("upload error target " + error.target);
-    alert(JSON.stringify(error));
+    this.log(JSON.stringify(error));
   }
 });

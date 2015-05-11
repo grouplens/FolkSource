@@ -9,7 +9,6 @@ enyo.kind({
     onSubmissionMade: "closeSense",
     onRenderScroller: "renderScroller",
     onLoggedIn: "setupProfile",
-    onCheckCamps: "transStartHandler",
     onCloseSearchDrawer: "openSearch",
     onOpenSearchDrawer: "closeSearch",
     onSetUserLocation: "handleUserLocation"
@@ -22,7 +21,7 @@ enyo.kind({
   components: [
     {name: "appPanels", kind: enyo.Panels, fit: true, narrowFit: true, index: 0, draggable: false, layoutKind: enyo.FittbaleRowslayout, components: [
       {name: "loginer", kind: "CSenseLoginRegister"},
-      {name: "menuDrawer", kind: enyo.Panels, fit: true, narrowFit: false, index: 1, draggable: false, margin: 0, arrangerKind: enyo.CollapsingArranger, layoutKind: enyo.FittableColumnsLayout, components: [
+      {name: "menuDrawer", kind: enyo.Panels, fit: true, narrowFit: false, index: 1, draggable: false, margin: 0, arrangerKind: enyo.CollapsingArranger, layoutKind: enyo.FittableColumnsLayout, onTransitionStart: "drawerStartTransition", onTransitionFinish: "drawerEndTransition", components: [
         {kind: enyo.FittableRows, style: "height: 100%; width: 50%;", classes: "dark-background", components: [ //index 0
           {name: "profile", kind: onyx.Toolbar, layoutKind: enyo.FittableColumnsLayout, ontap: "showDetails", classes: "active-card", components: [
             {style: "border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; margin: 5px; vertical-align: middle;", classes: "light-background", components: [
@@ -37,11 +36,11 @@ enyo.kind({
             ]}
           ]},
           {ontap: "showCampaignList", kind: enyo.FittableColumns, classes: "slidein-option button-style light-background", style: "width: 100%;", onup: "toggleHilight", ondown: "toggleHilight", components: [
-            {tag: "i", classes: "fa fa-map-marker fa-lg fa-fw color-icon", style: "padding: 0 5px;", ontap: "showMenu"},
+            {tag: "i", classes: "fa fa-map-marker fa-lg fa-fw color-icon", style: "padding: 0 5px;"},
             {content: "Campaign List", fit: true}
           ]},
           {ontap: "showLeaderboard", kind: enyo.FittableColumns, classes: "slidein-option button-style light-background", style: "width: 100%;", onup: "toggleHilight", ondown: "toggleHilight", components: [
-            {tag: "i", classes: "fa fa-trophy fa-lg fa-fw color-icon", style: "padding: 0 5px;", ontap: "showMenu"},
+            {tag: "i", classes: "fa fa-trophy fa-lg fa-fw color-icon", style: "padding: 0 5px;"},
             {content: "Leaderboard", fit: true}
           ]},
           {fit: true},
@@ -55,15 +54,15 @@ enyo.kind({
             ]},
             {name: "locateMe", tag: "i", classes: "fa fa-fw fa-crosshairs fa-2x color-icon", ontap: "handleCenter"},
           ]},
-          {name: "menupane", kind: enyo.Panels, fit: true, draggable: false, animate: false, index: 1, style: "height: 100%;", arrangerKind: enyo.CardSlideInArranger, components: [
-            {name: "llist", kind: enyo.FittableRows, components: [
-              {kind: "LeaderboardList", multiselect: false, fit: true},
-            ]},
+          {name: "menupane", kind: enyo.Panels, fit: true, draggable: false, animate: true, index: 0, style: "height: 100%;", arrangerKind: enyo.CarouselArranger, components: [
             {name: "clist", kind: enyo.FittableRows, components: [
               //{name: "androidDiv"},
               {name: "lenses", kind: "LensShifter"},
               {name: "map", kind: "NewMap", fit: true},
               //{name: "iosDiv"},
+            ]},
+            {name: "llist", kind: enyo.FittableRows, components: [
+              {kind: "LeaderboardList", multiselect: false, fit: true},
             ]},
             {name: "sense", kind: enyo.FittableRows}
           ]}
@@ -114,6 +113,9 @@ enyo.kind({
   },
   create: function (inSender, inEvent) {
     this.inherited(arguments);
+    this.panelTarget = '';
+    //this.$.menuDrawer.getAnimator().setDuration(350);
+    //this.$.menupane.getAnimator().setDuration(350);
     /*
      * GET OS THING HERE
      */
@@ -124,6 +126,35 @@ enyo.kind({
        this.$.androidDiv.createComponent({name: "lensMenu", kind: "BottomLensMenu", onActivate: "handleLenses", android: true});
      }*/
     //this.$.taskpanels.getAnimator().setDuration(750);
+  },
+  drawerStartTransition: function(inSender, inEvent) {
+    if(inEvent.toIndex === 0) {
+      this.$.map.hideCamps();
+    }
+  },
+  drawerEndTransition: function(inSender, inEvent) {
+    if(inEvent.originator.name === "menuDrawer") {
+      if(inEvent.toIndex === 1) { // closing drawer, this is where target comes in
+        if(this.panelTarget === 'c') {
+          this.log('c');
+          this.panelTarget = '';
+          this.$.locateMe.addRemoveClass("tableHideKeep", false);
+          this.$.menupane.setIndex(0);
+          this.showMenu();
+          this.$.map.showCamps();
+        } else if(this.panelTarget === 'l') {
+          this.log('l');
+          this.panelTarget = '';
+          this.$.locateMe.addRemoveClass("tableHideKeep", true);
+          this.$.menupane.setIndex(1);
+          this.showMenu();
+        } else {
+          if(this.$.menupane.getIndex() === 0) {
+            //this.$.map.showCamps();
+          }
+        }
+      }
+    }
   },
   fetchData: function() {
     if(this.logged_in === false) {
@@ -259,12 +290,12 @@ enyo.kind({
     return true;
   },
   showMenu: function(inSender, inEvent) {
-    this.transStartHandler();
     var index = this.$.menuDrawer.getIndex();
     if(index == 1) {
       this.$.menuDrawer.setIndex(0);
     } else {
       this.$.menuDrawer.setIndex(1);
+
     }
     this.$.userDrawer.setOpen(false);
   },
@@ -282,16 +313,20 @@ enyo.kind({
     enyo.Signals.send("onLoggedOut");
   },
   showCampaignList: function(inSender, inEvent) {
-    this.$.menupane.setIndex(1);
+    /*
     this.showMenu();
-    this.$.locateMe.addRemoveClass("tableHideKeep", false);
+    this.$.locateMe.addRemoveClass("tableHideKeep", false);*/
+    this.panelTarget = 'c';
+    this.$.menuDrawer.setIndex(1);
     //this.$.menuDrawer.setIndex(1);
     //this.$.menupane.render();
   },
   showLeaderboard: function(inSender, inEvent) {
-    this.$.locateMe.addRemoveClass("tableHideKeep", true);
-    this.$.menupane.setIndex(0);
+    /*
     this.showMenu();
+    this.$.locateMe.addRemoveClass("tableHideKeep", true);*/
+    this.panelTarget = 'l'
+    this.$.menuDrawer.setIndex(1);
     //this.$.menuDrawer.setIndex(1);
     //this.$.menupane.render();
   },
@@ -300,20 +335,6 @@ enyo.kind({
     var truthy = inSender.hasClass("hilight");
     inSender.addRemoveClass("hilight", !truthy);
     this.log(inSender.hasClass("higlight"));
-  },
-  transStartHandler: function (a, b) {
-    var menu_index = this.$.menuDrawer.getIndex();
-
-    if (menu_index === 0) {
-      if(this.$.menupane.getIndex() === 1) {
-        this.$.map.showCamps();
-        //this.waterfallDown("onShowCampaigns");
-      }
-    } else if(menu_index === 1) {
-      this.$.map.hideCamps();
-      //this.waterfallDown("onHideCampaigns");
-    }
-    return true;
   },
   unPop: function () {
     this.$.popup.setShowing(!1);

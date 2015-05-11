@@ -52,7 +52,7 @@ public class AnswerController implements ModelDriven<DtoContainer<AnswerDto>>{
 //		System.out.println(params.get("mimeType")[0]);
 //		System.out.println(params.get("fileName")[0]);
 		Integer id = 0;
-		String path = saveMedia();
+		String path = saveMedia(sub_id, q_id);
 		
 		Answer a;
 		if(answer_type.equals("media_audio"))
@@ -68,12 +68,12 @@ public class AnswerController implements ModelDriven<DtoContainer<AnswerDto>>{
 		return "create";
 	}
 	
-	private String saveMedia(){
+	private String saveMedia(Integer sub_id, Integer q_id){
 		
 		//build the path
 		HttpServletRequest req = ServletActionContext.getRequest();
 		Map<String, String[]> params = req.getParameterMap();
-		String name = req.getHeader("username") + "-"+ req.getHeader("q_id") + "-" + new Date().getTime();
+		String name = sub_id + "-"+ q_id + "-" + new Date().getTime();
 		//TODO: Escape/validate file name
 		String path = BASE_DIR + name + getExtension(getMediaContentType());
 		File storageLocation = new File(path);

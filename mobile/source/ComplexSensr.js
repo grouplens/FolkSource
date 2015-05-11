@@ -339,17 +339,18 @@ enyo.kind({
     this.log("SERVER RESPONSE CAME BACK");
     if(a.xhr.status === 200) {
     }
-    var submission = a.xhr.responseText;
+    var submission = JSON.parse(a.xhr.responseText);
     var tmpComp = this.$.acc.getComponents();
     this.files = 0;
     for(var x in tmpComp) {
-      if(tmpComp[x].kind === "MediaSensor")
+      if(tmpComp[x].kind === "MediaSensor") {
         this.files++;
+      }
     }
     this.progressInterval = 100/(this.files+1);
     this.$.sendProgress.animateProgressTo(this.progressInterval);
-    if(this.files.length > 0) {
-      this.waterfallDown("onSendFiles", {sub_id: submission.sub_id, questions: this.task.questions});
+    if(this.files > 0) {
+      enyo.Signals.send("onSendFiles", {sub_id: submission.submission.id, questions: this.task.questions});
     } else {
       this.downCount();
     }
