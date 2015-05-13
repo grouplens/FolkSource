@@ -1,7 +1,7 @@
-web/deploy*
-web/build*
-mobile/deploy*
-mobile/build*
+web/deploy/*
+web/build/*
+mobile/deploy/*
+mobile/build/*
 mobile/assets/index.html
 mobile/assets/test.json
 mobile/assets/test2.json
