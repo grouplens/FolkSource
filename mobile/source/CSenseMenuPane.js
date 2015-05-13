@@ -50,7 +50,7 @@ enyo.kind({
           {name: "toolbar", kind: onyx.Toolbar, style: "width: 100%;", layoutKind: enyo.FittableColumnsLayout, classes: "dark-background-flat", components: [
             {name: "menuButton", tag: "i", classes: "fa fa-navicon fa-2x fa-fw color-icon", style: "vertical-align: middle;", ontap: "showMenu"},
             {fit: true, components: [
-              {kind: enyo.Image, src: "assets/folk_source_logo.png", style: "height: 2em; display: block; margin-left: auto; margin-right: auto;"},
+              {kind: enyo.Image, src: "assets/logos/folk_source_logo.png", style: "height: 2em; display: block; margin-left: auto; margin-right: auto;"},
             ]},
             {name: "locateMe", tag: "i", classes: "fa fa-fw fa-crosshairs fa-2x color-icon", ontap: "handleCenter"},
           ]},

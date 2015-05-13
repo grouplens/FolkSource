@@ -2,11 +2,12 @@ enyo.kind({
   name: "LeaderboardList",
   kind: enyo.FittableRows,
   //style: "background-color: #254048;",
-  classes: "list light-background",
+  classes: "light-background",
+  style: "width: 100%;",
   components: [
     {name: "signals", kind: enyo.Signals, onLoggedIn: "fetchData"},
     {name: "list", kind: enyo.List, fit: true, onSetupItem: "setupItem", components: [
-      {name: "item", kind: "LeaderboardItem", classes: "campItem"}
+      {name: "item", kind: "LeaderboardItem"}
     ]}
   ],
   create: function (a) {

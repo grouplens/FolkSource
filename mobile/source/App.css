@@ -1,4 +1,4 @@
-Nnbody {
+body {
   font-size: 11pt;
   font-weight: 300 !important;
   background: #2E426F; /* lighter green*/
@@ -330,12 +330,11 @@ background: #;
 
   .campTitle {
     /*color: #9A7A34;
-    display:inline;*/
-    padding: 0.5%;
+    display:inline;
+    padding: 0.5%;*/
   }
   .leaderTable {
-    display: table-cell; 
-    text-align: center; 
+    text-align: left; 
     width: 50%;
   }
   .leaderUser {
@@ -354,15 +353,15 @@ background: #;
   }
   .campDesc {
     /*font-weight: bold;*/
-    font-size: 0.8em;
+    font-size: 11pt;
     color: #DB701E;
     display: clear;
     overflow-y: hidden;
 }
 .leaderItem {
+  align: left;
   height: 100%;
   width: 100%;
-  display: table;
 }
 .toolbar {
   background-color: #641F11;

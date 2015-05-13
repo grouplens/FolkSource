@@ -3,7 +3,7 @@ enyo.kind({
   watching: !1,
   index: "",
   classes: "dark-background-flat",
-	//style: "padding: 15px;",
+	style: "padding: 5px;",
   published: {
     title: "",
     description: ""
@@ -11,7 +11,7 @@ enyo.kind({
   components: [
 		//{name: "button", kind: onyx.Button, content: "Watch", classes: "button-style", ontap: "buttonToggled"},
     {name: "title", content: "title", style: "font-weight: 400;", classes: "campTitle"},
-		{name: "description", tag: "p", content: "desc", classes: "campDesc", /*style: "white-space: normal; word-wrap: break-word;"*/}
+		{name: "description", tag: "p", content: "desc", classes: "campDesc", style: ""}
   ],
   events: {
     onStartWatching: "",

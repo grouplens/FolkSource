@@ -81,6 +81,7 @@ enyo.kind({
     buildURL: function () {
       if (this.checkFields()) {
         this.$.logButton.setDisabled(!1);
+        this.$.logButton.hasNode().focus();
         var tmp = {};
         var ajax;
         serverURL = Data.getURL() + "user";
@@ -100,6 +101,13 @@ enyo.kind({
         ajax.error(this, "handleError");
         this.$.trying.setShowing(true);
         this.$.sendingPopup.setOpen(true);
+        /*if(enyo.platform.ios) {
+          this.$.usernameRegister.hasNode().blur();
+          this.$.passwordRegister.hasNode().blur();
+          this.$.emailRegister.hasNode().blur();
+          this.$.usernameLogin.hasNode().blur();
+          this.$.passwordLogin.hasNode().blur();
+        }*/
         ajax.go();
         /*var a = "login?";
           if(this.register) {

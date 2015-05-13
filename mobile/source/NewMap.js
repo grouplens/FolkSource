@@ -11,7 +11,7 @@ enyo.kind({
       {name: "spin", kind: onyx.Spinner, classes: "onyx-dark dark-background"}
     ]},*/
     {content: "Tap the pin/region on the map to help!", style: "font-size: 11pt; font-weight: 100; text-align: center; padding: 3px;", classes: "light-background"},
-    {name: "camps", kind: enyo.Popup, modal: false, floating: true, autoDismiss: false, showTransitions: true, style: "height: 85px; width: 90%; margin-left: 5%; margin-right: 5%; box-shadow: 2px 2px 2px  #222;", layoutKind: enyo.FittableRowsLayout, components: [
+    {name: "camps", kind: enyo.Popup, modal: false, floating: true, autoDismiss: false, showTransitions: true, style: "height: 100px; width: 90%; margin-left: 5%; margin-right: 5%; box-shadow: 2px 2px 2px  #222;", layoutKind: enyo.FittableRowsLayout, components: [
       {kind: enyo.Panels, name: "taskpanels", arrangerKind: enyo.CardArranger, fit: true, style: "min-height: 100%;", components: [
         {kind: enyo.FittableColumns, style: "height: 100%;", components: [
           {name: "leftButton", kind: onyx.Button, slide: "prev", ontap: "buttonTapHandler", classes: "button-style filledButtons", disabled: !0, components: [
@@ -23,7 +23,7 @@ enyo.kind({
           ]},
         ]},
         {name: "task_content", kind: enyo.FittableRows, components: [
-          {name: "task_description", fit: true, classes: "dark-background", content: "test"},
+          {name: "task_description", fit: true, classes: "dark-background", style: "font-size: 11pt; padding: 5px;",content: "test"},
           {name: "buttons", kind: enyo.ToolDecorator, classes: "senseButtons", components: [
             {name: "remove", kind: onyx.Button, classes: "button-style button-style-negative", ontap: "cancelTask", components: [
               {tag: "i", classes: "fa fa-ban fa-large"}
@@ -66,8 +66,8 @@ enyo.kind({
     this.logged_in = false;
     this.pointsLayer = L.featureGroup();
     this.polygonsLayer = L.featureGroup();
-    this.$.taskpanels.getAnimator().setDuration(750);
-    this.$.panels.getAnimator().setDuration(750);
+    /*this.$.taskpanels.getAnimator().setDuration(750);
+    this.$.panels.getAnimator().setDuration(750);*/
     this.hideCamps();
     this.lastTime = -1;
   },
@@ -225,7 +225,7 @@ enyo.kind({
     }
     this.$.taskpanels.setIndex(0);
     var height = parent.innerHeight;
-    var real_height = -4*(height/5); //put the bottom of the campaign list at 4/5 the height of the map
+    var real_height = -3*(height/4); //put the bottom of the campaign list at 4/5 the height of the map
     this.$.camps.showAtPosition({bottom: real_height});
   },
   hideCamps: function(inSender, inEvent) {
