@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="org.grouplens.folksource" version="0.2.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <preference name="loglevel" value="DEBUG" />
+    <name>FolkSource</name>
+    <description>
+        An application that allows submittign data with your smartphone about your community!
+    </description>
+    <author email="gladmin@cs.umn.edu" href="http://grouplens.org">
+        GroupLens Research, University of Minnesota
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <preference name="EnableViewportScale" value="true" />
+    <preference name="MediaPlaybackRequiresUserAction" value="true" />
+    <preference name="AllowInlineMediaPlayback" value="true" />
+    <preference name="UIWebViewDecelerationSpeed" value="normal" />
+    <preference name="SplashScreen" value="mySplash" />
+    <preference name="StatusBarOverlaysWebView" value="false" />
+    <preference name="StatusBarBackgroundColor" value="#2E426F" />
+</widget>

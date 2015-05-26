@@ -1,0 +1,28 @@
+{
+  "name": "Leaflet.MapboxVectorTile",
+  "version": "0.1.4",
+  "main": "dist/Leaflet.MapboxVectorTile.js",
+  "ignore": [
+    "docs",
+    "examples",
+    "lib",
+    "src",
+    "test",
+    ".gitignore",
+    ".npmgignore",
+    "README.md",
+    "package.json",
+    "bower.json"
+  ],
+  "homepage": "https://github.com/SpatialServer/Leaflet.MapboxVectorTile",
+  "_release": "0.1.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.4",
+    "commit": "a079d4f2efe1142e0bae47e0eafbe7d8f239b81d"
+  },
+  "_source": "git://github.com/SpatialServer/Leaflet.MapboxVectorTile.git",
+  "_target": "~0.1.4",
+  "_originalSource": "Leaflet.MapboxVectorTile",
+  "_direct": true
+}
