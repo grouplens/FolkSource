@@ -1,6 +1,6 @@
 enyo.kind({
 	name: "WarnDrawer",
-	kind: onyx.Drawer,
+	kind: "onyx.Drawer",
 	orient: "v",
 	open: false,
 	classes: "button-style-negative",
@@ -8,8 +8,8 @@ enyo.kind({
 		warning: ""
 	},
 	components: [
-		{kind: enyo.Signals, onNoLocationFound: "noLocFound", onLocationFound: "closeDrawer"},
-		{kind: enyo.ToolDecorator, components: [
+		{kind: "enyo.Signals", onNoLocationFound: "noLocFound", onLocationFound: "closeDrawer"},
+		{kind: "enyo.ToolDecorator", components: [
 			//{content: "Warning: "},
 			{name: "message", content:"filler"}
 		]}
@@ -35,7 +35,7 @@ enyo.kind({
 	locFound: function(inSender, inEvent) {
 		this.keepClosed = true;
 		this.closeDrawer();
-	},	
+	},
 	noLocFound: function(inSender, inEvent) {
 		this.setWarning("Searching for GPS lock...");
 		if(this.keepClosed)

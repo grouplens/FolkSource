@@ -1,7 +1,7 @@
 enyo.kind({
   name: "LensShifter",
-  kind: enyo.Panels,
-  arrangerKind: enyo.CardArranger,
+  kind: "enyo.Panels",
+  arrangerKind: "enyo.CardArranger",
   draggable: false,
   classes: "dark-background-flat",
   style: "height: 50px; width: 100%;",
@@ -10,14 +10,14 @@ enyo.kind({
     onSearchTriggered: "switchToSearch",
   },
   components: [
-    {kind: enyo.Signals, onGPSCoordLookup: "handleGPS"},
-    {kind: enyo.FittableRows, components: [
+    {kind: "enyo.Signals", onGPSCoordLookup: "handleGPS"},
+    {kind: "enyo.FittableRows", components: [
       {name: "spaceToolbar", kind: "SpaceUsageToolbar", topic: "Guns", fit: true, defaultUsage: true, components: [
       ]},
     ]},
-    {kind: enyo.FittableRows, components: [
-      {kind: onyx.Toolbar, fit: true, layoutKind: enyo.FittableColumnsLayout, style: "padding: 15px;", classes: "dark-background-flat", components: [
-        {name: "searchInput", kind: onyx.Input, type: "search", fit: true, placeholder: "Search for a place or browse map", onchange: "searchInput", onchange: "searchChanged"},
+    {kind: "enyo.FittableRows", components: [
+      {kind: "onyx.Toolbar", fit: true, layoutKind: "enyo.FittableColumnsLayout", style: "padding: 15px;", classes: "dark-background-flat", components: [
+        {name: "searchInput", kind: "onyx.Input", type: "search", fit: true, placeholder: "Search for a place or browse map", onchange: "searchInput", onchange: "searchChanged"},
         {name: "cancel", tag: "i", classes: "fa fa-fw fa-close fa-lg color-icon", ontap: "switchBack"},
       ]}
     ]},

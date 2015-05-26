@@ -1,34 +1,34 @@
 enyo.kind({
   name: "NewMap",
-  kind: enyo.FittableRows,
+  kind: "enyo.FittableRows",
   //classes: "bordering-box light-background",
   published: {
     gpsTimeout: "10000"
   },
   components: [
-    {kind: enyo.Signals, onLocationFound: "locSuccess", onPinClicked: "popupTriggered", onLoggedIn: "fetchData", onSearchedLocation: "mapCenterFromSearch"},
-    /*{name: "spinUp", kind: onyx.Popup, centered: true, floating: true, autoDismiss: false, classes: "dark-background-flat", components: [
-      {name: "spin", kind: onyx.Spinner, classes: "onyx-dark dark-background"}
+    {kind: "enyo.Signals", onLocationFound: "locSuccess", onPinClicked: "popupTriggered", onLoggedIn: "fetchData", onSearchedLocation: "mapCenterFromSearch"},
+    /*{name: "spinUp", kind: "onyx".Popup, centered: true, floating: true, autoDismiss: false, classes: "dark-background-flat", components: [
+      {name: "spin", kind: "onyx.Spinner", classes: "onyx-dark dark-background"}
     ]},*/
     {content: "Tap the pin/region on the map to help!", style: "font-size: 11pt; font-weight: 100; text-align: center; padding: 3px;", classes: "light-background"},
-    {name: "camps", kind: enyo.Popup, modal: false, floating: true, autoDismiss: false, showTransitions: true, style: "height: 100px; width: 90%; margin-left: 5%; margin-right: 5%; box-shadow: 2px 2px 2px  #222;", layoutKind: enyo.FittableRowsLayout, components: [
-      {kind: enyo.Panels, name: "taskpanels", arrangerKind: enyo.CardArranger, fit: true, style: "min-height: 100%;", components: [
-        {kind: enyo.FittableColumns, style: "height: 100%;", components: [
-          {name: "leftButton", kind: onyx.Button, slide: "prev", ontap: "buttonTapHandler", classes: "button-style filledButtons", disabled: !0, components: [
+    {name: "camps", kind: "enyo.Popup", modal: false, floating: true, autoDismiss: false, showTransitions: true, style: "height: 100px; width: 90%; margin-left: 5%; margin-right: 5%; box-shadow: 2px 2px 2px  #222;", layoutKind: "enyo.FittableRowsLayout", components: [
+      {kind: "enyo.Panels", name: "taskpanels", arrangerKind: "enyo.CardArranger", fit: true, style: "min-height: 100%;", components: [
+        {kind: "enyo.FittableColumns", style: "height: 100%;", components: [
+          {name: "leftButton", kind: "onyx.Button", slide: "prev", ontap: "buttonTapHandler", classes: "button-style filledButtons", disabled: !0, components: [
             {tag: "i", classes: "fa fa-chevron-left fa-2x color-icon"}
           ]},
-          {name: "panels", kind: enyo.Panels, arrangerKind: enyo.CarouselArranger, fit: true, onTransitionFinish: "transitionFinishHandler", onTransitionStart: "transitionStartHandler", classes: "filledPanels light-background", layoutKind: enyo.FittableColumnsLayout},
-          {name: "rightButton", kind: onyx.Button, slide: "next", ontap: "buttonTapHandler", classes: "button-style filledButtons", components: [
+          {name: "panels", kind: "enyo.Panels", arrangerKind: "enyo.CarouselArranger", fit: true, onTransitionFinish: "transitionFinishHandler", onTransitionStart: "transitionStartHandler", classes: "filledPanels light-background", layoutKind: "enyo.FittableColumnsLayout"},
+          {name: "rightButton", kind: "onyx.Button", slide: "next", ontap: "buttonTapHandler", classes: "button-style filledButtons", components: [
             {tag: "i", classes: "fa fa-chevron-right fa-2x color-icon"}
           ]},
         ]},
-        {name: "task_content", kind: enyo.FittableRows, components: [
+        {name: "task_content", kind: "enyo.FittableRows", components: [
           {name: "task_description", fit: true, classes: "dark-background", style: "font-size: 11pt; padding: 5px;",content: "test"},
-          {name: "buttons", kind: enyo.ToolDecorator, classes: "senseButtons", components: [
-            {name: "remove", kind: onyx.Button, classes: "button-style button-style-negative", ontap: "cancelTask", components: [
+          {name: "buttons", kind: "enyo.ToolDecorator", classes: "senseButtons", components: [
+            {name: "remove", kind: "onyx.Button", classes: "button-style button-style-negative", ontap: "cancelTask", components: [
               {tag: "i", classes: "fa fa-ban fa-large"}
             ]},
-            {name: "submit", kind: onyx.Button, classes: "button-style button-style-affirmative", ontap: "triggerTask", components: [
+            {name: "submit", kind: "onyx.Button", classes: "button-style button-style-affirmative", ontap: "triggerTask", components: [
               {tag: "i", classes: "fa fa-check fa-large"}
             ]}
           ]}
@@ -201,7 +201,7 @@ enyo.kind({
       //if(endDate >= date) { // "closed" campaigns shouldn't show up
       //if(currentCampaign.title !== undefined) {
       this.$.panels.createComponent(
-        {name: e, classes: "panelItem", fit: true, data: this.campaignArray[c], kind: enyo.FittableRows, components: [
+        {name: e, classes: "panelItem", fit: true, data: this.campaignArray[c], kind: "enyo.FittableRows", components: [
         {name: f, kind: "CampaignItem", title: "" + currentCampaign.title, description: "" + currentCampaign.description},
       ]});
       /*} else {
@@ -272,7 +272,7 @@ enyo.kind({
 
     this.userMarker.setLatLng(latlng);
     this.userMarker.setAccuracy(coords.accuracy);
-    this.resized();
+    this.resize();
     if(this.lastTime === -1) {
       this.lastTime = Date.now();
     }
@@ -466,5 +466,3 @@ enyo.kind({
   },
 
 });
-
-

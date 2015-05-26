@@ -1,6 +1,6 @@
 enyo.kind({
 	name: "CustomProgress",
-	kind: onyx.ProgressButton,
+	kind: "onyx.ProgressButton",
 	classes: "color-progress-big",
 	barClasses: "color-progress",
 	animateBars: true,

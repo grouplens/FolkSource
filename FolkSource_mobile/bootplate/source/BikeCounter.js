@@ -1,6 +1,6 @@
 enyo.kind({
 	name: "BikeCounter",
-	kind: enyo.FittableRows,
+	kind: "enyo.FittableRows",
 	//classes: "niceish-padding",
 	fit: true,
 	published: {
@@ -20,7 +20,7 @@ enyo.kind({
 	components: [
 		{kind: "enyo.Signals", onButtonGroupChosen: "fixIt", onDataRemove: "removeItem"},
 		{name: "timer", kind: "Timer", length: 7200000, resetInterval: 900000},
-		{name: "totalCountContainer", kind: enyo.FittableColumns, components: [
+		{name: "totalCountContainer", kind: "enyo.FittableColumns", components: [
 			//{kind: "onyx.Button", content: "Undo", ontap: "popup"},
 			{fit: true},
 			{content: "Total Count: "},
@@ -29,12 +29,12 @@ enyo.kind({
 		{name: "tabula", tag: "table", fit: true, style: "width: 100%;", disabled: true, components: [
 			//row 0
 			{name: "row0", tag: "tr", classes: "tableCellHeight", style: "max-height: 20%;", components: [
-				{tag: "td"}, 
-				{tag: "td"}, 
+				{tag: "td"},
+				{tag: "td"},
 				{tag: "td", attributes: {colspan: 2}, style: "text-align: center;", components: [
 					{kind: "onyx.Icon", src: "assets/bike_small.png"}
 				]},
-				{tag: "td"}, 
+				{tag: "td"},
 				{tag: "td", attributes: {colspan: 2}, style: "text-align: center;", components: [
 					{kind: "onyx.Icon", src: "assets/ped_small.png"}
 				]},
@@ -42,15 +42,15 @@ enyo.kind({
 			]},
 			//row 1
 			{name: "row1", tag: "tr", classes: "tableCellHeight", style: "max-height: 20%;", components: [
-				{tag: "td"}, 
-				{tag: "td"}, 
+				{tag: "td"},
+				{tag: "td"},
 				{tag: "td", classes: "tableMen", components: [
 					{kind: "onyx.Icon", src: "assets/man_small.png"}
 				]},
 				{tag: "td", classes: "tableWomen", components: [
 					{kind: "onyx.Icon", src: "assets/woman_small.png"}
 				]},
-				{tag: "td"}, 
+				{tag: "td"},
 				{tag: "td", classes: "tableMen", components: [
 					{kind: "onyx.Icon", src: "assets/man_small.png"}
 				]},
@@ -64,42 +64,42 @@ enyo.kind({
 					{kind: "onyx.Icon", src: "assets/adult_small.png"}
 				]},
 				{tag: "td", classes: "tableCellWidth", components: [
-					{kind: onyx.Icon, src: "assets/helmet_small.png"}
+					{kind: "onyx.Icon", src: "assets/helmet_small.png"}
 				]},
-				{tag: "td", classes: "tableCellMen", layoutKind: enyo.FittableColumnsLayout, components: [
+				{tag: "td", classes: "tableCellMen", layoutKind: "enyo.FittableColumnsLayout", components: [
 					{name: "maleAdultHelmet", kind: "TallyCounter", onup: "highlightRowsColumns", ondown: "highlightRowsColumns", row: 2, col: 2},
 				]},
-				{tag: "td", classes: "tableCellWomen", layoutKind: enyo.FittableColumnsLayout, components: [
+				{tag: "td", classes: "tableCellWomen", layoutKind: "enyo.FittableColumnsLayout", components: [
 					{name: "femaleAdultHelmet", kind: "TallyCounter", onup: "highlightRowsColumns", ondown: "highlightRowsColumns", row: 2, col: 3}
 				]},
 				{tag: "td", classes: "tableCellWidth",  components: [
-					{kind: onyx.Icon, src: "assets/assistive_small.png"}
+					{kind: "onyx.Icon", src: "assets/assistive_small.png"}
 				]},
-				{tag: "td", classes: "tableCellMen", layoutKind: enyo.FittableColumnsLayout, components: [
+				{tag: "td", classes: "tableCellMen", layoutKind: "enyo.FittableColumnsLayout", components: [
 					{name: "maleAdultAsst", kind: "TallyCounter", onup: "highlightRowsColumns", ondown: "highlightRowsColumns", row: 2, col: 5},
 				]},
-				{tag: "td", classes: "tableCellWomen", layoutKind: enyo.FittableColumnsLayout, components: [
+				{tag: "td", classes: "tableCellWomen", layoutKind: "enyo.FittableColumnsLayout", components: [
 					{name: "femaleAdultAsst", kind: "TallyCounter", onup: "highlightRowsColumns", ondown: "highlightRowsColumns", row: 2, col: 6}
 				]}
 			]},
 			//row 3
 			{name: "row3", tag: "tr", style: "max-height: 20%;", components: [
 				{tag: "td", classes: "tableCellWidth",  components: [
-					{kind: onyx.Icon, src: "assets/not_small.png"}
+					{kind: "onyx.Icon", src: "assets/not_small.png"}
 				]},
-				{tag: "td", classes: "tableCellMen", layoutKind: enyo.FittableColumnsLayout, components: [
+				{tag: "td", classes: "tableCellMen", layoutKind: "enyo.FittableColumnsLayout", components: [
 					{name: "maleAdultBike", kind: "TallyCounter", onup: "highlightRowsColumns", ondown: "highlightRowsColumns", row: 3, col: 2},
 				]},
-				{tag: "td", classes: "tableCellWomen", layoutKind: enyo.FittableColumnsLayout, components: [
+				{tag: "td", classes: "tableCellWomen", layoutKind: "enyo.FittableColumnsLayout", components: [
 					{name: "femaleAdultBike", kind: "TallyCounter", onup: "highlightRowsColumns", ondown: "highlightRowsColumns", row: 3, col: 3}
 				]},
 				{tag: "td", classes: "tableCellWidth",  components: [
-					{kind: onyx.Icon, src: "assets/not_small.png"}
+					{kind: "onyx.Icon", src: "assets/not_small.png"}
 				]},
-				{tag: "td", classes: "tableCellMen", layoutKind: enyo.FittableColumnsLayout, components: [
+				{tag: "td", classes: "tableCellMen", layoutKind: "enyo.FittableColumnsLayout", components: [
 					{name: "maleAdultPed", kind: "TallyCounter", onup: "highlightRowsColumns", ondown: "highlightRowsColumns", row: 3, col: 5},
 				]},
-				{tag: "td", classes: "tableCellWomen", layoutKind: enyo.FittableColumnsLayout, components: [
+				{tag: "td", classes: "tableCellWomen", layoutKind: "enyo.FittableColumnsLayout", components: [
 					{name: "femaleAdultPed", kind: "TallyCounter", onup: "highlightRowsColumns", ondown: "highlightRowsColumns", row: 3, col: 6}
 				]}
 			]},
@@ -109,21 +109,21 @@ enyo.kind({
 					{kind: "onyx.Icon", src: "assets/child_small.png"}
 				]},
 				{tag: "td", classes: "tableCellWidth", components: [
-					{kind: onyx.Icon, src: "assets/helmet_small.png"}
+					{kind: "onyx.Icon", src: "assets/helmet_small.png"}
 				]},
-				{tag: "td", classes: "tableCellMen", layoutKind: enyo.FittableColumnsLayout, components: [
+				{tag: "td", classes: "tableCellMen", layoutKind: "enyo.FittableColumnsLayout", components: [
 					{name: "maleChildHelmet", kind: "TallyCounter", onup: "highlightRowsColumns", ondown: "highlightRowsColumns", row: 4, col: 2},
 				]},
-				{tag: "td", classes: "tableCellWomen", layoutKind: enyo.FittableColumnsLayout, components: [
+				{tag: "td", classes: "tableCellWomen", layoutKind: "enyo.FittableColumnsLayout", components: [
 					{name: "femaleChildHelmet", kind: "TallyCounter", onup: "highlightRowsColumns", ondown: "highlightRowsColumns", row: 4, col: 3}
 				]},
 				{tag: "td", classes: "tableCellWidth", components: [
-					{kind: onyx.Icon, src: "assets/assistive_small.png"}
+					{kind: "onyx.Icon", src: "assets/assistive_small.png"}
 				]},
-				{tag: "td", classes: "tableCellMen", layoutKind: enyo.FittableColumnsLayout, components: [
+				{tag: "td", classes: "tableCellMen", layoutKind: "enyo.FittableColumnsLayout", components: [
 					{name: "maleChildAsst", kind: "TallyCounter", onup: "highlightRowsColumns", ondown: "highlightRowsColumns", row: 4, col: 5},
 				]},
-				{tag: "td", classes: "tableCellWomen", layoutKind: enyo.FittableColumnsLayout, components: [
+				{tag: "td", classes: "tableCellWomen", layoutKind: "enyo.FittableColumnsLayout", components: [
 					{name: "femaleChildAsst", kind: "TallyCounter", onup: "highlightRowsColumns", ondown: "highlightRowsColumns", row: 4, col: 6}
 				]}
 			]},
@@ -131,21 +131,21 @@ enyo.kind({
 			{name: "row5", tag: "tr", style: "max-height: 20%;", components: [
 				//{tag: "td"},
 				{tag: "td", classes: "tableCellWidth", components: [
-					{kind: onyx.Icon, src: "assets/not_small.png"}
+					{kind: "onyx.Icon", src: "assets/not_small.png"}
 				]},
-				{tag: "td", classes: "tableCellMen", layoutKind: enyo.FittableColumnsLayout, components: [
+				{tag: "td", classes: "tableCellMen", layoutKind: "enyo.FittableColumnsLayout", components: [
 					{name: "maleChildBike", kind: "TallyCounter", onup: "highlightRowsColumns", ondown: "highlightRowsColumns", row: 5, col: 2},
 				]},
-				{tag: "td", classes: "tableCellWomen", layoutKind: enyo.FittableColumnsLayout, components: [
+				{tag: "td", classes: "tableCellWomen", layoutKind: "enyo.FittableColumnsLayout", components: [
 					{name: "femaleChildBike", kind: "TallyCounter", onup: "highlightRowsColumns", ondown: "highlightRowsColumns", row: 5, col: 3}
 				]},
 				{tag: "td", classes: "tableCellWidth", components: [
-					{kind: onyx.Icon, src: "assets/not_small.png"}
+					{kind: "onyx.Icon", src: "assets/not_small.png"}
 				]},
-				{tag: "td", classes: "tableCellMen", layoutKind: enyo.FittableColumnsLayout, components: [
+				{tag: "td", classes: "tableCellMen", layoutKind: "enyo.FittableColumnsLayout", components: [
 					{name: "maleChildPed", kind: "TallyCounter", onup: "highlightRowsColumns", ondown: "highlightRowsColumns", row: 5, col: 5},
 				]},
-				{tag: "td", classes: "tableCellWomen", layoutKind: enyo.FittableColumnsLayout, components: [
+				{tag: "td", classes: "tableCellWomen", layoutKind: "enyo.FittableColumnsLayout", components: [
 					{name: "femaleChildPed", kind: "TallyCounter", onup: "highlightRowsColumns", ondown: "highlightRowsColumns", row: 5, col: 6}
 				]}
 			]}
@@ -186,7 +186,7 @@ enyo.kind({
 		}
 	},
 	popup: function(inSender, inEvent) {
-		this.$.popup.resized();
+		this.$.popup.resize();
 		this.$.popup.render();
 		this.$.popup.show();
 	},
@@ -205,7 +205,7 @@ enyo.kind({
 			var cols = rows[i].children;
 			for (var j in cols) {
 				//bike vs. ped
-				
+
 				if (!this.ped) {
 					if(j > 3)
 						cols[j].addRemoveClass("tableHideCollapse", !this.ped);
@@ -216,12 +216,12 @@ enyo.kind({
 				//post-setup for colspan/rowspan
 				if(!this.gender) {
 					var row = rows[0].children;
-					row[2].setAttribute("colspan", 1); 
-					row[4].setAttribute("colspan", 1); 
+					row[2].setAttribute("colspan", 1);
+					row[4].setAttribute("colspan", 1);
 				} else {
 					var row = rows[0].children;
-					row[2].setAttribute("colspan", 2); 
-					row[4].setAttribute("colspan", 2); 
+					row[2].setAttribute("colspan", 2);
+					row[4].setAttribute("colspan", 2);
 				}
 				if(this.age && !this.helmet && !this.assisted) {
 					var row1 = rows[2].children;
@@ -301,7 +301,7 @@ enyo.kind({
 					case "3":
 						if(!this.helmet && !this.assisted) {
 							rows[i].addRemoveClass("tableHideCollapse", (!this.helmet && !this.assisted));
-						}	
+						}
 						if(!this.gender) {
 							if(j % 2 == 0 && j > 0)
 								cols[j].addRemoveClass("tableHideCollapse", !this.gender);
@@ -345,7 +345,7 @@ enyo.kind({
 					case "5":
 						if(!this.helmet && !this.assisted) {
 							rows[i].addRemoveClass("tableHideCollapse", (!this.helmet && !this.assisted));
-						}	
+						}
 						if(!this.gender) {
 							if(j % 2 == 0 && j > 0)
 								cols[j].addRemoveClass("tableHideCollapse", !this.gender);
@@ -368,10 +368,10 @@ enyo.kind({
 								cols[j].addRemoveClass("tableHideCollapse", !this.bike);
 						}
 					break;
-					default: 
+					default:
 					break;
 				}
-				
+
 			}
 		}
 		this.render();
@@ -387,7 +387,7 @@ enyo.kind({
 			}
 			//d = b.parent.$["content_" + c].getContent();
 			e = b.getValue();
-		} 
+		}
 		if (b.name.indexOf("radioButton") != -1) {
 			d = b.content;
 		}
@@ -432,7 +432,7 @@ enyo.kind({
 		var col = inEvent.column;
 		var entry = [];
 		entry.push(new Date(enyo.now()).toUTCString());
-		
+
 		//gender
 		if(this.gender) {
 			if(row == 2 || row == 4) {
@@ -454,14 +454,14 @@ enyo.kind({
 		if(this.age) {
 			if(row < 4)
 				entry.push("adult");
-			else 
+			else
 				entry.push("child");
 		}
 
 		//mode
 		if(col < 4)
 			entry.push("cyclist");
-		else 
+		else
 			entry.push("pedestrian");
 
 		//helmet/assistive
@@ -473,7 +473,7 @@ enyo.kind({
 
 			if(col < 4)
 				str += "wearing a helmet";
-			else 
+			else
 				str += "using an assistive device";
 		}
 
@@ -497,7 +497,7 @@ enyo.kind({
 			truth = true;
 		else {
 			this.$.totalCount.setContent(Number(this.$.totalCount.getContent()) + 1);
-			this.$.totalCountContainer.resized();
+			this.$.totalCountContainer.resize();
 		}
 
 		//column headers
@@ -522,12 +522,12 @@ enyo.kind({
 		//row headers
 		if(inRow % 2 == 0)
 			tableRows[inRow].children[0].addRemoveClass("highlight", truth);
-		else 
+		else
 			tableRows[inRow-1].children[0].addRemoveClass("highlight", truth);
 
 		//row sub-headers
 		tableRows[inRow].children[subCol].addRemoveClass("hightlight", truth);
-		
+
 		//row line-up
 		for(var x = 1; x < tableRows[inRow].children.length; x++) {
 			if(x == inCol)

@@ -1,6 +1,6 @@
 enyo.kind({
   name: "CampaignList",
-  kind: "List",
+  kind: "enyo.List",
   style: "overflow: hidden; height: 100%;",
   classes: "list",
   components: [

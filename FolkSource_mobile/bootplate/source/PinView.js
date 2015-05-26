@@ -2,13 +2,13 @@ enyo.kind({
     name: "PinView",
     kind: "enyo.Control",
     published: {
-        value: "1",
-        description: "temp description"
+      value: "1",
+      description: "temp description"
     },
     components: [
-        {name: "taskDesc", tag: "div", content: "test"},
-        {name: "taskValue", /*style: "color: #FF0000;", */content: "testval"}, 
-        {name: "button", kind: onyx.Button, content: "Do It!", classes: "dark-background-flat button-style", ontap: "buttonHit"}],
+      {name: "taskDesc", tag: "div", content: "test"},
+      {name: "taskValue", /*style: "color: #FF0000;", */content: "testval"},
+      {name: "button", kind: "onyx.Button", content: "Do It!", classes: "dark-background-flat button-style", ontap: "buttonHit"}],
     events: {
         onDoObservation: ""
     },
@@ -16,7 +16,9 @@ enyo.kind({
         this.inherited(arguments), this.$.taskDesc.content = this.description, this.$.taskValue.content = this.value;
     },
     setContent: function (a, b) {
-        this.$.taskDesc.setContent(a), this.$.taskValue.setContent("You earn: " + b + " points"), this.$.taskDesc.resized(), this.$.taskValue.resized(), this.resized();
+        this.$.taskDesc.setContent(a), this.$.taskValue.setContent("You earn: " + b + " points"), this.$.taskDesc.resize();
+        this.$.taskValue.resize();
+        this.resize();
     },
     buttonHit: function (a, b) {
         return this.doDoObservation(), !0;

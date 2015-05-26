@@ -1,8 +1,8 @@
 enyo.kind({
   name: "SpaceUsageToolbar",
-  kind: onyx.Toolbar,
+  kind: "onyx.Toolbar",
   classes: "dark-background-flat",
-  layoutKind: enyo.FittableColumnsLayout,
+  layoutKind: "enyo.FittableColumnsLayout",
   style: "padding: 15px;",
   published: {
     place: "",

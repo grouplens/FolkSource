@@ -1,6 +1,6 @@
 enyo.kind({
   name: "LeaderboardItem",
-  kind: enyo.FittableColumns,
+  kind: "enyo.FittableColumns",
   style: "width: 80%; margin-left: auto; margin-right: auto; margin-bottom: 10px;",
   index: "",
   components: [

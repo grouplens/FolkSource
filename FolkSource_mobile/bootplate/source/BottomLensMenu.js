@@ -1,12 +1,12 @@
 enyo.kind({
   name: "BottomLensMenu",
-  kind: enyo.FittableRows,
+  kind: "enyo.FittableRows",
   published: {
     topic: "Guns",
     defaultUsage: true
   },
   components: [
-    {kind: onyx.Toolbar, classes: "dark-background-flat", layoutKind: enyo.FittableColumnsLayout, style: "padding: 15px", components: [
+    {kind: "onyx.Toolbar", classes: "dark-background-flat", layoutKind: "enyo.FittableColumnsLayout", style: "padding: 15px", components: [
       {name: "topic", content: ""},
       {name: "maybe", tag: "i", classes: "fa fa-question fa-fw fa-3x", style: "color: yellow;", ontap: "sendEvent"},
       {name: "allowed", tag: "i", classes: "fa fa-check fa-fw fa-3x", style: "color: green;", ontap: "sendEvent"},
@@ -14,7 +14,7 @@ enyo.kind({
       {fit: true, content: "In Minnesota, gun-carry is allowed by default. Unless a user submission or the law stipulates otherwise. We use the '?' to denote that we do not have information at a given place.", style: "font-size: 8pt !important;"}
       //{content: "In Minnesota, gun-carry is allowed by default. Unless users have said otherwise, we d
     ]},
-    {kind: onyx.Toolbar, classes: "light-background-flat", layoutKind: enyo.FittableColumnsLayout, components: [
+    {kind: "onyx.Toolbar", classes: "light-background-flat", layoutKind: "enyo.FittableColumnsLayout", components: [
       {content: "Correct or Contribute to the map!", fit: true, style: "text-align: center;"},
     ]}
   ],

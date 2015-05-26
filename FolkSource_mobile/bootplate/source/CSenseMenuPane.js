@@ -1,6 +1,6 @@
 enyo.kind({
   name: "CSenseMenuPane",
-  kind: enyo.FittableColumns,
+  kind: "enyo.FittableColumns",
   classes: "dark-background",
   handlers: {
     onSuccessCode: "unPop",
@@ -19,52 +19,52 @@ enyo.kind({
     onShowCampaigns: ""
   },
   components: [
-    {name: "appPanels", kind: enyo.Panels, fit: true, narrowFit: true, index: 0, draggable: false, layoutKind: enyo.FittbaleRowslayout, components: [
+    {name: "appPanels", kind: "enyo.Panels", fit: true, narrowFit: true, index: 0, draggable: false, layoutKind: "enyo.FittableRowsLayout", components: [
       {name: "loginer", kind: "CSenseLoginRegister"},
-      {name: "menuDrawer", kind: enyo.Panels, fit: true, narrowFit: false, index: 1, draggable: false, margin: 0, arrangerKind: enyo.CollapsingArranger, layoutKind: enyo.FittableColumnsLayout, onTransitionFinish: "drawerEndTransition", components: [
-        {kind: enyo.FittableRows, style: "height: 100%; width: 50%;", classes: "dark-background", components: [ //index 0
-          {name: "profile", kind: onyx.Toolbar, layoutKind: enyo.FittableColumnsLayout, ontap: "showDetails", classes: "active-card", components: [
+      {name: "menuDrawer", kind: "enyo.Panels", fit: true, narrowFit: false, index: 1, draggable: false, margin: 0, arrangerKind: "enyo.CollapsingArranger", layoutKind: "enyo.FittableColumnsLayout", onTransitionFinish: "drawerEndTransition", components: [
+        {kind: "enyo.FittableRows", style: "height: 100%; width: 50%;", classes: "dark-background", components: [ //index 0
+          {name: "profile", kind: "onyx.Toolbar", layoutKind: "enyo.FittableColumnsLayout", ontap: "showDetails", classes: "active-card", components: [
             {style: "border-radius: 5px; -moz-border-radius: 5px; -webkit-border-radius: 5px; margin: 5px; vertical-align: middle;", classes: "light-background", components: [
               {tag: "i", classes: "fa fa-smile-o fa-2x fa-fw color-icon", style: "padding: 5px 5px; vertical-align: middle;"},
             ]},
             {name: "user", content: "username", style: "font-size: 11pt;"},
           ]},
-          {name: "userDrawer", kind: onyx.Drawer, orient: "v", open: false, classes: "light-background", components: [
-            {name: "logout", kind: enyo.FittableColumns, ontap: "userLogout", classes: "slidein-option button-style dark-background", components: [
+          {name: "userDrawer", kind: "onyx.Drawer", orient: "v", open: false, classes: "light-background", components: [
+            {name: "logout", kind: "enyo.FittableColumns", ontap: "userLogout", classes: "slidein-option button-style dark-background", components: [
               {content: "Logout", fit: true},
               {tag: "i", classes: "fa color-icon fa-lg fa-fw fa-sign-out", style: "padding: 0 5px;"}
             ]}
           ]},
-          {ontap: "showCampaignList", kind: enyo.FittableColumns, classes: "slidein-option button-style light-background", style: "width: 100%;", onup: "toggleHilight", ondown: "toggleHilight", components: [
+          {ontap: "showCampaignList", kind: "enyo.FittableColumns", classes: "slidein-option button-style light-background", style: "width: 100%;", onup: "toggleHilight", ondown: "toggleHilight", components: [
             {tag: "i", classes: "fa fa-map-marker fa-lg fa-fw color-icon", style: "padding: 0 5px;"},
             {content: "Campaign List", fit: true}
           ]},
-          {ontap: "showLeaderboard", kind: enyo.FittableColumns, classes: "slidein-option button-style light-background", style: "width: 100%;", onup: "toggleHilight", ondown: "toggleHilight", components: [
+          {ontap: "showLeaderboard", kind: "enyo.FittableColumns", classes: "slidein-option button-style light-background", style: "width: 100%;", onup: "toggleHilight", ondown: "toggleHilight", components: [
             {tag: "i", classes: "fa fa-trophy fa-lg fa-fw color-icon", style: "padding: 0 5px;"},
             {content: "Leaderboard", fit: true}
           ]},
           {fit: true},
           {kind: "GrouplensBrand"}
         ]},
-        {kind: enyo.FittableRows, fit: true, style: "min-width: 100%; box-shadow: -3px 0 3px #666;", components: [ //index 1
-          {name: "toolbar", kind: onyx.Toolbar, style: "width: 100%;", layoutKind: enyo.FittableColumnsLayout, classes: "dark-background-flat", components: [
+        {kind: "enyo.FittableRows", fit: true, style: "min-width: 100%; box-shadow: -3px 0 3px #666;", components: [ //index 1
+          {name: "toolbar", kind: "onyx.Toolbar", style: "width: 100%;", layoutKind: "enyo.FittableColumnsLayout", classes: "dark-background-flat", components: [
             {name: "menuButton", tag: "i", classes: "fa fa-navicon fa-2x fa-fw color-icon", style: "vertical-align: middle;", ontap: "showMenu"},
             {fit: true, components: [
-              {kind: enyo.Image, src: "assets/logos/folk_source_logo.png", style: "height: 2em; display: block; margin-left: auto; margin-right: auto;"},
+              {kind: "enyo.Image", src: "assets/logos/folk_source_logo.png", style: "height: 2em; display: block; margin-left: auto; margin-right: auto;"},
             ]},
             {name: "locateMe", tag: "i", classes: "fa fa-fw fa-crosshairs fa-2x color-icon", ontap: "handleCenter"},
           ]},
-          {name: "menupane", kind: enyo.Panels, fit: true, draggable: false, animate: true, index: 0, style: "height: 100%;", arrangerKind: enyo.CarouselArranger, components: [
-            {name: "clist", kind: enyo.FittableRows, components: [
+          {name: "menupane", kind: "enyo.Panels", fit: true, draggable: false, animate: true, index: 0, style: "height: 100%;", arrangerKind: "enyo.CarouselArranger", components: [
+            {name: "clist", kind: "enyo.FittableRows", components: [
               //{name: "androidDiv"},
               {name: "lenses", kind: "LensShifter"},
               {name: "map", kind: "NewMap", onHide: "handleCampsHide", onShow: "handleCampsShow", fit: true},
               //{name: "iosDiv"},
             ]},
-            {name: "llist", kind: enyo.FittableRows, components: [
+            {name: "llist", kind: "enyo.FittableRows", components: [
               {kind: "LeaderboardList", multiselect: false, fit: true},
             ]},
-            {name: "sense", kind: enyo.FittableRows}
+            {name: "sense", kind: "enyo.FittableRows"}
           ]}
         ]}
       ]},
@@ -215,7 +215,7 @@ enyo.kind({
 
     this.$.sense.createComponent({name: "sensr", kind: "ComplexSensr", fit: true, data: task, location_id: inEvent.location_id, classes: "content"});
     this.$.sense.render();
-    this.resized();
+    this.resize();
     this.waterfallDown("onHideCampaigns");
     this.$.menupane.setIndex(2);
     this.$.locateMe.addRemoveClass("tableHideKeep", true);
@@ -259,7 +259,7 @@ enyo.kind({
       //if(endDate >= date) { // "closed" campaigns shouldn't show up
       //if(currentCampaign.title !== undefined) {
       //this.$.panels.createComponent(
-        //{name: e, classes: "panelItem", fit: true, data: this.campaignArray[c], kind: enyo.FittableRows, components: [
+        //{name: e, classes: "panelItem", fit: true, data: this.campaignArray[c], kind: "enyo.FittableRows", components: [
         //{name: f, kind: "CampaignItem", fit: true, title: "" + currentCampaign.title, description: "" + currentCampaign.description},
       //]});
       //} else {

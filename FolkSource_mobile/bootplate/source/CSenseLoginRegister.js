@@ -1,7 +1,7 @@
 enyo.kind({
   name: "CSenseLoginRegister",
   classes: "background",
-  kind: enyo.FittableRows,
+  kind: "enyo.FittableRows",
   published: {
     register: !1
   },
@@ -9,42 +9,42 @@ enyo.kind({
     onLoggedIn: ""
   },
   components: [
-    {name: "signals", kind: enyo.Signals, onLeaderLoaded: "updateProgress", onCampLoaded: "updateProgress"},
-    {name: "sendingPopup", kind: onyx.Drawer, orient: "v", style: "width: 100%;", layoutKind: enyo.FittableRowsLayout, open: false, components: [
+    {name: "signals", kind: "enyo.Signals", onLeaderLoaded: "updateProgress", onCampLoaded: "updateProgress"},
+    {name: "sendingPopup", kind: "onyx.Drawer", orient: "v", style: "width: 100%;", layoutKind: "enyo.FittableRowsLayout", open: false, components: [
       {name: "sendProgress", kind: "CustomProgress", progress: 0, fit: true, components: [
         {name: "sendMessage", content: "Logging in..."},
       ]}
     ]},
-    {name: "gbox", kind: enyo.FittableRows, fit: true, components: [
-      {name: "trying", kind: onyx.Scrim, floating: false, showing: false, classes: "onyx-scrim-translucent"},
-      {kind: enyo.FittableRows, fit: true, style: "margin-left: auto; margin-right: auto; border: 0px; max-width: 90%;", components: [
+    {name: "gbox", kind: "enyo.FittableRows", fit: true, components: [
+      {name: "trying", kind: "enyo.Scrim", floating: false, showing: false, classes: "enyo-scrim-translucent"},
+      {kind: "enyo.FittableRows", fit: true, style: "margin-left: auto; margin-right: auto; border: 0px; max-width: 90%;", components: [
         {name: "rbox", kind: "onyx.RadioGroup", style: "text-align: center;", classes: "nice-padding", onActivate: "changePanels", components: [
         {content: "Login", active: !0, classes: "light-background", ontap: "setupLogin"},
         {content: "Register", classes: "light-background", ontap: "setupRegister"}
       ]},
-      {name: "login", showing: true, kind: enyo.FittableRows, components: [
-        {kind: onyx.InputDecorator, alwaysLooksFocused: true, classes: "nice-margin", style: "width: 100%;", components: [
-        {name: "usernameLogin", kind: enyo.Input, placeholder: "Username", type: "text", style: "width: 100%;", attributes: {autocorrect: "off", autocaptialize: "none"}, onkeyup: "checkFields" },
+      {name: "login", showing: true, kind: "enyo.FittableRows", components: [
+        {kind: "onyx.InputDecorator", alwaysLooksFocused: true, classes: "nice-margin", style: "width: 100%;", components: [
+        {name: "usernameLogin", kind: "enyo.Input", placeholder: "Username", type: "text", style: "width: 100%;", attributes: {autocorrect: "off", autocaptialize: "none"}, onkeyup: "checkFields" },
       ]},
-      {kind: onyx.InputDecorator, alwaysLooksFocused: true, classes: "nice-margin", style: "width: 100%;", components: [
-        {name: "passwordLogin", kind: enyo.Input, placeholder: "Password", type: "password", style: "width: 100%;", onkeyup: "checkFields" }
-      ]},
-      ]},
-      {name: "register", showing: false, kind: enyo.FittableRows, components: [
-        {kind: onyx.InputDecorator, style: "width: 100%;", alwaysLooksFocused: true, classes: "nice-margin", components: [
-        {name: "emailRegister", kind: enyo.Input, placeholder: "E-Mail", type: "email", style: "width: 100%;", onkeyup: "emailRegexCheck" }
-      ]},
-      {kind: onyx.InputDecorator, style: "width: 100%;", alwaysLooksFocused: true, classes: "nice-margin", components: [
-        {name: "usernameRegister", kind: enyo.Input, placeholder: "Username", type: "text", attributes: {autocorrect: "off", autocaptialize: "none"}, style: "width: 100%;", onkeyup: "checkFields" }
-      ]},
-      {kind: onyx.InputDecorator, style: "width: 100%;", alwaysLooksFocused: true, classes: "nice-margin", components: [
-        {name: "passwordRegister", kind: enyo.Input, placeholder: "Password", type: "password", style: "width: 100%;", onkeyup: "checkFields" }
+      {kind: "onyx.InputDecorator", alwaysLooksFocused: true, classes: "nice-margin", style: "width: 100%;", components: [
+        {name: "passwordLogin", kind: "enyo.Input", placeholder: "Password", type: "password", style: "width: 100%;", onkeyup: "checkFields" }
       ]},
       ]},
-      {name: "logButton", kind: onyx.Button, content: "Login", disabled: true, classes: "light-background nice-margin", ontap: "buildURL", style: "width: 100%;"},
+      {name: "register", showing: false, kind: "enyo.FittableRows", components: [
+        {kind: "onyx.InputDecorator", style: "width: 100%;", alwaysLooksFocused: true, classes: "nice-margin", components: [
+        {name: "emailRegister", kind: "enyo.Input", placeholder: "E-Mail", type: "email", style: "width: 100%;", onkeyup: "emailRegexCheck" }
+      ]},
+      {kind: "onyx.InputDecorator", style: "width: 100%;", alwaysLooksFocused: true, classes: "nice-margin", components: [
+        {name: "usernameRegister", kind: "enyo.Input", placeholder: "Username", type: "text", attributes: {autocorrect: "off", autocaptialize: "none"}, style: "width: 100%;", onkeyup: "checkFields" }
+      ]},
+      {kind: "onyx.InputDecorator", style: "width: 100%;", alwaysLooksFocused: true, classes: "nice-margin", components: [
+        {name: "passwordRegister", kind: "enyo.Input", placeholder: "Password", type: "password", style: "width: 100%;", onkeyup: "checkFields" }
+      ]},
+      ]},
+      {name: "logButton", kind: "onyx.Button", content: "Login", disabled: true, classes: "light-background nice-margin", ontap: "buildURL", style: "width: 100%;"},
       ]}
-      /*{kind: enyo.ToolDecorator, classes: "niceish-padding", components: [
-        {kind: onyx.ToggleButton, onContent: "Yes", offContent: "No", value: true, onchange: "setRemember"},
+      /*{kind: "enyo.ToolDecorator", classes: "niceish-padding", components: [
+        {kind: "onyx.ToggleButton", onContent: "Yes", offContent: "No", value: true, onchange: "setRemember"},
         {name: "text", content: "Remember Me", style: "margin-left: 3px; margin-right: 3px;"},
         ]},*/
     ]},

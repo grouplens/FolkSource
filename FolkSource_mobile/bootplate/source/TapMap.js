@@ -2,7 +2,7 @@ enyo.kind({
 	//reacts to "osm_reverse_geocoder" type of question
   name: "TapMap",
   style: "position: relative;",
-  kind: enyo.FittableRows,
+  kind: "enyo.FittableRows",
   components: [
 		{kind: "MediaSensor", type: "camera", sendAutomatically: false},
 		{content: "Where does the warning apply? Tap on the map to let us know!", style: "font-size: 11pt; font-weight: 100; text-align: center; padding: 3px;", classes: "dark-background"},

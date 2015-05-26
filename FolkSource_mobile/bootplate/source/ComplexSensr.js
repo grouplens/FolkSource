@@ -1,7 +1,7 @@
 enyo.kind({
 	name: "ComplexSensr",
 	classes: "light-background",
-	kind: enyo.FittableRows,
+	kind: "enyo.FittableRows",
 	published: {
 			data: "",
       location_id: "",
@@ -23,34 +23,34 @@ enyo.kind({
 	},
 	components: [
 		{kind: "enyo.Signals", onPinClicked: "chosenLocation", onPhotoData: "photoData", onButtonGroupChosen: "renderSubmitButton", onLocationFound: "saveLocation"},
-		{name: "doubleCheckPopup", kind: onyx.Popup, autoDismiss: false, centered: true, floating: true, modal: true, scrimWhenModal: false, scrim: true, classes: "dark-background-flat white-text", style: "width: 80%;", components: [
+		{name: "doubleCheckPopup", kind: "onyx.Popup", autoDismiss: false, centered: true, floating: true, modal: true, scrimWhenModal: false, scrim: true, classes: "dark-background-flat white-text", style: "width: 80%;", components: [
 			{name: "doubleCheckMessage", content: "Are you sure you want to cancel? You will lose all observation data recorded", style: "padding: 5px 0px;"},
-			{kind: enyo.ToolDecorator, classes: "senseButtons", components: [
-				{name: "no", kind: onyx.Button, classes: "button-style-negative", ontap: "close", components: [
+			{kind: "enyo.ToolDecorator", classes: "senseButtons", components: [
+				{name: "no", kind: "onyx.Button", classes: "button-style-negative", ontap: "close", components: [
 					{tag: "i", classes: "fa fa-ban fa-large"}
 				]},
-				{name: "yes", kind: onyx.Button, classes: "button-style-affirmative", ontap: "close", components: [
+				{name: "yes", kind: "onyx.Button", classes: "button-style-affirmative", ontap: "close", components: [
 					{tag: "i", classes: "fa fa-check fa-large"}
 				]},
 			]}
 		]},
-		{name: "locationPopup", kind: onyx.Drawer, orient: "v", style: "width: 100%;", layoutKind: enyo.FittableRowsLayout, classes: "dark-background-flat", open: true, components: [
+		{name: "locationPopup", kind: "onyx.Drawer", orient: "v", style: "width: 100%;", layoutKind: "enyo.FittableRowsLayout", classes: "dark-background-flat", open: true, components: [
       {content: "Finding location...", style: "margin-left: auto; margin-right: auto; text-align: center;", classes: "nice-padding"},
 		]},
-		{name: "sendingPopup", kind: onyx.Drawer, orient: "v", style: "width: 100%;", layoutKind: enyo.FittableRowsLayout, open: false, components: [
+		{name: "sendingPopup", kind: "onyx.Drawer", orient: "v", style: "width: 100%;", layoutKind: "enyo.FittableRowsLayout", open: false, components: [
 			{name: "sendProgress", kind: "CustomProgress", progress: 0, fit: true, components: [
 				{name: "sendMessage", content: "Sending submission"},
 			]}
 		]},
-		{kind: enyo.FittableRows, fit: true, components: [
+		{kind: "enyo.FittableRows", fit: true, components: [
 			{name: "taskDesc", content: "", style: "font-size: 11pt; font-weight: 100; text-align: center; padding: 3px;", classes: "light-background"},
-			{name: "scrim", kind: onyx.Scrim, floating: false, showing: false, classes: "onyx-scrim-translucent"},
-			{name: "acc", kind: "enyo.Scroller", layoutKind: enyo.FittableRowsLayout, vertical: "auto", horizontal: "hidden", fit: true, strategyKind: "TouchScrollStrategy"},
-			{name: "buttons", kind: enyo.ToolDecorator, classes: "senseButtons", components: [
-				{name: "remove", kind: onyx.Button, classes: "button-style button-style-negative", ontap: "togglePopup", components: [
+			{name: "scrim", kind: "enyo.Scrim", floating: false, showing: false, classes: "enyo-scrim-translucent"},
+			{name: "acc", kind: "enyo.Scroller", layoutKind: "enyo.FittableRowsLayout", vertical: "auto", horizontal: "hidden", fit: true, strategyKind: "TouchScrollStrategy"},
+			{name: "buttons", kind: "enyo.ToolDecorator", classes: "senseButtons", components: [
+				{name: "remove", kind: "onyx.Button", classes: "button-style button-style-negative", ontap: "togglePopup", components: [
 					{tag: "i", classes: "fa fa-ban fa-large"}
 				]},
-				{name: "submit", kind: onyx.Button, classes: "button-style button-style-affirmative", disabled: true, ontap: "togglePopup", components: [
+				{name: "submit", kind: "onyx.Button", classes: "button-style button-style-affirmative", disabled: true, ontap: "togglePopup", components: [
 					{tag: "i", classes: "fa fa-check fa-large"}
 				]}
 			]}
@@ -73,7 +73,7 @@ enyo.kind({
   },
   rendered: function(inSender, inEvent) {
     this.inherited(arguments);
-    //this.resized();
+    //this.resize();
     this.reflow();
   },
 	saveLocation: function(inSender, inEvent) {
@@ -122,7 +122,7 @@ enyo.kind({
       this.newFormCounter(data);
     }
     /*this.render();
-      this.resized();*/
+      this.resize();*/
   },
   makeQuestion: function(type, question, index) {
     var counter = -1;
@@ -232,7 +232,7 @@ enyo.kind({
 
         this.log("D");
         this.log("SENDING TO SERVER: " + JSON.stringify(sub));
-        var url = Data.getURL() + "submission.json"; 
+        var url = Data.getURL() + "submission.json";
         var ajax = new enyo.Ajax({
           contentType: "application/json",
           method: "POST",
@@ -446,7 +446,7 @@ enyo.kind({
         array.push({content: options[i], classes: "dark-background-flat", ontap: "testButtons"});
       }
     }
-    this.$.acc.createComponent({name: name, kind: onyx.RadioGroup, classes: "center nice-padding", components: array}, {owner: this});
+    this.$.acc.createComponent({name: name, kind: "onyx.RadioGroup", classes: "center nice-padding", components: array}, {owner: this});
   },
   newTime: function(input) {
     var date = new Date();
@@ -457,7 +457,7 @@ enyo.kind({
   },
   newFormMultipleChoice: function(input) {
     var options = input.options.split("|");
-    this.$.acc.createComponent({name: "groupbox", classes: "center", style: "clear: both;", kind: enyo.ToolDecorator, components: []}, {owner: this});
+    this.$.acc.createComponent({name: "groupbox", classes: "center", style: "clear: both;", kind: "enyo.ToolDecorator", components: []}, {owner: this});
     for (var i in options) {
       var checkName = "checkbox_" + i;
       var contName = "content_" + i;

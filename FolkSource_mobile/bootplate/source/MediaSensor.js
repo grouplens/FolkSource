@@ -1,6 +1,6 @@
 enyo.kind({
 	name: "MediaSensor",
-	kind: enyo.FittableRows,
+	kind: "enyo.FittableRows",
 	published: {
 		type: "camera",
 		readyToUpload: false,
@@ -15,17 +15,17 @@ enyo.kind({
 		onFailed: ""
 	},
 	components: [
-    {kind: enyo.Signals, onSendFiles: "uploadFile"},
+    {kind: "enyo.Signals", onSendFiles: "uploadFile"},
 		{name: "mediaDiv", components: [
-			{name: "img", kind: enyo.Image, src: "filler", style: "width: 80%; margin-left: 10%; margin-right: 10%", showing: false},
+			{name: "img", kind: "enyo.Image", src: "filler", style: "width: 80%; margin-left: 10%; margin-right: 10%", showing: false},
 			{name: "videoCont", tag: "video", showing: false, style: "width: 100%;", attributes: {width: "320", autobuffer: "", controls: ""}, ontap: function() {this.play();}, components: [
 				{name: "video", tag: "source", attributes: {src: "filler"}}
 			]},
-			{name: "playButton", content: "Play back", kind: enyo.Button, classes: "button-style", style: "width: 80%; margin-left: 10%; margin-right: 10%;", ontap: "playback", showing: false, components: [
+			{name: "playButton", content: "Play back", kind: "enyo.Button", classes: "button-style", style: "width: 80%; margin-left: 10%; margin-right: 10%;", ontap: "playback", showing: false, components: [
 				{name: "content", tag: "i", classes: "icon-play"}
 			]}
 		]},
-		{name: "mediaButton", kind: onyx.Button, classes: "button-style", style: "width: 80%; margin-left: 10%; margin-right: 10%;", content: "Record", ontap: "parseAndRecordSensor"}
+		{name: "mediaButton", kind: "onyx.Button", classes: "button-style", style: "width: 80%; margin-left: 10%; margin-right: 10%;", content: "Record", ontap: "parseAndRecordSensor"}
 	],
 	create: function(inSender, inEvent) {
 		this.inherited(arguments);
@@ -96,7 +96,7 @@ enyo.kind({
 				break;
 		}
 		this.$.mediaDiv.render();
-		this.$.mediaDiv.resized();
+		this.$.mediaDiv.resize();
 		this.readyToUpload = true;
 		this.recorded = true;
 

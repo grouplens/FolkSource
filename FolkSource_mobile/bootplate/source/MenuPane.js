@@ -1,42 +1,24 @@
 enyo.kind({
     name: "MenuPane",
     published: {
-        menu: "",
-        view: ""
+      menu: "",
+      view: ""
     },
     events: {
-        onViewChanged: "",
-        onMenuOpened: "",
-        onMenuClosed: ""
+      onViewChanged: "",
+      onMenuOpened: "",
+      onMenuClosed: ""
     },
     classes: "onyx menu-pane",
     style: "overflow: hidden;",
     position: {
-        menu: {
-            min: 0,
-            max: 85
-        }
+      menu: { min: 0, max: 85 }
     },
     controlParentName: "pane",
-    components: [{
-        name: "menu",
-        classes: "enyo-fit menupane-menu",
-        ontap: "menuTapHandler",
-        style: "float: left;"
-    }, {
-        name: "pane",
-        kind: "enyo.Slideable",
-        classes: "menupane-pane enyo-fit",
-        /*layoutKind: "enyo.FittableRowsLayout",
-        fit: true,*/
-        value: 0,
-        min: 0,
-        max: 85,
-        unit: "%",
-        draggable: !1,
-        //style: "width: 100%; height: 100%;",
-        onAnimateFinish: "paneAnimateFinishHandler"
-    }],
+    components: [
+      {name: "menu", classes: "enyo-fit menupane-menu", ontap: "menuTapHandler", style: "float: left;"},
+      {name: "pane", kind: "enyo.Slideable", classes: "menupane-pane enyo-fit", value: 0, min: 0, max: 85, unit: "%", draggable: !1, onAnimateFinish: "paneAnimateFinishHandler"}
+    ],
     selectView: function (a) {
         var b = this.getClientControls();
         enyo.forEach(b, function (b) {
