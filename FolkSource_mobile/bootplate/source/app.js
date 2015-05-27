@@ -4,6 +4,7 @@ enyo.kind({
 	view: "FolkSource.MainView"
 });
 
+
 enyo.ready(function () {
 	new FolkSource.Application({name: "app"});
 });
