@@ -34,7 +34,10 @@ enyo.kind({
 		]},
 		{name: "loginRegister", kind: "CSenseLoginRegister"},
 		{name: "toolbar", kind: onyx.Toolbar, layoutKind: enyo.FittableColumnsLayout, classes: "dark-background-flat", components: [
-      {kind: enyo.Image, src: "./assets/a_folksource_logo.png", alt: "FolkSource logo", position: "center", style: "height: 60px;"},
+			{kind: "enyo.ToolDecorator", ontap: "sendGoHome", components: [
+				{tag: "i", classes: "icon icon-3x icon-chevron-left"},
+				{kind: enyo.Image, src: "./assets/a_folksource_logo.png", alt: "FolkSource logo", position: "center", style: "height: 60px;"},
+			]},
 			{name: "showButton", kind: onyx.Button, classes: "button-style light-background", disabled: true, ontap: "showCampaigns", attributes: {title: "Click here to see campaigns and their submissions."}, components: [
 				{name: "spin", showing: true, tag: "i", classes: "icon-refresh icon-spin"},
 				{name: "menuIcon", tag: "i", classes: "icon-list-ul icon-large", showing: false}
@@ -93,6 +96,7 @@ enyo.kind({
 		onShowTapped: "",
 		onViewportChanged: "",
 		onCleanupSelected: "",
+		onGoHome: "",
 	},
 	handlers: {
 		//onAddPins: "enableMarkerPlacementMode",
@@ -189,6 +193,10 @@ enyo.kind({
 		}
 	},
 
+	sendGoHome: function(inSender, inEvent) {
+		this.doGoHome();
+		return;
+	},
 	doubleCheckSend: function(inSender, inEvent) {
 		this.$.doubleCheckSendPopup.show();
 	},
@@ -302,7 +310,7 @@ enyo.kind({
 		this.fixTooltip(this.remover._tooltip._container);
 	},
 	highlightMarkerPolygon: function(inSender, inEvent) {
-		var layerCont = inEvent.data; 
+		var layerCont = inEvent.data;
 		if(this.map.hasLayer(layerCont.layer)) {
 			var layer = layerCont.layer;
 			if(layerCont.layerType === "marker") {
@@ -702,7 +710,7 @@ enyo.kind({
 
     var feature;
 
-    //this.map.on("viewreset", enyo.bind(this, 
+    //this.map.on("viewreset", enyo.bind(this,
     this.log(path);
     resetPoints(this.map);
     function resetPoints(map, path, collection) {
