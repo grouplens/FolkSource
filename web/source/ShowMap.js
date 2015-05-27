@@ -34,7 +34,7 @@ enyo.kind({
 		]},
 		{name: "loginRegister", kind: "CSenseLoginRegister"},
 		{name: "toolbar", kind: onyx.Toolbar, layoutKind: enyo.FittableColumnsLayout, classes: "dark-background-flat", components: [
-      {kind: enyo.Image, src: "./assets/a_folksource_logo.png", alt: "FolkSource logo", position: "center", style: "height: 60px;"},
+      {kind: enyo.Image, src: "./assets/folk_source_logo.png", alt: "FolkSource logo", position: "center", style: "height: 60px;"},
 			{name: "showButton", kind: onyx.Button, classes: "button-style light-background", disabled: true, ontap: "showCampaigns", attributes: {title: "Click here to see campaigns and their submissions."}, components: [
 				{name: "spin", showing: true, tag: "i", classes: "icon-refresh icon-spin"},
 				{name: "menuIcon", tag: "i", classes: "icon-list-ul icon-large", showing: false}
@@ -479,8 +479,8 @@ enyo.kind({
       attribution: 'Map tiles by <a href="http://cartodb.com/attributions#basemaps">CartoDB</a>, under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. Data by <a href="http://www.openstreetmap.org/">OpenStreetMap</a>, under ODbL.'
     }).addTo(this.map);
     this.map._initPathRoot();
-    var test = new L.TileLayer.d3_geoJSON('http://folksource.grouplens.org/tiles/vector-polygons/{z}/{x}/{y}.geojson', {minZoom: 14, maxNativeZoom: 14, unloadInvisibleTiles: true});
-    test.addTo(this.map);
+    //var test = new L.TileLayer.d3_geoJSON('http://folksource.grouplens.org/tiles/vector-polygons/{z}/{x}/{y}.geojson', {minZoom: 14, maxNativeZoom: 14, unloadInvisibleTiles: true});
+    //test.addTo(this.map);
 
     /*var test2 = new L.TileLayer.d3_geoJSON('http://localhost:8080/vector-points/{z}/{x}/{y}.geojson', {minZoom: 13});
     test2.addTo(this.map);
