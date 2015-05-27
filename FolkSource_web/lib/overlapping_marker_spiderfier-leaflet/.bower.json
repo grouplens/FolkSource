@@ -1,0 +1,35 @@
+{
+  "name": "overlapping_marker_spiderfier-Leaflet",
+  "version": "0.2.6",
+  "homepage": "https://github.com/heiglandreas/OverlappingMarkerSpiderfier-Leaflet",
+  "authors": [
+    "George MacKerron",
+    "Andreas Heigl <andreas@heigl.org>"
+  ],
+  "description": "Spiderfier for Leaflet",
+  "main": [
+    "dist/osm.js",
+    "dist/osm.min.js"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "leaflet": "~0.7.3"
+  },
+  "_release": "0.2.6",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.2.6",
+    "commit": "17e41fb74692bed08452caa4c1c39aa041f85fd3"
+  },
+  "_source": "git://github.com/heiglandreas/OverlappingMarkerSpiderfier-Leaflet.git",
+  "_target": "~0.2.6",
+  "_originalSource": "overlapping_marker_spiderfier-leaflet",
+  "_direct": true
+}

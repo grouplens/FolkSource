@@ -1,14 +1,14 @@
 [submodule "web/assets/Leaflet.markercluster"]
-	path = web/assets/Leaflet.markercluster
+	path = FolkSource_web/assets/Leaflet.markercluster
 	url = https://github.com/Leaflet/Leaflet.markercluster
 [submodule "web/assets/Leaflet.label"]
-	path = web/assets/Leaflet.label
+	path = FolkSource_web/assets/Leaflet.label
 	url = https://github.com/Leaflet/Leaflet.label
 [submodule "web/assets/OverlappingMarkerSpiderfier-Leaflet"]
-	path = web/assets/OverlappingMarkerSpiderfier-Leaflet
+	path = FolkSource_web/assets/OverlappingMarkerSpiderfier-Leaflet
 	url = https://github.com/jawj/OverlappingMarkerSpiderfier-Leaflet
 [submodule "web/assets/heatmap"]
-	path = web/assets/heatmap
+	path = FolkSource_web/assets/heatmap
 	url = https://github.com/pa7/heatmap.js
 [submodule "mobile/assets/leaflet"]
 	path = mobile/assets/leaflet
@@ -26,16 +26,16 @@
 	path = mobile/assets/font-awesome
 	url = https://github.com/FortAwesome/Font-Awesome.git
 [submodule "web/assets/font-awesome"]
-	path = web/assets/font-awesome
+	path = FolkSource_web/assets/font-awesome
 	url = https://github.com/FortAwesome/Font-Awesome.git
 [submodule "mobile/assets/leaflet-pip"]
 	path = mobile/assets/leaflet-pip
 	url = https://github.com/mapbox/leaflet-pip
 [submodule "web/assets/Leaflet.draw"]
-	path = web/assets/Leaflet.draw
+	path = FolkSource_web/assets/Leaflet.draw
 	url = https://github.com/Leaflet/Leaflet.draw.git
 [submodule "web/assets/Leaflet"]
-	path = web/assets/Leaflet
+	path = FolkSource_web/assets/Leaflet
 	url = https://github.com/Leaflet/Leaflet.git
 [submodule "mobile/assets/Leaflet.MapboxVectorTile"]
 	path = mobile/assets/Leaflet.MapboxVectorTile

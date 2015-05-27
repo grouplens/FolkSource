@@ -1,0 +1,8 @@
+{
+	"packagejs": "./package.js",
+	"assets": [
+		"./MIT-LICENCE.txt",
+		"./dist"
+	],
+	"libs": []
+}

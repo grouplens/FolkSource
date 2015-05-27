@@ -1,0 +1,18 @@
+{
+	"packagejs": "./package.js",
+	"assets": [
+		"./.gitignore",
+		"./.travis.yml",
+		"./CHANGELOG.md",
+		"./Jakefile.js",
+		"./MIT-LICENCE.txt",
+		"./README.md",
+		"./build",
+		"./dist",
+		"./example",
+		"./package.json",
+		"./spec",
+		"./src"
+	],
+	"libs": []
+}
