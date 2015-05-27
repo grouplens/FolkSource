@@ -6,7 +6,7 @@ enyo.kind({
 			{name: "icon", tag: "i", classes: "icon-expand", styles: "height: 100px; width: 100px;"},
 			{content: "tmp", ontap: "toggleDrawer"}
 		]},
-		{name: "drawer", kind: "onyx.Drawer", open: false, orient: "v", components: [
+		{name: "drawer", kind: "enyo.Drawer", open: false, orient: "v", components: [
 			{content: "test"}
 		]}
 	],

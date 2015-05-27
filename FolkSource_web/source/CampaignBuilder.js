@@ -1,6 +1,6 @@
 enyo.kind({
 	name: "CampaignBuilder",
-	kind: "onyx.Drawer",
+	kind: "enyo.Drawer",
 	open: false,
 	orient: "h",
 	style: "height: 100%; width: 100%;",
@@ -69,7 +69,7 @@ enyo.kind({
 
 		this.$.realContainer.createComponent({kind: "TaskBuilder", index: len, style: t, type: "TaskBuilder", classes: "active-card"});
 		this.$.realContainer.render();
-		this.$.realContainer.resized();
+		this.$.realContainer.resize();
 		this.$.nodeContainer.render();
 		if(len === 12) {
 			this.$.taskButton.setDisabled(true);
@@ -125,7 +125,7 @@ enyo.kind({
 			input.destroy()
 		});*/
 		this.$.realContainer.destroyComponents();
-		this.$.nodeContainer.resized();
+		this.$.nodeContainer.resize();
 		this.$.realContainer.render();
 	},
 	drawerAnimationEndHandler: function(inSender, inEvent) {

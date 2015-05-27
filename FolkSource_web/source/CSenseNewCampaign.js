@@ -11,7 +11,7 @@ enyo.kind({
 		onShowQuestion: "openQuestionDrawer"
 	},
 	components: [
-		{name: "questionDrawer", kind: "onyx.Drawer", layoutKind: "enyo.FittableRowsLayout", orient: "h", open: false, style: "background-color: green; height: 100%;", components: [
+		{name: "questionDrawer", kind: "enyo.Drawer", layoutKind: "enyo.FittableRowsLayout", orient: "h", open: false, style: "background-color: green; height: 100%;", components: [
 			{/*kind: "enyo.FittableRows", fit: true,*/ style: "height: 100%; background-color: blue; width: 300px;", components: [
 				{kind: "enyo.FittableColumns", components: [
 					{name: "questionButton", kind: "onyx.Button", content: "Add Question", ontap: "addQuestion", style: "width: 50%;"},
@@ -22,7 +22,7 @@ enyo.kind({
 				]}
 			]}
 		]},
-		{name: "campaignDrawer", kind: "onyx.Drawer", layoutKind: "enyo.FittableRowsLayout", orient: "h", open: false, /*fit: true,*/ style: "height: 100%;", components: [
+		{name: "campaignDrawer", kind: "enyo.Drawer", layoutKind: "enyo.FittableRowsLayout", orient: "h", open: false, /*fit: true,*/ style: "height: 100%;", components: [
 			{/*kind: "enyo.FittableRows",*/ fit: true, style: "width: 350px; height: 100%; background-color: blue;", components: [
 				{name: "campaignTitle", kind: "SaveTitledInput", big: true, title: "Campaign Title", placeholder: "Campaign Title"},
 				{name: "campaignDesc", kind: "TitledTextArea", big: true, title: "Campaign Description", placeholder: "Please Describe your Campaign goals..."},
@@ -46,7 +46,7 @@ enyo.kind({
 		this.numQuestions++;
 		this.$.realQuestionContainer.createComponent({kind: "QuestionBuilder", stepIndex: len, questionIndex: this.numQuestions, classes: "bordering hanging-child"});
 		this.$.realQuestionContainer.render();
-		this.$.questionContainer.resized();
+		this.$.questionContainer.resize();
 
 		//return true;
 	},
@@ -57,7 +57,7 @@ enyo.kind({
 		this.numSensors++;
 		this.$.realQuestionContainer.createComponent({kind: "SensorChooser", stepIndex: len, sensorIndex: this.numSensors, classes: "bordering hanging-child"});
 		this.$.realQuestionContainer.render();
-		this.$.questionContainer.resized();
+		this.$.questionContainer.resize();
 
 		//return true;
 	},
@@ -83,8 +83,8 @@ enyo.kind({
 		var len = this.$.realContainer.getComponents().length + 1;
 		this.$.realContainer.createComponent({kind: "TaskBuilder", index: len, classes: "bordering"});
 		this.$.realContainer.render();
-		this.$.nodeContainer.resized();
-		//this.$.mapDrawer.resized();
+		this.$.nodeContainer.resize();
+		//this.$.mapDrawer.resize();
 	},
 	openQuestionDrawer: function(inSender, inEvent) {
 		this.log();

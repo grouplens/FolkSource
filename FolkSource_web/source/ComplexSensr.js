@@ -66,7 +66,7 @@ enyo.kind({
     },
     rendered: function(inSender, inEvent) {
         this.inherited(arguments);
-        this.resized();
+        this.resize();
         this.reflow();
     },
     currentLocation: function() {
@@ -176,7 +176,7 @@ enyo.kind({
 			this.newFormCounter(data)
 		}
 		this.render();
-		this.resized();
+		this.resize();
 	},
 	fileEntry: function(a) {
 		window.resolveLocalFileSystemURI(a, this.getImageData, null);

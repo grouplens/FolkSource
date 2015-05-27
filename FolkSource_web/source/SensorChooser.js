@@ -19,7 +19,7 @@ enyo.kind({
 	components: [
 		{name: "stepTitle", kind: "Title", big: true, save: true, fit: true, title: "#"},
 		{name: "sensorTitle", kind: "Title", title: "Sensor #", save: false, classes: "hanging-child"},
-		{name: "sensorDrawer", kind: "onyx.Drawer", orient: "v", open: true, classes: "hanging-child", components: [
+		{name: "sensorDrawer", kind: "enyo.Drawer", orient: "v", open: true, classes: "hanging-child", components: [
 			{title: "Choose a Sensor:", kind: "Title", save: false, classes: "hanging-child"},
 			{tag: "select", classes: "hanging-child", onchange: "pickSensor", components: [
 				/*{tag: "option", content: "Accelerometer"},*/

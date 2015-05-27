@@ -21,7 +21,7 @@ enyo.kind({
 		//{kind: "enyo.Signals", onDestroyedQuestion: "checkTitles"},
 		{name: "stepTitle", kind: "Title", title: "#", /*circled: true,*/ big: true, save: true, fit: true, style: "height: 100%;"},
 		{name: "questionTitle", kind: "Title", title: "Question #", classes: "nice-padding", save: false},
-		{name: "questionDrawer", kind: "onyx.Drawer", open: true, orient: "v", layoutKind: "enyo.FittableRowsLayout", classes: "nice-padding", components: [
+		{name: "questionDrawer", kind: "enyo.Drawer", open: true, orient: "v", layoutKind: "enyo.FittableRowsLayout", classes: "nice-padding", components: [
 			{name: "questionText", kind: "TitledInput", title: "What's the question?", placeholder: "Enter your question text here...", classes: "nice-padding", save: false},
 			{kind: "Title", title: "Type of Question:", classes: "nice-padding", save: false},
 			{name: "questionChoices", tag: "select", classes: "nice-padding hanging-child", onchange: "questionPicked", components: [
@@ -57,7 +57,7 @@ enyo.kind({
 		this.$.optionEntry.setValue('');
 		this.$.optionList.setCount(this.options.length);
 		this.$.optionList.reset();
-		this.$.optionList.resized();
+		this.$.optionList.resize();
 		this.$.optionList.scrollToBottom();
 	},
 	checkTitles: function(inSender, inEvent) {

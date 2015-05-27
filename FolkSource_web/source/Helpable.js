@@ -29,7 +29,7 @@ enyo.kind({
 	build: function(inSender, inEvent) {
 		this.$.holder.createComponents(this.wrappedComponents);
 		this.$.text.setContent(this.helpText);
-		this.resized();
+		this.resize();
 	},
 	showPopup: function(inSender, inEvent) {
 		this.$.popup.show();

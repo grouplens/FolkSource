@@ -5,15 +5,13 @@ enyo.depends(
 	"$lib/leaflet-draw",
 	"$lib/leaflet.markercluster",
 	"$lib/overlapping_marker_spiderfier-leaflet",
+	"$lib/Leaflet.MapboxVectorTile",
 	"$lib/terraformer",
 	"$lib/layout",
 	"$lib/onyx",
 	"style",
 	"data",
 	"views",
-	// "app.js",
-	"App.css",
-	"App.js",
 	"CampaignBuilder.js",
 	"CampaignHeader.js",
 	"CreateMap.js",
@@ -41,5 +39,7 @@ enyo.depends(
 	"Title.js",
 	"TitledDrawer.js",
 	"TitledInput.js",
-	"TitledTextArea.js"
+	"TitledTextArea.js",
+	"App.js",
+	"App.css"
 )

@@ -1,8 +1,8 @@
 enyo.kind({
 	name: "ShowMap",
 	kind: "enyo.FittableRows",
-	/*classes: "enyo-fit",
-	style: "overflow: hidden;",*/
+	// classes: "enyo-fit",
+	style: "overflow: hidden;",
 	components: [
 		{kind: "enyo.Signals", onMapClicked: "newPin", onLocationFound: "locSuccess", onNoLocationFound: "locError"},
 		//{name: "gps", kind: "rok.geolocation", watch: false, enableHighAccuracy: !0, timeout: this.gpsTimeout, maximumAge: "3000", onSuccess: "locSuccess", onError: "locError"},
@@ -33,42 +33,18 @@ enyo.kind({
 			{name: "message", showing: false}
 		]},
 		{name: "loginRegister", kind: "CSenseLoginRegister"},
-		/*{name: "toolbar", kind: "onyx.Toolbar", layoutKind: "enyo.FittableColumnsLayout", classes: "dark-background-flat", components: [
-			{kind: "enyo.ToolDecorator", ontap: "sendGoHome", components: [
-				{tag: "i", classes: "icon icon-3x icon-chevron-left"},
-				{kind: "enyo.Image", src: "./assets/a_folksource_logo.png", alt: "FolkSource logo", position: "center", style: "height: 60px;"},
-			]},
-			{name: "showButton", kind: "onyx.Button", classes: "button-style light-background", disabled: true, ontap: "showCampaigns", attributes: {title: "Click here to see campaigns and their submissions."}, components: [
-				{name: "spin", showing: true, tag: "i", classes: "icon-refresh icon-spin"},
-				{name: "menuIcon", tag: "i", classes: "icon-list-ul icon-large", showing: false}
-			]},
-			{name: "brand", kind: "GrouplensBrand", fit: true},
-			{content: "Logged in as: "},
-			{name: "username", content: "anonymous"},
-			{name: "newButton", kind: "onyx.Button", classes: "button-style light-background", showing: true, ontap: "showNewMap", attributes: {title: "Click here to create a new campaign"}, components: [
-				{tag: "i", classes: "icon-plus icon-large"}
-			]},
-			{kind: "enyo.FittableColumns", components: [
-				{name: "cancelButton", kind: "onyx.Button", classes: "light-background button-style-negative", attributes: {title: "Cancel the campaign you were making."}, style: "width: 50%;", showing: false, ontap: "doubleCheckCancel", components: [
-					{tag: "i", classes: "icon-ban-circle icon-large"},
-				]},
-				{name: "saveButton", kind: "onyx.Button", classes: "light-background button-style-affirmative", attributes: {title: "Finish the campaign you were making."}, style: "width: 50%;", showing: false, ontap: "doubleCheckSend", components: [
-					{tag: "i", classes: "icon-ok icon-large"},
-				]}
-			]}
-		]},*/
 		{name: "container", kind: "enyo.FittableColumns", fit: true, components: [
 			{name: "showCamps", kind: "CSenseShowCampaigns"},
 			//{name: "showButton", kind: "onyx.Button", classes: "toolbar-button-style", ontap: "showCampaigns", content: ">"},
 			{name: "mapCont", fit: true, style: "position: relative;", components:[
-				{name: "addLocationsAndRegionsToolbar", kind: "onyx.Drawer", open: false, style: "z-index: 10; float: right;", components:[
+				{name: "addLocationsAndRegionsToolbar", kind: "enyo.Drawer", open: false, style: "z-index: 10; float: right;", components:[
 					{name: "addLandRRadioGroup", kind: "onyx.RadioGroup", components:[
 						{name: "addLocationButton", kind: "onyx.Button", classes: "button-style", content: "Add Location"},
 						{name: "addRegionButton", kind: "onyx.Button", classes: "button-style", content: "Add Region"},
 						{name: "finishAddingButton", kind: "onyx.Button", content: "Done", classes: "button-style-affirmative", ontap: "deactivateEditingInterface", style:"margin-left: 8px;"},
 					]},
 				]},
-				{name: "modifyToolbar", kind: "onyx.Drawer", open: false, style: "z-index: 10; float: right;", components:[
+				{name: "modifyToolbar", kind: "enyo.Drawer", open: false, style: "z-index: 10; float: right;", components:[
 					{kind: "enyo.ToolDecorator", components:[
 						{name: "undoButton", kind: "onyx.Button", content: "Undo", classes: "button-style-negative", style:"margin-right: 8px;"},
 						{name: "modifyRadioGroup", kind: "onyx.RadioGroup", components:[
@@ -79,7 +55,7 @@ enyo.kind({
 					]}
 				]}
 			]},
-			{name: "campaignBuilder", kind: "CampaignBuilder"},
+			// {name: "campaignBuilder", kind: "CampaignBuilder"},
 		]}
 	],
 	published: {
@@ -142,7 +118,7 @@ enyo.kind({
 		this.inherited(arguments);
 		//this.gps_watch = navigator.geolocation.watchPosition(enyo.bind(this, "locSuccess"), enyo.bind(this, "locError"), {timeout: 5000, enableHighAccuracy: false});
 
-		//this.resized();
+		//this.resize();
 		//this.$.gps.setTimeout(this.gpsTimeout);
 
 		this.lastSubmissionPoll = 0;
@@ -192,11 +168,6 @@ enyo.kind({
 			}
 		}
 	},
-
-	sendGoHome: function(inSender, inEvent) {
-		this.doGoHome();
-		return;
-	},
 	doubleCheckSend: function(inSender, inEvent) {
 		this.$.doubleCheckSendPopup.show();
 	},
@@ -213,14 +184,14 @@ enyo.kind({
 		if(LocalStorage.get("username") instanceof String) {
 			this.$.username.setContent(LocalStorage.get("username").toString());
 		}
-    //this.$.username.resized();
-    //this.$.toolbar.resized();
+    //this.$.username.resize();
+    //this.$.toolbar.resize();
 		//this.$.toolbar.reflow();
 		this.$.loginRegister.hide();
     this.$.showCamps.fetchCampaigns();
 	},
 	resizeContainer: function(inSender, inEvent) {
-		//this.$.container.resized();
+		//this.$.container.resize();
 	},
 
 	showEditFeaturesToolbar: function(inSender, inEvent){
@@ -486,20 +457,39 @@ enyo.kind({
     L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',{
       attribution: 'Map tiles by <a href="http://cartodb.com/attributions#basemaps">CartoDB</a>, under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. Data by <a href="http://www.openstreetmap.org/">OpenStreetMap</a>, under ODbL.'
     }).addTo(this.map);
-    this.map._initPathRoot();
-    var test = new L.TileLayer.d3_geoJSON('http://folksource.grouplens.org/tiles/vector-polygons/{z}/{x}/{y}.geojson', {minZoom: 14, maxNativeZoom: 14, unloadInvisibleTiles: true});
-    test.addTo(this.map);
+    // this.map._initPathRoot();
 
-    /*var test2 = new L.TileLayer.d3_geoJSON('http://localhost:8080/vector-points/{z}/{x}/{y}.geojson', {minZoom: 13});
-    test2.addTo(this.map);
-
-    /*if(LocalStorage.get("geojson")) {
-      this.renderPointsViaD3(LocalStoage.get("geojson"));
-    }*/
-    /*var ajax = new enyo.Ajax({url: Data.getURL() + "locations", method: "GET", handleAs: "json"});
-    ajax.response(this, "testResponse");
-    ajax.go();*/
-
+    var vectors = new L.TileLayer.MVTSource({
+      url: 'http://innsbruck-umh.cs.umn.edu/tiles/buildings/{z}/{x}/{y}.mapbox',
+      style: function(feature, context) {
+        var style={};
+        if(feature.type === 1) {
+          style.radius = 3;
+        }
+        if(feature.properties.allowed === 'n') {
+          style.color = "rgba(123,50,148,0.7)";
+          style.size=5;
+        } else if(feature.properties.allowed === 'y') {
+          style.color = "rgba(0,136,55,0.7)";
+          style.size=5;
+        } else {
+          style.color = "rgba(64,64,64,0.7)";
+          style.size=5;
+        }
+        return style;
+      },
+      mutexToggle: true,
+      getIDForLayerFeature: function(feature) {
+        if(feature.type === 2) {
+          feature.type = 3;
+        }
+        feature.properties.task_id=59;
+        //return Number(feature.properties.id);
+        return Number(feature.properties.uid);
+      }
+      // onClick: enyo.bind(this, "makeBubbleClick")
+    });
+    this.map.addLayer(vectors);
 
 		//-- markerCluster initilization --//
 		this.clusterGroup = new L.MarkerClusterGroup({maxClusterRadius: 35, singleMarkerMode: true, showCoverageOnHover: true, spiderfyOnMaxZoom: false, iconCreateFunction: enyo.bind(this, "clusterIconCreateFunc")});
@@ -644,12 +634,12 @@ enyo.kind({
 			this.$.loginRegister.show();
     } else {
 			//this.$.username.setContent(LocalStorage.get("username"));
-			// //this.$.toolbar.resized();
+			// //this.$.toolbar.resize();
       // //this.$.toolbar.reflow();
       this.hideLogin(null, null);
 			//this.$.addButton.setDisabled(false);
 		}
-		//this.$.toolbar.resized();
+		//this.$.toolbar.resize();
 	},
 	savePoint: function(inEvent) {
 		/*var tmp = LocalStorage.get(this.currentTaskName);
@@ -672,7 +662,7 @@ enyo.kind({
 
 		this.waterfallDown("onShowTapped");
 		this.deactivateEditingInterface();
-		//this.$.mapCont.resized();
+		//this.$.mapCont.resize();
 		this.map.invalidateSize();
 	},
 	showNewMap: function(inSender, inEvent) {
@@ -681,13 +671,13 @@ enyo.kind({
 		//this.map.panBy([450,0],{animate: false, duration: 0});
 		//this.log();
 		/*this.map.invalidateSize();
-		this.$.mapCont.resized();*/
+		this.$.mapCont.resize();*/
 		this.waterfallDown("onNewTapped");
 
 		this.$.newButton.setShowing(false);
 		this.$.saveButton.setShowing(true);
 		this.$.cancelButton.setShowing(true);
-		//this.$.toolbar.resized();
+		//this.$.toolbar.resize();
 		//this.$.toolbar.render();
 	},
   renderPointsViaD3: function(points) {
@@ -792,7 +782,7 @@ enyo.kind({
 		this.$.saveButton.setShowing(false);
 		this.$.cancelButton.setShowing(false);
 		this.$.newButton.setShowing(true);
-		//this.$.toolbar.resized();
+		//this.$.toolbar.resize();
 		//this.$.toolbar.render();
 		//this.map.panBy([-450,0],{animate: false, duration: 0});
 		//this.log();
@@ -1084,16 +1074,16 @@ enyo.kind({
 	adjustMapSize: function(inSender, inEvent){
 		/*this.log();
 		this.map.panBy([inEvent.offset,0],{animate: true, duration: 0});*/
-		this.$.container.resized();
+		this.$.container.resize();
 		this.map.invalidateSize({animate: false});
-		//this.$.mapCont.resized();
+		//this.$.mapCont.resize();
 		return true;
 	},
 
 	panToSubmissionsGroup: function(inSender, inEvent){
 		var taskId = inEvent.taskId;
 		var offset = inEvent.offset;
-		//this.$.mapCont.resized();
+		//this.$.mapCont.resize();
 		this.log();
 		this.map.panBy([offset,0],{animate: false, duration: 0});
 		this.map.invalidateSize();
@@ -1105,7 +1095,7 @@ enyo.kind({
 		/*this.map.invalidateSize();
 		if(offset != 0) {
 			this.map.panBy([offset,0],{animate: false, duration: 0});
-			this.$.mapCont.resized();
+			this.$.mapCont.resize();
 			this.log();
 		}*/
 
@@ -1129,7 +1119,7 @@ enyo.kind({
 		this.$.spin.setShowing(false);
 		this.$.menuIcon.setShowing(true);
 		this.$.showButton.setDisabled(false);
-		//this.$.toolbar.resized();
+		//this.$.toolbar.resize();
 		//this.$.toolbar.render();
 		this.lastSubmissionPoll = inEvent.time;
 	},

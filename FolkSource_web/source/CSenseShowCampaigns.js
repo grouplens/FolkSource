@@ -30,12 +30,12 @@ enyo.kind({
 	components:[
 		//TODO: finish making the user thing work
 		/*{kind: "enyo.FittableColumns", classes: "dark-background", components: [
-			{name: "choices", kind: "onyx.Drawer", orient: "v", open: false, classes: "dark-background", components: [
+			{name: "choices", kind: "enyo.Drawer", orient: "v", open: false, classes: "dark-background", components: [
 				{name: "choiceSettingsButton", kind: "onyx.Button", classes: "button-style light-background", style: "height: 100%;", ontap: "toggleChoiceDrawer", components: [
 					{tag: "i", classes: "icon-cog"}
 				]},
 			]},
-			{kind: "onyx.Drawer", name: "choiceDrawer", open: false, fit: true, classes: "dark-background", orient: "v", components: [
+			{kind: "enyo.Drawer", name: "choiceDrawer", open: false, fit: true, classes: "dark-background", orient: "v", components: [
 				{content: "What kinds of details would you like to see?", style: "font-size: 11pt; font-weight: 100; text-align: center;", classes: "dark-background"},
 				{name: "switcher", style: "width: 100%; text-align: center;", kind: "onyx.RadioGroup", classes: "button-style", components: [
 					{content: "Submissions", active: true, classes: "light-backround"},
@@ -45,7 +45,7 @@ enyo.kind({
 		]},*/
 		{kind: "enyo.FittableRows", fit: true, components: [
 			{kind: "enyo.FittableColumns", fit: true, components: [
-				{name: "campaignDrawer", kind: "onyx.Drawer", layoutKind: "enyo.FittableRowsLayout", style: "z-index: 15; position: relative;", orient: "h", open: false, classes: "dark-background", components: [
+				{name: "campaignDrawer", kind: "enyo.Drawer", layoutKind: "enyo.FittableRowsLayout", style: "z-index: 15; position: relative;", orient: "h", open: false, classes: "dark-background", components: [
 					{name: "campDrawerHeader", content: "Campaigns:"},
 					{name: "campList", kind: "CSenseShowCampaignsList", onSetupItem: "setupCampList", /*fit: true, */style: "width: 150px; padding: 4px; ", touch: true, count: 0, components: [
 						{name: "campItem", kind: "onyx.Item", ontap: "campTapped", classes: "bordering standard-card", components: [
@@ -54,7 +54,7 @@ enyo.kind({
 						]}
 					]},
 				]},
-				{name: "taskDrawer", kind: "onyx.Drawer", style: "z-index: 15; position: relative;", orient: "h", open: false, classes: "dark-background", components: [
+				{name: "taskDrawer", kind: "enyo.Drawer", style: "z-index: 15; position: relative;", orient: "h", open: false, classes: "dark-background", components: [
 					{name: "taskDrawerHeader", content: "Tasks:"},
 					{name: "taskList", kind: "CSenseShowCampaignsList", onSetupItem: "setupTaskList", style: "width: 150px; padding: 4px;", touch: true, count: 0, components: [
 						{name: "taskItem", kind: "onyx.Item", ontap: "taskTapped", classes: "bordering standard-card", components: [
@@ -64,12 +64,12 @@ enyo.kind({
 					], taskIdToIndex: {}, /*Mapping of task id to index in the taskList*/ },
 
 				]},
-				{name: "taskDetailDrawer", kind: "onyx.Drawer", style: "z-index: 15; position: relative;", orient: "h", open: false, classes: "dark-background", published: { currentTaskId: null, }, components: [
+				{name: "taskDetailDrawer", kind: "enyo.Drawer", style: "z-index: 15; position: relative;", orient: "h", open: false, classes: "dark-background", published: { currentTaskId: null, }, components: [
 					{name: "taskDetailDrawerContent", kind: "CSenseTaskDetail", fit: true, style: "width: 200px;padding: 4px;"},
 				]},
 			]},
 			{kind: "DetailsDrawer"},
-			/*{name: "detailDrawer", kind: "onyx.Drawer", orient: "v", open: false, classes: "light-background", style: "max-width: 524px;", components: [
+			/*{name: "detailDrawer", kind: "enyo.Drawer", orient: "v", open: false, classes: "light-background", style: "max-width: 524px;", components: [
 				{kind: "enyo.FittableColumns", classes: "active-card", components: [
 					{name: "heading", content: "Submission details", fit: true,},
 					{tag: "i", classes: "icon-remove icon-2x hilight-icons-negative", ontap: "closeDetailDrawer"},
@@ -214,7 +214,7 @@ enyo.kind({
 		}
 		this.$.answers.render();
 		this.getGeocode(data);
-		this.resized();
+		this.resize();
 		this.$.detailDrawer.setOpen(true);
 		return true;
 	},
@@ -265,7 +265,7 @@ enyo.kind({
 		//this.$.taskDetailDrawerContent.setTask(task);
 		//this.$.taskDetailDrawerContent.setCont(task.submissions,"Task "+task.id,task.instructions);
 		//this.$.taskDetailDrawer.currentTaskId = task.id;
-		//this.$.choices.resized();
+		//this.$.choices.resize();
 		//this.$.choices.setOpen(true);
 
 	},
@@ -399,6 +399,6 @@ enyo.kind({
 	},
 	resizeHandler: function(){
 		this.inherited(arguments);
-		this.doListResized();
+		this.doListresize();
 	},
 });

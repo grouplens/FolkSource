@@ -40,12 +40,12 @@ enyo.kind({
 	    	this.$.slide.setMin(cHeight*-1);
 	    	this.$.slide.setValue(cHeight*-1);
 	    	this.$.slide.addStyles("height: "+cHeight+"px;");
-	    	this.resized();
-	    	this.$.slide.resized();
+	    	this.resize();
+	    	this.$.slide.resize();
 	},
 	campaignView: function(inSender, inEvent) {
 		this.$.extraArea.applyStyle("width", "0%");
-		this.$.campaignArea.resized();
+		this.$.campaignArea.resize();
 	    	this.$.extraArea.destroyComponents();
 		this.$.extraArea.render();
 		return true;
@@ -62,7 +62,7 @@ enyo.kind({
 	},
 	taskView: function(inSender, inEvent) {
 		/*this.$.extraArea.applyStyle("width", "40%");
-		this.$.campaignArea.resized();
+		this.$.campaignArea.resize();
 	    	this.$.extraArea.destroyComponents();
 		this.$.extraArea.createComponents([{name: "createMap", kind: "CreateMap", fit: true}]);
 		this.$.extraArea.render();*/
@@ -70,7 +70,7 @@ enyo.kind({
 	},
 	questionView: function(inSender, inEvent) {
 		/*this.$.extraArea.applyStyle("width", "40%");
-		this.$.campaignArea.resized();
+		this.$.campaignArea.resize();
 	    	this.$.extraArea.destroyComponents();
 		this.$.extraArea.createComponents([{name: "phoneRender", kind: "ComplexSensr", fit: true}]);
 		this.$.extraArea.render();*/

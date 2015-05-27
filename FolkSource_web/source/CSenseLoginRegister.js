@@ -22,7 +22,7 @@ enyo.kind({
       {content: "Register", classes: "button-style", ontap: "setupRegister"}
     ]},
     {name: "gbox", kind: "enyo.FittableRows", classes: "nice-padding", components: [
-      {name: "emailDrawer", kind: "onyx.Drawer", orient: "v", open: false, components: [
+      {name: "emailDrawer", kind: "enyo.Drawer", orient: "v", open: false, components: [
         {name: "email", kind: "enyo.Input", classes: "hanging-child", placeholder: "E-Mail", onkeyup: "emailRegexCheck"},
       ]},
       {name: "username", kind: "enyo.Input", classes: "hanging-child", placeholder: "Username", type: "email", onkeyup: "checkFields"},

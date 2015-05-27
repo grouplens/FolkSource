@@ -11,7 +11,7 @@ enyo.kind({
 					{kind: "enyo.ToolDecorator", ontap: "showMap", components: [
 						{content: "FolkSource"},
 						{kind: enyo.Image, src: "./assets/a_folksource_logo.png", alt: "FolkSource logo", position: "center", style: "height: 60px;"},
-						{tag: "i", classes: "icon icon-3x icon-chevron-right"},
+						{tag: "i", classes: "fa fa-3x fa-chevron-right"},
 					]},
 				]},
 				{kind: "enyo.FittableRows", fit: true, components: [
@@ -36,25 +36,25 @@ enyo.kind({
 			{name: "mapPage", kind: "enyo.FittableRows", components: [
 				{name: "mapToolbar", kind: onyx.Toolbar, layoutKind: enyo.FittableColumnsLayout, classes: "dark-background-flat", components: [
 					{kind: "enyo.ToolDecorator", ontap: "goHome", components: [
-						{tag: "i", classes: "icon icon-3x icon-chevron-left"},
+						{tag: "i", classes: "fa fa-3x fa-chevron-left"},
 						{kind: enyo.Image, src: "./assets/a_folksource_logo.png", alt: "FolkSource logo", position: "center", style: "height: 60px;"},
-					]},
-					{name: "showButton", kind: onyx.Button, classes: "button-style light-background", disabled: true, ontap: "showCampaigns", attributes: {title: "Click here to see campaigns and their submissions."}, components: [
-						{name: "spin", showing: true, tag: "i", classes: "icon-refresh icon-spin"},
-						{name: "menuIcon", tag: "i", classes: "icon-list-ul icon-large", showing: false}
+						{name: "showButton", kind: onyx.Button, showing: false, classes: "button-style light-background", disabled: true, ontap: "showCampaigns", attributes: {title: "Click here to see campaigns and their submissions."}, components: [
+							{name: "spin", showing: true, tag: "i", classes: "fa fa-refresh fa-spin"},
+							{name: "menuIcon", tag: "i", classes: "fa fa-list-ul fa-large"}
+						]},
 					]},
 					{name: "brand", kind: "GrouplensBrand", fit: true},
 					/*{content: "Logged in as: "},
 					{name: "username", content: "anonymous"},
 					{name: "newButton", kind: onyx.Button, classes: "button-style light-background", showing: true, ontap: "showNewMap", attributes: {title: "Click here to create a new campaign"}, components: [
-						{tag: "i", classes: "icon-plus icon-large"}
+						{tag: "i", classes: "fa fa-plus fa-large"}
 					]},
 					{kind: enyo.FittableColumns, components: [
 						{name: "cancelButton", kind: onyx.Button, classes: "light-background button-style-negative", attributes: {title: "Cancel the campaign you were making."}, style: "width: 50%;", showing: false, ontap: "doubleCheckCancel", components: [
-							{tag: "i", classes: "icon-ban-circle icon-large"},
+							{tag: "i", classes: "fa fa-ban-circle fa-large"},
 						]},
 						{name: "saveButton", kind: onyx.Button, classes: "light-background button-style-affirmative", attributes: {title: "Finish the campaign you were making."}, style: "width: 50%;", showing: false, ontap: "doubleCheckSend", components: [
-							{tag: "i", classes: "icon-ok icon-large"},
+							{tag: "i", classes: "fa fa-ok fa-large"},
 						]}
 					]}*/
 				]},
@@ -64,18 +64,18 @@ enyo.kind({
 		//{kind: "SaveTitledInput", fit: true}
 	],
 	goHome: function(inSender, inEvent) {
+		this.log("HOME");
 		this.$.landingPanels.setIndex(0);
 		return;
 	},
 	handleEndTransition: function(inSender, inEvent) {
-		this.log(inEvent);
 		if(inEvent.toIndex === 1) {
 			this.$.showMap.map.invalidateSize();
 		}
 	},
   rendered: function(inSender, inEvent) {
 		this.inherited(arguments);
-		this.resized();
+		this.resize();
 		//navigator.geolocation.getCurrentPosition(enyo.bind(this, "locSuccess"), enyo.bind(this, "locError"), {timeout: 10000, enableHighAccuracy: false, maximumAge: 60000});
 		this.gps_watch = navigator.geolocation.watchPosition(enyo.bind(this, "locSuccess"), enyo.bind(this, "locError"), {timeout: 5000, enableHighAccuracy: false});
 	},

@@ -1,6 +1,6 @@
 enyo.kind({
 	name: "DetailsDrawer",
-	kind: "onyx.Drawer", 
+	kind: "enyo.Drawer", 
 	layoutKind: "enyo.FittableRowsLayout",
 	orient: "v",
 	open: false,
@@ -60,7 +60,7 @@ enyo.kind({
 		this.getGeocode(data);
 		this.getUserData(data);
 		this.render();
-		this.resized();
+		this.resize();
 		this.setOpen(true);
 		return true;
 	},
@@ -82,7 +82,7 @@ enyo.kind({
 		this.$.points.setContent(data.points);
 		this.$.email.setContent(data.email);
 		this.$.detailsPanels.render();
-		this.resized();
+		this.resize();
 	},
 	getGeocode: function(sub) {
 		var loc = sub.gps_location.split("|");
@@ -96,7 +96,7 @@ enyo.kind({
         //Insert reverse geocoding functionality here!
 		this.$.loc.setContent("Location: " + inEvent[0].display_name);
 		this.$.detailsPanels.render();
-		this.resized();
+		this.resize();
         return "123 Fake St SE, Minneapolis, MN";
     },
 	switchDetails: function(inSender, inEvent) {

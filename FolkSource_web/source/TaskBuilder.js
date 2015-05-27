@@ -46,7 +46,7 @@ enyo.kind({
 						{tag: "i", classes: "icon-pencil"},
 					]},
 				]},
-				/*{name: "finishEditingDrawer", kind: "onyx.Drawer", orient: "v", open: false, components: [
+				/*{name: "finishEditingDrawer", kind: "enyo.Drawer", orient: "v", open: false, components: [
 					{name: "finishEditingButton", kind: "onyx.Button", content: "Done", classes: "button-style-affirmative", ontap: "finishEditing"},
 				]},*/
 				{name: "locationList", kind: "enyo.Scroller", layoutKind: "enyo.FittableColumnsLayout", fit: true, horizontal: "hidden", vertical: "scroll", components: [
@@ -182,8 +182,8 @@ enyo.kind({
 	newLocation: function(inLocation) {
 		if(!this.$.questionSection.showing) {
 			this.$.questionSection.show();
-			this.resized();
-			this.$.questionSection.resized();
+			this.resize();
+			this.$.questionSection.resize();
 		}
 		if(inLocation.layerType === "marker") {
 			this.$.realLocationList.createComponent({tag: "i", kind: "Destroyable", classes: "icon-map-marker icon-3x location-builder nice-padding", style: "width: 100%; display: block; text-align: center;", data: inLocation.layer.toGeoJSON(), ontap: "readLocationData"}, {owner: this});
@@ -235,13 +235,13 @@ enyo.kind({
 				return;
 			}
 		}, this);
-		this.$.realLocationList.resized();
+		this.$.realLocationList.resize();
 		return true;
 	},
 	resizeQuestions: function(inSender, inEvent) {
-		this.resized();
+		this.resize();
 		this.render();
-		/*this.$.questionDrawer.resized();
+		/*this.$.questionDrawer.resize();
 		this.$.questionDrawer.render();*/
 	},
 	saveData: function(inSender, inEvent) {
@@ -268,7 +268,7 @@ enyo.kind({
 			enyo.Signals.send("onQuestionsSaved");
 			this.$.taskTitle.setTitle(this.$.taskTitle.getTitle() + " (" + this.questions.length + " steps)");
 			this.$.saved.setShowing(true);
-			/*this.$.titleHolder.resized();
+			/*this.$.titleHolder.resize();
 			this.$.titleHolder.render();*/
 		}
 		return true;

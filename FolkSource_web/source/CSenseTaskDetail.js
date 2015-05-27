@@ -16,7 +16,7 @@ enyo.kind({
     components:[
 		{name: "popHeading", content: "", style: "font-weight: 300;"},
 		{name: "popSubHeading", content: "",},
-		{name: "spinnerDrawer", kind: "onyx.Drawer", orient: "v", open: false, components: [
+		{name: "spinnerDrawer", kind: "enyo.Drawer", orient: "v", open: false, components: [
 			{name: "spinner", kind: "onyx.Spinner", classes: "onyx-dark dark-background hidden", style: "margin-left:auto; margin-right:auto; display:block; margin-top:60px;"},
 		]},
 		{name: "repeater", kind: "enyo.List", fit: true, onSetupItem: "setRepeaterValues", submissionIdToOwnerProxy: {}, count: 0, components: [
@@ -90,7 +90,7 @@ enyo.kind({
 
     resizeHandler: function(){
         this.inherited(arguments);
-        this.doCSenseTaskDetailResized();
+        this.doCSenseTaskDetailresize();
     },
 
     toggleItemDrawer: function (inSender, inEvent){

@@ -70,9 +70,9 @@ enyo.kind({
 		var len = this.$.realQuestionContainer.getComponents().length + 1;
 		this.numQuestions = this.numQuestions + 1;
 		this.$.realQuestionContainer.createComponent({kind: "QuestionBuilder", stepIndex: len, questionIndex: this.numQuestions, type: "QuestionBuilder", classes: "nice-padding bordering light-background", style: "z-index: -1;"});
-		this.$.questionContainer.resized();
+		this.$.questionContainer.resize();
 		this.$.questionContainer.render();
-		this.$.realQuestionContainer.resized();
+		this.$.realQuestionContainer.resize();
 		this.$.realQuestionContainer.render();
 		this.doNewQuestion();
 		this.scrollDown();
@@ -86,9 +86,9 @@ enyo.kind({
 		var len = this.$.realQuestionContainer.getComponents().length + 1;
 		this.numSensors = this.numSensors + 1;
 		this.$.realQuestionContainer.createComponent({kind: "SensorChooser", stepIndex: len, sensorIndex: this.numSensors, classes: "nice-padding bordering light-background"});
-		this.$.realQuestionContainer.resized();
+		this.$.realQuestionContainer.resize();
 		this.$.realQuestionContainer.render();
-		this.$.questionContainer.resized();
+		this.$.questionContainer.resize();
 		this.$.questionContainer.render();
 		this.scrollDown();
 
@@ -153,7 +153,7 @@ enyo.kind({
 			}
 		}
 
-		this.$.questionContainer.resized();
+		this.$.questionContainer.resize();
 		this.$.questionContainer.render();
 		this.scrollDown();
 		this.$.spinUp.hide();

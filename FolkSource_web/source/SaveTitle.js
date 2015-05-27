@@ -16,7 +16,7 @@ enyo.kind({
 		{name: "container", kind: "enyo.FittableColumns", classes: "click-hover", components: [
 			{name: "titleText"},
 			{fit: true},
-			{name: "saveDrawer", kind: "onyx.Drawer", orient: "h", open: true, components: [
+			{name: "saveDrawer", kind: "enyo.Drawer", orient: "h", open: true, components: [
 				{name: "saveButton", kind: "onyx.Button", content: "Save", ontap: "sendSave", classes: "button-style"}
 			]}
 		]}
