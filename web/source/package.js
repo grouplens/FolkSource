@@ -19,6 +19,7 @@ enyo.depends(
 	"EditableListItem.js",
 	"GrouplensBrand.js",
 	"Helpable.js",
+	"LandingPage.js",
 	"LocalStorage.js",
 	"QuestionBuilder.js",
 	"QuestionDrawer.js",

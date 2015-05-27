@@ -5,7 +5,7 @@ enyo.kind({
     getURL: function () {
       //return "http://folksource.grouplens.org/api/";
       //return "http://localhost:3000/";
-      return "http://localhost:8081/";
+      return "http://innsbruck-umh.cs.umn.edu/api/";
       //return "http://134.84.121.213.xip.ip:8080/";
     },
     getUserName: function (a) {

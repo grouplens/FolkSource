@@ -1,8 +1,8 @@
 enyo.kind({
 	name: "ShowMap",
 	kind: enyo.FittableRows,
-	classes: "enyo-fit",
-	/*style: "overflow: hidden;",*/
+	/*classes: "enyo-fit",
+	style: "overflow: hidden;",*/
 	components: [
 		{kind: enyo.Signals, onMapClicked: "newPin", onLocationFound: "locSuccess", onNoLocationFound: "locError"},
 		//{name: "gps", kind: "rok.geolocation", watch: false, enableHighAccuracy: !0, timeout: this.gpsTimeout, maximumAge: "3000", onSuccess: "locSuccess", onError: "locError"},
@@ -33,7 +33,7 @@ enyo.kind({
 			{name: "message", showing: false}
 		]},
 		{name: "loginRegister", kind: "CSenseLoginRegister"},
-		{name: "toolbar", kind: onyx.Toolbar, layoutKind: enyo.FittableColumnsLayout, classes: "dark-background-flat", components: [
+		/*{name: "toolbar", kind: onyx.Toolbar, layoutKind: enyo.FittableColumnsLayout, classes: "dark-background-flat", components: [
 			{kind: "enyo.ToolDecorator", ontap: "sendGoHome", components: [
 				{tag: "i", classes: "icon icon-3x icon-chevron-left"},
 				{kind: enyo.Image, src: "./assets/a_folksource_logo.png", alt: "FolkSource logo", position: "center", style: "height: 60px;"},
@@ -43,7 +43,7 @@ enyo.kind({
 				{name: "menuIcon", tag: "i", classes: "icon-list-ul icon-large", showing: false}
 			]},
 			{name: "brand", kind: "GrouplensBrand", fit: true},
-			/*{content: "Logged in as: "},
+			{content: "Logged in as: "},
 			{name: "username", content: "anonymous"},
 			{name: "newButton", kind: onyx.Button, classes: "button-style light-background", showing: true, ontap: "showNewMap", attributes: {title: "Click here to create a new campaign"}, components: [
 				{tag: "i", classes: "icon-plus icon-large"}
@@ -55,8 +55,8 @@ enyo.kind({
 				{name: "saveButton", kind: onyx.Button, classes: "light-background button-style-affirmative", attributes: {title: "Finish the campaign you were making."}, style: "width: 50%;", showing: false, ontap: "doubleCheckSend", components: [
 					{tag: "i", classes: "icon-ok icon-large"},
 				]}
-			]}*/
-		]},
+			]}
+		]},*/
 		{name: "container", kind: enyo.FittableColumns, fit: true, components: [
 			{name: "showCamps", kind: "CSenseShowCampaigns"},
 			//{name: "showButton", kind: onyx.Button, classes: "toolbar-button-style", ontap: "showCampaigns", content: ">"},
@@ -214,8 +214,8 @@ enyo.kind({
 			this.$.username.setContent(LocalStorage.get("username").toString());
 		}
     //this.$.username.resized();
-    this.$.toolbar.resized();
-		this.$.toolbar.reflow();
+    //this.$.toolbar.resized();
+		//this.$.toolbar.reflow();
 		this.$.loginRegister.hide();
     this.$.showCamps.fetchCampaigns();
 	},
@@ -644,12 +644,12 @@ enyo.kind({
 			this.$.loginRegister.show();
     } else {
 			//this.$.username.setContent(LocalStorage.get("username"));
-			this.$.toolbar.resized();
-      this.$.toolbar.reflow();
+			// //this.$.toolbar.resized();
+      // //this.$.toolbar.reflow();
       this.hideLogin(null, null);
 			//this.$.addButton.setDisabled(false);
 		}
-		this.$.toolbar.resized();
+		//this.$.toolbar.resized();
 	},
 	savePoint: function(inEvent) {
 		/*var tmp = LocalStorage.get(this.currentTaskName);
@@ -687,8 +687,8 @@ enyo.kind({
 		this.$.newButton.setShowing(false);
 		this.$.saveButton.setShowing(true);
 		this.$.cancelButton.setShowing(true);
-		this.$.toolbar.resized();
-		this.$.toolbar.render();
+		//this.$.toolbar.resized();
+		//this.$.toolbar.render();
 	},
   renderPointsViaD3: function(points) {
     //           <!-- Code was based on the D3 and leaflet implementations at http://bost.ocks.org/mike/leaflet/ and  http://bost.ocks.org/mike/map/ and http://jsfiddle.net/7DgUh/-->
@@ -792,8 +792,8 @@ enyo.kind({
 		this.$.saveButton.setShowing(false);
 		this.$.cancelButton.setShowing(false);
 		this.$.newButton.setShowing(true);
-		this.$.toolbar.resized();
-		this.$.toolbar.render();
+		//this.$.toolbar.resized();
+		//this.$.toolbar.render();
 		//this.map.panBy([-450,0],{animate: false, duration: 0});
 		//this.log();
 	},
@@ -1129,8 +1129,8 @@ enyo.kind({
 		this.$.spin.setShowing(false);
 		this.$.menuIcon.setShowing(true);
 		this.$.showButton.setDisabled(false);
-		this.$.toolbar.resized();
-		this.$.toolbar.render();
+		//this.$.toolbar.resized();
+		//this.$.toolbar.render();
 		this.lastSubmissionPoll = inEvent.time;
 	},
 	/*
