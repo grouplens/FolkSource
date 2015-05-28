@@ -10,30 +10,31 @@ public class Task {
 	public String instructions;
 	public Boolean required;
 	public Integer campaign_id;
-//	private String requirements; // possibly wrong datatype, but for now
-//	private Form form;
-//	private Location loc;
-//    public Set<String> locations;
-    public Set<Submission> submissions;
-    public Set<Question> questions;
-    public Set<LocationLayer> locations;
+// private String requirements; // possibly wrong datatype, but for now
+// private Form form;
+// private Location loc;
+// public Set<String> locations;
+	public Set<Submission> submissions;
+	public Set<Question> questions;
+	public Set<LocationLayer> locations;
+	public String type;
 
-    public Task(){
-        super();
-    }
-    //used by the TaskDto
-    public Task(Integer id, String name, String instructions, Boolean required, Set<Submission> subs, Set<Question> qs, Set<LocationLayer> locs){
-        super();
-        this.id = id;
-        this.name = name;
-        this.instructions = instructions;
-        this.required = required;
-        //this.submissions = subs;
-        this.questions = qs;
-        this.locations = locs;
-    }
+	public Task(){
+		super();
+	}
+	//used by the TaskDto
+	public Task(Integer id, String name, String instructions, Boolean required, Set<Submission> subs, Set<Question> qs, Set<LocationLayer> locs){
+			super();
+			this.id = id;
+			this.name = name;
+			this.instructions = instructions;
+			this.required = required;
+			//this.submissions = subs;
+			this.questions = qs;
+			this.locations = locs;
+	}
 
-    public Integer getCampaign_id() {
+	public Integer getCampaign_id() {
 		return campaign_id;
 	}
 	public void setCampaign_id(Integer campaign_id) {
@@ -51,7 +52,7 @@ public class Task {
 	public void setQuestions(Set<Question> questions) {
 		this.questions = questions;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -72,9 +73,9 @@ public class Task {
 	}
 
 	public void setSubmissions(List<Submission> subs) {
-		if(subs == null) 
+		if(subs == null)
 			this.submissions = new HashSet<Submission>();
-		else 
+		else
 			this.submissions = new HashSet<Submission>(subs);
 	}
 
@@ -102,7 +103,7 @@ public class Task {
 	public void setQuestions(List<Question> questions) {
 		this.questions = new HashSet<Question>(questions);
 	}
-	
+
 	public Set<LocationLayer> getLocations() {
 		return locations;
 	}
@@ -111,7 +112,13 @@ public class Task {
 		this.locations = new HashSet<LocationLayer>(locations);
 	}
 
+	public String getType() {
+		return type;
+	}
 
+	public void setType(String type) {
+		this.type = type;
+	}
 //	public String getRequirements() {
 //		return requirements;
 //	}

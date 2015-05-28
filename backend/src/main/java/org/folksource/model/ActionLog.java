@@ -4,12 +4,12 @@ import java.util.Date;
 
 public class ActionLog {
 	public Integer id;
-//    public String client_timestamp;
-    public Date client_timestamp;
-    public Integer user_id;
+	// public String client_timestamp;
+	public Date client_timestamp;
+	public Integer user_id;
 	public String event_provenance;
-    public String category;
-    public Date server_timestamp;
+	public String category;
+	public Date server_timestamp;
 
     public ActionLog(Integer id, Date client_timestamp, Integer user_id, String event_provenance, String category, Date server_timestamp) {
         super();
