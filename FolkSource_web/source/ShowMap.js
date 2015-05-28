@@ -34,7 +34,7 @@ enyo.kind({
 		]},
 		{name: "loginRegister", kind: "CSenseLoginRegister"},
 		{name: "container", kind: "enyo.FittableColumns", fit: true, components: [
-			{name: "showCamps", kind: "CSenseShowCampaigns"},
+			// {name: "showCamps", kind: "CSenseShowCampaigns"},
 			//{name: "showButton", kind: "onyx.Button", classes: "toolbar-button-style", ontap: "showCampaigns", content: ">"},
 			{name: "mapCont", fit: true, style: "position: relative;", components:[
 				{name: "addLocationsAndRegionsToolbar", kind: "enyo.Drawer", open: false, style: "z-index: 10; float: right;", components:[
