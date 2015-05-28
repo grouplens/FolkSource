@@ -14,8 +14,8 @@ enyo.kind({
 	},
 	rendered: function(inSender, inEvent) {
 		this.inherited(arguments);
-		this.gps_watch = navigator.geolocation.watchPosition(enyo.bind(this, "locSuccess"), enyo.bind(this, "locError"), {enableHighAccuracy: false, timeout: 5000, maximumAge: 30000});
-    navigator.geolocation.getCurrentPosition(enyo.bind(this, "locSuccess"), enyo.bind(this, "locError"), {enableHighAccuracy: true, timeout: 5000, maximumAge: 30000});
+		this.gps_watch = navigator.geolocation.watchPosition(enyo.bind(this, "locSuccess"), enyo.bind(this, "locError"));
+		navigator.geolocation.getCurrentPosition(enyo.bind(this, "locSuccess"), enyo.bind(this, "locError"));
 	},
 	locSuccess: function (locData) {
 		this.coords = locData.coords;

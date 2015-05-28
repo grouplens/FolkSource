@@ -1,5 +1,5 @@
 enyo.kind({
-  name: "NewMap",
+  name: "MapView",
   kind: "enyo.FittableRows",
   //classes: "bordering-box light-background",
   published: {
@@ -94,7 +94,7 @@ enyo.kind({
 
 
     L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png').addTo(this.map);
-    var vectors = new L.TileLayer.MVTSource({
+    this.vectors = new L.TileLayer.MVTSource({
       url: 'http://innsbruck-umh.cs.umn.edu/tiles/buildings/{z}/{x}/{y}.mapbox',
       style: function(feature, context) {
         var style={};
@@ -124,7 +124,7 @@ enyo.kind({
       },
       onClick: enyo.bind(this, "makeBubbleClick")
     });
-    this.map.addLayer(vectors);
+    this.map.addLayer(this.vectors);
 
 
     //this.$.spin.start();
@@ -285,8 +285,7 @@ enyo.kind({
     }
 
     if(!this.dragged && !this.panned) {
-      // TODO fix back in MN
-      //this.map.setView(latlng, 15, {animate: true});
+      this.map.setView(latlng, 15, {animate: true});
     }
     return true;
   },
@@ -447,6 +446,15 @@ enyo.kind({
   },
   nominatimResponse: function(inSender, inEvent) {
     var out = inEvent.display_name;
+    var features = this.vectors.layers.buildings.features;
+    
+    for(x in features) {
+      this.log(features[x].id);
+      if(features[x].id === Number(inEvent.osm_id) /*&& features[x].properties.allowed !== "n"*/) {
+        features[x].style.color = 'rgba(255,0,0,1)';
+        this.log("FOUND THE RIGHT BUILDING");
+      }
+    }
     enyo.Signals.send("onGPSCoordLookup", {display: out});
     return;
   },

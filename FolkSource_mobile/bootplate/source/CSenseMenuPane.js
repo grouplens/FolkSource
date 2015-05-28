@@ -58,7 +58,7 @@ enyo.kind({
             {name: "clist", kind: "enyo.FittableRows", components: [
               //{name: "androidDiv"},
               {name: "lenses", kind: "LensShifter"},
-              {name: "map", kind: "NewMap", onHide: "handleCampsHide", onShow: "handleCampsShow", fit: true},
+              {name: "map", kind: "MapView", onHide: "handleCampsHide", onShow: "handleCampsShow", fit: true},
               //{name: "iosDiv"},
             ]},
             {name: "llist", kind: "enyo.FittableRows", components: [
