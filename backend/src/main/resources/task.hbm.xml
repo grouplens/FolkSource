@@ -6,6 +6,7 @@
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>
+		<discriminator column="task_type" type="string" />
 		<property name="instructions" />
 		<!--<property name="campaign_id" />-->
 		<property name="required" />
@@ -21,6 +22,8 @@
 			<key column="task_id" not-null="true"/>
 			<one-to-many class="Location" />
 		</set>
+		<subclass name="VotingTask" discriminator-value="voting">
+		</subclass>
 <!-- 		<bag name="points" lazy="false"> -->
 <!-- 			<key column="task_id" /> -->
 <!-- 			<one-to-many class="GeomPoint" -->

@@ -63,4 +63,9 @@ public class TaskService {
 		return tasks;
 	}
 
+	public static Task getTaskById(int id){
+		Session session = HibernateUtil.getSession(true);
+		Task tasks=(Task)session.createCriteria(Task.class).add(Restrictions.idEq(id)).list().get(0);
+		return tasks;
+	}
 }
