@@ -18,6 +18,7 @@ public class Task {
 	public Set<Question> questions;
 	public Set<LocationLayer> locations;
 	public String type;
+	private Integer votingQuestionID;
 
 	public Task(){
 		super();
@@ -118,6 +119,14 @@ public class Task {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public Integer getVotingQuestionID() {
+		return votingQuestionID;
+	}
+
+	public void setVotingQuestionID(Integer votingQuestionID) {
+		this.votingQuestionID = votingQuestionID;
 	}
 //	public String getRequirements() {
 //		return requirements;

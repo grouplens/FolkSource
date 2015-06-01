@@ -15,15 +15,15 @@ public class ResponseDecider {
         List<Submission> locationSubmissions = l.getSubmissions();
         if(task instanceof VotingTask) {
             String votingOutcome = tallyVote(locationSubmissions, task);
-            ResponseOutcome response = new ResponseOutcome(locationSubmissions, votingOutcome, task);
-            ResponseOutcomeService.save(response);
+            ResponseOutcome response = new VotingResponseOutcome(l, task, votingOutcome);
+            save(response);
         } /* else if (task instanceof ValidationTask) {
             // here we can built the logic for "at least 2 people need to agree"
             //Boolean validationOutcome = isValidated(locationSubmissions, task);
-            ResponseOutcome response = new ResponseOutcome(l, validationOutcome, task);
+            ResponseOutcome response = new ValidationResponseOutcome(l, validationOutcome, task);
         } else if (task instanceof DataPointTask) {
             // here we can build the logic for "just submit data points"
-            ResponseOutcome response = new ResponseOutcome(locationSubmissions, task);
+            ResponseOutcome response = new DataResponseOutcome(locationSubmissions, task);
         }*/ else {
             // do nothing
             return;
@@ -32,6 +32,11 @@ public class ResponseDecider {
 
     private static String tallyVote(List<Submission> locationSubmissions, Task task) {
         Integer voting_qid = task.getVotingQuestionID();
+        Double ratio = 0.0;
+        Integer denominator = 1;
+        Double threshold = 1.0;
+        String[] options = new String[0];
+        Integer[] counts = new Integer[0];
 
         /* have to be at least 3 submissions, otherwise we can't decide */
         if(locationSubmissions.size() < 3) {
@@ -40,23 +45,44 @@ public class ResponseDecider {
 
         for(Submission submission : locationSubmissions) {
             for(Answer ans : submission.getAnswers()) {
-                if(!ans.getId().equals(voting_qid)) {
-                    continue;
+                if(ans.getId().equals(voting_qid)) {
+                    if(ans instanceof MultipleChoiceAnswer) {
+                        MultipleChoiceAnswer curAns = (MultipleChoiceAnswer)ans;
+                        if (options.length == 0) {
+                            options = curAns.getQuestion().getOptions().split("|");
+                            counts = new Integer[options.length];
+                        /* This could extensible to simple majority, not just 50%
+                         * denominator = options.length;
+                         */
+                            denominator = 2;
+                            threshold = 1.0 / denominator;
+                        }
+                        for (int i = 0; i < options.length; i++) {
+                            if (curAns.get)
+                        }
+                        //figure out the voting process here
+                    }
                 } else {
-                    //figure out the voting process here
+                    continue;
                 }
             }
         }
 
-        /* this has to be either above or below 50% agreement, otherwise we say "can't decide" */
+        /* There has to be a simple majority, otherwise "we can't decide" */
 
-        if(ratio > 0.5) {
+        if(ratio > threshold) {
             return "y";
-        } else if ((1 - ratio > 0.5)) {
+        } else if ((1 - ratio > threshold)) {
             return "n";
         } else {
             return "u";
         }
+    }
+
+
+    public static void save(ResponseOutcome response) {
+        Session session = HibernateUtil.getSession(true);
+        session.save(response);
     }
 
     // This should only apply for the current gun-law campaign. Any of those others don't deserve it
