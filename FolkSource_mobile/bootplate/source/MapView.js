@@ -10,7 +10,6 @@ enyo.kind({
     /*{name: "spinUp", kind: "onyx".Popup, centered: true, floating: true, autoDismiss: false, classes: "dark-background-flat", components: [
       {name: "spin", kind: "onyx.Spinner", classes: "onyx-dark dark-background"}
     ]},*/
-    {content: "Tap the pin/region on the map to help!", style: "font-size: 11pt; font-weight: 100; text-align: center; padding: 3px;", classes: "light-background"},
     {name: "camps", kind: "enyo.Popup", modal: false, floating: true, autoDismiss: false, showTransitions: true, style: "height: 100px; width: 90%; margin-left: 5%; margin-right: 5%; box-shadow: 2px 2px 2px  #222;", layoutKind: "enyo.FittableRowsLayout", components: [
       {kind: "enyo.Panels", name: "taskpanels", arrangerKind: "enyo.CardArranger", fit: true, style: "min-height: 100%;", components: [
         {kind: "enyo.FittableColumns", style: "height: 100%;", components: [
@@ -35,20 +34,23 @@ enyo.kind({
         ]}
       ]}
     ]},
+    {name: "lenses", kind: "LensShifter"},
     {name: "mapCont", fit: true, style: "position: relative;"}
   ],
   events: {
     onLoaded: "",
     onPinClicked: "",
     onGPSSet: "",
-    onPlaceChosen: ""
+    onPlaceChosen: "",
+    onReloadedData: ""
   },
   eventStarted: !1,
   handlers: {
     //onSnapping: "turnOffMap",
     //onSnapped: "resetPins",
     onHideCampaigns: "hideCamps",
-    onShowCampaigns: "showCamps"
+    onShowCampaigns: "showCamps",
+    onFindUserCenter: "userCenter"
   },
   create: function (a) {
     this.inherited(arguments);
@@ -69,7 +71,7 @@ enyo.kind({
     /*this.$.taskpanels.getAnimator().setDuration(750);
     this.$.panels.getAnimator().setDuration(750);*/
     this.hideCamps();
-    this.lastTime = -1;
+    this.lastTime = 0;
   },
   buttonTapHandler: function (a, b) {
     if(a.slide === "prev") {
@@ -84,27 +86,25 @@ enyo.kind({
     this.inherited(arguments);
     //this.$.gps.getPosition();
 
-    this.map = L.map(this.$.mapCont.id).setView([44.981313, -93.266569], 15);
+    this.map = L.map(this.$.mapCont.id, {center: [44.981313, -93.266569], zoom: 15, zoomControl: false});
     this.map.on('resize', enyo.bind(this, "resizeMap"));
     this.map.on('zoomend', enyo.bind(this, "resetZoomed"));
     this.map.on('dragend', enyo.bind(this, "resetPanned"));
-    L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',{
-      attribution: 'Map tiles by <a href="http://cartodb.com/attributions#basemaps">CartoDB</a>, under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>. Data by <a href="http://www.openstreetmap.org/">OpenStreetMap</a>, under ODbL.'
-    }).addTo(this.map);
+    L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png').addTo(this.map);
 
 
     L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png').addTo(this.map);
     this.vectors = new L.TileLayer.MVTSource({
-      url: 'http://innsbruck-umh.cs.umn.edu/tiles/buildings/{z}/{x}/{y}.mapbox',
+      url: 'http://innsbruck-umh.cs.umn.edu/tiles/all/{z}/{x}/{y}.mapbox',
       style: function(feature, context) {
         var style={};
         if(feature.type === 1) {
           style.radius = 3;
         }
-        if(feature.properties.allowed === 'n') {
+        if(feature.properties.outcome === 'n') {
           style.color = "rgba(123,50,148,0.7)";
           style.size=5;
-        } else if(feature.properties.allowed === 'y') {
+        } else if(feature.properties.outcome === 'y') {
           style.color = "rgba(0,136,55,0.7)";
           style.size=5;
         } else {
@@ -118,14 +118,12 @@ enyo.kind({
         if(feature.type === 2) {
           feature.type = 3;
         }
-        feature.properties.task_id=59;
         //return Number(feature.properties.id);
         return Number(feature.properties.uid);
       },
       onClick: enyo.bind(this, "makeBubbleClick")
     });
     this.map.addLayer(this.vectors);
-
 
     //this.$.spin.start();
     this.showCamps();
@@ -200,6 +198,9 @@ enyo.kind({
 
       //if(endDate >= date) { // "closed" campaigns shouldn't show up
       //if(currentCampaign.title !== undefined) {
+      if(this.$.panels.getComponents().length > 0) {
+        this.$.panels.destroyComponents();
+      }
       this.$.panels.createComponent(
         {name: e, classes: "panelItem", fit: true, data: this.campaignArray[c], kind: "enyo.FittableRows", components: [
         {name: f, kind: "CampaignItem", title: "" + currentCampaign.title, description: "" + currentCampaign.description},
@@ -215,17 +216,20 @@ enyo.kind({
     this.checkSides(); // make sure the arrow buttons work
     this.showCamps();
     this.drawMap();
+    this.log("sending onCampLoaded");
+    this.doReloadedData();
   },
   showTasks: function(inSender, inEvent) {
     this.$.taskpanels.setIndex(1);
   },
   showCamps: function() {
     if(this.doneRendering) {
+      this.vectors.redraw();
       this.map.invalidateSize();
     }
     this.$.taskpanels.setIndex(0);
     var height = parent.innerHeight;
-    var real_height = -3*(height/4); //put the bottom of the campaign list at 4/5 the height of the map
+    var real_height = -4*(height/5); //put the bottom of the campaign list at 4/5 the height of the map
     this.$.camps.showAtPosition({bottom: real_height});
   },
   hideCamps: function(inSender, inEvent) {
@@ -273,19 +277,17 @@ enyo.kind({
     this.userMarker.setLatLng(latlng);
     this.userMarker.setAccuracy(coords.accuracy);
     this.resize();
-    if(this.lastTime === -1) {
-      this.lastTime = Date.now();
-    }
     var nowTime = Date.now();
-    if(nowTime - this.lastTime > 5000) {
+    if(nowTime - this.lastTime > 60000) {
       var url = "http://nominatim.openstreetmap.org/reverse?format=json&osm_type=W&lat="+coords.latitude+"&lon="+coords.longitude+"&zoom=18"
       var ajax = new enyo.Ajax({url: url, method: "GET", cacheBust: false});
       ajax.response(this, "nominatimResponse");
       ajax.go();
+      this.lastTime = Date.now();
     }
 
     if(!this.dragged && !this.panned) {
-      this.map.setView(latlng, 15, {animate: true});
+      this.map.setView(latlng, 17, {animate: true});
     }
     return true;
   },
@@ -416,19 +418,21 @@ enyo.kind({
     loc.lng = loc.lng.toPrecision(8);*/
     //enyo.Signals.send("onPinClicked", loc);
     if(inEvent.feature !== null) {
-    this.log(inEvent);
-    this.$.taskpanels.setIndex(1);
-    this.tasks = this.campaignArray[this.$.panels.getIndex()].tasks;
-    if(this.tasks.length > 1) {
-      this.$.tasks.setCount(this.tasks.length);
-      this.$.tasks.reset();
-      this.$.taskpanels.setIndex(2);
-    } else {
-      this.$.task_description.setContent(this.tasks[0].instructions);
-      this.$.taskpanels.setIndex(1);
-      this.$.task_description.data = this.tasks[0];
-      this.$.task_description.location_id = inEvent.feature.properties.uid;
-    }
+      if(inEvent.feature.properties.type !== "seed_voting") {
+        this.log(inEvent.feature.properties);
+        this.$.taskpanels.setIndex(1);
+        this.tasks = this.campaignArray[this.$.panels.getIndex()].tasks;
+        if(this.tasks.length > 1) {
+          this.$.tasks.setCount(this.tasks.length);
+          this.$.tasks.reset();
+          this.$.taskpanels.setIndex(2);
+        } else {
+          this.$.task_description.setContent(this.tasks[0].instructions);
+          this.$.taskpanels.setIndex(1);
+          this.$.task_description.data = this.tasks[0];
+          this.$.task_description.location_id = inEvent.feature.properties.uid;
+        }
+      }
     }
   },
   makeButtonBubbleClick: function(inEvent) {
@@ -441,26 +445,29 @@ enyo.kind({
     this.doLoaded();
   },
   mapCenterFromSearch: function(inSender, inEvent) {
-    this.log(inEvent);
-    this.map.setView([inEvent.lat, inEvent.lon], 15);
+    this.map.setView([inEvent.lat, inEvent.lon], 17, {animate: true});
+    this.panned = true;
+    return;
   },
   nominatimResponse: function(inSender, inEvent) {
-    var out = inEvent.display_name;
-    var features = this.vectors.layers.buildings.features;
-    
-    for(x in features) {
+    this.log(JSON.stringify(inEvent));
+    // var features = this.vectors.layers.buildings.features;
+
+
+    /*for(x in features) {
       this.log(features[x].id);
-      if(features[x].id === Number(inEvent.osm_id) /*&& features[x].properties.allowed !== "n"*/) {
+      if(features[x].id === Number(inEvent.osm_id) /*&& features[x].properties.allowed !== "n"*//*) {
         features[x].style.color = 'rgba(255,0,0,1)';
         this.log("FOUND THE RIGHT BUILDING");
       }
-    }
-    enyo.Signals.send("onGPSCoordLookup", {display: out});
+    }*/
+    enyo.Signals.send("onGPSCoordLookup", {display: inEvent.display_name, osm_id: inEvent.osm_id});
     return;
   },
   userCenter: function() {
     var ll = this.userMarker.getLatLng();
-    this.map.setView(ll, 15, {animate: true});
+    this.map.setView(ll, 17, {animate: true});
+    return;
   },
   sendTasks: function() {
     var tasks = this.campaignArray[this.$.panels.getIndex()].tasks;

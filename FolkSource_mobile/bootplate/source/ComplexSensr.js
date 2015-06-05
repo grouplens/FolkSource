@@ -207,6 +207,7 @@ enyo.kind({
           }
           var ans = this.buildAnswer(type, question);
           if(!ans) {
+						this.log("NO ANSWER");
             return;
           }
           var tmp = sub.submission.answers.concat(this.buildAnswer(type, question));
@@ -261,30 +262,41 @@ enyo.kind({
   },
   buildAnswer: function(type, question) {
     var out = [];
+		this.log(question.id);
     var ans = {
-      answer: "BOOM",
       answer_type: question.type,
       q_id: question.id,
       sub_id: 0
     };
+
+		/*
+		 * This still needs to implement:
+		 * AccelerometerAnswer
+		 * CompassAnswer
+		 * TimeSpanAnswer
+		 *
+		 */
     switch (type) {
       case "text":
         ans.answer = this.readFormText(question);
+				this.log(JSON.stringify(ans));
         if(!ans.answer) {
           return false;
         }
         out.push(ans);
         break;
       case "exclusive_multiple_choice":
-        ans.answer = this.readFormExclusiveChoice(question);
-        if(!ans.answer) {
+        ans.choices = this.readFormExclusiveChoice(question);
+				this.log(JSON.stringify(ans));
+        if(!ans.choices) {
           return false;
         }
         out.push(ans);
         break;
       case "multiple_choice":
-        ans.answer = this.readFormMultipleChoice(question);
-        if(!ans.answer) {
+        ans.choices = this.readFormMultipleChoice(question);
+				this.log(JSON.stringify(ans));
+        if(!ans.choices) {
           return false;
         }
         out.push(ans);
@@ -292,9 +304,10 @@ enyo.kind({
       case "counter":
         //var tmp = this.readFormCounter(c);
         var array = this.readFormCounter(question).split("|");
+				this.log(JSON.stringify(ans));
         for (var x in array) {
           var tmpAns = {
-            answer: "BOOM",
+            counts: "BOOM",
             type: question.type,
             q_id: question.id,
             sub_id: 0
@@ -304,22 +317,24 @@ enyo.kind({
           var date = new Date();
           date.setTime(again[0]);
           again[0]=date;
-          tmpAns.answer=again.join(",");
-          if(!tmpAns.answer) {
+          tmpAns.counts=again.join(",");
+          if(!tmpAns.counts) {
             return false;
           }
           out.push(ans);
         }
         break;
       case "cur_time":
-        ans.answer = this.readTime(question);
-        if(!ans.answer) {
+        ans.timestamp = this.readTime(question);
+				this.log(JSON.stringify(ans));
+        if(!ans.timestamp) {
           return false;
         }
         out.push(ans);
         break;
-      case "osm_reverse_geocoder":
+      case "osm_reverse_geocoder": //this is for TapMap.js, not fully implemented
         ans.answer=this.readGeocode(question);
+				this.log(JSON.stringify(ans));
         if(!ans.answer) {
           return false;
         }

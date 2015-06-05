@@ -26,7 +26,6 @@ enyo.depends(
 	"MapView.js",
 	"MediaSensor.js",
 	"PinView.js",
-	"SpaceUsageToolbar.js",
 	"TallyCounter.js",
 	"TapMap.js",
 	"TickerList.js",

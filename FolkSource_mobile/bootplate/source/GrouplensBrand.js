@@ -8,17 +8,33 @@ enyo.kind({
 			{kind: "enyo.Image", src: "assets/logos/GL-Logo.png", style: "height: 1em; margin-left: auto; margin-right: auto; display: block;", classes: "dark-background"},
 		]},
 		{content: "project", style: "text-align: center; height: 1em;", classes: "dark-background"},
-    {kind: "enyo.FittableColumns", style: " width: 100%; display: block; margin-left: auto; margin-right: auto; font-size: 9pt; color: #DB701E;", components: [
-    {content: "Map tiles by "},
-    {tag: "a", content: "CartoDB ", style: "color: #FFF;", attributes: {href: "http://cartodb.com/attributions#basemaps", target: "_blank"}},
-    {content: "under "},
-    {tag: "a", content: "CC BY 3.0.", style: "color: #FFF;", attributes: {href: "https://creativecommons.org/licenses/by/3.0/"}},
-    ]},
-    {kind: "enyo.ToolDecorator", style: "margin-left: auto; margin-right: auto; font-size: 9pt; color: #DB701E;", components: [
-    {content: "Data by "},
-    {tag: "a", content: "OpenStreetMap", style: "color: #FFF;", attributes: {href: "http://www.openstreetmap.org/"}},
-    {content: ", under ODbL."}
-    ]},
+		{style: "width: 100%; text-align: center; font-size: 8pt; color: #DB701E; padding-top: 10px; display: inline-block;", components: [
+			{kind: "enyo.ToolDecorator", components: [
+				{content: "Mappping provided by"},
+				{kind: "enyo.Anchor", style: "color: #FFF; padding-left: 2px;", href: "http://leafletjs.com", title: "A JS library for interactive maps", attributes: {target: "_blank"}, components: [
+					{content: "Leaflet"}
+				]},
+				{content: "."}
+			]},
+			{kind: "enyo.ToolDecorator", components: [
+				{content: "Map tiles by"},
+				{kind: "enyo.Anchor", title: "CartoDB", href: "http://cartodb.com/attributions#basemaps", style: "color: #FFF; padding-left: 2px; padding-right: 2px;", attributes: {target: "_blank"}, components: [
+					{content: "CartoDB"}
+				]},
+				{content: "under"},
+				{kind: "enyo.Anchor", title: "CC BY 3.0.", href: "https://creativecommons.org/licenses/by/3.0/", style: "color: #FFF;padding-left: 2px; padding-right: 2px;", attributes: {target: "_blank"}, components: [
+					{content: "CC BY 3.0"}
+				]},
+				{content: "."}
+			]},
+			{kind: "enyo.ToolDecorator", components: [
+				{content: "Data by"},
+				{kind: "enyo.Anchor", title: "OpenStreetMap", href: "http://www.openstreetmap.org/", style: "color: #FFF; padding-left: 2px;", attributes: {target: "_blank"}, components: [
+					{content: "OpenStreetMap"}
+				]},
+				{content: ", under ODbL."}
+			]},
+		]}
 	],
 	create: function(inSender, inEvent) {
 		this.inherited(arguments);

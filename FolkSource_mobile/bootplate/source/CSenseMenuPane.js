@@ -11,7 +11,8 @@ enyo.kind({
     onLoggedIn: "setupProfile",
     onCloseSearchDrawer: "openSearch",
     onOpenSearchDrawer: "closeSearch",
-    onSetUserLocation: "handleUserLocation"
+    onSetUserLocation: "handleUserLocation",
+    onReloadedData: "countReset"
   },
   events: {
     onSenseOpened: "",
@@ -47,17 +48,16 @@ enyo.kind({
           {kind: "GrouplensBrand"}
         ]},
         {kind: "enyo.FittableRows", fit: true, style: "min-width: 100%; box-shadow: -3px 0 3px #666;", components: [ //index 1
-          {name: "toolbar", kind: "onyx.Toolbar", style: "width: 100%;", layoutKind: "enyo.FittableColumnsLayout", classes: "dark-background-flat", components: [
+          {name: "toolbar", kind: "onyx.Toolbar", layoutKind: "enyo.FittableColumnsLayout", classes: "dark-background-flat", components: [
             {name: "menuButton", tag: "i", classes: "fa fa-navicon fa-2x fa-fw color-icon", style: "vertical-align: middle;", ontap: "showMenu"},
-            {fit: true, components: [
-              {kind: "enyo.Image", src: "assets/logos/folk_source_logo.png", style: "height: 2em; display: block; margin-left: auto; margin-right: auto;"},
+            {fit: true, ontap: "countRefresh", components: [
+              {name: "logo", kind: "enyo.Image", src: "assets/logos/folk_source_logo.png", style: "height: 2em; display: block; margin-left: auto; margin-right: auto;"},
+              {name: "refreshTrigger", tag: "i", classes: "fa fa-lg fa-fw fa-refresh", style: "width: 100%; text-align: center; margin-left: auto; margin-right: auto;", showing: false}
             ]},
-            {name: "locateMe", tag: "i", classes: "fa fa-fw fa-crosshairs fa-2x color-icon", ontap: "handleCenter"},
           ]},
           {name: "menupane", kind: "enyo.Panels", fit: true, draggable: false, animate: true, index: 0, style: "height: 100%;", arrangerKind: "enyo.CarouselArranger", components: [
             {name: "clist", kind: "enyo.FittableRows", components: [
               //{name: "androidDiv"},
-              {name: "lenses", kind: "LensShifter"},
               {name: "map", kind: "MapView", onHide: "handleCampsHide", onShow: "handleCampsShow", fit: true},
               //{name: "iosDiv"},
             ]},
@@ -114,6 +114,7 @@ enyo.kind({
   create: function (inSender, inEvent) {
     this.inherited(arguments);
     this.panelTarget = '';
+    this.refreshCount = 0;
     //this.$.menuDrawer.getAnimator().setDuration(350);
     //this.$.menupane.getAnimator().setDuration(350);
     /*
@@ -126,6 +127,26 @@ enyo.kind({
        this.$.androidDiv.createComponent({name: "lensMenu", kind: "BottomLensMenu", onActivate: "handleLenses", android: true});
      }*/
     //this.$.taskpanels.getAnimator().setDuration(750);
+  },
+  countRefresh: function(inSender, inEvent) {
+    this.refreshCount++;
+    this.log(this.refreshCount);
+    if(this.refreshCount === 2) {
+      this.$.logo.setShowing(false);
+      this.$.refreshTrigger.setShowing(true);
+    }
+    if(this.refreshCount === 5) {
+      this.$.refreshTrigger.addRemoveClass("fa-spin", true);
+      enyo.Signals.send("onLoggedIn");
+    }
+
+  },
+  countReset: function(inSender, inEvent) {
+    this.$.refreshTrigger.addRemoveClass("fa-spin", false);
+    this.$.logo.setShowing(true);
+    this.$.refreshTrigger.setShowing(false);
+    this.refreshCount = 0;
+    this.log("received onCampLoaded");
   },
   drawerEndTransition: function(inSender, inEvent) {
     if(inEvent.originator.name === "menuDrawer") {
@@ -152,13 +173,13 @@ enyo.kind({
     }
   },
   fetchData: function() {
-    if(this.logged_in === false) {
+    /*if(this.logged_in === false) {
       this.logged_in = true;
     }
     var url = Data.getURL() + "campaign.json";
     var ajax = new enyo.Ajax({method: "GET", cacheBust: false, url: url, handleAs: "json", headers: {AuthToken: LocalStorage.get("authtoken")}});
     ajax.response(this, "renderResponse");
-    ajax.go();
+    ajax.go();*/
   },
   handleCampsHide: function(inSender, inEvent) {
     this.log("CAUGHT HIDE");
@@ -166,10 +187,6 @@ enyo.kind({
   },
   handleCampsShow: function(inSender, inEvent) {
     return true;
-  },
-  handleCenter: function() {
-    this.$.map.userCenter();
-    //this.$.map.zoomClose();
   },
   handleLenses: function(inSender, inEvent) {
     if(inEvent.originator.active) {
@@ -274,7 +291,6 @@ enyo.kind({
 
     this.$.toolbar.render();
     //this.checkSides(); // make sure the arrow buttons work
-    this.$.map.render();
   },
   renderScroller: function () {
     this.log();
