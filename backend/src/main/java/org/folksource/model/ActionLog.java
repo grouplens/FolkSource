@@ -2,7 +2,7 @@ package org.folksource.model;
 
 import java.util.Date;
 
-public class ActionLog {
+public class Actionlog {
 	public Integer id;
 	// public String client_timestamp;
 	public Date client_timestamp;
@@ -11,7 +11,7 @@ public class ActionLog {
 	public String category;
 	public Date server_timestamp;
 
-    public ActionLog(Integer id, Date client_timestamp, Integer user_id, String event_provenance, String category, Date server_timestamp) {
+    public Actionlog(Integer id, Date client_timestamp, Integer user_id, String event_provenance, String category, Date server_timestamp) {
         super();
         this.setId(id);
         this.setClient_timestamp(client_timestamp);
@@ -21,7 +21,7 @@ public class ActionLog {
         this.setServer_timestamp(server_timestamp);
     }
 
-	public ActionLog(){
+	public Actionlog(){
 		super();
 	}
 

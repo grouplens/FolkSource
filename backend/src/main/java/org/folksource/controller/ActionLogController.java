@@ -3,19 +3,19 @@ package org.folksource.controller;
 
 import com.opensymphony.xwork2.ModelDriven;
 import org.apache.struts2.ServletActionContext;
-import org.folksource.model.ActionLog;
-import org.folksource.model.ActionLogDto;
+import org.folksource.model.Actionlog;
+import org.folksource.model.ActionlogDto;
 import org.folksource.util.ActionLogService;
 import org.grouplens.common.dto.DtoContainer;
 
 import javax.servlet.http.HttpServletResponse;
 
-public class ActionLogController implements ModelDriven<DtoContainer<ActionLogDto>>{
+public class ActionlogController implements ModelDriven<DtoContainer<ActionlogDto>>{
 	
-	private DtoContainer<ActionLogDto> content = new DtoContainer<ActionLogDto>(ActionLogDto.class, false);
+	private DtoContainer<ActionlogDto> content = new DtoContainer<ActionlogDto>(ActionlogDto.class, false);
 	
 	@Override
-	public DtoContainer<ActionLogDto> getModel() {
+	public DtoContainer<ActionlogDto> getModel() {
 		return content;
 	}
 	
@@ -24,8 +24,8 @@ public class ActionLogController implements ModelDriven<DtoContainer<ActionLogDt
 		res.setHeader("Access-Control-Allow-Origin", "*");
 		res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
 		res.addHeader("Access-Control-Expose-Headers", "Authorization, AuthToken");
-		content = new DtoContainer<ActionLogDto>(ActionLogDto.class, true);
-		content.set(ActionLogDto.fromActionList(ActionLogService.getActionLogs()));
+		content = new DtoContainer<ActionlogDto>(ActionlogDto.class, true);
+		content.set(ActionlogDto.fromActionList(ActionLogService.getActionLogs()));
 		return "index";
 	}
 
@@ -44,12 +44,12 @@ public class ActionLogController implements ModelDriven<DtoContainer<ActionLogDt
         res.addHeader("Access-Control-Allow-Origin", "*");
         res.addHeader("Access-Control-Allow-Headers", "Cache-Control");
 
-        ActionLogDto actionLogDto = content.getSingle();
-        ActionLog actionLog = actionLogDto.toAction();
+        ActionlogDto actionLogDto = content.getSingle();
+        Actionlog actionLog = actionLogDto.toAction();
 
         ActionLogService.save(actionLog);
 
-        content.set(new ActionLogDto(actionLog));
+        content.set(new ActionlogDto(actionLog));
 
         return "create";
     }

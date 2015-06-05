@@ -17,6 +17,8 @@ public class TaskDto extends Dto{
 	public SubmissionDto[] submissions;
 //	public String[] locations;
 	public Question[] questions;
+	public String type;
+	public Integer vQID;
 	
 	
 	//// Methods that create TaskDtos or collections of TaskDtos
@@ -31,9 +33,11 @@ public class TaskDto extends Dto{
 		required = t.required;
 		if (t.submissions == null){submissions = null;}
 		else{submissions = SubmissionDto.fromSubmissionArray(t.submissions.toArray(new Submission[t.submissions.size()]));}
-//        locations = LocationDto.fromLocationLayerArray(t.getLocations().toArray(new LocationLayer[t.getLocations().size()]));
+//        locations = LocationDto.fromLocationLayerArray(t.getLocationById().toArray(new LocationLayer[t.getLocationById().size()]));
 //		locations = LocationDto.fromLocationArray(new Location[0]);
 		questions = t.questions.toArray(new Question[t.questions.size()]);
+		this.type = t.type;
+		this.vQID = t.getDecision_q_id();
 	}
 	public static List<TaskDto> fromList(List<Task> tasks){
 		List<TaskDto> tdtos = new ArrayList<TaskDto>();
@@ -66,7 +70,7 @@ public class TaskDto extends Dto{
 //		}
 
         System.out.println("QUESTIONS: " + questions.length);
-		return new Task(id, name, instructions, required, new LinkedHashSet<Submission>(Arrays.asList(subs)), new LinkedHashSet<Question>(Arrays.asList(questions)), new LinkedHashSet<LocationLayer>(/*Arrays.asList(locs)*/));
+		return new Task(id, name, instructions, required, new LinkedHashSet<Submission>(Arrays.asList(subs)), new LinkedHashSet<Question>(Arrays.asList(questions)), new LinkedHashSet<LocationLayer>(/*Arrays.asList(locs)*/), this.type, this.vQID);
 	}
 	public static Task[] toTaskArray(TaskDto[] tdtos){
 		Task[] tasks = new Task[tdtos.length];

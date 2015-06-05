@@ -12,7 +12,7 @@ public class Location{
     //public LocationLayer member_layer;
     public List<Submission> submissions;
 //	@Exclude(ExcludeType.EXPORT)
-	private Geometry geometry;
+	public Geometry geometry;
 	
 	public Location() {
 		

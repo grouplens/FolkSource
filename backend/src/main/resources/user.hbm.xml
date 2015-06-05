@@ -22,7 +22,7 @@
         <many-to-one name="token" class="Token" column="token" cascade="save-update, delete"/>
         <!--<set name="log_actions" fetch="select">-->
             <!--<key column="campaign_id" not-null="false"/>-->
-            <!--<one-to-many class="ActionLog" />-->
+            <!--<one-to-many class="Actionlog" />-->
         <!--</set>-->
     </class>
 </hibernate-mapping>

@@ -17,10 +17,8 @@ public class SubmissionService {
 	public static List<Submission> getSubmissions(Session session) {
 		List<Submission> submissions;
 
-		System.out.println("ANSWER IN");
 		//submissions = session.createCriteria(Submission.class).setFetchMode("answers", FetchMode.JOIN).list();
 		submissions = session.createQuery("from Submission").list();
-		System.out.println("ANSWER OUT");
 
 		return submissions;
 	}
@@ -59,13 +57,10 @@ public class SubmissionService {
 
 		if (s.getAnswers() != null) {
 			for (Answer a : s.getAnswers()) {
-
 				a.setSub_id(s.getId());
 				AnswerService.save(a);
 			}
 		}
-
-		ResponseDecider.newSubmission(s);
 
 		@SuppressWarnings("unchecked")
 		List<User> users = session.createQuery("from User where id=" + s.getUser_id()).list();
@@ -75,7 +70,6 @@ public class SubmissionService {
 
 	public static User getSubUser(Submission submission) {
 		Session session = HibernateUtil.getSession(false);
-		//System.out.println("CITIZENSENSE - " + submission.getUser_id());
 		@SuppressWarnings("unchecked")
 		List<User> users = session.createQuery("from User where id=" + submission.getUser_id()).list();
 		return users.get(0);
