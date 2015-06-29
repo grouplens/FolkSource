@@ -1,3 +1,3 @@
 #!/bin/bash
-cp ../mobile/assets/logos/icon.png .
+cp bootplate/assets/logos/icon.png .
 cordova-icon

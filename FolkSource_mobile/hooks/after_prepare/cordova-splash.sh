@@ -1,3 +1,3 @@
 #!/bin/bash
-cp ../mobile/assets/logos/splash.png .
+cp bootplate/assets/logos/splash.png .
 cordova-splash
