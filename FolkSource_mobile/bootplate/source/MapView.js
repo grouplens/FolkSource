@@ -1,16 +1,28 @@
 enyo.kind({
   name: "MapView",
   kind: "enyo.FittableRows",
-  //classes: "bordering-box light-background",
   published: {
-    gpsTimeout: "10000"
+    doneRendering: false,
+    logged_in: false,
+    isLocationSelected: false,
+    lastTime: 0,
+    searched: -1,
+    eventFrom: ''
+  },
+  events: {
+    onGPSSet: "",
+    onLayerTapped: "",
+    onReloadedData: "",
+  },
+  handlers: {
+    onHideCampaigns: "hideCamps",
+    onShowCampaigns: "showCamps",
+    onFindUserCenter: "userCenter",
+    onSearchFieldCleared: "cancelTask"
   },
   components: [
     {kind: "enyo.Signals", onLocationFound: "locSuccess", onPinClicked: "popupTriggered", onLoggedIn: "fetchData", onSearchedLocation: "mapCenterFromSearch"},
-    /*{name: "spinUp", kind: "onyx".Popup, centered: true, floating: true, autoDismiss: false, classes: "dark-background-flat", components: [
-      {name: "spin", kind: "onyx.Spinner", classes: "onyx-dark dark-background"}
-    ]},*/
-    {name: "camps", kind: "enyo.Popup", modal: false, floating: true, autoDismiss: false, showTransitions: true, style: "height: 100px; width: 90%; margin-left: 5%; margin-right: 5%; box-shadow: 2px 2px 2px  #222;", layoutKind: "enyo.FittableRowsLayout", components: [
+    {name: "camps", kind: "enyo.Popup", modal: false, floating: true, autoDismiss: false, showTransitions: true, style: "height: 100px; width: 90%; margin-left: 5%; margin-right: 5%; box-shadow: 0 0 5px #222;", layoutKind: "enyo.FittableRowsLayout", components: [
       {kind: "enyo.Panels", name: "taskpanels", arrangerKind: "enyo.CardArranger", fit: true, style: "min-height: 100%;", components: [
         {kind: "enyo.FittableColumns", style: "height: 100%;", components: [
           {name: "leftButton", kind: "onyx.Button", slide: "prev", ontap: "buttonTapHandler", classes: "button-style filledButtons", disabled: !0, components: [
@@ -21,14 +33,12 @@ enyo.kind({
             {tag: "i", classes: "fa fa-chevron-right fa-2x color-icon"}
           ]},
         ]},
-        {name: "task_content", kind: "enyo.FittableRows", components: [
-          {name: "task_description", fit: true, classes: "dark-background", style: "font-size: 11pt; padding: 5px;",content: "test"},
-          {name: "buttons", kind: "enyo.ToolDecorator", classes: "senseButtons", components: [
-            {name: "remove", kind: "onyx.Button", classes: "button-style button-style-negative", ontap: "cancelTask", components: [
-              {tag: "i", classes: "fa fa-ban fa-large"}
-            ]},
-            {name: "submit", kind: "onyx.Button", classes: "button-style button-style-affirmative", ontap: "triggerTask", components: [
-              {tag: "i", classes: "fa fa-check fa-large"}
+        {name: "task_content", kind: "enyo.FittableRows", style: "text-align: center;", classes: "light-background", components: [
+          {name: "task_ask", content: "To help, please:", classes: "light-background", style: "font-size: 13pt; font-weight: 400; text-align: center;"},
+          {name: "task_description", fit: true, style: "text-transform: lowercase; margin-left: auto; margin-right: auto; font-size: 11pt; padding: 5px; width: 80%;",content: "test"},
+          {name: "buttons", /*kind: "enyo.ToolDecorator",*/ classes: "senseButtons", style: "text-align: center;", components: [
+            {name: "submit", kind: "onyx.Button", style: "width: 80%;", classes: "button-style button-style-affirmative", ontap: "triggerTask", components: [
+              {content: "Sure!"}
             ]}
           ]}
         ]}
@@ -37,41 +47,9 @@ enyo.kind({
     {name: "lenses", kind: "LensShifter"},
     {name: "mapCont", fit: true, style: "position: relative;"}
   ],
-  events: {
-    onLoaded: "",
-    onPinClicked: "",
-    onGPSSet: "",
-    onPlaceChosen: "",
-    onReloadedData: ""
-  },
-  eventStarted: !1,
-  handlers: {
-    //onSnapping: "turnOffMap",
-    //onSnapped: "resetPins",
-    onHideCampaigns: "hideCamps",
-    onShowCampaigns: "showCamps",
-    onFindUserCenter: "userCenter"
-  },
   create: function (a) {
     this.inherited(arguments);
-    this.doneRendering = false;
-    //this.$.gps.setTimeout(this.gpsTimeout);
-    userMoved = false;
-    loaded = false;
-    this.panZoomed = false;
-    this.firstTime = true;
-    this.notShowing = true;
-    this.locSuc = false;
-    this.panned = false;
-    this.dragged = false;
-    this.loaded = false;
-    this.logged_in = false;
-    this.pointsLayer = L.featureGroup();
-    this.polygonsLayer = L.featureGroup();
-    /*this.$.taskpanels.getAnimator().setDuration(750);
-    this.$.panels.getAnimator().setDuration(750);*/
     this.hideCamps();
-    this.lastTime = 0;
   },
   buttonTapHandler: function (a, b) {
     if(a.slide === "prev") {
@@ -84,32 +62,45 @@ enyo.kind({
   },
   rendered: function () {
     this.inherited(arguments);
-    //this.$.gps.getPosition();
 
-    this.map = L.map(this.$.mapCont.id, {center: [44.981313, -93.266569], zoom: 15, zoomControl: false});
-    this.map.on('resize', enyo.bind(this, "resizeMap"));
-    this.map.on('zoomend', enyo.bind(this, "resetZoomed"));
-    this.map.on('dragend', enyo.bind(this, "resetPanned"));
-    L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png').addTo(this.map);
-
-
+    this.map = L.map(this.$.mapCont.id, {center: [44.981313, -93.266569], zoom: 17});
+    this.addMapLayers();
+    this.showCamps();
+  },
+  addMapEventHandlers: function() {
+    // this.map.on('resize', enyo.bind(this, "resizeMap"));
+    // this.vectors.on('ontilesloaded', enyo.bind(this, "vectorsLoaded"));
+    // this.vectors.on('')
+  },
+  addMapLayers: function() {
     L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png').addTo(this.map);
     this.vectors = new L.TileLayer.MVTSource({
       url: 'http://innsbruck-umh.cs.umn.edu/tiles/all/{z}/{x}/{y}.mapbox',
       style: function(feature, context) {
         var style={};
-        if(feature.type === 1) {
-          style.radius = 3;
-        }
         if(feature.properties.outcome === 'n') {
           style.color = "rgba(123,50,148,0.7)";
-          style.size=5;
         } else if(feature.properties.outcome === 'y') {
           style.color = "rgba(0,136,55,0.7)";
-          style.size=5;
         } else {
           style.color = "rgba(64,64,64,0.7)";
-          style.size=5;
+        }
+
+        if(feature.type === 1 ){ //Point
+          style.radius = 10;
+          style.selected = {
+            // color: style.color,
+            color: "rgba(219, 112, 30, 0.7)",
+            radius: style.radius,
+          }
+        } else { // Polygon
+          style.selected = {
+            color: style.color,
+            outline: {
+              color: "rgba(219, 112, 30, 0.7)",
+              size: 5
+            }
+          }
         }
         return style;
       },
@@ -118,46 +109,52 @@ enyo.kind({
         if(feature.type === 2) {
           feature.type = 3;
         }
-        //return Number(feature.properties.id);
         return Number(feature.properties.uid);
       },
-      onClick: enyo.bind(this, "makeBubbleClick")
+      onClick: enyo.bind(this, "makeBubbleClick"),
+      onTilesLoaded: enyo.bind(this, "vectorsLoaded"),
     });
     this.map.addLayer(this.vectors);
-
-    //this.$.spin.start();
-    this.showCamps();
+    this.addMapEventHandlers();
     this.doneRendering = true;
   },
-  testClick: function(inEvent) {
-      console.log("CLICK");
-  },
-  mapLoaded: function() {
-    this.loaded = true;
-    this.doLoaded();
-  },
   cancelTask: function(inSender, inEvent) {
-    this.$.taskpanels.setIndex(0);
+    if(this.isLocationSelected) {
+      this.$.taskpanels.setIndex(0);
+      this.deselectMap();
+    }
+    this.isLocationSelected = false;
   },
   drawMap: function (inSender, inEvent) { //inSender = a, inEvent = b;
     var panels = this.$.panels.getPanels();
-    var d = 0;
-    var e;
     if(this.logged_in === true) {
       for (var x in panels) {
         this.sendTasks();
       }
     }
-    if(this.doneRendering) {
-      this.map.invalidateSize();
-    }
+
+    this.map.invalidateSize();
     return !0;
+  },
+  clickMap: function() {
+    if(this.searched == -1 || this.eventFrom == -1) {
+      return;
+    }
+    this.map.fireEvent('click', {
+      latlng: this.searched,
+      layerPoint: this.map.latLngToLayerPoint(this.searched),
+      containerPoint: this.map.latLngToContainerPoint(this.searched)
+    });
+  },
+  deselectMap: function() {
+    this.eventFrom = 'deselect';
+    this.clickMap();
   },
   triggerTask: function(inSender, inEvent) {
     //figure out
     this.log(this.$.task_description.data);
     this.bubbleUp("onPlaceChosen", {data: this.$.task_description.data, location_id: this.$.task_description.location_id});
-    //this.doPlaceChosen({data: this.$.task_description.data});
+    this.deselectMap();
   },
   setTasks: function(inSender, inEvent) {
     var i = inEvent.index;
@@ -178,14 +175,22 @@ enyo.kind({
     ajax.response(this, "renderResponse");
     ajax.go();
   },
+  deleteAndReCreateCampaigns: function(camp_data, panel_name, item_name) {
+    if(this.$.panels.getComponents().length > 0) {
+      this.$.panels.destroyComponents();
+    }
+    this.$.panels.createComponent(
+      {name: panel_name, classes: "panelItem white-text", fit: true, data: camp_data, kind: "enyo.FittableRows", components: [
+      {name: item_name, style: "text-align: center;", kind: "CampaignItem", title: "" + camp_data.title, description: "" + camp_data.description},
+    ]});
+  },
   renderResponse: function (a, b) {
     this.campaignArray = b.campaigns;
     var remove = [];
     for (var c in this.campaignArray) {
       var currentCampaign = this.campaignArray[c];
-      var e = "panel_" + currentCampaign.id;
-      var f = "item_" + currentCampaign.id;
-      var g = "map_" + currentCampaign.id;
+      var panel_name = "panel_" + currentCampaign.id;
+      var item_name = "item_" + currentCampaign.id;
       /*
        * This block below is needed because not all browsers parse dates
        * the same way. This should be mostly browser compatible.
@@ -198,16 +203,7 @@ enyo.kind({
 
       //if(endDate >= date) { // "closed" campaigns shouldn't show up
       //if(currentCampaign.title !== undefined) {
-      if(this.$.panels.getComponents().length > 0) {
-        this.$.panels.destroyComponents();
-      }
-      this.$.panels.createComponent(
-        {name: e, classes: "panelItem", fit: true, data: this.campaignArray[c], kind: "enyo.FittableRows", components: [
-        {name: f, kind: "CampaignItem", title: "" + currentCampaign.title, description: "" + currentCampaign.description},
-      ]});
-      /*} else {
-        remove.push(c);
-        }*/
+      this.deleteAndReCreateCampaigns(currentCampaign, panel_name, item_name)
     }
 
     enyo.Signals.send("onCampLoaded");
@@ -216,17 +212,12 @@ enyo.kind({
     this.checkSides(); // make sure the arrow buttons work
     this.showCamps();
     this.drawMap();
-    this.log("sending onCampLoaded");
     this.doReloadedData();
   },
   showTasks: function(inSender, inEvent) {
     this.$.taskpanels.setIndex(1);
   },
   showCamps: function() {
-    if(this.doneRendering) {
-      this.vectors.redraw();
-      this.map.invalidateSize();
-    }
     this.$.taskpanels.setIndex(0);
     var height = parent.innerHeight;
     var real_height = -4*(height/5); //put the bottom of the campaign list at 4/5 the height of the map
@@ -258,13 +249,11 @@ enyo.kind({
   },
   transitionFinishHandler: function (a, b) {
     var c = this.$.panels.getIndex();
-    this.resetPins();
     this.drawMap();
     this.checkSides();
   },
   transitionStartHandler: function (a, b) {
     var c = this.$.panels.getIndex();
-    this.turnOffMap();
   },
   locSuccess: function (a, b) {
     var coords = b.coords;
@@ -272,6 +261,7 @@ enyo.kind({
 
     if (!this.userMarker) {
       this.userMarker = L.userMarker(latlng, {smallIcon: true}).addTo(this.map);
+      this.map.setView(latlng, 17, {animate: true});
     }
 
     this.userMarker.setLatLng(latlng);
@@ -279,194 +269,89 @@ enyo.kind({
     this.resize();
     var nowTime = Date.now();
     if(nowTime - this.lastTime > 60000) {
-      var url = "http://nominatim.openstreetmap.org/reverse?format=json&osm_type=W&lat="+coords.latitude+"&lon="+coords.longitude+"&zoom=18"
+      var url = "http://nominatim.openstreetmap.org/reverse?format=json&lat="+coords.latitude+"&lon="+coords.longitude//+"&zoom=18"
       var ajax = new enyo.Ajax({url: url, method: "GET", cacheBust: false});
       ajax.response(this, "nominatimResponse");
       ajax.go();
       this.lastTime = Date.now();
     }
 
-    if(!this.dragged && !this.panned) {
-      this.map.setView(latlng, 17, {animate: true});
-    }
     return true;
   },
   checkMap: function (a) {
-    this.locPlot(a);
-  },
-  locPlot: function (a) {
     this.locations = a;
-    this.points = [];
-    this.polygons = [];
-    //this.addMarkers();
-  },
-  inside: function (a) {
-    /*var b = this.straction.getBounds().getNorthEast(),
-      c = this.straction.getBounds().getSouthWest();
-      return a[1] <= b.lat && a[1] >= c.lat && a[0] <= b.lon && a[0] >= c.lon ? !0 : !1;*/
-  },
-  toggleVisible: function (a, b) {
-    /*var c = this.parent.parent.getIndex(),
-      d = this.id.split("_"),
-      e = d[d.length - 1],
-      f = this.parent.parent.getPanels()[c].id.split("_"),
-      g = f[f.length - 1];
-      return this.addRemoveClass("hideMap", e !== g), !0;*/
-  },
-  turnOffMap: function(inSender, inEvent) {
-    /*for(x in this.pointsLayer) {
-      this.map.removeLayer(this.pointsLayer[x]);
-      }
-      for(x in this.polygonsLayer) {
-      this.map.removeLayer(this.polygonsLayer[x]);
-		}*/
-    if(this.doneRendering) {
-      this.pointsLayer.clearLayers();
-      this.map.removeLayer(this.pointsLayer);
-      this.polygonsLayer.clearLayers();
-      this.map.removeLayer(this.polygonsLayer);
-    }
-		//remove all markers
-		/*for(x in this.points) {
-			this.map.removeLayer(this.points[x]);
-		}
-		for (x in this.polygons) {
-			this.map.removeLayer(this.polygons[x]);
-		}*/
-		//this.$.spinUp.show();
-	},
-	resetPins: function(inSender, inEvent) {
-		//re-create markers
-	},
-  resetPanned: function() {
-    this.panned=true;
-    this.log();
-    return;
   },
   resizeMap: function() {
     this.map.invalidateSize();
     return;
   },
-  resetZoomed: function() {
-    this.zoomed=true;
-    this.log(this.map.getZoom());
-    return;
-  },
-	makeFilter: function () {
-		if(this.loaded)
-      this.panZoomed = true;
-    //this.addMarkers();
-  },
-  addMarkers: function () {
-    this.makeBubbleClick();
-    for (var x in this.locations) {
-      var url = Data.getTileURL() + this.locations[x] + "/{z}/{x}/{y}.geojson";
-      //var layer = new L.TileLayer.d3_geoJSON(url, {minZoom: 14, maxNativeZoom: 14, unloadInvisibleTiles: true});
-      //layer.addTo(this.map);
-
+  vectorsLoaded: function(inSender, inEvent) {
+    this.log(this.eventFrom);
+    if(this.eventFrom == -1) {
+      return;
     }
-    /*for(var x in this.locations) {
-      var str = this.locations[x].geometryString;
-      //wkt.read(str);
-      var data = Terraformer.WKT.parse(str);
-      //var shape = wkt.toObject();
-      var points = [];
-      var polygons = [];
-      if(str.indexOf("POINT") != -1) {
-        var shape = L.geoJson(data, {
-          pointToLayer: function (feature, latlng) {
-            var point = new L.Point(27,91);
-            var icon = L.divIcon({iconSize: point, html: "<i class=\"icon-map-marker icon-4x\"></i>", className: "map-pin"});
-            return L.marker(latlng, {icon: icon});
-          }});
-        shape.on("click", enyo.bind(this, "makeBubbleClick"));
-        this.pointsLayer.addLayer(shape);
-        points.push(shape);
-      } else if (str.indexOf("POLYGON") != -1) {
-        var shape = L.geoJson(data);
-        shape.on("click", enyo.bind(this, "makeBubbleClick"));
-        shape.setStyle({color: "#2E426F"});
-        this.polygonsLayer.addLayer(shape);
-        polygons.push(shape);
-      } else {
-      }
-
+    if(this.searched != -1) {
+      this.eventFrom = 'vectors';
+      this.clickMap();
     }
-    this.pointsLayer.addTo(this.map);
-
-    this.polygonsLayer.addTo(this.map);
-
-    /*var bounds = this.polygonsLayer.getBounds();
-    if(bounds) {
-      bounds.extend(this.pointsLayer.getBounds());
+  },
+  setTaskPanel: function(osm_id, layer_name) {
+    this.tasks = this.campaignArray[this.$.panels.getIndex()].tasks;
+    if(this.tasks.length > 1) {
+      this.$.tasks.setCount(this.tasks.length);
+      this.$.tasks.reset();
+      this.$.taskpanels.setIndex(2);
     } else {
-      bounds = this.pointsLayer.getBounds();
+      this.$.task_description.setContent(this.tasks[0].instructions);
+      this.$.taskpanels.setIndex(1);
+      this.$.task_description.data = this.tasks[0];
+      this.$.task_description.location_id = osm_id;
+      this.$.lenses.getNominatimName(osm_id, layer_name);
+      this.$.task_description.location_layer = layer_name;
+      this.log("chosen");
     }
-
-    if(this.userMarker !== undefined) {
-      bounds.extend(this.userMarker.getLatLng());
-    }
-
-    var lat = (bounds._northEast.lat + bounds._southWest.lat) / 2;
-    var lng = (bounds._northEast.lng + bounds._southWest.lng) / 2;
-    this.map.fitBounds(bounds);*/
-    //this.map.panTo([lat, lng], {animate: true});
   },
   makeBubbleClick: function (inEvent) {
-    //loc = inEvent.latlng;
-    /*loc.lat = loc.lat.toPrecision(8);
-    loc.lng = loc.lng.toPrecision(8);*/
-    //enyo.Signals.send("onPinClicked", loc);
-    if(inEvent.feature !== null) {
-      if(inEvent.feature.properties.type !== "seed_voting") {
-        this.log(inEvent.feature.properties);
-        this.$.taskpanels.setIndex(1);
-        this.tasks = this.campaignArray[this.$.panels.getIndex()].tasks;
-        if(this.tasks.length > 1) {
-          this.$.tasks.setCount(this.tasks.length);
-          this.$.tasks.reset();
-          this.$.taskpanels.setIndex(2);
-        } else {
-          this.$.task_description.setContent(this.tasks[0].instructions);
-          this.$.taskpanels.setIndex(1);
-          this.$.task_description.data = this.tasks[0];
-          this.$.task_description.location_id = inEvent.feature.properties.uid;
-        }
+    this.isLocationSelected = true;
+    if(!inEvent.feature ||
+       this.eventFrom == -1 ||
+       inEvent.feature.properties.type === 'seed_voting') {
+      return;
+    }
+    if(inEvent.feature.selected) {
+
+      this.setTaskPanel(inEvent.feature.properties.osm_id, inEvent.feature.layer.name);
+      this.$.taskpanels.setIndex(1);
+      this.eventFrom = -1;
+    } else {
+      if(this.eventFrom === 'dselect') {
+        this.$.taskpanels.setIndex(0);
+        this.log('cleared');
+        this.searched = -1;
       }
     }
-  },
-  makeButtonBubbleClick: function(inEvent) {
-    this.log(inEvent);
-    this.log(this.tasks[inEvent.index]);
-    //enyo.Signals.send("onPinClicked", Data.getLocationData());
-  },
-  makeBubbleLoad: function () {
-    loaded = !0;
-    this.doLoaded();
+
+    /*if(this.searched === 'deslect') {
+      this.searched = -1;
+      this.eventFrom = -1;
+    }*/
+    this.$.lenses.endLoading();
+    return;
   },
   mapCenterFromSearch: function(inSender, inEvent) {
-    this.map.setView([inEvent.lat, inEvent.lon], 17, {animate: true});
-    this.panned = true;
+    var ll = L.latLng(inEvent.lat, inEvent.lon)
+    this.searched = ll;
+    this.map.panTo(ll);
+    this.vectors.redraw();
     return;
   },
   nominatimResponse: function(inSender, inEvent) {
-    this.log(JSON.stringify(inEvent));
-    // var features = this.vectors.layers.buildings.features;
-
-
-    /*for(x in features) {
-      this.log(features[x].id);
-      if(features[x].id === Number(inEvent.osm_id) /*&& features[x].properties.allowed !== "n"*//*) {
-        features[x].style.color = 'rgba(255,0,0,1)';
-        this.log("FOUND THE RIGHT BUILDING");
-      }
-    }*/
     enyo.Signals.send("onGPSCoordLookup", {display: inEvent.display_name, osm_id: inEvent.osm_id});
     return;
   },
   userCenter: function() {
     var ll = this.userMarker.getLatLng();
-    this.map.setView(ll, 17, {animate: true});
+    this.map.panTo(ll);
     return;
   },
   sendTasks: function() {

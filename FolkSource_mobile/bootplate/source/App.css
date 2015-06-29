@@ -280,10 +280,13 @@ background: #;
     -moz-box-shadow: 0 0 0 0 white;
     box-shadow: 0 0 0 0 white;
   }
-  .color-progress {
+  .task-view {
+    color: #2E426F;
+  }
+  .color-progress, .task-view {
     background-color: #DB701E;
   }
-  .color-icon { 
+  .color-icon {
     color: #DB701E;
   }
   .map-pin {
@@ -334,7 +337,7 @@ background: #;
     padding: 0.5%;*/
   }
   .leaderTable {
-    text-align: left; 
+    text-align: left;
     width: 50%;
   }
   .leaderUser {
@@ -522,4 +525,3 @@ table, tr, td {
 .highlight * {
   background-color: #EDBA53;
 }
-

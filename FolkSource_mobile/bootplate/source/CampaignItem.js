@@ -10,8 +10,8 @@ enyo.kind({
   },
   components: [
 		//{name: "button", kind: "onyx.Button", content: "Watch", classes: "button-style", ontap: "buttonToggled"},
-    {name: "title", content: "title", style: "font-weight: 400;", classes: "campTitle"},
-		{name: "description", tag: "p", content: "desc", classes: "campDesc", style: ""}
+    {name: "title", content: "title", style: "font-size: 13pt; font-weight: 400;", classes: "campTitle white-text"},
+		{name: "description", tag: "p", content: "desc", classes: "campDesc white-text", style: ""}
   ],
   events: {
     onStartWatching: "",
