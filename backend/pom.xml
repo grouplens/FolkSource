@@ -8,14 +8,6 @@
 	<name>FolkSource</name>
 
 	<properties>
-		<!--<db.username>postgres</db.username>-->
-		<!--<db.password>Mfk8r8r9</db.password>-->
-		<!--<db.schema>public</db.schema>-->
-		<!--<db.connection.driver.class>org.postgresql.Driver</db.connection.driver.class>-->
-		<!--<db.url>jdbc:postgresql://localhost/folksource</db.url>-->
-		<!--<db.dialect>org.hibernate.spatial.dialect.postgis.PostgisDialect</db.dialect>-->
-		<!-- <db.dialect>org.hibernate.dialect.PostgreSQLDialect</db.dialect> -->
-		<!--<db.connection.maxcount>40</db.connection.maxcount>-->
 		<spring.amqp.version>1.2.1.RELEASE</spring.amqp.version>
 		<slf4jVersion>1.6.0</slf4jVersion>
 		<hibernate.version>4.3.8.Final</hibernate.version>
@@ -114,7 +106,7 @@
 				<configuration>
 					<container>
 						<containerId>tomcat7x</containerId>
-						<home>C:\apache-tomcat-7.0.56</home>
+						<home>C:\tomcat\apache-tomcat-7.0.61</home>
 						<type>installed</type>
 					</container>
 
@@ -262,6 +254,17 @@
 			<version>1.2</version>
 		</dependency>
 		<dependency>
+            <groupId>commons-pool</groupId>
+            <artifactId>commons-pool</artifactId>
+            <version>1.4</version>
+            <!-- <version>1.5.6</version> -->
+        </dependency>
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+        </dependency>
+		<dependency>
 			<groupId>org.grouplens.common</groupId>
 			<artifactId>common-serialize</artifactId>
 			<version>0.5</version>
@@ -407,6 +410,11 @@
 		    <groupId>org.glassfish.jersey.security</groupId>
 		    <artifactId>oauth1-client</artifactId>
 		    <version>2.16</version>
+		</dependency>
+		<dependency>
+			<groupId>com.thetransactioncompany</groupId>
+			<artifactId>cors-filter</artifactId>
+			<version>2.4</version>
 		</dependency>
 	</dependencies>
 </project>

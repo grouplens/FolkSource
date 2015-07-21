@@ -5,7 +5,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 import org.folksource.action.BaseAction;
 //import org.folksource.controller.LeaderboardEntry;
-import org.folksource.util.LeaderboardService;
 import org.grouplens.common.dto.DtoContainer;
 
 public class LeaderboardAction extends BaseAction{

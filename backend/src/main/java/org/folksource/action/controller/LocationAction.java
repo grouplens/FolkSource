@@ -8,8 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 import org.folksource.action.BaseAction;
 import org.folksource.entities.Location;
-import org.folksource.model.LocationDto;
-import org.folksource.util.LocationService;
 import org.grouplens.common.dto.DtoContainer;
 
 public class LocationAction extends BaseAction{
@@ -37,11 +35,11 @@ public class LocationAction extends BaseAction{
 //		for (Location m : LocationService.getLocations()) {
 //			m.getGeometryString();
 //		}
-		ArrayList<LocationDto> l = new ArrayList<LocationDto>();
-		for(Location m : LocationService.getLocations()) {
-			System.out.println(m.getId());
-			l.add(new LocationDto(m));
-		}
+//		ArrayList<LocationDto> l = new ArrayList<LocationDto>();
+//		for(Location m : LocationService.getLocations()) {
+//			System.out.println(m.getId());
+//			l.add(new LocationDto(m));
+//		}
 		//content.set(l);
 		//return new DefaultHttpHeaders("index").disableCaching();
 		return "index";

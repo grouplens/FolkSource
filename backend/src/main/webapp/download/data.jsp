@@ -32,10 +32,6 @@ request.setAttribute("tab", p);
 --%>
 <display:table type="tab" export="true">
 
-=======
-%>
-<display:table type="tab" export="true">
->>>>>>> refs/remotes/grouplens/master
 <display:column property="sub_id" sortable="true" />
 <display:column property="task_desc" sortable="true" />
 <display:column property="location" sortable="true" />

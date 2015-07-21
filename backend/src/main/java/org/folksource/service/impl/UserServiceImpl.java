@@ -4,6 +4,7 @@ import java.security.SecureRandom;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
+import org.folksource.dao.jpa.UserDao;
 import org.folksource.entities.User;
 import org.folksource.service.UserService;
 import org.folksource.util.HibernateFactory;
@@ -12,10 +13,35 @@ import org.folksource.util.PasswordHashAndSalt;
 import org.grouplens.common.util.HashUtil;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class UserServiceImpl implements UserService{
 	// 8 bytes should be a good enough salt for our purposes.
     private static final int SALT_LENGTH = 8;
+    
+    @Autowired
+    private UserDao userDao;
+	
+
+	
+	public User getUserByName(String name) {
+		User user = userDao.find(1);
+		return user;
+	}
+	
+	public List<User> userLeaderboard() {
+		return userDao.findAll();
+	}
+
+	
+	//Old methods
+	private static void getIncentives(User u) {
+		List<User> users;
+		Session session = HibernateUtil.getSession(true);
+		
+		users = session.createQuery("from Incentives").list();
+		
+	}
 	
 	@SuppressWarnings("unchecked")
 	public static List<User> getUsers() {
@@ -29,14 +55,6 @@ public class UserServiceImpl implements UserService{
 //		}
 		return users;
 	}
-	
-	private static void getIncentives(User u) {
-		List<User> users;
-		Session session = HibernateUtil.getSession(true);
-		
-		users = session.createQuery("from Incentives").list();
-		
-	}
 
 	public static User getUserById(int id) {
 		List<User> users = getUsers();
@@ -47,6 +65,11 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		return u;
+	}
+	
+	public static void save(User u) {
+		Session session = HibernateUtil.getSession(true);
+		session.saveOrUpdate(u);
 	}
 	
 	public static User getUserByToken(int token) {
@@ -60,18 +83,6 @@ public class UserServiceImpl implements UserService{
 		}
 		return null;
 	}
-	
-	public static void save(User u) {
-		Session session = HibernateUtil.getSession(true);
-		session.saveOrUpdate(u);
-	}
-	
-	public static User getUserByName(String name) {
-		Session session = HibernateUtil.getSession(true);
-		User u = (User)session.createQuery("from User where name='"+name+"'").list().get(0);
-		return u;
-	}
-	
 	
 	public static User getUserByEmail(String email) {
 		Session session = HibernateFactory.getSessionFactory().getCurrentSession();
@@ -105,4 +116,12 @@ public class UserServiceImpl implements UserService{
         String passwordHash = HashUtil.getSaltedPassword(pwWithoutHash, salt);
         return new PasswordHashAndSalt(passwordHash, salt);
     }
+
+	public UserDao getUserDao() {
+		return userDao;
+	}
+
+	public void setUserDao(UserDao userDao) {
+		this.userDao = userDao;
+	}
 }

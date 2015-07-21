@@ -5,8 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.folksource.model.LocationLayer;
-import org.folksource.model.Submission;
 import org.folksource.entities.Task;
 
 //import com.vividsolutions.jts.geom.Geometry;

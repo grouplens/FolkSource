@@ -9,7 +9,7 @@ import org.apache.struts2.ServletActionContext;
 import org.folksource.action.BaseAction;
 //import org.folksource.controller.Question;
 //import org.folksource.controller.QuestionDto;
-import org.folksource.util.QuestionService;
+
 import org.grouplens.common.dto.DtoContainer;
 
 public class QuestionAction extends BaseAction{

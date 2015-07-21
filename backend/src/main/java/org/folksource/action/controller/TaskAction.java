@@ -4,8 +4,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
 import org.folksource.action.BaseAction;
-import org.folksource.model.TaskDto;
-import org.folksource.util.TaskService;
 import org.grouplens.common.dto.DtoContainer;
 
 public class TaskAction extends BaseAction{

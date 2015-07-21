@@ -6,12 +6,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
-		<attributes>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry excluding="resources/" kind="src" path="local"/>
 	<classpathentry kind="src" path="local/resources"/>
 	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
 		<attributes>
@@ -29,7 +24,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/dpauley.4ROI/.m2/repository/org/postgis/postgis-jdbc/1.5.2/postgis-jdbc-1.5.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/dpauley.4ROI/.m2/repository/org/postgresql/postgresql/9.3-1103-jdbc3/postgresql-9.3-1103-jdbc3.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

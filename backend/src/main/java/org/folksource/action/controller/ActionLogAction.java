@@ -4,10 +4,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
 import org.folksource.action.BaseAction;
-import org.folksource.model.ActionLog;
-import org.folksource.model.ActionLogDto;
-import org.folksource.util.ActionLogService;
-import org.grouplens.common.dto.DtoContainer;
 
 public class ActionLogAction extends BaseAction{
 		

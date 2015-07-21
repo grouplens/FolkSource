@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.io.FileUtils;
 import org.apache.struts2.ServletActionContext;
 import org.folksource.action.BaseAction;
-import org.folksource.util.AnswerService;
 import org.grouplens.common.dto.DtoContainer;
 
 public class AnswerAction extends BaseAction{

@@ -4,8 +4,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
 import org.folksource.action.BaseAction;
-import org.folksource.geojson.GeoJSON;
-import org.folksource.util.GeoJSONService;
+//import org.folksource.geojson.GeoJSON;
+//import org.folksource.util.GeoJSONService;
 
 public class FeatureAction extends BaseAction{
 	public String index() {

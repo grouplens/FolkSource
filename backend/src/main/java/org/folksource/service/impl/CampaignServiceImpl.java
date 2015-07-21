@@ -1,5 +1,6 @@
 package org.folksource.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.folksource.dao.jpa.CampaignDao;
