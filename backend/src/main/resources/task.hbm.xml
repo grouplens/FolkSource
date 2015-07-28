@@ -9,6 +9,8 @@
 		<property name="instructions" />
 		<!--<property name="campaign_id" />-->
 		<property name="required" />
+		<property name="type" />
+		<property name="decision_q_id" />
 		<set name="submissions" inverse="true" fetch="subselect" lazy="false">
 			<key column="task_id" not-null="true"/>
 			<one-to-many class="Submission" />

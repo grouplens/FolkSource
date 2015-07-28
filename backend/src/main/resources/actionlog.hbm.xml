@@ -2,14 +2,14 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
 <hibernate-mapping package="org.folksource.model">
-	<class name="ActionLog" table="action_log">
+	<class name="Actionlog" table="action_log">
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>
-        <property name="client_timestamp" />
+		<property name="client_timestamp" />
 		<property name="user_id" />
-        <property name="event_provenance" />
+		<property name="event_provenance" />
 		<property name="category" />
-        <property name="server_timestamp" />
+		<property name="server_timestamp" />
 	</class>
 </hibernate-mapping>

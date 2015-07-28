@@ -1,0 +1,15 @@
+{
+	"packagejs": "./package.js",
+	"assets": [
+		"./CHANGELOG.md",
+		"./CONTRIBUTING.md",
+		"./Jakefile.js",
+		"./LICENSE",
+		"./PLUGIN-GUIDE.md",
+		"./README.md",
+		"./component.json",
+		"./dist",
+		"./package.json"
+	],
+	"libs": []
+}

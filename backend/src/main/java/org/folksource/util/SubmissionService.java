@@ -17,10 +17,8 @@ public class SubmissionService {
 	public static List<Submission> getSubmissions(Session session) {
 		List<Submission> submissions;
 
-		System.out.println("ANSWER IN");
 		//submissions = session.createCriteria(Submission.class).setFetchMode("answers", FetchMode.JOIN).list();
 		submissions = session.createQuery("from Submission").list();
-		System.out.println("ANSWER OUT");
 
 		return submissions;
 	}
@@ -54,49 +52,15 @@ public class SubmissionService {
 		s.setTimestamp(new Date());
 
 		Location l = LocationService.getLocationById(s.getLocation_id());
-    l.getSubmissions().add(s);
-		/*l.setSubmissions(new Submission[]{s});
-		if(l instanceof OSMWayLocation) {
-			LocationService.save((OSMWayLocation)l);
-		} else {
-			System.out.println("WWWWWWWW");
-		}
-*/
+		l.getSubmissions().add(s);
 		session.save(s);
 
 		if (s.getAnswers() != null) {
 			for (Answer a : s.getAnswers()) {
-
 				a.setSub_id(s.getId());
 				AnswerService.save(a);
 			}
 		}
-
-        // This should only apply for the current gun-law campaign. Any of those others don't deserve it
-        if(s.getTask_id() == 59) {
-            List<Submission> submissions = l.getSubmissions();
-            boolean agreed = false;
-            if (submissions.size() > 1) {
-                String firstAnswer = "";
-                for (int i = 0; i < submissions.size(); i++) {
-                    List<Answer> answers = submissions.get(i).getAnswers();
-                    for (int j = 0; j < answers.size(); j++) {
-                        Answer a = answers.get(j);
-                        if (a instanceof MultipleChoiceAnswer) {
-                            if (i == 0) {
-                                firstAnswer = ((MultipleChoiceAnswer) answers.get(j)).getChoices();
-                            } else
-								agreed = !firstAnswer.equalsIgnoreCase(((MultipleChoiceAnswer) answers.get(j)).getChoices());
-                        }
-                    }
-                }
-            }
-            if (agreed) {
-                l.setAllowed("y");
-                LocationService.save(l);
-            }
-        }
-
 
 		@SuppressWarnings("unchecked")
 		List<User> users = session.createQuery("from User where id=" + s.getUser_id()).list();
@@ -106,7 +70,6 @@ public class SubmissionService {
 
 	public static User getSubUser(Submission submission) {
 		Session session = HibernateUtil.getSession(false);
-		//System.out.println("CITIZENSENSE - " + submission.getUser_id());
 		@SuppressWarnings("unchecked")
 		List<User> users = session.createQuery("from User where id=" + submission.getUser_id()).list();
 		return users.get(0);

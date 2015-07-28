@@ -1,0 +1,14 @@
+{
+	"packagejs": "./package.js",
+	"assets": [
+		"./.gitignore",
+		"./.npmignore",
+		"./.travis.yml",
+		"./LICENSE",
+		"./README.md",
+		"./gruntfile.js",
+		"./package.json",
+		"./terraformer.js"
+	],
+	"libs": []
+}

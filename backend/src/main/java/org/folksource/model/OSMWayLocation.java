@@ -1,12 +1,10 @@
 package org.folksource.model;
 
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
-import com.vividsolutions.jts.geom.Polygonal;
+import com.vividsolutions.jts.geom.*;
 
 public class OSMWayLocation extends Location {
-	private Polygon geometry;
+	private LineString geometry;
+	public Integer version;
 
 	public OSMWayLocation() {
 		super();
@@ -24,11 +22,14 @@ public class OSMWayLocation extends Location {
 
 	@Override
 	public void setGeometry(Geometry geometry) {
-//		System.out.println(geometry.getClass());
-		if(geometry instanceof Polygon) {
-			this.geometry = (Polygon) geometry;
-			System.out.println(this.geometry);
-		}
+		this.geometry = (LineString) geometry;
 	}
 
+	public Integer getVersion() {
+		return version;
+	}
+
+	public void setVersion(Integer version) {
+		this.version = version;
+	}
 }

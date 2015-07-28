@@ -30,7 +30,7 @@ public class TokenController implements ModelDriven<DtoContainer<LocationDto>> {
 		HttpServletResponse res = ServletActionContext.getResponse();
 		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "*");
-		for (Location s : LocationService.getLocations()) {
+		for (Location s : LocationService.getLocationsArray()) {
 			if(s.getId().equals(id))
 				content.set(new LocationDto(s));
 		}
@@ -38,12 +38,6 @@ public class TokenController implements ModelDriven<DtoContainer<LocationDto>> {
 	}
 
 	public void setId(String id) {
-		//if (id != null)
-		//	for (Location s : LocationService.getLocations()) {
-		//		if (s.getId() == Integer.parseInt(id))
-		//			this.Location = s;
-		//	}
-		// LocationService.getLocations()..get(Integer.parseInt(id)-1);
 		this.id = Integer.parseInt(id);
 	}
 
@@ -58,11 +52,11 @@ public class TokenController implements ModelDriven<DtoContainer<LocationDto>> {
 		res.addHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		res.addHeader("Access-Control-Allow-Origin", "*");
 		content = new DtoContainer<LocationDto>(LocationDto.class, true);
-//		for (Location m : LocationService.getLocations()) {
+//		for (Location m : LocationService.getLocationById()) {
 //			m.getGeometryString();
 //		}
 		ArrayList<LocationDto> l = new ArrayList<LocationDto>();
-		for(Location m : LocationService.getLocations()) {
+		for(Location m : LocationService.getLocationsArray()) {
 			l.add(new LocationDto(m));
 		}
 		content.set(l);

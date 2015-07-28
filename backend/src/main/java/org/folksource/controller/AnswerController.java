@@ -30,7 +30,8 @@ public class AnswerController implements ModelDriven<DtoContainer<AnswerDto>>{
 	File media;
 	/** The base directory to save uploaded photos. */
 	public static final String BASE_DIR = "tmp/";
-	
+	//public static final String BASE_DIR = "/export/scratch/FolkSource/files/";
+
 	
 	@Override
 	public DtoContainer<AnswerDto> getModel() {

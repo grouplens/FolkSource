@@ -13,6 +13,8 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.rest.DefaultHttpHeaders;
 import org.apache.struts2.rest.HttpHeaders;
 
+import java.util.List;
+
 public class CampaignController implements ModelDriven<DtoContainer<CampaignDto>>{
 	
 	DtoContainer<CampaignDto> content = new DtoContainer<CampaignDto>(CampaignDto.class, false);
@@ -45,7 +47,8 @@ public class CampaignController implements ModelDriven<DtoContainer<CampaignDto>
 		res.addHeader("Access-Control-Allow-Headers", "Authorization, AuthToken");
 		res.addHeader("Access-Control-Expose-Headers", "Authorization, AuthToken");
 		content = new DtoContainer<CampaignDto>(CampaignDto.class, true);
-		content.set(CampaignDto.fromCampaignList(CampaignService.getCampaigns()));
+		List<Campaign> l = CampaignService.getCampaigns();
+		content.set(CampaignDto.fromCampaignList(l));
 		return "index";
 	}
 	public String options() {

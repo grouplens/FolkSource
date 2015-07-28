@@ -8,6 +8,7 @@ import org.apache.struts2.ServletActionContext;
 import org.folksource.model.Submission;
 import org.folksource.model.SubmissionDto;
 import org.folksource.util.HibernateUtil;
+import org.folksource.util.ResponseDecider;
 import org.folksource.util.SubmissionService;
 import org.grouplens.common.dto.DtoContainer;
 import org.hibernate.Session;
@@ -42,7 +43,8 @@ public class SubmissionController implements ModelDriven<DtoContainer<Submission
 		// SubmissionService.save updates the submission object with the id that the db has assigned
 		// to the object. We return a new SubmissionDto based on the updated submission object.
 		content.set(new SubmissionDto(s));
-		
+		ResponseDecider.newSubmission(s);
+
 		return "create";
 	}
 	
