@@ -7,15 +7,11 @@ enyo.kind({
 	],
 	create: function(inSender, inEvent) {
 		this.inherited(arguments);
-		if(enyo.platform.ios === 7 || enyo.platform.ios === 8) {
-			this.$.bar.setShowing(true);
-      this.$.bar.applyStyle("display", null);
-		}
+		document.addEventListener("deviceready", enyo.bind(this, "startup"), false);
+		this.startup();
 	},
 	rendered: function(inSender, inEvent) {
 		this.inherited(arguments);
-		this.gps_watch = navigator.geolocation.watchPosition(enyo.bind(this, "locSuccess"), enyo.bind(this, "locError"));
-		navigator.geolocation.getCurrentPosition(enyo.bind(this, "locSuccess"), enyo.bind(this, "locError"));
 	},
 	locSuccess: function (locData) {
 		this.coords = locData.coords;
@@ -23,5 +19,15 @@ enyo.kind({
   },
   locError: function (a, b) {
 		enyo.Signals.send("onNoLocationFound");//doLocationFound();
+	},
+	startup: function(inSender, inEvent) {
+		this.log("device ready");
+		this.log(inSender);
+		this.log(inEvent);
+		/*if(enyo.platform.ios === 7 || enyo.platform.ios === 8) {
+			this.$.bar.setShowing(true);
+      this.$.bar.applyStyle("display", null);
+		}*/
+		this.gps_watch = navigator.geolocation.watchPosition(enyo.bind(this, "locSuccess"), enyo.bind(this, "locError"));
 	},
 });

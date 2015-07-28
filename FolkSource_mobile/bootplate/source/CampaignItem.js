@@ -3,14 +3,14 @@ enyo.kind({
   watching: !1,
   index: "",
   classes: "dark-background-flat",
-	style: "padding: 5px;",
+	style: "padding: 3px;",
   published: {
     title: "",
     description: ""
   },
   components: [
 		//{name: "button", kind: "onyx.Button", content: "Watch", classes: "button-style", ontap: "buttonToggled"},
-    {name: "title", content: "title", style: "font-size: 13pt; font-weight: 400;", classes: "campTitle white-text"},
+    {name: "title", content: "title", style: "font-size: 12pt; font-weight: 400;", classes: "campTitle white-text"},
 		{name: "description", tag: "p", content: "desc", classes: "campDesc white-text", style: ""}
   ],
   events: {

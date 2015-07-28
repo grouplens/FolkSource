@@ -15,7 +15,7 @@ enyo.kind({
     onReloadedData: "countReset"
   },
   events: {
-    onSenseOpened: "",
+    onSenseClosed: "",
     onHideCampaigns: "",
     onShowCampaigns: ""
   },
@@ -57,9 +57,7 @@ enyo.kind({
           ]},
           {name: "menupane", kind: "enyo.Panels", fit: true, draggable: false, animate: true, index: 0, style: "height: 100%;", arrangerKind: "enyo.CarouselArranger", components: [
             {name: "clist", kind: "enyo.FittableRows", components: [
-              //{name: "androidDiv"},
               {name: "map", kind: "MapView", onHide: "handleCampsHide", onShow: "handleCampsShow", fit: true},
-              //{name: "iosDiv"},
             ]},
             {name: "llist", kind: "enyo.FittableRows", components: [
               {kind: "LeaderboardList", multiselect: false, fit: true},
@@ -70,20 +68,10 @@ enyo.kind({
       ]},
     ]}
   ],
-  buttonTapHandler: function (a, b) {
-    if(a.slide === "prev") {
-      //this.$.panels.previous();
-    } else if(a.slide === "next") {
-      //this.$.panels.next();
-    } else {
-      //this.$.panels.snapTo(a.slide);
-    }
-  },
   closeSense: function (a, b) {
     this.$.menupane.setIndex(0);
     this.$.sense.destroyComponents();
-    this.waterfallDown("onShowCampaigns");
-    this.$.locateMe.addRemoveClass("tableHideKeep", false);
+    this.waterfallDown("onSenseClosed");
     return true;
   },
   checkSides: function () {
@@ -115,18 +103,6 @@ enyo.kind({
     this.inherited(arguments);
     this.panelTarget = '';
     this.refreshCount = 0;
-    //this.$.menuDrawer.getAnimator().setDuration(350);
-    //this.$.menupane.getAnimator().setDuration(350);
-    /*
-     * GET OS THING HERE
-     */
-
-     /*if(OS === "ios") {
-       this.$.iosDiv.createComponent({name: "lensMenu", kind: "BottomLensMenu", onActivate: "handleLenses", android: false});
-     } else if (OS === "android") {
-       this.$.androidDiv.createComponent({name: "lensMenu", kind: "BottomLensMenu", onActivate: "handleLenses", android: true});
-     }*/
-    //this.$.taskpanels.getAnimator().setDuration(750);
   },
   countRefresh: function(inSender, inEvent) {
     this.refreshCount++;
@@ -153,33 +129,14 @@ enyo.kind({
       if(inEvent.toIndex === 1) { // closing drawer, this is where target comes in
         if(this.panelTarget === 'c') {
           this.log('c');
-          // this.$.locateMe.addRemoveClass("tableHideKeep", false);
           this.$.menupane.setIndex(0);
-          //this.$.menuDrawer.setIndex(1);
-          //this.showMenu();
           this.$.map.showCamps();
         } else if(this.panelTarget === 'l') {
           this.log('l');
-          // this.$.locateMe.addRemoveClass("tableHideKeep", true);
           this.$.menupane.setIndex(1);
-          //this.$.menuDrawer.setIndex(1);
-          //this.showMenu();
-        } else {
-          if(this.$.menupane.getIndex() === 0) {
-            //this.$.map.showCamps();
-          }
         }
       }
     }
-  },
-  fetchData: function() {
-    /*if(this.logged_in === false) {
-      this.logged_in = true;
-    }
-    var url = Data.getURL() + "campaign.json";
-    var ajax = new enyo.Ajax({method: "GET", cacheBust: false, url: url, handleAs: "json", headers: {AuthToken: LocalStorage.get("authtoken")}});
-    ajax.response(this, "renderResponse");
-    ajax.go();*/
   },
   handleCampsHide: function(inSender, inEvent) {
     this.log("CAUGHT HIDE");
@@ -210,18 +167,18 @@ enyo.kind({
     return true;
   },
   openSense: function (inSender, inEvent) {
-    this.log(inEvent);
     var c = inEvent.originator;
     var complex = false;
     var task = inEvent.data;
-    for (var qid in task.questions) {
+    for (var qid = 0; qid < task.questions.length; qid++) {
       if (task.questions[qid].type.indexOf("complex") != -1) {
         complex = true;
         break;
       }
     }
-    if(this.$.sensr !== undefined)
+    if(this.$.sensr !== undefined) {
       this.$.sensr.destroy();
+    }
 
     var gps;
     if(this.gps) {
@@ -232,7 +189,7 @@ enyo.kind({
 
     this.$.sense.createComponent({name: "sensr", kind: "ComplexSensr", fit: true, data: task, location_id: inEvent.location_id, classes: "content"});
     this.$.sense.render();
-    this.resize();
+    // this.resize();
     this.waterfallDown("onHideCampaigns");
     this.$.menupane.setIndex(2);
     // this.$.locateMe.addRemoveClass("tableHideKeep", true);
@@ -245,52 +202,9 @@ enyo.kind({
       this.$.appPanels.setIndex(0);
     } else {
       this.setupProfile(null, LocalStorage.get("user"));
-      //this.fetchData();
       enyo.Signals.send("onLoggedIn");
       //this.$.loginer.buildURL();
     }
-  },
-  renderResponse: function (a, b) {
-    this.log(b);
-    this.campaignArray = b.campaigns;
-    LocalStorage.set("campaign_data", this.campaignArray);
-    //this.doSavedCampaigns();
-    var remove = [];
-    this.log(this.campaignArray.length);
-    for (var c in this.campaignArray) {
-      this.log(c);
-      var currentCampaign = this.campaignArray[c];
-      var e = "panel_" + currentCampaign.id;
-      var f = "item_" + currentCampaign.id;
-      var g = "map_" + currentCampaign.id;
-      ///*
-       //* This block below is needed because not all browsers parse dates
-       //* the same way. This should be mostly browser compatible.
-       //
-      var date = Date.parse(new Date());
-      //var st = currentCampaign.start_date_string.split(/[- :]/);
-        //var en = currentCampaign.end_date_string.split(/[- :]/);
-        //var startDate = Date.parse(new Date(st[0], st[1]-1, st[2], st[3], st[4], st[5]));
-        //var endDate = Date.parse(new Date(en[0], en[1]-1, en[2], en[3], en[4], en[5]));
-
-      //if(endDate >= date) { // "closed" campaigns shouldn't show up
-      //if(currentCampaign.title !== undefined) {
-      //this.$.panels.createComponent(
-        //{name: e, classes: "panelItem", fit: true, data: this.campaignArray[c], kind: "enyo.FittableRows", components: [
-        //{name: f, kind: "CampaignItem", fit: true, title: "" + currentCampaign.title, description: "" + currentCampaign.description},
-      //]});
-      //} else {
-        //remove.push(c);
-        //}
-       //this.$.panels.reflow();
-      //this.$.panels.render();
-      this.$.toolbar.render();
-    }
-
-    enyo.Signals.send("onCampLoaded");
-
-    this.$.toolbar.render();
-    //this.checkSides(); // make sure the arrow buttons work
   },
   renderScroller: function () {
     this.log();
@@ -335,22 +249,12 @@ enyo.kind({
     enyo.Signals.send("onLoggedOut");
   },
   showCampaignList: function(inSender, inEvent) {
-    /*
-    this.showMenu();
-    this.$.locateMe.addRemoveClass("tableHideKeep", false);*/
     this.panelTarget = 'c';
     this.$.menuDrawer.setIndex(1);
-    //this.$.menuDrawer.setIndex(1);
-    //this.$.menupane.render();
   },
   showLeaderboard: function(inSender, inEvent) {
-    /*
-    this.showMenu();
-    this.$.locateMe.addRemoveClass("tableHideKeep", true);*/
     this.panelTarget = 'l'
     this.$.menuDrawer.setIndex(1);
-    //this.$.menuDrawer.setIndex(1);
-    //this.$.menupane.render();
   },
   toggleHilight: function(inSender, inEvent) {
     //TODO: WORK IN PROGRESS, NOT FUNCTIONING

@@ -34,7 +34,7 @@ enyo.kind({
 				]},
 			]}
 		]},
-		{name: "locationPopup", kind: "onyx.Drawer", orient: "v", style: "width: 100%;", layoutKind: "enyo.FittableRowsLayout", classes: "dark-background-flat", open: true, components: [
+		{name: "locationPopup", kind: "onyx.Drawer", orient: "v", style: "width: 100%;", layoutKind: "enyo.FittableRowsLayout", classes: "dark-background-flat", open: false, components: [
       {content: "Finding location...", style: "margin-left: auto; margin-right: auto; text-align: center;", classes: "nice-padding"},
 		]},
 		{name: "sendingPopup", kind: "onyx.Drawer", orient: "v", style: "width: 100%;", layoutKind: "enyo.FittableRowsLayout", open: false, components: [
@@ -61,6 +61,7 @@ enyo.kind({
 		this.setTaskData(this.data);
 		//this.render();
 		this.counterName = "";
+		this.$.locationPopup.setOpen(true);
     this.log(this.location_id);
 	},
   recreate: function() {
@@ -73,8 +74,8 @@ enyo.kind({
   },
   rendered: function(inSender, inEvent) {
     this.inherited(arguments);
-    //this.resize();
-    this.reflow();
+    // this.resize();
+    // this.reflow();
   },
 	saveLocation: function(inSender, inEvent) {
 		this.coords = inEvent.coords;
@@ -103,10 +104,14 @@ enyo.kind({
     questionBody = [];
 
     var counter = -1;
-    for (var i in this.task.questions) {
+		//make the form questions first
+    for (var i = 0; i < this.task.questions.length; i++) {
       var b = this.task.questions[i];
       var c = "name_" + b.id;
       var type = b.type;
+			if(type.indexOf("media") != -1) {
+				continue;
+			}
       if (type.indexOf("complex") != -1) {
         type = "counter";
         var d = type.search(/\d/);
@@ -116,6 +121,17 @@ enyo.kind({
       }
       counter = this.makeQuestion(type, b, i);
     }
+
+		// make the media questions second
+		for (var j = 0; j < this.task.questions.length; j++) {
+      var b = this.task.questions[j];
+      var c = "name_" + b.id;
+      var type = b.type;
+			if(type.indexOf("media") != -1) {
+				counter = this.makeMediaQuestion(type, b, i);
+			}
+		}
+
     this.render();
     if(counter > -1) {
       var data = this.task.questions[counter];
@@ -124,6 +140,21 @@ enyo.kind({
     /*this.render();
       this.resize();*/
   },
+	makeMediaQuestion: function(type, question, index) {
+		var counter = -1;
+		var name = "name_" + question.id;
+		switch (type) {
+			case "media_camera":
+			case "media_audio":
+			case "media_video":
+				this.newMediaReading(question);
+				break;
+			default:
+				break;
+		}
+
+		return counter;
+	},
   makeQuestion: function(type, question, index) {
     var counter = -1;
     var name = "name_" + question.id;
@@ -145,11 +176,6 @@ enyo.kind({
         break;
       case "cur_time":
         this.newTime(question);
-        break;
-      case "media_camera":
-        case "media_audio":
-        case "media_video":
-        this.newMediaReading(question);
         break;
       case "osm_reverse_geocoder":
         this.newReverseGeocoder(question);
@@ -193,7 +219,7 @@ enyo.kind({
         this.log(LocalStorage.get("user"));
         sub.submission.user_id = LocalStorage.get("user").user.id;
 
-        for (var i in this.task.questions) {
+				for (var i = 0; i < this.task.questions.length; i++) {
           this.log("C");
           var question = this.task.questions[i];
           type = question.type;
@@ -216,7 +242,7 @@ enyo.kind({
         //move this below the building of the answers
 
         var tmpComp = this.$.acc.getComponents();
-        for(var x in tmpComp) {
+        for(var x = 0; x < tmpComp.length; x++) {
           if(tmpComp[x].kind === "MediaSensor") {
             this.log(tmpComp[x].readyToUpload);
             if(!tmpComp[x].readyToUpload) {
@@ -305,7 +331,7 @@ enyo.kind({
         //var tmp = this.readFormCounter(c);
         var array = this.readFormCounter(question).split("|");
 				this.log(JSON.stringify(ans));
-        for (var x in array) {
+        for (var x = 0; x < array.length; x++) {
           var tmpAns = {
             counts: "BOOM",
             type: question.type,
@@ -357,7 +383,7 @@ enyo.kind({
     var submission = JSON.parse(a.xhr.responseText);
     var tmpComp = this.$.acc.getComponents();
     this.files = 0;
-    for(var x in tmpComp) {
+    for(var x = 0; x < tmpComp.length; x++) {
       if(tmpComp[x].kind === "MediaSensor") {
         this.files++;
       }
@@ -374,7 +400,7 @@ enyo.kind({
   downCount: function(inSender, inEvent) {
     var tmpComp = this.$.acc.getComponents();
     var count = 0;
-    for(var x in tmpComp) {
+    for(var x = 0; x < tmpComp.length; x++) {
       if(tmpComp[x].kind === "MediaSensor") {
         if(tmpComp[x].completed) {
           count++;
@@ -431,7 +457,7 @@ enyo.kind({
       bike = true;
     }
 
-    for (var i in controls) {
+    for (var i = 0; i < controls.length; i++) {
       var num = controls[i].name.split("_")[1];
       this.$["checkbox_"+num].setDisabled(false);
       if(controls[i].getContent() === "Helmet" && !bike)
@@ -452,7 +478,7 @@ enyo.kind({
     var name = "input_" + input.id;
     options = input.options.split("|");
     array = [];
-    for (var i in options) {
+    for (var i = 0; i < options.length; i++) {
       // this allows us to set a default value for the multiple choice question
       if(options[i].indexOf('*') !== -1) {
         var text = options[i].replace('*', '');
@@ -473,7 +499,7 @@ enyo.kind({
   newFormMultipleChoice: function(input) {
     var options = input.options.split("|");
     this.$.acc.createComponent({name: "groupbox", classes: "center", style: "clear: both;", kind: "enyo.ToolDecorator", components: []}, {owner: this});
-    for (var i in options) {
+    for (var i = 0; i < options.length; i++) {
       var checkName = "checkbox_" + i;
       var contName = "content_" + i;
       if(options[i].indexOf('*') !== -1) {
@@ -491,7 +517,7 @@ enyo.kind({
     var name = "name_" + input.id;
     var countName = "counter_" + input.id;
     var qID;
-    for (var x in this.task.questions) {
+    for (var x = 0; x < this.task.questions.length; x++) {
       if (this.task.questions[x].type === "exclusive_multiple_choice") {
         qID = this.task.questions[x].id.toString();
         break;
@@ -526,7 +552,7 @@ enyo.kind({
   readFormExclusiveChoice: function(input) {
     var name = "input_" + input.id;
     var kids = this.$[name].children;
-    for (var x in kids) {
+    for (var x = 0; x < kids.length; x++) {
       if (kids[x].hasClass("active")) {
         var out = kids[x].getContent();
         this.log(out);
@@ -539,7 +565,7 @@ enyo.kind({
   },
   readFormMultipleChoice: function(input) {
     var arr = [];
-    for (var i in input.options.split("|")) {
+    for (var i = 0; i < input.options.split("|"); i++) {
       var check = "checkbox_" + i;
       var cont = "content_" + i;
       if(this.$[check].getValue) {
@@ -548,7 +574,7 @@ enyo.kind({
     }
     var out = arr.join("|");
     if(!out) {
-      for (var i in input.options.split("|")) {
+			for (var i = 0; i < input.options.split("|"); i++) {
         var check = "checkbox_" + i;
         var cont = "content_" + i;
         this.$[check].addRemoveClass("need-answer", true);

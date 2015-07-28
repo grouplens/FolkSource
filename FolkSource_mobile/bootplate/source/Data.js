@@ -20,7 +20,7 @@ enyo.kind({
         this.users = b.leaderboardEntrys;
       });
       b.go();
-      for (var x in this.users) {
+      for (var x = 0; x < this.users.length; x++) {
         if (this.users[x].id == a) {
           this.log(a);
           return this.users[x].name;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping package="org.citizensense.model">
+<hibernate-mapping package="org.folksource.model">
 <class name="Campaign" table="campaigns">
 	<id name="id" column="id">
 		<generator class="native" />
@@ -12,9 +12,9 @@
 	<property name="description" />
 <!-- 	<property name="task_id" /> -->
 	<property name="owner_id" />
-	<property name="location" />
-	<set name="tasks" fetch="join">
-		<key column="camp_id" not-null="false"/>
+	<!--<property name="location" />-->
+	<set name="tasks" fetch="select">
+		<key column="campaign_id" not-null="false"/>
 		<one-to-many class="Task" />
 	</set>
 </class>

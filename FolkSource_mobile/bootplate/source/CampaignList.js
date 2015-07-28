@@ -22,7 +22,6 @@ enyo.kind({
   },
   renderResponse: function (a, b) {
     this.log(b.list), this.campaignArray = b.list["org.citizensense.model.Campaign"];
-    for (var c in this.campaignArray) c.watching = !1;
     this.refreshList();
   },
   setupRow: function (a, b) {

@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping package="org.citizensense.model">
+<hibernate-mapping package="org.folksource.model">
 	<class name="Task" table="tasks">
 		<id name="id" column="id">
 			<generator class="native" />
 		</id>
 		<property name="instructions" />
-		<property name="camp_id" />
+		<!--<property name="campaign_id" />-->
 		<property name="required" />
+		<property name="type" />
+		<property name="decision_q_id" />
 		<set name="submissions" inverse="true" fetch="subselect" lazy="false">
 			<key column="task_id" not-null="true"/>
 			<one-to-many class="Submission" />
