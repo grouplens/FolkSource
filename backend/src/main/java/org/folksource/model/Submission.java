@@ -85,4 +85,16 @@ public class Submission{
     public void setLocation_id(Integer location_id) {
         this.location_id = location_id;
     }
+
+	public Answer getAnswerAssociatedWithQuestion(Integer voting_qid) {
+		System.out.println("ANSWER LENGTH: " + this.answers.length);
+		System.out.println(voting_qid);
+		for (Answer ans : this.getAnswers()) {
+			System.out.println(ans.getQuestion().getId());
+			if(ans.getQuestion().getId().equals(voting_qid)) {
+				return ans;
+			}
+		}
+		return null;
+	}
 }

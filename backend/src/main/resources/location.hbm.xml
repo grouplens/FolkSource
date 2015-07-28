@@ -38,9 +38,10 @@
 		</join>
 	</subclass>
 	<subclass name="OSMWayLocation" discriminator-value="osm_way" lazy="false">
-		<join table="ways" fetch="join" inverse="true">
+		<join table="ways" fetch="select">
 			<key column="location_id"></key>
 			<property name="geometry" type="org.hibernate.spatial.GeometryType" column="linestring" />
+			<property name="version" />
 		</join>
 	</subclass>
 </class>

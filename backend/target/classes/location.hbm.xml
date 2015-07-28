@@ -1,21 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 
-<hibernate-mapping package="org.citizensense.model">
-<class name="Location">
-	<id name="id">
+<hibernate-mapping package="org.folksource.model">
+
+<class name="Location" table="location">
+	<id name="id" column="id">
 		<generator class="native" />
 	</id>
-	<property name="task_id" />
+    <discriminator column="location_type" type="string" force="true"/>
+	<property name="allowed" column="allowed"></property>
+	<property name="imgURL" column="imgURL"></property>
+    <bag name="submissions" fetch="subselect">
+        <key column="location_id" not-null="true" />
+        <!-- <index column="id" />-->
+        <one-to-many class="Submission" />
+    </bag>
 
-	<joined-subclass name="PolygonLocation" table="location_regions">
-		<key column="id"></key>
-		<property name="geometry" type="org.hibernate.spatial.GeometryType" column="polygon" />
-	</joined-subclass>
+    <!--<many-to-one name="task" class="Task" column="task_id" fetch="join"/>-->
 
-	<joined-subclass name="PointLocation" table="location_points" extends="Location">
-		<key column="id"></key>
-		<property name="geometry" type="org.hibernate.spatial.GeometryType" column="point" />
-	</joined-subclass>
+	<subclass name="PolygonLocation" discriminator-value="location_regions" lazy="false">
+        <join table="location_regions" fetch="join" inverse="true">
+		    <key column="id"></key>
+		    <property name="geometry" type="org.hibernate.spatial.GeometryType" column="polygon" />
+        </join>
+	</subclass>
+
+	<subclass name="PointLocation" discriminator-value="location_points" lazy="false">
+        <join table="location_points" fetch="join" inverse="true">
+		    <key column="id"></key>
+		    <property name="geometry" type="org.hibernate.spatial.GeometryType" column="point" />
+        </join>
+	</subclass>
+	<subclass name="OSMPointLocation" discriminator-value="osm_node" lazy="false">
+		<join table="nodes" fetch="join" inverse="true">
+			<key column="location_id"></key>
+			<property name="geometry" type="org.hibernate.spatial.GeometryType" column="geom" />
+		</join>
+	</subclass>
+	<subclass name="OSMWayLocation" discriminator-value="osm_way" lazy="false">
+		<join table="ways" fetch="select">
+			<key column="location_id"></key>
+			<property name="geometry" type="org.hibernate.spatial.GeometryType" column="linestring" />
+			<property name="version" />
+		</join>
+	</subclass>
 </class>
 </hibernate-mapping>
