@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="org.folksource.model">
+
+<class name = "Answer" table = "answers">
+	<id name="id" column="id">
+    	<generator class="native"/>
+    </id>
+	<property name="sub_id" />
+    <property name="q_id" />
+    <property name="answer_type" />
+	
+	<joined-subclass name="TextAnswer" table="text_answers">
+    	<key column="id"/>
+    	<property name="answer"/>
+    </joined-subclass>
+    
+    <joined-subclass name="TimeSpanAnswer" table="time_span_answers">
+    	<key column="id"/>
+    	<property name="milliseconds"/>
+    </joined-subclass>
+    
+    <joined-subclass name="DateTimeAnswer" table="date_time_answers">
+    	<key column="id"/>
+    	<property name="timestamp" column="time_point"/>
+    </joined-subclass>
+    
+    <joined-subclass name="CompassAnswer" table="compass_answers">
+    	<key column="id"/>
+    	<property name="heading" type="float"/>
+    </joined-subclass>
+    
+    <joined-subclass name="AccelerometerAnswer" table="accelerometer_answers">
+    	<key column="id"/>
+    	<property name="x" type="float"/>
+    	<property name="y" type="float"/>
+    	<property name="z" type="float"/>
+    </joined-subclass>
+    	
+    <joined-subclass name="MediaAnswer" table = "media_answers">
+    	<key column="id" />
+    	<property name="path"/>
+    	<property name="mimeType" column="mime_type"/>
+    </joined-subclass>
+    
+    <joined-subclass name="MultipleChoiceAnswer" table = "multiple_choice_answers">
+    	<key column="id" />
+    	<property name="choices"/>
+    </joined-subclass>
+    
+    <joined-subclass name="ComplexCounterAnswer" table = "complex_counter_answers">
+    	<key column="id" />
+    	<property name="counts"/>
+    </joined-subclass>
+    	
+</class>
+
+</hibernate-mapping>

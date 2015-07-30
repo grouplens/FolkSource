@@ -1,0 +1,18 @@
+{
+	"enyo": "./enyo",
+	"packagejs": "./package.js",
+	"assets": [
+		"./icon.png",
+		"./index.html",
+		"./assets"
+	],
+	"libs": [
+		"./lib/onyx",
+		"./lib/layout",
+		"./lib/leaflet",
+		"./lib/leaflet-usermarker",
+		"./lib/Leaflet.MapboxVectorTile",
+		"./lib/font-awesome",
+		"./lib/terraformer"
+	]
+}

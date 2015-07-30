@@ -10,27 +10,12 @@
 [submodule "web/assets/heatmap"]
 	path = web/assets/heatmap
 	url = https://github.com/pa7/heatmap.js
-[submodule "mobile/assets/leaflet"]
-	path = mobile/assets/leaflet
-	url = https://github.com/Leaflet/Leaflet
-[submodule "mobile/assets/leaflet-usermarker"]
-	path = mobile/assets/leaflet-usermarker
-	url = https://github.com/heyman/leaflet-usermarker
-[submodule "mobile/assets/Wicket"]
-	path = mobile/assets/Wicket
-	url = https://github.com/arthur-e/Wicket
 [submodule "font-awesome"]
 	path = font-awesome
-	url = https://github.com/FortAwesome/Font-Awesome.git
-[submodule "mobile/assets/font-awesome"]
-	path = mobile/assets/font-awesome
 	url = https://github.com/FortAwesome/Font-Awesome.git
 [submodule "web/assets/font-awesome"]
 	path = web/assets/font-awesome
 	url = https://github.com/FortAwesome/Font-Awesome.git
-[submodule "mobile/assets/leaflet-pip"]
-	path = mobile/assets/leaflet-pip
-	url = https://github.com/mapbox/leaflet-pip
 [submodule "web/assets/Leaflet.draw"]
 	path = web/assets/Leaflet.draw
 	url = https://github.com/Leaflet/Leaflet.draw.git

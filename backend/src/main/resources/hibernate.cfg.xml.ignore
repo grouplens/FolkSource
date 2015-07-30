@@ -45,6 +45,7 @@
         <mapping resource="answer.hbm.xml" />
         <mapping resource="submission.hbm.xml" />
         <mapping resource="question.hbm.xml" />
+        <mapping resource="responseoutcome.hbm.xml" />
         <mapping resource="leaderboard.hbm.xml" />
         <mapping resource="location.hbm.xml" />
         <mapping resource="location_layer.hbm.xml" />
