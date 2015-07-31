@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -45,6 +46,7 @@ public class Campaign {
 	//@Column(name = "end_date_string")
 	//public String end_date_string;
 	//private String times; //figure out if this is actually how we want to represent this
+	
 	@Column(name = "owner_id")
 	public Integer owner_id;
 	
@@ -52,29 +54,10 @@ public class Campaign {
 //	public Integer task_id;
 
 	//Join column here in the future
-//	@OneToMany(mappedBy = "campaign_id", fetch=FetchType.EAGER)
-//	public Set<Task> tasks;
-	
-	/**
-	 * @param args
-	 */
-	public Campaign() {
-		super();
-	}
-	public Campaign(Integer id, String title, String description, String location, Date start_date, Date end_date, String start_date_string, String end_date_string, Integer owner_id, Integer task_id, Set<Task> tasks){
-		super();
-		this.id = id;
-		this.title = title;
-		this.description = description;
-		this.location = location;
-		this.start_date = start_date;
-		this.end_date = end_date;
-		//this.start_date_string = start_date_string;
-		//this.end_date_string = end_date_string;
-		this.owner_id = owner_id;
-		//this.task_id = task_id;
-		//this.tasks = tasks;
-	}
+	@OneToMany(mappedBy = "campaign_id", fetch=FetchType.EAGER)
+	public List<Task> tasks;
+
+
 	
 	public Integer getId() {
 		return id;
@@ -82,13 +65,6 @@ public class Campaign {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-	//	public Set<Task> getTasks() {
-//		if (tasks != null) { return tasks;}
-//		return null;
-//	}
-//	public void setTasks(Set<Task> tasks) {
-//		this.tasks = tasks;
-//	}
 	public String getDescription() {
 		return description;
 	}
@@ -107,52 +83,14 @@ public class Campaign {
 	}
 	public void setEnd_date(Date end_date) {
 		this.end_date = end_date;
-//		this.setEnd_date_string(end_date);
 	}
-//	public String getStart_date_string() {
-//		DateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
-//		try {
-//			this.setStart_date(df.parse(this.start_date_string));
-//		} catch (ParseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		return this.start_date_string;
-//	}
-//	public void setStart_date_string(String d) {
-//		this.start_date_string = d;
-//	}
-//	public String getEnd_date_string() {
-//		DateFormat df = new SimpleDateFormat("yyyy-MM-dd kk:mm:ss");
-//		try {
-//			this.setEnd_date(df.parse(this.end_date_string));
-//		} catch (ParseException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		return this.end_date_string;
-//	}
-//	public void setEnd_date_string(String d) {
-//		this.end_date_string = d;
-//	}
-//	public User getOwner() {
-//		return owner;
-//	}
-//	public void setOwner(User owner) {
-//		this.owner = owner;
-//	}
+
 	public int getOwner_id() {
 		return owner_id;
 	}
 	public void setOwner_id(int owner_id) {
 		this.owner_id = owner_id;
 	}
-//	public Integer getTask_id() {
-//		return task_id;
-//	}
-//	public void setTask_id(int task_id) {
-//		this.task_id = task_id;
-//	}
 	public String getTitle() {
 		return title;
 	}
@@ -165,10 +103,10 @@ public class Campaign {
 	public String getLocation() {
 		return location;
 	}
-//	public Set<Task> getTasks() {
-//		return tasks;
-//	}
-//	public void setTasks(Set<Task> tasks) {
-//		this.tasks = tasks;
-//	}
+	public List<Task> getTasks() {
+		return tasks;
+	}
+	public void setTasks(List<Task> tasks) {
+		this.tasks = tasks;
+	}
 }

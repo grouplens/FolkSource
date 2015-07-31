@@ -29,49 +29,7 @@
 	<constant name="struts.rest.content.restrictToGET" value="false" />
 	<constant name="struts.rest.namespace" value=""/> 
 	<constant name="struts.multipart.saveDir" value="tmp" />
-<<<<<<< HEAD
 	<constant name="struts.multipart.maxSize" value="5368709120" />-->
-=======
-	<constant name="struts.multipart.maxSize" value="5368709120" />
-
-	<package name="folksource" extends="rest-default">
-		<!-- <result-types> <result-type name="exceptionResult" class="org.grouplens.bl.struts.result.ExceptionResult" 
-			/> <result-type name="ambiguousResult" class="org.grouplens.bl.struts.result.AmbiguousIdResult" 
-			/> <result-type name="modelDrivenDto" class="org.grouplens.bl.struts.result.ModelDrivenDtoResult" 
-			/> </result-types> -->
-
-		<interceptors>
-			<!-- <interceptor name="contentParser" class="org.grouplens.bl.struts.interceptor.ContentParsingInterceptor" 
-				/> <interceptor name="exceptionLog" class="org.grouplens.bl.struts.interceptor.ExceptionLoggingInterceptor" 
-				/> <interceptor name="authentication" class="org.grouplens.bl.struts.interceptor.AuthenticationInterceptor" 
-				/> <interceptor name="authorization" class="org.grouplens.bl.struts.interceptor.AuthorizationInterceptor" 
-				/> -->
-				<interceptor name="hibernate" class="org.folksource.struts.HibInterceptor" /> 
-				<!--<interceptor name="authorization" class="org.folksource.struts.AuthInterceptor" /> -->
-				<!--  <interceptor name="resolver" class="org.grouplens.bl.struts.interceptor.ModelResolverInterceptor"> 
-				<param name="enableOauth">${user.oauth.enable}</param> </interceptor> <interceptor 
-				name="concurrentReplayer" class="org.grouplens.bl.struts.interceptor.ConcurrentReplayInterceptor"/> 
-				<interceptor name="actionConfigSupport" class="org.grouplens.bl.struts.interceptor.ActionConfigCloningInterceptor"/> -->
-
-			<interceptor-stack name="fs">
-				<interceptor-ref name="restDefaultStack" />
-
-				<!-- Content parsing goes before concurrent replay since we can only 
-					stream input once. -->
-				<!-- <interceptor-ref name="contentParser" /> <interceptor-ref name="concurrentReplayer" 
-					/> --> 
-					<interceptor-ref name="servletConfig" />
-					<!--<interceptor-ref name="authorization" />-->
-<!-- 						<param name="excludeMethods">create,update,show,index,options</param> -->
-<!-- 					</interceptor-ref> -->
-					<interceptor-ref name="hibernate" /> <!-- <interceptor-ref name="exceptionLog" 
-					/> <interceptor-ref name="authentication" /> <interceptor-ref name="authorization" 
-					/> <interceptor-ref name="resolver" /> -->
-			</interceptor-stack>
-		</interceptors>
-
-		<default-interceptor-ref name="fs" />
->>>>>>> upstream/master
 
 	
 	<package name="folksource-norest-pkg" extends="struts-default">
