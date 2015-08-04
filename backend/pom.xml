@@ -64,6 +64,10 @@
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
+                        <resource>
+				<directory>local/resources</directory>
+				<filtering>true</filtering>
+			</resource>		
 		</resources>
 
 		<testResources>
@@ -106,14 +110,14 @@
 				<configuration>
 					<container>
 						<containerId>tomcat7x</containerId>
-						<home>C:\tomcat\apache-tomcat-7.0.61</home>
+						<home>/home/grad05/tdaniel/apache-tomcat-7.0.63</home>
 						<type>installed</type>
 					</container>
 
 					<configuration>
 						<type>standalone</type>
 						<properties>
-							<cargo.servlet.port>8080</cargo.servlet.port>
+							<cargo.servlet.port>8003</cargo.servlet.port>
 							<cargo.hostname>localhost</cargo.hostname>
 							<!-- Only needed when using Tomcat. -->
 							<cargo.rmi.port>8089</cargo.rmi.port>
