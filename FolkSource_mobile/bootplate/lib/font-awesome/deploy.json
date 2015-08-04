@@ -1,0 +1,12 @@
+{
+	"packagejs": "./package.js",
+	"assets": [
+		"./.gitignore",
+		"./.npmignore",
+		"./css",
+		"./fonts",
+		"./less",
+		"./scss"
+	],
+	"libs": []
+}

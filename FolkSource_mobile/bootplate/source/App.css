@@ -1,0 +1,527 @@
+body {
+  font-size: 11pt;
+  font-weight: 300 !important;
+  background: #2E426F; /* lighter green*/
+  color: black;
+}
+/****************************************/
+/*
+  Put anything you reference with "url()" in ../assets/
+  This way, you can minify your application, and just remove the "source" folder for production
+*/
+.hidden {
+  display: none !important;
+}
+
+.cluster-selected {
+  border: 2px solid blue;
+}
+
+.csenseshowcampaigns-node > div {
+  display: block !important;
+  overflow: hidden;
+}
+
+.csenseshowcampaigns-node > img {
+  float: left;
+  /*border: 1px solid green;*//*For debug purposes*/
+  width: 16px;
+}
+
+.csense-ping-layer {
+  border: 1px solid black;
+  background: rgba(0, 0, 0, 0);
+  border-radius: 999px;
+}
+
+.submission-marker-div {
+  border: 1px solid black;
+  opacity: 0.75;
+  /*background-color: #BCD2EE;
+  background-color: #FFC500;*/
+  background-color: #64FF90;
+  border-radius: 999px;
+}
+
+.popup-list-item {
+  border: 1px solid gray;
+  padding: 3px;
+}
+.popup-list-item-heading {
+  /*text-decoration: underline;*/
+  font-weight: bold;
+}
+.popup-list-item-body {
+  padding-left: 1em;
+}
+
+.nice-padding {
+  padding: 15px;
+}
+.panel-width {
+  min-width: 30%;
+  max-width: 30%;
+}
+.campaign-panel-width: {
+  min-width: 100%;
+}
+.campaign-decorator-width: {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.list-selection {
+  color: white;
+  background-color: green;
+  opacity: 0.8;
+}
+.button-spacing {
+  margin-left: 3px;
+  margin-right: 3px;
+}
+.map-button {
+  padding: 10px;
+  /*border-width: 2px;
+  border-style: solid;
+  border: 2px solid black;*/
+  width: 100%;
+}
+
+.text-title-small {
+  border-bottom: 1px #2E426F solid;
+}
+.text-title-big {
+  border-bottom: 3px #2E426F double;
+}
+.hanging-child {
+  width: 96%;
+  margin-left: 3%;
+}
+.number-style {
+  color: black;
+  padding: 6px 7px;
+  -moz-border-radius: 360px;
+  -webkit-border-radius: 360px;
+  border-radius: 360px;
+  background-color: white;
+}
+.bordering, .button-cancel-style, .toolbar-button-style {
+  font-weight: 300;
+}
+.standard-card, .toolbar-button-style {
+  box-sizing: border-box;
+  background-color: #738DC9 !important;
+  /*color: #694225 !important;*/
+  color: #FFF !important;
+  font-size: 11pt;
+  vertical-align: center;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+  /*text-shadow: -1px -1px 0 rgba(0,0,0,0.2);*/
+}
+.standard-card {
+  box-sizing: border-box;
+}
+.toolbar-button-style {
+  color: #6DB961 !important;
+}
+.button-style, .button-style-affirmative, .button-style-negative {
+  background: #2E426F !important; /* darker green */
+  color: #FFF !important;
+  /*color: #C5A467 !important; /* lighter green*/
+  font-size: 11pt;
+  font-weight: 300;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+}
+/*.toolbar-button-style {
+background: #3CAB9F !important;
+}*/
+  .button-style-affirmative {
+    background-color: #33862E !important;
+    color: #FFF !important;
+  }
+  .hilight-icons-affirmative:hover {
+    text-shadow: 0 0 7px #2E426F;
+    color: #18AC21 !important;
+  }
+  .hilight-icons-negative:hover {
+    text-shadow: 0 0 7px #2E426F;
+    color: #DB221E !important;
+  }
+  .hilight-location {
+    text-shadow: 0 0 15px #DB221D;
+  }
+  .button-style-negative  {
+    background-color: #8F0A0D !important;
+    color: #FFF !important;
+  }
+  /*.button-cancel-style {
+  background-color: red;
+  }*/
+  .bordering, .bordering-top, .bordering-bottom, .bordering-bottom-no-shadow, .bordering-top-no-shadow, .bordering-box, .nice-margin {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3px;
+    margin-bottom: 3px;
+  }
+  .bordering {
+    /*border: 1px #DEDEDE outset;*/
+  }
+  .bordering-box {
+    background-color: #FFF;
+    padding: 5px;
+  }
+  /*.bordering {
+  margin: 0px 4px 7px 3px;
+  }*/
+  .bordering-top {
+    top: 0px;
+    margin-top: 0px;
+    width: 100%;
+    padding: 0px;
+    /*-webkit-box-shadow: 0 8px 8px -8px white;
+    -moz-box-shadow: 0 8px 8px -8px white;
+    box-shadow: 0 8px 8px -8px white;*/
+}
+.bordering-bottom {
+  bottom: 0px;
+  margin-bottom: 0px;
+  width: 100%;
+  padding: 0px;
+  /*-webkit-box-shadow: 0 -8px 8px -8px white;
+  -moz-box-shadow: 0 -8px 8px -8px white;
+  box-shadow: 0 -8px 8px -8px white;*/
+}
+.bordering-bottom-no-shadow {
+  bottom: 0px;
+  margin-bottom: 0px;
+  width: 100%;
+  padding: 0px;
+}
+.bordering-top-no-shadow {
+  top: 0px;
+  margin-top: 0px;
+  width: 100%;
+}
+.active-card {
+  box-sizing: border-box;
+  background: #EDDB7C !important;
+  /*background: #EDEC7C !important;*/
+  color: #2E426F !important;
+}
+.need-answer {
+  background-color: #DB701E;
+  transition: background-color 1000ms ease-in;
+  -moz-transition: background-color 1000ms ease-in;
+  -webkit-transition: background-color 1000ms ease-in;
+  -o-transition: background-color 1000ms ease-in;
+  -ms-transition: background-color 1000ms ease-in;
+}
+.task-builder, .question-builder, .location-builder {
+  /*width: 100%;*/
+  opacity: 1;
+  /*transition: width 0.5s, opacity 0.5s;*/
+  -webkit-transition: height 0.5s, opacity 0.5s;
+}
+.task-builder-destroy, .question-builder-destroy, .location-builder-destroy {
+  //width: 0px;
+  opacity: 0;
+}
+
+/* OVERRIDE ONYX */
+/*.mod-onyx-background {
+background: #;
+}*/
+  .light-background {
+    background-color: #738DC9 !important;
+    /*background-color: #EDEC7C !important;*/
+    color: #FFF !important;
+    font-size: 11pt;
+    /*text-shadow: -1px -1px 0 rgba(0,0,0,0.2);*/
+    /*color: #694225 !important;*/
+  }
+  .dark-background, .panelItem {
+    /*background-color: #5E6300 !important; /* beta color */
+    background-color: #2E426F !important; /* */
+    font-size: 11pt;
+    color: #FFF !important;
+    /*color: #C5A467 !important;*/
+  }
+  .dark-background-flat, .dark-background-flat-menu {
+    /*background: #5E6300 !important; /* beta color */
+    background: #2E426F !important; /* */
+    color: #DB701E !important;
+    border: 0px;
+  }
+  .dark-background-flat, .light-background-flat {
+    font-size: 11pt;
+  }
+  .light-background-flat, .light-background-flat-menu {
+    background: #738DC9 !important;
+    color: #FFF !important;
+    border: 0px;
+  }
+  .white-text {
+    color: #FFF !important;
+  }
+  /*.dark-background + .active {
+  font-weight: 300;
+  background-color: #694225 !important;
+  }*/
+  .active {
+    /*font-size: 13pt;*/
+    background: #EDDB7C !important; /* lighter green*/
+    color: #2E426F !important;
+    border-bottom: 3px #DB701E solid;
+    -webkit-box-shadow: 0 0 0 0 white;
+    -moz-box-shadow: 0 0 0 0 white;
+    box-shadow: 0 0 0 0 white;
+  }
+  .task-view {
+    color: #2E426F;
+  }
+  .color-progress, .task-view {
+    background-color: #DB701E;
+  }
+  .color-icon {
+    color: #DB701E;
+  }
+  .map-pin {
+    color: #25426F;
+    background-color: transparent;
+    border: 0px;
+    text-shadow: 4px -4px 4px rgba(0, 0, 0, 0.2);
+  }
+  .map-pin-test {
+    color: #DB221D;
+    background-color: transparent;
+    border: 0px;
+    text-shadow: 4px -4px 4px rgba(0, 0, 0, 0.2);
+  }
+  /* ../source/App.css */
+
+  /*
+  Put anything you reference with "url(../source)" in ../assets/
+  This way, you can minify your application, and just remove the "source" folder for production
+   */
+  #app {
+    top: 0;
+    left: 0;
+  }
+
+  /*These next 2 hide the Google links in our maps */
+  .hideMap {
+    display: none;
+  }
+  .mapItem span {
+    display: none;
+  }
+  /* END */
+
+  .imgDiv {
+    width: 100%;
+    height: 15%;
+  }
+
+  .imgDiv img {
+    width: 100%;
+    height: 100%;
+  }
+
+  .campTitle {
+    /*color: #9A7A34;
+    display:inline;
+    padding: 0.5%;*/
+  }
+  .leaderTable {
+    text-align: left;
+    width: 50%;
+  }
+  .leaderUser {
+    /*color: #9A7A34;*/
+    font-weight: 300;
+  }
+  .leaderPoints {
+    /*color: #CC7967;*/
+    font-style: italic;
+  }
+  .campLoc {
+    font-style: italic;
+    font-size: 0.75em;
+    display: clear;
+    padding: 1%;
+  }
+  .campDesc {
+    /*font-weight: bold;*/
+    font-size: 11pt;
+    color: #DB701E;
+    display: clear;
+    overflow-y: hidden;
+}
+.leaderItem {
+  align: left;
+  height: 100%;
+  width: 100%;
+}
+.toolbar {
+  background-color: #641F11;
+  color: #5C9DAF;
+}
+.mapItem {
+  position: absolute;
+  width: 100%;
+  /*min-width: 1000px;*/
+  /*width: 100%;*/
+  /*height: 80%;*/
+  /*clear: both;*/
+}
+.filledPanels {
+  height: 100%;
+  width: 100%;
+}
+.filledButtons {
+  /*background-color: #0B333E;
+  color: #CCAD67;*/
+  width: 7%;
+  /*float: left;*/
+  height: 100%;
+  padding: 0 0;
+}
+.bikeTable {
+  width: 100%;
+  border-width: 0px;
+  display: table;
+  empty-cells: hide;
+  border-collapse: collapse;
+}
+.tableMen {
+  background-color: lightblue;
+  text-align: center;
+}
+.tableCellMen {
+  /*border: 2px lightblue solid;*/
+  height: 20%;
+}
+.tableCellMen > * {
+  width: 100%;
+}
+.tableWomen {
+  background-color: pink;
+  text-align: center;
+}
+.tableCellWomen {
+  //border: 2px pink solid;
+  height: 20%;
+}
+.tableCellWomen > * {
+  width: 100%;
+}
+.tableCellContent {
+  height: 100%;
+  width: 44px;
+  text-align: center;
+  vertical-align: middle;
+}
+.tableCellHeight {
+  height: 32px;
+}
+.tableCellWidth {
+  width: 32px;
+}
+.tableHideCollapse {
+  height: 0px;
+  width: 0px;
+  display: none;
+}
+.tableHideKeep {
+  visibility: hidden;
+}
+.tally {
+  width: 100%;
+  height: 100%;
+}
+table, tr, td {
+  border: 0px white solid;
+}
+.senseButtons {
+  width: 100%;
+}
+.senseButtons > button{
+  width: 50%;
+}
+
+.center {
+  clear: both;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.onyx-groupbox > .onyx-input-decorator {
+  border-color: white;
+}
+
+.tally-small img{
+  height: 20px;
+}
+.slidein-option {
+  min-width: 200px;
+  padding: 10px;
+  margin-top: 2px;
+  /*font-size: 1.333333em;*/
+  vertical-align: bottom;
+  border: 2px #738DC9 solid;
+}
+.hilight {
+  background-color: #DB221D;
+}
+.ios-navbar {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  padding: 0px 0px 0px 0px;
+  height: 49pt;
+}
+.ios-navbar {
+  height: 49pt;
+}
+.ios-navbar button {
+  height: 49pt !important;
+  min-width: 20% !important;
+  padding: 0 0 0 0;
+  margin: 0 0 0 0;
+}
+.ios-navbutton {
+  height: 49pt;
+  padding: 0 0;
+  color: white;
+  font-size: 8pt;
+}
+.ios-navbutton * {
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+  clear: both;
+}
+.android-navbar {
+}
+.nice-padding {
+  padding: 5px;
+}
+.niceish-padding {
+  padding: 5px 0px;
+}
+.highlight {
+  background-color: #EDBA53;
+  color: black;
+  opacity: 0.8;
+}
+.highlight * {
+  background-color: #EDBA53;
+}
