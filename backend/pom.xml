@@ -117,11 +117,7 @@
 					<configuration>
 						<type>standalone</type>
 						<properties>
-<<<<<<< HEAD
 							<cargo.servlet.port>8003</cargo.servlet.port>
-=======
-							<cargo.servlet.port>8081</cargo.servlet.port>
->>>>>>> 8f0c7e9bf17d22b0c0fb53e7557257b9c47bf978
 							<cargo.hostname>localhost</cargo.hostname>
 							<!-- Only needed when using Tomcat. -->
 							<cargo.rmi.port>8089</cargo.rmi.port>
