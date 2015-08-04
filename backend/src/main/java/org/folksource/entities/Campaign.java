@@ -1,12 +1,7 @@
 package org.folksource.entities;
 
-import java.math.BigInteger;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,24 +35,11 @@ public class Campaign {
 	@Column(name = "end_date")
 	public Date end_date;
 	
-	//@Column(name = "start_date_string")
-	//public String start_date_string;
-	
-	//@Column(name = "end_date_string")
-	//public String end_date_string;
-	//private String times; //figure out if this is actually how we want to represent this
-	
 	@Column(name = "owner_id")
 	public Integer owner_id;
-	
-//	@Column(name = "task_id")
-//	public Integer task_id;
 
-	//Join column here in the future
 	@OneToMany(mappedBy = "campaign_id", fetch=FetchType.EAGER)
 	public List<Task> tasks;
-
-
 	
 	public Integer getId() {
 		return id;
