@@ -187,7 +187,7 @@ enyo.kind({
     if(this.logged_in === false) {
       this.logged_in = true;
     }
-    var url = Data.getURL() + "campaign.json";
+    var url = Data.getURL() + "campaign/campaigns";
     var ajax = new enyo.Ajax({method: "GET", cacheBust: false, url: url, handleAs: "json", headers: {AuthToken: LocalStorage.get("authtoken")}});
     ajax.response(this, "renderResponse");
     ajax.go();
@@ -213,7 +213,7 @@ enyo.kind({
   },
   renderResponse: function (a, b) {
     // this.log(JSON.stringify(b));
-    this.campaignArray = b.campaigns;
+    this.campaignArray = b;
 
     this.deleteAndReCreateCampaigns(this.campaignArray);
 

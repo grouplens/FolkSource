@@ -17,13 +17,13 @@ enyo.kind({
     this.inherited(arguments);
   },
   fetchData: function() {
-    var url = Data.getURL() + "leaderboard.json";
+    var url = Data.getURL() + "user/leaderboard";
     var req = new enyo.Ajax({method: "GET", cacheBust: !1, url: url, handleAs: "json", headers: {AuthToken: LocalStorage.get("authtoken")}});
     req.go();
     req.response(this, "renderResponse");
   },
   renderResponse: function (inSender, inEvent) {
-    this.leaderboardArray = inEvent.leaderboardEntrys;
+    this.leaderboardArray = inEvent;
     this.refreshList();
     enyo.Signals.send("onLeaderLoaded");
   },

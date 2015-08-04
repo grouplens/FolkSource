@@ -215,7 +215,7 @@ enyo.kind({
   },
   setupProfile: function(inSender, inEvent) {
     var user = LocalStorage.get("user");
-    this.$.user.setContent(user.user.name);
+    this.$.user.setContent(user.name);
     this.$.profile.render();
     this.$.appPanels.setIndex(1);
 
