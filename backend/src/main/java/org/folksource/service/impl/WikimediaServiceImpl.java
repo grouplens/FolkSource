@@ -63,7 +63,6 @@ public class WikimediaServiceImpl implements WikimediaService {
 		String authorizationUri = authFlow.start();
 		authService.setFlow(authFlow);
 		authService.setClientIdentifier(consumerCredentials);
-		//authService.setAccessToken(authorizationUri.concat("oauth_token="));
 		String requestToken = authorizationUri.split("=")[2]; 
 		
 		//User user = userService.getUserByName(username);
