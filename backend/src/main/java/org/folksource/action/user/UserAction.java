@@ -9,7 +9,7 @@ import org.folksource.action.BaseAction;
 import org.folksource.entities.User;
 import org.folksource.service.UserService;
 
-@ParentPackage("folksource-norest-pkg")
+@ParentPackage("folksource-secured-pkg")
 public class UserAction extends BaseAction{
 	
 	/**
@@ -31,10 +31,14 @@ public class UserAction extends BaseAction{
 	}
 	
 	@Action(value="{username}/token", results = {
-		@Result(name = SUCCESS, type="json", params = {"root","user"})
+		@Result(name = SUCCESS, type="json", params = {"root","user"}),
+		@Result(name = ERROR, type = "httpheader", params = { "status", "500" })
 	})
 	public String sendToken() {
 		user = userService.getUserByName(username);
+		if(user == null) {
+			return ERROR;
+		}
 		return SUCCESS;
 	}
 	

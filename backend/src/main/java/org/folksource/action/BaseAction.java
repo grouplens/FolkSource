@@ -11,7 +11,7 @@ import com.opensymphony.xwork2.ActionSupport;
  * Abstract base class for Struts 2 actions.
  * 
  */
-@ParentPackage("folksource-norest-pkg")
+@ParentPackage("folksource-secured-pkg")
 public abstract class BaseAction extends ActionSupport {
 
 	private static final long serialVersionUID = 1L;

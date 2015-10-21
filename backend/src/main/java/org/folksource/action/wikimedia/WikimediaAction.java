@@ -15,9 +15,11 @@ public class WikimediaAction extends BaseAction /*implements SessionAware */{
 
 	protected String partial;
 	
-	private Message response;
+	private String response;
 	private WikimediaService wikimediaService;
 	private String oauth_verifier;
+	private String oauth_token;
+	private String username;
 
 	private static final long serialVersionUID = 1L;
 
@@ -31,27 +33,33 @@ public class WikimediaAction extends BaseAction /*implements SessionAware */{
 	})
 	public String connect() {
 		Message message = new Message();
-		message.setMessage(wikimediaService.getAuthUri());
-		response = message;
+		response = wikimediaService.getAuthUri(username);
+
 		return SUCCESS;
 	}
 
 	@Action(value="callback/verified", results = {
-		@Result(name = SUCCESS, type="json", params = {"root","response"})
+		@Result(name = SUCCESS, location="${response}", type="redirect")
 	})
 	public String callback() {
-		Message message = new Message();
-		message.setMessage(wikimediaService.verify(oauth_verifier));
-		response = message;
+		wikimediaService.verify(oauth_verifier, oauth_token);
+		response = "http://localhost:8081/bootplate/debug.html";
 		return SUCCESS;
 	}
 	
-
-	public Message getResponse() {
+	@Action(value="upload", results = {
+		@Result(name = SUCCESS, type="json", params = {"root","response"})
+	})
+	public String photoupload() {
+		//call wikimedia service
+		return SUCCESS;
+	}
+	
+	public String getResponse() {
 		return response;
 	}
 
-	public void setResponse(Message response) {
+	public void setResponse(String response) {
 		this.response = response;
 	}
 
@@ -69,6 +77,22 @@ public class WikimediaAction extends BaseAction /*implements SessionAware */{
 
 	public void setOauth_verifier(String oauth_verifier) {
 		this.oauth_verifier = oauth_verifier;
+	}
+
+	public String getOauth_token() {
+		return oauth_token;
+	}
+
+	public void setOauth_token(String oauth_token) {
+		this.oauth_token = oauth_token;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	
 }

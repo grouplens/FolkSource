@@ -30,11 +30,44 @@
 	<constant name="struts.rest.namespace" value=""/> 
 	<constant name="struts.multipart.saveDir" value="tmp" />
 	<constant name="struts.multipart.maxSize" value="5368709120" />-->
-
-	
-	<package name="folksource-norest-pkg" extends="struts-default">
+	<package name="folksource-unsecured-pkg" extends="struts-default">
         <result-types>
-            <result-type name="json" class="org.apache.struts2.json.JSONResult"/>         
+            <result-type name="json" class="org.apache.struts2.json.JSONResult"/>          
         </result-types>
+	
+        <interceptors>
+            <interceptor name="unsecured" class="UnSecuredActionInterceptor" />
+            <interceptor name="json" class="org.apache.struts2.json.JSONInterceptor" />
+            <interceptor-stack name="unsecuredStack">
+            	<interceptor-ref name="unsecured" />
+                <interceptor-ref name="json" />
+                <interceptor-ref name="defaultStack" />
+            </interceptor-stack>
+        </interceptors>
+        
+        <default-interceptor-ref name="unsecuredStack" />
+	</package>
+
+
+	<package name="folksource-secured-pkg" extends="struts-default">
+        <result-types>
+            <result-type name="json" class="org.apache.struts2.json.JSONResult"/>
+        </result-types>
+        <interceptors>
+            <interceptor name="json" class="org.apache.struts2.json.JSONInterceptor" />
+            <interceptor name="secured" class="SecuredActionInterceptor" />
+            <interceptor-stack name="securedRootStack">
+            	<interceptor-ref name="secured" />
+                <interceptor-ref name="json" />
+                <interceptor-ref name="defaultStack" />
+            </interceptor-stack>
+			<interceptor-stack name="securedRootParamsStack">
+            	<interceptor-ref name="secured" />
+				<interceptor-ref name="json" />
+				<interceptor-ref name="paramsPrepareParamsStack" />
+			</interceptor-stack>
+        </interceptors>
+        
+        <default-interceptor-ref name="securedRootStack" />
 	</package>
 </struts>

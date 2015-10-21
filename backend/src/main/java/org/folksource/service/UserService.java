@@ -10,4 +10,8 @@ public interface UserService {
 
 	List<User> userLeaderboard();
 
+	boolean verifyUser(String username, String password);
+	
+	User createUser(User user);
+
 }

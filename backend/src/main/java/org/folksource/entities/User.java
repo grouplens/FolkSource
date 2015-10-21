@@ -44,6 +44,8 @@ public class User implements Serializable{
 	@Column(name = "token")
 	private Integer token;
 	
+	@Column(name = "token_oauth_wiki")
+	private String wikiToken;
 	
 	public int getId() {
 		return id;
@@ -123,6 +125,14 @@ public class User implements Serializable{
 
 	public void setToken(Integer token) {
 		this.token = token;
+	}
+
+	public String getWikiToken() {
+		return wikiToken;
+	}
+
+	public void setWikiToken(String wikiToken) {
+		this.wikiToken = wikiToken;
 	}
 
 

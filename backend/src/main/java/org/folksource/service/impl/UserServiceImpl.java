@@ -14,18 +14,40 @@ import org.grouplens.common.util.HashUtil;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 public class UserServiceImpl implements UserService{
 	// 8 bytes should be a good enough salt for our purposes.
-    private static final int SALT_LENGTH = 8;
+    private static final int SALT_LENGTH = 8; 
     
     @Autowired
     private UserDao userDao;
 	
 
-	
+	public boolean verifyUser(String username, String password){
+		
+		//check if the user is available
+		User user = null;
+		boolean verified = false;
+		try {
+			user = userDao.getUserByUsername(username);
+			String saltedPassword = HashUtil.getSaltedPassword(password, user.getSalt());
+			if (saltedPassword.equals(user.getPassword())) {
+				verified = true;
+			} else {
+				throw new Exception("Bad user or password");
+			}
+			
+		} catch(Exception e) {
+			System.out.println("Error" + e);
+			//Log the try here
+		}
+		return verified;
+	}
+    
+    
 	public User getUserByName(String name) {
-		User user = userDao.find(1);
+		User user = userDao.getUserByUsername(name);
 		return user;
 	}
 	
@@ -33,6 +55,12 @@ public class UserServiceImpl implements UserService{
 		return userDao.findAll();
 	}
 
+	@Override
+	@Transactional
+	public User createUser(User user) {
+		return userDao.merge(user);
+	}
+	
 	
 	//Old methods
 	private static void getIncentives(User u) {
@@ -124,4 +152,7 @@ public class UserServiceImpl implements UserService{
 	public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
 	}
+
+
+
 }

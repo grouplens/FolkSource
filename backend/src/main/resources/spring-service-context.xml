@@ -19,18 +19,14 @@
 
 	<tx:annotation-driven />
 
-<!-- 	<bean id="securedActionInterceptor" class="org.folksource.interceptors.SecuredActionInterceptor"> -->
-<!-- 		<property name="userSessionDao" ref="userSessionDaoImpl" /> -->
-<!-- 		<property name="appProperties" ref="appProperties" /> -->
-<!-- 	</bean> -->
+	<bean id="SecuredActionInterceptor" class="org.folksource.interceptors.SecuredActionInterceptor">
+<!-- if we need the user session dao		<property name="userSessionDao" ref="userSessionDaoImpl" /> -->
+<!-- if we need the app properties		<property name="appProperties" ref="appProperties" /> -->
+	</bean>
 
-<!-- 	<bean id="UnSecuredActionInterceptor" class="org.folksource.interceptors.UnSecuredActionInterceptor"> -->
-<!--  	</bean>	 -->
+	<bean id="UnSecuredActionInterceptor" class="org.folksource.interceptors.UnSecurecdActionInterceptor">
+ 	</bean>	
  	
-<!-- 	<bean id="JSONInterceptorExt" class="org.folksource.interceptors.JSONInterceptorExt"> -->
-<!-- 	</bean> -->
- 	
-
 	<context:component-scan base-package="org.folksource.service.impl">
 		<context:include-filter type="regex" expression=".*ServiceImpl" />
 		<!-- example of how to exclude a certain service for explicit wiring -->

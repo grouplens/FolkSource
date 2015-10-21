@@ -93,8 +93,9 @@ enyo.kind({
           this.log(JSON.stringify(user));
           ajax = new enyo.Ajax({url: serverURL, method: "POST", postBody: JSON.stringify(user), contentType: "application/json", cacheBust: false});
         } else {
-          var auth = "Basic " + window.btoa(this.$.usernameLogin.getValue() + ":" + this.$.passwordLogin.getValue());
+          var auth = window.btoa(this.$.usernameLogin.getValue() + ":" + this.$.passwordLogin.getValue());
           this.log(auth);
+          console.log("Auth===", auth)
           ajax = new enyo.Ajax({url: serverURL + "/"+this.$.usernameLogin.getValue()+"/token", method: "GET", headers: {Authorization: auth}, cacheBust: false});
         }
         ajax.response(this, "handleResponse");

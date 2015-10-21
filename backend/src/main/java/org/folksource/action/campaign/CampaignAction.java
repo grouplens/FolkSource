@@ -8,7 +8,7 @@ import org.folksource.action.BaseAction;
 import org.folksource.entities.Campaign;
 import org.folksource.service.CampaignService;
 
-@ParentPackage("folksource-norest-pkg")
+@ParentPackage("folksource-unsecured-pkg")
 public class CampaignAction extends BaseAction{
 
 	/**
