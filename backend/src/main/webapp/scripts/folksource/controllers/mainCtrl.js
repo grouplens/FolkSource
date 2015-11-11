@@ -5,8 +5,8 @@
 */
 
 angular.module('folksource.controllers').controller('MainCtrl', 
-    ['$scope', 'OAuth',
-    function ($scope, OAuth) {
+    ['$scope', 'OAuth', 'fileUpload',
+    function ($scope, OAuth, fileUpload) {
 
 
     $scope.getAuthUri = function(){
@@ -15,6 +15,10 @@ angular.module('folksource.controllers').controller('MainCtrl',
     		$scope.message = data.message;
     	});
     };
+
+    $scope.upload = function() {
+    	fileUpload.uploadFileToUrl($scope.file, "upload")
+    }
 
 }]);
 

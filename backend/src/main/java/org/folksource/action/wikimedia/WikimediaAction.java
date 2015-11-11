@@ -1,5 +1,7 @@
 package org.folksource.action.wikimedia;
 
+import java.io.File;
+
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.ParentPackage;
 import org.apache.struts2.convention.annotation.Result;
@@ -20,6 +22,7 @@ public class WikimediaAction extends BaseAction /*implements SessionAware */{
 	private String oauth_verifier;
 	private String oauth_token;
 	private String username;
+	private File upload;
 
 	private static final long serialVersionUID = 1L;
 
@@ -32,9 +35,8 @@ public class WikimediaAction extends BaseAction /*implements SessionAware */{
 		@Result(name = SUCCESS, type="json", params = {"root","response"})
 	})
 	public String connect() {
-		Message message = new Message();
-		response = wikimediaService.getAuthUri(username);
-
+		//return response of url to redirect to
+		response = wikimediaService.getAuthUri("jts_test");
 		return SUCCESS;
 	}
 
@@ -51,7 +53,7 @@ public class WikimediaAction extends BaseAction /*implements SessionAware */{
 		@Result(name = SUCCESS, type="json", params = {"root","response"})
 	})
 	public String photoupload() {
-		//call wikimedia service
+		wikimediaService.uploadPhoto("jts_test", upload);
 		return SUCCESS;
 	}
 	
@@ -93,6 +95,14 @@ public class WikimediaAction extends BaseAction /*implements SessionAware */{
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public File getUpload() {
+		return upload;
+	}
+
+	public void setUpload(File upload) {
+		this.upload = upload;
 	}
 	
 }

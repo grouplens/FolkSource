@@ -47,6 +47,9 @@ public class User implements Serializable{
 	@Column(name = "token_oauth_wiki")
 	private String wikiToken;
 	
+	@Column(name = "token_oauth_wiki_secret")
+	private String wikiTokenSecret;
+	
 	public int getId() {
 		return id;
 	}
@@ -133,6 +136,14 @@ public class User implements Serializable{
 
 	public void setWikiToken(String wikiToken) {
 		this.wikiToken = wikiToken;
+	}
+
+	public String getWikiTokenSecret() {
+		return wikiTokenSecret;
+	}
+
+	public void setWikiTokenSecret(String wikiTokenSecret) {
+		this.wikiTokenSecret = wikiTokenSecret;
 	}
 
 

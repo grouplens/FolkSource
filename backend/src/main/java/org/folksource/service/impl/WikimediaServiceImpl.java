@@ -6,14 +6,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.Key;
 import java.util.Base64;
+import java.util.HashMap;
 
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.SecretKeySpec;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.Response;
 
@@ -21,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.folksource.service.OAuthService;
 import org.folksource.service.ServiceHelper;
@@ -29,26 +34,34 @@ import org.folksource.util.UserService;
 import org.folksource.dao.jpa.GenericJpaDao;
 import org.folksource.dao.jpa.UserDao;
 import org.folksource.entities.User;
+import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.oauth1.AccessToken;
 import org.glassfish.jersey.client.oauth1.ConsumerCredentials;
 import org.glassfish.jersey.client.oauth1.OAuth1AuthorizationFlow;
 import org.glassfish.jersey.client.oauth1.OAuth1ClientSupport;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
 import org.jose4j.jwe.JsonWebEncryption;
 import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.InvalidJwtException;
 import org.jose4j.jwt.consumer.JwtConsumer;
 import org.jose4j.jwt.consumer.JwtConsumerBuilder;
 import org.jose4j.lang.JoseException;
+import org.json.JSONObject;
 
 public class WikimediaServiceImpl implements WikimediaService {
 	final static Logger logger = LoggerFactory.getLogger(WikimediaServiceImpl.class);
-	private OAuthService authService;
+	
 	@Autowired
 	private UserDao userDao;
 	private UserService userService;
+	private HashMap<String, OAuth1AuthorizationFlow> authFlowHashMap = new HashMap<String, OAuth1AuthorizationFlow>();
 	
 	private ServiceHelper serviceHelper;
 	
+	@Transactional
 	public String getAuthUri(String username) {
 		String consumerKey = serviceHelper.getAppProperties().getProperty("wiki.key");
 		String consumerSecret = serviceHelper.getAppProperties().getProperty("wiki.secret");
@@ -61,27 +74,33 @@ public class WikimediaServiceImpl implements WikimediaService {
 			    	wikiUrl + "index.php?title=Special%3AOAuth%2Fauthorize")
 			    .build();
 		String authorizationUri = authFlow.start();
-		authService.setFlow(authFlow);
-		authService.setClientIdentifier(consumerCredentials);
+
 		String requestToken = authorizationUri.split("=")[2]; 
 		
-		//User user = userService.getUserByName(username);
-		//user.setToken(authFlow.getOAuth1Feature());
+		addFlow(requestToken, authFlow);
 		
-		
+		//store the requestToken as if it were the accessToken
+		User u = userDao.getUserByUsername(username);
+		u.setWikiToken(requestToken);
+		userDao.merge(u);
+
 		return authorizationUri + "&oauth_consumer_key=" + consumerKey;
 	}
 	
 	@Transactional
 	public String verify(String verifier, String requestToken){
-		OAuth1AuthorizationFlow authFlow = authService.getFlow();   
-		String wikiUrl = serviceHelper.getAppProperties().getProperty("wiki.url");
-		String consumerKey = serviceHelper.getAppProperties().getProperty("wiki.key");
-		ConsumerCredentials consumerCredentials = authService.getClientIdentifier();
+		OAuth1AuthorizationFlow authFlow = getFlow(requestToken);   
+//		String wikiUrl = serviceHelper.getAppProperties().getProperty("wiki.url");
+//		String consumerKey = serviceHelper.getAppProperties().getProperty("wiki.key");
 		
 		AccessToken accessToken = authFlow.finish(verifier);
 		
-		//User user = userDao.getUserByUsername(username);
+		User user = userDao.getUserByWikiToken(requestToken);
+		
+		user.setWikiToken(accessToken.getToken());
+		user.setWikiTokenSecret(accessToken.getAccessTokenSecret());
+		userDao.merge(user);
+		
 		
 		//Feature feature = authFlow.getOAuth1Feature();
 		//Client client = ClientBuilder.newBuilder().register(feature).build();
@@ -126,11 +145,92 @@ public class WikimediaServiceImpl implements WikimediaService {
 
 		return accessToken.toString();
 	}
+	
+	private String getEditToken(String username) {
+		String consumerKey = serviceHelper.getAppProperties().getProperty("wiki.key");
+		String consumerSecret = serviceHelper.getAppProperties().getProperty("wiki.secret");
+		String wikiUrl = serviceHelper.getAppProperties().getProperty("wiki.url");
+		ConsumerCredentials consumerCredentials = new ConsumerCredentials(consumerKey, consumerSecret);
+		
+		AccessToken token = getUserWikiToken(username);
+		
+		Feature feature = OAuth1ClientSupport.builder(consumerCredentials)
+			    .feature()
+			    .accessToken(token)
+			    .build();
+		
+		Client client = ClientBuilder.newBuilder().register(feature).build();
+		Response resp = client.target(wikiUrl + "api.php?action=query&meta=tokens&type=csrf&format=json").request().get();
+		
+		StringWriter writer = new StringWriter();
+		try {
+			IOUtils.copy((InputStream) resp.getEntity(), writer, "UTF-8");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Edit token: " + writer.toString());
+		return writer.toString();
+	}
 
 	@Override
-	public void uploadPhoto(File photo) {
-		// TODO Auto-generated method stub
+	public void uploadPhoto(String username, File photo) {
+		String consumerKey = serviceHelper.getAppProperties().getProperty("wiki.key");
+		String consumerSecret = serviceHelper.getAppProperties().getProperty("wiki.secret");
+		String wikiUrl = serviceHelper.getAppProperties().getProperty("wiki.url");
+		ConsumerCredentials consumerCredentials = new ConsumerCredentials(consumerKey, consumerSecret);
 		
+		AccessToken token = getUserWikiToken(username);
+		
+		Feature feature = OAuth1ClientSupport.builder(consumerCredentials)
+			    .feature()
+			    .accessToken(token)
+			    .build();
+		
+		Client client = ClientBuilder.newBuilder()
+				.register(feature)
+				.register(MultiPartFeature.class)
+				.build();
+		
+		FileDataBodyPart filePart = new FileDataBodyPart("file", photo);
+		
+		String editToken = getEditToken(username);
+		JSONObject json = new JSONObject(editToken);
+		String csrfToken = json.getJSONObject("query").getJSONObject("tokens").getString("csrftoken");
+		
+		MultiPart multipart = new FormDataMultiPart()
+					.field("token", csrfToken)
+					.field("filename", "testfile.jpg")
+					.bodyPart(filePart);
+
+		
+		Response resp = client.target(wikiUrl + "api.php?action=upload")
+				.request()
+				.post(Entity.entity(multipart, multipart.getMediaType()));
+		
+		StringWriter writer = new StringWriter();
+		try {
+			IOUtils.copy((InputStream) resp.getEntity(), writer, "UTF-8");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(writer.toString());
+				
+		File f = new File("C:\\Users\\Tyler\\test_upload\\test.jpg");
+		try {
+			FileUtils.copyFile(photo, f);
+		} catch (IOException e) {
+			System.out.println("Error uploading file: " + e.getMessage());
+		}
+		
+	}
+	
+	private AccessToken getUserWikiToken(String username) {
+		String token = userDao.getUserByUsername(username).getWikiToken();
+		String tokenSecret = userDao.getUserByUsername(username).getWikiTokenSecret();
+		AccessToken accesstoken = new AccessToken(token, tokenSecret);
+		return accesstoken;
 	}
 	
 	public UserDao getUserDao() {
@@ -156,6 +256,14 @@ public class WikimediaServiceImpl implements WikimediaService {
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
+
+    public OAuth1AuthorizationFlow getFlow(String authToken) {
+        return authFlowHashMap.get(authToken);
+    }
+
+    public void addFlow(String authToken, OAuth1AuthorizationFlow flow) {
+    	authFlowHashMap.put(authToken, flow);
+    }
 
 
 
