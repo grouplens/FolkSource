@@ -45,7 +45,7 @@ public class WikimediaAction extends BaseAction /*implements SessionAware */{
 	})
 	public String callback() {
 		wikimediaService.verify(oauth_verifier, oauth_token);
-		response = "http://localhost:8081/bootplate/debug.html";
+		response = "http://69.164.193.47/bootplate/debug.html";
 		return SUCCESS;
 	}
 	
