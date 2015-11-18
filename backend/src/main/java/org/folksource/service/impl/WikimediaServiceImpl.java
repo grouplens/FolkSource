@@ -6,11 +6,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Feature;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.slf4j.Logger;
@@ -174,7 +177,7 @@ public class WikimediaServiceImpl implements WikimediaService {
 				.register(feature)
 				.register(MultiPartFeature.class)
 				.build();
-		
+
 		FileDataBodyPart filePart = new FileDataBodyPart("file", photo);
 		
 		String editToken = getEditToken(username);
@@ -183,13 +186,12 @@ public class WikimediaServiceImpl implements WikimediaService {
 		
 		MultiPart multipart = new FormDataMultiPart()
 					.field("token", csrfToken)
-					.field("filename", "testfile.jpg")
+					.field("filename", "testfile-" + ThreadLocalRandom.current().nextInt(99999, 999999 + 1) + ".jpg")
 					.bodyPart(filePart);
-
 		
 		Response resp = client.target(wikiUrl + "api.php?action=upload")
 				.request()
-				.post(Entity.entity(multipart, multipart.getMediaType()));
+				.post(Entity.entity(multipart, MediaType.MULTIPART_FORM_DATA_TYPE));
 		
 		StringWriter writer = new StringWriter();
 		try {
