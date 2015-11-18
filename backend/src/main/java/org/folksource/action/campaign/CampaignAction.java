@@ -21,7 +21,7 @@ public class CampaignAction extends BaseAction{
 	@Action(value="campaigns", results = {
 		@Result(name = SUCCESS, type="json", params = {"root","campaigns"})
 	})
-	public String sendToken() {
+	public String campaigns() {
 		campaigns = campaignService.getCampaigns();
 		return SUCCESS;
 	}
