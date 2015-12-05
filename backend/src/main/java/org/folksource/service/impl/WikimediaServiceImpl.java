@@ -181,7 +181,12 @@ public class WikimediaServiceImpl implements WikimediaService {
 		FileDataBodyPart filePart = new FileDataBodyPart("file", photo);
 		
 		String editToken = getEditToken(username);
+		System.out.println("edit token: " + editToken);
+		
 		JSONObject json = new JSONObject(editToken);
+		
+		System.out.println("json" + json);
+		
 		String csrfToken = json.getJSONObject("query").getJSONObject("tokens").getString("csrftoken");
 		
 		System.out.println("Received token: " + csrfToken);
