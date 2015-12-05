@@ -184,14 +184,20 @@ public class WikimediaServiceImpl implements WikimediaService {
 		JSONObject json = new JSONObject(editToken);
 		String csrfToken = json.getJSONObject("query").getJSONObject("tokens").getString("csrftoken");
 		
+		System.out.println("Received token: " + csrfToken);
+		
 		MultiPart multipart = new FormDataMultiPart()
 					.field("token", csrfToken)
-					.field("filename", "testfile-" + ThreadLocalRandom.current().nextInt(99999, 999999 + 1) + ".jpg")
+					.field("filename", "target_field.jpg")
 					.bodyPart(filePart);
+		
+		System.out.println("Created multipart form");
 		
 		Response resp = client.target(wikiUrl + "api.php?action=upload")
 				.request()
 				.post(Entity.entity(multipart, MediaType.MULTIPART_FORM_DATA_TYPE));
+		
+		System.out.println("Got back a response");
 		
 		StringWriter writer = new StringWriter();
 		try {
@@ -199,6 +205,7 @@ public class WikimediaServiceImpl implements WikimediaService {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			System.out.println("Exception: " + e.toString());
 		}
 		System.out.println(writer.toString());
 				
