@@ -155,8 +155,12 @@ public class WikimediaServiceImpl implements WikimediaService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("Edit token: " + writer.toString());
-		return writer.toString();
+		
+		System.out.println("About to assign string");
+		String tokenString = writer.toString();
+		System.out.println("Edit token: " + tokenString);
+		
+		return tokenString;
 	}
 
 	@Override
