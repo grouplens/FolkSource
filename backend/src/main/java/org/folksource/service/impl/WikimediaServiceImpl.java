@@ -184,7 +184,7 @@ public class WikimediaServiceImpl implements WikimediaService {
 
 		FileDataBodyPart filePart = new FileDataBodyPart("file", photo);
 		
-		String editToken = getEditToken(username);
+		String editToken = this.getEditToken(username);
 		System.out.println("edit token: " + editToken);
 		
 		JSONObject json = new JSONObject(editToken);
