@@ -195,7 +195,7 @@ public class WikimediaServiceImpl implements WikimediaService {
 		
 		System.out.println("Created multipart form");
 		
-		Response resp = client.target(wikiUrl + "api.php?action=upload")
+		Response resp = client.target(wikiUrl + "api.php?action=upload&format=json")
 				.request()
 				.post(Entity.entity(multipart, MediaType.MULTIPART_FORM_DATA_TYPE));
 		
