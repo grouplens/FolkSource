@@ -189,8 +189,8 @@ public class WikimediaServiceImpl implements WikimediaService {
 		}
 		
 		System.out.println("About to assign string");
-		String tokenString = writeredit.toString();
-		System.out.println("Edit token: " + tokenString);
+		JSONObject json = new JSONObject(writeredit.toString());
+		//System.out.println("Edit token: " + tokenString);
 		//end
 		
 		Feature feature = OAuth1ClientSupport.builder(consumerCredentials)
@@ -206,9 +206,9 @@ public class WikimediaServiceImpl implements WikimediaService {
 		FileDataBodyPart filePart = new FileDataBodyPart("file", photo);
 		
 		//String editToken = this.getEditToken(username);
-		System.out.println("edit token: " + tokenString);
+		//System.out.println("edit token: " + tokenString);
 		
-		JSONObject json = new JSONObject(tokenString);
+		//JSONObject json = new JSONObject(tokenString);
 		
 		System.out.println("json" + json);
 		
