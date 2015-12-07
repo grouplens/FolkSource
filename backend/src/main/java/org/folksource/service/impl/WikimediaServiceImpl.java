@@ -171,6 +171,27 @@ public class WikimediaServiceImpl implements WikimediaService {
 		ConsumerCredentials consumerCredentials = new ConsumerCredentials(consumerKey, consumerSecret);
 		
 		AccessToken token = getUserWikiToken(username);
+		//start
+		Feature featureedit = OAuth1ClientSupport.builder(consumerCredentials)
+			    .feature()
+			    .accessToken(token)
+			    .build();
+		
+		Client clientedit = ClientBuilder.newBuilder().register(featureedit).build();
+		Response respedit = clientedit.target(wikiUrl + "api.php?action=query&meta=tokens&type=csrf&format=json").request().get();
+		
+		StringWriter writeredit = new StringWriter();
+		try {
+			IOUtils.copy((InputStream) respedit.getEntity(), writeredit, "UTF-8");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("About to assign string");
+		String tokenString = writeredit.toString();
+		System.out.println("Edit token: " + tokenString);
+		//end
 		
 		Feature feature = OAuth1ClientSupport.builder(consumerCredentials)
 			    .feature()
@@ -184,10 +205,10 @@ public class WikimediaServiceImpl implements WikimediaService {
 
 		FileDataBodyPart filePart = new FileDataBodyPart("file", photo);
 		
-		String editToken = this.getEditToken(username);
-		System.out.println("edit token: " + editToken);
+		//String editToken = this.getEditToken(username);
+		System.out.println("edit token: " + tokenString);
 		
-		JSONObject json = new JSONObject(editToken);
+		JSONObject json = new JSONObject(tokenString);
 		
 		System.out.println("json" + json);
 		
@@ -195,6 +216,7 @@ public class WikimediaServiceImpl implements WikimediaService {
 		
 		System.out.println("Received token: " + csrfToken);
 		
+		@SuppressWarnings("resource")
 		MultiPart multipart = new FormDataMultiPart()
 					.field("token", csrfToken)
 					.field("filename", "target_field.jpg")
