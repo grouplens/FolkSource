@@ -39,3 +39,4 @@ ehthumbs.db
 Thumbs.db
 
 *.properties
+backend/local/resources/folksource.properties
