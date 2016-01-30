@@ -36,7 +36,7 @@ public class UserAction extends BaseAction{
 	})
 	public String sendToken() {
 		user = userService.getUserByName(username);
-		if(user == null) {
+		if (user == null) {
 			return ERROR;
 		}
 		return SUCCESS;

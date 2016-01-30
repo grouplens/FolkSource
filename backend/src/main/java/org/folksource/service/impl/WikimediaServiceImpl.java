@@ -190,6 +190,7 @@ public class WikimediaServiceImpl implements WikimediaService {
 		
 		MultiPart multipart = new FormDataMultiPart()
 					.field("token", csrfToken)
+					.field("filename", "target_field")
 					.bodyPart(filePart);
 		
 		System.out.println("Created multipart form");
