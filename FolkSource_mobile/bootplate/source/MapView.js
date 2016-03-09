@@ -27,7 +27,7 @@ enyo.kind({
           {name: "leftButton", kind: "onyx.Button", slide: "prev", ontap: "buttonTapHandler", classes: "button-style filledButtons", disabled: !0, components: [
             {tag: "i", classes: "fa fa-chevron-left fa-2x color-icon"}
           ]},
-          {name: "panels", kind: "enyo.Panels", draggable: true, arrangerKind: "enyo.CarouselArranger", fit: true, onTransitionFinish: "transitionFinishHandler", /*onTransitionStart: "transitionStartHandler", */classes: "filledPanels light-background"/*, layoutKind: "enyo.FittableColumnsLayout"*/},
+          {name: "panels", kind: "enyo.Panels", arrangerKind: "enyo.CarouselArranger", fit: true, onTransitionFinish: "transitionFinishHandler", onTransitionStart: "transitionStartHandler", classes: "filledPanels light-background", layoutKind: "enyo.FittableColumnsLayout"},
           {name: "rightButton", kind: "onyx.Button", slide: "next", ontap: "buttonTapHandler", classes: "button-style filledButtons", components: [
             {tag: "i", classes: "fa fa-chevron-right fa-2x color-icon"}
           ]},
@@ -52,13 +52,10 @@ enyo.kind({
     this.hideCamps();
   },
   buttonTapHandler: function (a, b) {
-    var index = this.$.panels.getIndex();
     if(a.slide === "prev") {
-      // this.$.panels.previous();
-      this.$.panels.setIndex(index-1)
+      this.$.panels.previous();
     } else if(a.slide === "next") {
-      // this.$.panels.next();
-      this.$.panels.setIndex(index+1)
+      this.$.panels.next();
     } else {
       this.$.panels.snapTo(a.slide);
     }
@@ -197,12 +194,8 @@ enyo.kind({
     return;
   },
   deleteAndReCreateCampaigns: function(camp_data) {
-    if(this.$.panels.getPanels().length > 0) {
-      var panels = this.$.panels.getPanels()
-      for(p in panels) {
-        panels[p].destroy()
-      }
-      // this.$.panels.destroyComponents();
+    if(this.$.panels.getComponents().length > 0) {
+      this.$.panels.destroyComponents();
     }
 
     for (var c = 0; c < camp_data.length; c++) {
@@ -217,20 +210,18 @@ enyo.kind({
         );
       }
     }
-    this.$.panels.render();
   },
   renderResponse: function (a, b) {
     // this.log(JSON.stringify(b));
     this.campaignArray = b.campaigns;
-    this.log(this.campaignArray);
 
     this.deleteAndReCreateCampaigns(this.campaignArray);
 
     enyo.Signals.send("onCampLoaded");
 
+    this.$.panels.render();
     this.checkSides(); // make sure the arrow buttons work
     this.showCamps();
-    this.log("THERE ARE " + this.$.panels.getComponents().length + " CAMPAIGNS")
     this.drawMap();
     this.doReloadedData();
   },
@@ -250,21 +241,22 @@ enyo.kind({
     var index = this.$.panels.getIndex();
     var size = this.$.panels.getPanels().length;
     var adjSize = size - 1; //adjust for counting at 0 vs. 1
-    this.log("ADJ SIZE IS " + adjSize)
     this.$.rightButton.setDisabled(false);
     this.$.leftButton.setDisabled(false);
-    if (this.campaignArray !== undefined || adjSize < 1) {
-      if (index === 0) {
-        this.$.rightButton.setDisabled(false);
-        this.$.leftButton.setDisabled(true);
-      } else if (index === adjSize && index !== 0) {
-        this.$.rightButton.setDisabled(true);
-        this.$.leftButton.setDisabled(false);
-      }
-    } else {
+    if (this.campaignArray !== undefined) {
+      if (index !== 0 && adjSize !== 0) {
+        if (index === 0) {
+          this.$.rightButton.setDisabled(false);
+          this.$.leftButton.setDisabled(true);
+        } else if (index === adjSize && index !== 0) {
+          this.$.rightButton.setDisabled(true);
+          this.$.leftButton.setDisabled(false);
+        }
+      } else {
           this.$.rightButton.setDisabled(true);
           this.$.leftButton.setDisabled(true);
       }
+    }
   },
   transitionFinishHandler: function (a, b) {
     var c = this.$.panels.getIndex();
@@ -273,7 +265,6 @@ enyo.kind({
   },
   transitionStartHandler: function (a, b) {
     var c = this.$.panels.getIndex();
-    this.log("TRANSITION STARTING")
   },
   locSuccess: function (a, b) {
     var coords = b.coords;
