@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -188,9 +191,15 @@ public class WikimediaServiceImpl implements WikimediaService {
 		
 		System.out.println("Received token: " + csrfToken);
 		
+		Format formatter = new SimpleDateFormat("YYYY-MM-dd_hh-mm-ss");
+		Date date = new Date();
+		String filetype = ".jpeg";
+		//need to pull the name of the specific location and filetype from upload
+		String filename = "photo_" + formatter.format(date) + filetype;
+		
 		MultiPart multipart = new FormDataMultiPart()
 					.field("token", csrfToken)
-					.field("filename", "target_field")
+					.field("filename", filename)
 					.bodyPart(filePart);
 		
 		System.out.println("Created multipart form");
@@ -210,8 +219,11 @@ public class WikimediaServiceImpl implements WikimediaService {
 			System.out.println("Exception: " + e.toString());
 		}
 		System.out.println(writer.toString());
-				
-		File f = new File("C:\\Users\\Tyler\\test_upload\\test.jpg");
+		
+		
+		
+		String imageDirectory = serviceHelper.getAppProperties().getProperty("dir.images");
+		File f = new File(imageDirectory + filename);
 		try {
 			FileUtils.copyFile(photo, f);
 		} catch (IOException e) {

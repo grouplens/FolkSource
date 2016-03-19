@@ -35,8 +35,7 @@ public class WikimediaAction extends BaseAction /*implements SessionAware */{
 		@Result(name = SUCCESS, type="json", params = {"root","response"})
 	})
 	public String connect() {
-		//return response of url to redirect to
-		response = wikimediaService.getAuthUri("jts_test");
+		response = wikimediaService.getAuthUri(username);
 		return SUCCESS;
 	}
 
@@ -45,7 +44,8 @@ public class WikimediaAction extends BaseAction /*implements SessionAware */{
 	})
 	public String callback() {
 		wikimediaService.verify(oauth_verifier, oauth_token);
-		response = "http://69.164.193.47/bootplate/debug.html";
+		//response = "http://69.164.193.47/bootplate/debug.html";
+		response = "http://localhost:8081/bootplate/debug.html";
 		return SUCCESS;
 	}
 	
