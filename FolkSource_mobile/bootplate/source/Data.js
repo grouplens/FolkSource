@@ -3,9 +3,11 @@ enyo.kind({
   kind: "enyo.Control",
   statics: {
     getURL: function () {
-      return "http://folksource.grouplens.org/staging/";
+      //return "http://folksource.grouplens.org/api/";
       //return "http://innsbruck-umh.cs.umn.edu/api/";
-      //return "http://127.0.0.1:8081/";
+      //return "http://192.168.1.95:8080/FolkSource/";
+      //return "http://localhost:8080/FolkSource/";
+      return "http://populo.cs.umn.edu/staging/";
     },
     getTileURL: function(string) {
       return "http://ugly-umh.cs.umn.edu/api/" + string;
@@ -14,7 +16,7 @@ enyo.kind({
       var b = new enyo.Ajax({
         contentType: "application/json",
         sync: !0,
-        url: Data.getURL() + "leaderboard.json"
+        url: Data.getURL() + "user/leaderboard"
       });
       b.response(this, function (a, b) {
         this.users = b.leaderboardEntrys;

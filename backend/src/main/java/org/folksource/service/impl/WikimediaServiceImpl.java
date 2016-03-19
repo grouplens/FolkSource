@@ -239,6 +239,14 @@ public class WikimediaServiceImpl implements WikimediaService {
 		return accesstoken;
 	}
 	
+//	private String addRowToFolkSourceBot(String filename) {
+//		//Need filename, uploader, wikipage
+//		
+//		//Get token to edit for the bot
+//		
+//		//
+//	}
+	
 	public UserDao getUserDao() {
 		return userDao;
 	}

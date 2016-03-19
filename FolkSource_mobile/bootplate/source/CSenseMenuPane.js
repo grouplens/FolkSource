@@ -34,6 +34,10 @@ enyo.kind({
             {name: "logout", kind: "enyo.FittableColumns", ontap: "userLogout", classes: "slidein-option button-style dark-background", components: [
               {content: "Logout", fit: true},
               {tag: "i", classes: "fa color-icon fa-lg fa-fw fa-sign-out", style: "padding: 0 5px;"}
+            ]},
+            {name: "wikiOauth", kind: "enyo.FittableColumns", ontap: "wikiOauth", classes: "slidein-option button-style dark-background", components: [
+              {content: "Connect", fit: true},
+              {tag: "i", classes: "fa color-icon fa-lg fa-fw fa-plane", style: "padding: 0 5px;"}
             ]}
           ]},
           {ontap: "showCampaignList", kind: "enyo.FittableColumns", classes: "slidein-option button-style light-background", style: "width: 100%;", onup: "toggleHilight", ondown: "toggleHilight", components: [
@@ -247,6 +251,25 @@ enyo.kind({
     this.$.userDrawer.setOpen(false);
     this.$.menuDrawer.setIndex(1);
     enyo.Signals.send("onLoggedOut");
+  },
+  wikiOauth: function() {
+      var ajax;
+          serverURL = Data.getURL() + "wikimedia/authuri";
+          user = {username: this.$.user.content };
+          ajax = new enyo.Ajax({url: serverURL, method: "POST", postBody: JSON.stringify(user), contentType: "application/json", cacheBust: false});
+        
+      ajax.response(this, "handleOauthResponse");
+      ajax.error(this, "handleOauthError");
+      //this.$.trying.setShowing(true);
+      //this.$.sendingPopup.setOpen(true);
+      ajax.go();
+  },
+  handleOauthResponse: function(inRequest, inResponse) {
+    console.log('redirect to here:', inResponse);
+    location.href = inResponse;
+  },
+  handleOauthError: function(data) {
+    console.log('error', data);
   },
   showCampaignList: function(inSender, inEvent) {
     this.panelTarget = 'c';

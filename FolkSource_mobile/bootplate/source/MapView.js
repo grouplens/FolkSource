@@ -52,6 +52,7 @@ enyo.kind({
     this.hideCamps();
   },
   buttonTapHandler: function (a, b) {
+    console.log(a, b);
     if(a.slide === "prev") {
       this.$.panels.previous();
     } else if(a.slide === "next") {
@@ -212,7 +213,7 @@ enyo.kind({
     }
   },
   renderResponse: function (a, b) {
-    // this.log(JSON.stringify(b));
+
     this.campaignArray = b;
 
     this.deleteAndReCreateCampaigns(this.campaignArray);
@@ -244,7 +245,8 @@ enyo.kind({
     this.$.rightButton.setDisabled(false);
     this.$.leftButton.setDisabled(false);
     if (this.campaignArray !== undefined) {
-      if (index !== 0 && adjSize !== 0) {
+      //why were we checking that index was not 0 and then 0?
+      if (adjSize !== 0) {
         if (index === 0) {
           this.$.rightButton.setDisabled(false);
           this.$.leftButton.setDisabled(true);

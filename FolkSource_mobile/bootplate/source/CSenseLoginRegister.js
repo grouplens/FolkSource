@@ -84,8 +84,8 @@ enyo.kind({
         this.$.logButton.hasNode().focus();
         var tmp = {};
         var ajax;
-        serverURL = Data.getURL() + "user";
         if(this.register) {
+          serverURL = Data.getURL() + "register/user";
           tmp.name = this.$.usernameRegister.getValue();
           tmp.password = this.$.passwordRegister.getValue();
           tmp.email = this.$.emailRegister.getValue();
@@ -93,9 +93,9 @@ enyo.kind({
           this.log(JSON.stringify(user));
           ajax = new enyo.Ajax({url: serverURL, method: "POST", postBody: JSON.stringify(user), contentType: "application/json", cacheBust: false});
         } else {
+          serverURL = Data.getURL() + "user";
           var auth = window.btoa(this.$.usernameLogin.getValue() + ":" + this.$.passwordLogin.getValue());
           this.log(auth);
-          console.log("Auth===", auth)
           ajax = new enyo.Ajax({url: serverURL + "/"+this.$.usernameLogin.getValue()+"/token", method: "GET", headers: {Authorization: auth}, cacheBust: false});
         }
         ajax.response(this, "handleResponse");
