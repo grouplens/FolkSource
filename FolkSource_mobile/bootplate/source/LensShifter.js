@@ -82,20 +82,25 @@ enyo.kind({
     var output = this.handleAddress(real)
     enyo.Signals.send("onSearchedLocation", output);
   },
-  reverseNominatimSearch: function(osm_id, layer_type) {
-    if(this.currentOSM_ID === osm_id) {
-      return;
+  reverseNominatimSearch: function(osm_id, lat, lon, layer_type) {
+    var url = "http://nominatim.openstreetmap.org/reverse?format=json&addressdetails=1&"
+    if(osm_id) {
+      if(this.currentOSM_ID === osm_id) {
+        return;
+      }
+      this.startLoading();
+      this.currentOSM_ID = osm_id;
+      var osm_type='R';
+      if(layer_type === "buildings") {
+        osm_type='W';
+      } else if(layer_type === "pois") {
+        osm_type='N';
+        this.log("nodes");
+      }
+      url = url + "osm_id=" + osm_id+"&osm_type="+osm_type;
+    } else {
+      url = url + "lat=" + lat + "&lon=" + lon
     }
-    this.startLoading();
-    this.currentOSM_ID = osm_id;
-    var osm_type='R';
-    if(layer_type === "buildings") {
-      osm_type='W';
-    } else if(layer_type === "pois") {
-      osm_type='N';
-      this.log("nodes");
-    }
-    var url = "http://nominatim.openstreetmap.org/reverse?format=json&addressdetails=1&osm_id=" + osm_id+"&osm_type="+osm_type;
     this.log(url);
     var ajax = new enyo.Ajax({url: url, method: "GET", cacheBust: false});
     ajax.response(this, "reverseNominatimSearchResponse");
