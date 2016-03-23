@@ -68,7 +68,7 @@ enyo.kind({
       var newIndex = this.$.panels.getIndex() + inSender.slide;
       this.$.panels.setIndex(newIndex);
     }
-    this.checkSides();
+    this.checkBothSides();
     this.map.addLayer(this.vectors);
 
     // if(a.slide === 'prev') {
@@ -269,7 +269,7 @@ enyo.kind({
 
     enyo.Signals.send('onCampLoaded');
 
-    this.checkSides(); // make sure the arrow buttons work
+    this.checkBothSides(); // make sure the arrow buttons work
     this.showCamps();
     this.setupPanels();
     this.doReloadedData();
@@ -293,7 +293,7 @@ enyo.kind({
   hideCamps: function(inSender, inEvent) {
     this.$.camps.setShowing(false);
   },
-  checkSides: function () {
+  checkBothSides: function () {
     var index = this.$.panels.getIndex();
     var size = this.$.panels.getPanels().length;
     var adjSize = size - 1; //adjust for counting at 0 vs. 1
