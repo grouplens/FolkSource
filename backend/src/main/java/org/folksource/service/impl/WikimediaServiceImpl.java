@@ -16,6 +16,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Feature;
+import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -230,6 +231,8 @@ public class WikimediaServiceImpl implements WikimediaService {
 			System.out.println("Error uploading file: " + e.getMessage());
 		}
 		
+		addRowToFolkSourceBot(username, "Need to get location", filename);
+		
 	}
 	
 	private AccessToken getUserWikiToken(String username) {
@@ -239,13 +242,52 @@ public class WikimediaServiceImpl implements WikimediaService {
 		return accesstoken;
 	}
 	
-//	private String addRowToFolkSourceBot(String filename) {
-//		//Need filename, uploader, wikipage
-//		
-//		//Get token to edit for the bot
-//		
-//		//
-//	}
+	public void addRowToFolkSourceBot(String username, String locationName, String fileName) {
+		String article = "testarticle";
+		String consumerKey = serviceHelper.getAppProperties().getProperty("wiki.key");
+		String consumerSecret = serviceHelper.getAppProperties().getProperty("wiki.secret");
+		String wikiUrl = serviceHelper.getAppProperties().getProperty("wiki.url");
+		ConsumerCredentials consumerCredentials = new ConsumerCredentials(consumerKey, consumerSecret);
+		
+		AccessToken token = getUserWikiToken(username);
+		
+		Feature feature = OAuth1ClientSupport.builder(consumerCredentials)
+			    .feature()
+			    .accessToken(token)
+			    .build();
+		
+		Client client = ClientBuilder.newBuilder().register(feature).build();
+		
+		String editToken = getEditToken(username);
+		
+		JSONObject json = new JSONObject(editToken);
+		String csrfToken = json.getJSONObject("query").getJSONObject("tokens").getString("csrftoken");
+		
+		Form form = new Form();
+		form.param("format", "json");
+		form.param("action", "edit");
+		form.param("title", "User:FolksourceBot");
+		form.param("section", "new");
+		form.param("summary", "New image ready to be added to article");
+		form.param("text", "Article:" + article + ", Location: " + locationName + ", File: " + fileName + ",  ~~~~");
+		form.param("token", csrfToken);
+		
+		Response resp = client.target(wikiUrl + "api.php")
+				.request()
+				.post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED));
+		
+		System.out.println("Got back a response");
+		
+		StringWriter writer = new StringWriter();
+		try {
+			IOUtils.copy((InputStream) resp.getEntity(), writer, "UTF-8");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Exception: " + e.toString());
+		}
+		System.out.println(writer.toString());
+	}
 	
 	public UserDao getUserDao() {
 		return userDao;

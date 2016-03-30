@@ -12,6 +12,6 @@ public interface WikimediaService {
 
 	public void uploadPhoto(String username, File upload);
 
-	//void configureClient(ClientConfig config);
+	public void addRowToFolkSourceBot(String username, String locationName, String fileName);
 	
 }

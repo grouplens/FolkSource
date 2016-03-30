@@ -57,6 +57,14 @@ public class WikimediaAction extends BaseAction /*implements SessionAware */{
 		return SUCCESS;
 	}
 	
+	@Action(value="bot", results = {
+		@Result(name = SUCCESS, type="json", params = {"root","response"})
+	})
+	public String bot() {
+		wikimediaService.addRowToFolkSourceBot("jts_test", "Colorado", "Photo_whatever");
+		return SUCCESS;
+	}
+	
 	public String getResponse() {
 		return response;
 	}
