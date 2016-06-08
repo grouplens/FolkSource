@@ -267,7 +267,7 @@ public class WikimediaServiceImpl implements WikimediaService {
 		form.param("format", "json");
 		form.param("action", "edit");
 		form.param("title", "User:FolksourceBot");
-		form.param("section", "new");
+		form.param("section", "0");
 		form.param("summary", "New image ready to be added to article");
 		form.param("text", "Article:" + article + ", Location: " + locationName + ", File: " + fileName + ",  ~~~~");
 		form.param("token", csrfToken);
