@@ -39,6 +39,7 @@ import org.glassfish.jersey.media.multipart.FormDataMultiPart;
 import org.glassfish.jersey.media.multipart.MultiPart;
 import org.glassfish.jersey.media.multipart.MultiPartFeature;
 import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class WikimediaServiceImpl implements WikimediaService {
@@ -162,6 +163,34 @@ public class WikimediaServiceImpl implements WikimediaService {
 		System.out.println("Edit token: " + writer.toString());
 		return writer.toString();
 	}
+	
+//	private String getBotContent(String username) {
+//		String consumerKey = serviceHelper.getAppProperties().getProperty("wiki.key");
+//		String consumerSecret = serviceHelper.getAppProperties().getProperty("wiki.secret");
+//		String wikiUrl = serviceHelper.getAppProperties().getProperty("wiki.url");
+//		ConsumerCredentials consumerCredentials = new ConsumerCredentials(consumerKey, consumerSecret);
+//		
+//		AccessToken token = getUserWikiToken(username);
+//		
+//		Feature feature = OAuth1ClientSupport.builder(consumerCredentials)
+//			    .feature()
+//			    .accessToken(token)
+//			    .build();
+//		
+//		Client client = ClientBuilder.newBuilder().register(feature).build();
+//		Response resp = client.target(wikiUrl + "api.php?action=query&prop=revisions&rvprop=content&format=json&titles=User:FolksourceBot").request().get();
+//		
+//		StringWriter writer = new StringWriter();
+//		try {
+//			IOUtils.copy((InputStream) resp.getEntity(), writer, "UTF-8");
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		JSONObject json = new JSONObject(writer.toString());
+//		String content = json.getJSONObject("query").getJSONObject("pages").getJSONObject(json.getJSONObject("query").getJSONObject("pages").names().get(0).toString()).getJSONArray("revisions").getJSONObject(0).getString("*");
+//		return content;
+//	}
 
 	@Override
 	public void uploadPhoto(String username, File photo) {
@@ -243,7 +272,7 @@ public class WikimediaServiceImpl implements WikimediaService {
 	}
 	
 	public void addRowToFolkSourceBot(String username, String locationName, String fileName) {
-		String article = "testarticle";
+		String article = "Minneapolis College of Art and Design";
 		String consumerKey = serviceHelper.getAppProperties().getProperty("wiki.key");
 		String consumerSecret = serviceHelper.getAppProperties().getProperty("wiki.secret");
 		String wikiUrl = serviceHelper.getAppProperties().getProperty("wiki.url");
@@ -263,13 +292,17 @@ public class WikimediaServiceImpl implements WikimediaService {
 		JSONObject json = new JSONObject(editToken);
 		String csrfToken = json.getJSONObject("query").getJSONObject("tokens").getString("csrftoken");
 		
+		//String test = getBotContent(username);
+		//System.out.println(test);
+		
 		Form form = new Form();
 		form.param("format", "json");
 		form.param("action", "edit");
 		form.param("title", "User:FolksourceBot");
-		form.param("section", "0");
-		form.param("summary", "New image ready to be added to article");
-		form.param("text", "Article:" + article + ", Location: " + locationName + ", File: " + fileName + ",  ~~~~");
+		form.param("section", "new");
+		//form.param("contentformat", "text/x-wiki");
+		form.param("appendtext", "Article:" + article + ", File: " + fileName + ",  ~~~~");
+		//form.param("text", "{| border=1 \n |- \n ! Heading 1 \n ! Heading 2 \n |-  \n | A  \n | B \n |}");
 		form.param("token", csrfToken);
 		
 		Response resp = client.target(wikiUrl + "api.php")
