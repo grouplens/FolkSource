@@ -92,7 +92,7 @@ public class WikimediaServiceImpl implements WikimediaService {
 		user.setWikiTokenSecret(accessToken.getAccessTokenSecret());
 		userDao.merge(user);
 		
-		
+		//TODO get the user information for creating a profile
 		//Feature feature = authFlow.getOAuth1Feature();
 		//Client client = ClientBuilder.newBuilder().register(feature).build();
 		
