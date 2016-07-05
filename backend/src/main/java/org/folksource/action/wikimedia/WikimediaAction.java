@@ -26,6 +26,7 @@ public class WikimediaAction extends BaseAction /*implements SessionAware */{
 
 	private static final long serialVersionUID = 1L;
 
+	//we currently don't use this for anything on production, might remove
 	@Action(value = "app", results = { @Result(name = SUCCESS, location = "oauth.jsp") })
 	public String home() {
 		return SUCCESS;
@@ -45,6 +46,7 @@ public class WikimediaAction extends BaseAction /*implements SessionAware */{
 	public String callback() {
 		wikimediaService.verify(oauth_verifier, oauth_token);
 		//response = "http://69.164.193.47/bootplate/debug.html";
+		//need to adjust to be relative
 		response = "http://localhost:8081/bootplate/debug.html";
 		return SUCCESS;
 	}
@@ -57,13 +59,13 @@ public class WikimediaAction extends BaseAction /*implements SessionAware */{
 		return SUCCESS;
 	}
 	
-	@Action(value="bot", results = {
-		@Result(name = SUCCESS, type="json", params = {"root","response"})
-	})
-	public String bot() {
-		wikimediaService.addRowToFolkSourceBot("jts_test", "Colorado", "Photo_whatever");
-		return SUCCESS;
-	}
+//	@Action(value="bot", results = {
+//		@Result(name = SUCCESS, type="json", params = {"root","response"})
+//	})
+//	public String bot() {
+//		wikimediaService.addRowToFolkSourceBot("jts_test", "Colorado", "Photo_whatever");
+//		return SUCCESS;
+//	}
 	
 	public String getResponse() {
 		return response;

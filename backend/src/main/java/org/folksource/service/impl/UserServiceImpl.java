@@ -30,6 +30,7 @@ public class UserServiceImpl implements UserService{
 		User user = null;
 		boolean verified = false;
 		try {
+			//TODO not working quite right
 			user = userDao.getUserByUsername(username);
 			String saltedPassword = HashUtil.getSaltedPassword(password, user.getSalt());
 			if (saltedPassword.equals(user.getPassword())) {

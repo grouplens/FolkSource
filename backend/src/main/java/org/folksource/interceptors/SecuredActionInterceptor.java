@@ -24,16 +24,17 @@ public class SecuredActionInterceptor extends AbstractInterceptor{
 
 	@Override
 	public String intercept(ActionInvocation invocation) throws Exception {
-		// TODO Auto-generated method stub
-		System.out.println("Secured");
-		
+				
 		final ActionContext context = invocation.getInvocationContext();
 	    HttpServletRequest request = (HttpServletRequest) context.get(ServletActionContext.HTTP_REQUEST);
 	    HttpSession session = request.getSession(true);
+	    
+	    //TODO setting the username for the time being
 	    session.setAttribute("username", "jts_test");
+	    
 	    String basicAuth = request.getHeader("Authorization");
 	    if(basicAuth == null){
-	    	System.out.println("Not logged in");
+	    	System.out.println("No security");
 	    	return invocation.invoke();
 	    }
 	    byte[] decodedBytes = Base64.decodeBase64(basicAuth.getBytes());
